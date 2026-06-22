@@ -44,7 +44,7 @@ export default function HomePage() {
       <section className="relative">
         <div className="relative h-[640px] w-full overflow-hidden">
           <img
-            src="/cover.jpg"
+            src="/images/hero-trekker.jpg"
             alt="Trekker in Himalayas"
             className="absolute inset-0 h-full w-full object-cover"
           />
