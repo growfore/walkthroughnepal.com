@@ -37,19 +37,6 @@ const testimonials = [
   { name: "Liam Anderson", country: "United Kingdom", text: "Highly professional team with great local knowledge. Annapurna Circuit was stunning!" },
   { name: "Sophie Martin", country: "Canada", text: "From booking to the last day of our trip, everything was flawless. Highly recommend Walk Through Nepal!" },
 ]
-
-function Pin({ top, left, label, sub }: { top: string; left: string; label: string; sub: string }) {
-  return (
-    <div className="absolute flex flex-col items-center" style={{ top, left, transform: "translate(-50%,-100%)" }}>
-      <div className="whitespace-nowrap rounded-md bg-card px-2 py-1 text-[10px] font-semibold text-navy shadow">
-        {label}
-        <div className="text-[9px] font-normal text-muted-foreground">{sub}</div>
-      </div>
-      <div className="mt-1 h-3 w-3 rounded-full border-2 border-white bg-orange shadow" />
-    </div>
-  )
-}
-
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -178,13 +165,7 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-7xl gap-5 px-4 lg:grid-cols-[1.4fr_1fr]">
           <div className="rounded-lg border border-border bg-[#fcfaf3] p-8">
             <h3 className="mb-6 text-2xl font-bold text-navy">Nepal At A Glance</h3>
-            <div className="relative">
-              <img src="/images/nepal-map.png" alt="Map of Nepal" loading="lazy" className="w-full" />
-              <Pin top="22%" left="42%" label="Mustang" sub="16+ Treks" />
-              <Pin top="20%" left="62%" label="Everest Region" sub="20+ Treks" />
-              <Pin top="55%" left="20%" label="Annapurna Region" sub="25+ Treks" />
-              <Pin top="62%" left="40%" label="Langtang Region" sub="10+ Treks" />
-            </div>
+            <img src="/images/nepal-map.png" alt="Map of Nepal" loading="lazy" className="w-full" />
             <button className="mt-6 flex items-center gap-2 rounded-md border border-navy px-4 py-2 text-sm font-medium text-navy transition hover:bg-navy hover:text-navy-foreground">
               Explore All Regions <ArrowRight className="h-4 w-4" />
             </button>
