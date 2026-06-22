@@ -284,7 +284,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                     Talk To An Expert
                   </button>
                 </div>
-                <img src="/images/hero-trekker.jpg" alt="Travel expert" className="h-24 w-20 rounded-md object-cover" />
+                <img src="/cover.jpg" alt="Travel expert" className="h-24 w-20 rounded-md object-cover" />
               </div>
             </div>
           </aside>
