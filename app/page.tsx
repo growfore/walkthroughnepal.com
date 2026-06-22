@@ -57,7 +57,7 @@ export default function HomePage() {
                 Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <button className="rounded-md bg-accent px-6 py-3 font-semibold text-accent-foreground hover:opacity-90">
+                <button className="rounded-md bg-orange px-6 py-3 font-semibold text-orange-foreground hover:opacity-90">
                   Find Your Adventure
                 </button>
                 <button className="flex items-center gap-2 rounded-md border border-white/70 px-6 py-3 font-semibold text-white hover:bg-white/10">
