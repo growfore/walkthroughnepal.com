@@ -41,7 +41,7 @@ export function Nav() {
               <a key={l} href="#" className="transition-colors hover:text-orange">{l}</a>
             ))}
           </nav>
-          <button className="rounded-md bg-orange px-5 py-2.5 text-sm font-semibold text-orange-foreground transition hover:opacity-90">
+          <button className="rounded-md bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition hover:opacity-90">
             Plan Your Trip
           </button>
         </div>
