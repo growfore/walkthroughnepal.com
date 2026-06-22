@@ -179,7 +179,7 @@ export default function HomePage() {
           <div className="rounded-lg border border-border bg-[#fcfaf3] p-8">
             <h3 className="mb-6 text-2xl font-bold text-navy">Nepal At A Glance</h3>
             <div className="relative">
-              <img src="/images/nepal-map.jpg" alt="Map of Nepal" loading="lazy" className="w-full" />
+              <img src="/images/nepal-map.png" alt="Map of Nepal" loading="lazy" className="w-full" />
               <Pin top="22%" left="42%" label="Mustang" sub="16+ Treks" />
               <Pin top="20%" left="62%" label="Everest Region" sub="20+ Treks" />
               <Pin top="55%" left="20%" label="Annapurna Region" sub="25+ Treks" />

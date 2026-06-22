@@ -180,7 +180,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                 </ul>
 
                 <div className="overflow-hidden rounded-lg border border-border bg-card">
-                  <img src="/images/nepal-map.jpg" alt="Route map" className="h-72 w-full object-cover" />
+                  <img src="/images/nepal-map.png" alt="Route map" className="h-72 w-full object-cover" />
                   <div className="px-3 py-2 text-right text-xs font-medium text-orange">View Full Map →</div>
                 </div>
               </div>
