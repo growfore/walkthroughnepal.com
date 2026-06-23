@@ -1,4 +1,4 @@
-import { Mountain, Mail, Phone, Globe, ExternalLink } from "lucide-react"
+import { Mail, Phone, Globe, ExternalLink } from "lucide-react"
 import Link from "next/link"
 
 const navLinks = ["Treks", "Tours", "Destinations", "Experiences", "About Us", "Travel Info", "Blog", "Contact"]
@@ -6,11 +6,7 @@ const navLinks = ["Treks", "Tours", "Destinations", "Experiences", "About Us", "
 function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2">
-      <Mountain className="h-8 w-8 text-navy" strokeWidth={2.2} />
-      <div className="leading-tight">
-        <div className="text-[13px] font-bold tracking-[0.18em] text-navy">WALK THROUGH</div>
-        <div className="text-[11px] font-semibold tracking-[0.3em] text-orange">NEPAL</div>
-      </div>
+      <img src="/walkthrough-nepal-logo.png" alt="Walk Through Nepal" className="h-10 w-auto" />
     </Link>
   )
 }

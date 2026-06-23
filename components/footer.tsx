@@ -1,14 +1,10 @@
-import { Mountain, Globe, ExternalLink, MapPinned, Phone, Mail, Clock, MapPin } from "lucide-react"
+import { Globe, ExternalLink, MapPinned, Phone, Mail, Clock, MapPin } from "lucide-react"
 import Link from "next/link"
 
 function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2">
-      <Mountain className="h-8 w-8 text-navy" strokeWidth={2.2} />
-      <div className="leading-tight">
-        <div className="text-[13px] font-bold tracking-[0.18em] text-navy">WALK THROUGH</div>
-        <div className="text-[11px] font-semibold tracking-[0.3em] text-orange">NEPAL</div>
-      </div>
+      <img src="/walkthrough-nepal-logo-white.png" alt="Walk Through Nepal" className="h-10 w-auto" />
     </Link>
   )
 }
