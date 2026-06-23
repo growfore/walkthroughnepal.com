@@ -1,18 +1,10 @@
-import { getPublishedPosts } from "@/lib/api"
+import { getPublishedPosts, img } from "@/lib/api"
 import Link from "next/link"
-
-const CMS = process.env.CMS_API_URL ?? "https://cms.myeasyguide.com"
-
-function img(path: string | null | undefined, base: string): string {
-  if (!path) return "/placholder-image.png"
-  if (path.startsWith("http")) return path
-  return `${base}${path.startsWith("/") ? "" : "/"}${path}`
-}
 
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const params = await searchParams
   const page = Number(params.page) || 1
-  const { posts, pagination } = await getPublishedPosts(page, 10)
+  const { blogs, pagination } = await getPublishedPosts(page, 10)
 
   return (
     <div className="min-h-screen">
@@ -26,11 +18,11 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => (
+            {blogs.map((post) => (
               <article key={post.slug} className="overflow-hidden rounded-lg border border-border bg-card transition hover:shadow-md">
                 <Link href={`/blog/${post.slug}`}>
                   <div className="relative h-48">
-                    <img src={img(post.coverImage, CMS)} alt={post.title} loading="lazy" className="h-full w-full object-cover" />
+                    <img src={img(post.coverImage)} alt={post.title} loading="lazy" className="h-full w-full object-cover" />
                     {post.category && (
                       <span className="absolute left-3 top-3 rounded bg-navy px-2.5 py-1 text-[10px] font-bold text-navy-foreground">
                         {post.category.name.toUpperCase()}
@@ -44,8 +36,6 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                     )}
                     <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
                       <span>{new Date(post.publishedAt || post.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>
-                      <span>•</span>
-                      <span>{post.meta.readingTime} min read</span>
                     </div>
                   </div>
                 </Link>

@@ -38,7 +38,7 @@ export default async function HomePage() {
       data: { tripCategories },
     },
     testimonials,
-    { posts: blogs },
+    { blogs },
   ] = await Promise.all([
     getTripCategories(),
     getTestimonials(),
@@ -98,9 +98,8 @@ export default async function HomePage() {
     },
   ]
 
-  const CMS_API = process.env.CMS_API_URL ?? "https://cms.myeasyguide.com"
   const blogList = blogs.map((b) => ({
-    img: img(b.coverImage, CMS_API),
+    img: img(b.coverImage),
     tag: b.category?.name?.toUpperCase() ?? "TRAVEL",
     title: b.title,
     desc: b.metaDescription ?? stripHtml(b.content).slice(0, 120) + "...",

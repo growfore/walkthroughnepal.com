@@ -81,22 +81,18 @@ export interface CMSPost {
   slug: string
   content: string
   coverImage: string
-  status: string
+  published: boolean
   publishedAt: string
   views: number
   createdAt: string
   updatedAt: string
-  metaTitle: string
-  metaDescription: string
-  meta: {
-    wordCount: number
-    readingTime: number
-    focusKeyphrase: string
-  }
-  category: { name: string; slug: string } | null
-  author: { name: string; username: string }
+  metaTitle: string | null
+  metaDescription: string | null
+  category: { id: string; name: string; slug: string } | null
+  writer: { id: string; name: string; username: string } | null
   tags: string
-  canonicalUrl: string
+  canonicalUrl: string | null
+  postType: string
 }
 
 export interface Pagination {

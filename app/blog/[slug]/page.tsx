@@ -1,38 +1,25 @@
-import { getPostBySlug } from "@/lib/api"
+import { getPostBySlug, img } from "@/lib/api"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { BlogRenderer } from "@/components/blog-renderer"
 import { decodeHtmlEntities } from "@/lib/html-decoder"
-
-const CMS = process.env.CMS_API_URL ?? "https://cms.myeasyguide.com"
-
-function img(path: string | null | undefined, base: string): string {
-  if (!path) return "/placholder-image.png"
-  if (path.startsWith("http")) return path
-  return `${base}${path.startsWith("/") ? "" : "/"}${path}`
-}
-
-function rewriteImages(html: string): string {
-  return html.replace(/(<img\s+src=["'])\/api\//g, `$1${CMS}/api/`)
-}
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
 
   let post
   try {
-    const res = await getPostBySlug(slug)
-    post = res.post
+    post = await getPostBySlug(slug)
   } catch {
     notFound()
   }
 
-  const contentHtml = rewriteImages(decodeHtmlEntities(post.content))
+  const contentHtml = decodeHtmlEntities(post.content)
 
   return (
     <div className="min-h-screen">
       <section className="relative h-[400px] overflow-hidden">
-        <img src={img(post.coverImage, CMS)} alt={post.title} className="absolute inset-0 h-full w-full object-cover" />
+        <img src={img(post.coverImage)} alt={post.title} className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
       </section>
 
@@ -45,10 +32,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               </span>
             )}
             <span>{new Date(post.publishedAt || post.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>
-            <span>•</span>
-            <span>{post.meta.readingTime} min read</span>
-            <span>•</span>
-            <span>By {post.author.name}</span>
+            {post.writer && (
+              <>
+                <span>•</span>
+                <span>By {post.writer.name}</span>
+              </>
+            )}
           </div>
 
           <h1 className="text-3xl font-bold text-navy leading-tight mb-6">{post.title}</h1>

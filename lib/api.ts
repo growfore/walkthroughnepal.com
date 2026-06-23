@@ -1,7 +1,6 @@
 import type { Activity, CMSPost, FeaturedTag, Pagination, Testimonial, TripCategory } from "./types"
 
-const API = process.env.API_URL ?? "https://api.essencetreksnepal.com"
-const CMS = process.env.CMS_API_URL ?? "https://cms.myeasyguide.com"
+const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
 export function img(path: string | null | undefined, base = API): string {
   if (!path) return "/placholder-image.png"
@@ -45,9 +44,9 @@ export function getFeaturedTags() {
 }
 
 export function getPublishedPosts(page = 1, limit = 10) {
-  return fetchJSON<{ posts: CMSPost[]; pagination: Pagination }>(CMS, `/api/posts/published?page=${page}&limit=${limit}`)
+  return fetchJSON<{ blogs: CMSPost[]; pagination: Pagination }>(API, `/api/v1/blogs/published?page=${page}&limit=${limit}`)
 }
 
 export function getPostBySlug(slug: string) {
-  return fetchJSON<{ post: CMSPost }>(CMS, `/api/posts/${slug}`)
+  return fetchJSON<CMSPost>(API, `/api/v1/blogs/${slug}`)
 }
