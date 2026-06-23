@@ -1,4 +1,4 @@
-import { Geist_Mono, Inter } from "next/font/google"
+import { Geist_Mono, Montserrat } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -6,7 +6,11 @@ import { cn } from "@/lib/utils"
 import { Nav } from "@/components/nav"
 import { Footer } from "@/components/footer"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["300", "400", "500", "600", "700"],
+})
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -18,8 +22,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
+      className={cn("antialiased", fontMono.variable, "font-sans", montserrat.variable)}
     >
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700,800&display=swap"
+        />
+      </head>
       <body>
         <ThemeProvider>
           <Nav />
