@@ -4,7 +4,7 @@ import Link from "next/link"
 function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2">
-      <img src="/walkthrough-nepal-logo-white.png" alt="Walk Through Nepal" className="h-10 w-auto" />
+      <img src="/walkthrough-nepal-logo-white.png" alt="Walk Through Nepal" className="h-20 w-auto" />
     </Link>
   )
 }
