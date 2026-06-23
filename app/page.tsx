@@ -32,90 +32,72 @@ function stripHtml(html: string) {
   return html.replace(/<[^>]*>/g, "").trim()
 }
 
+export const dynamic = "force-dynamic"
+
 export default async function HomePage() {
-  const [
-    {
-      data: { tripCategories },
-    },
-    testimonials,
-    { blogs },
-  ] = await Promise.all([
-    getTripCategories(),
-    getTestimonials(),
-    getPublishedPosts(1, 4),
-  ])
+  let categories: { img: string; title: string; sub: string; cta: string }[] = []
+  let treks: { img: string; badge: string; title: string; days: string; level: string; stay: string; price: string; slug: string }[] = []
+  let testimonialList: { name: string; country: string; text: string }[] = []
+  let blogList: { img: string; tag: string; title: string; desc: string; date: string; read: string }[] = []
 
-  let activities: Activity[] = []
   try {
-    const { data: { featuredTags } } = await getFeaturedTags()
-    activities = featuredTags.find((t) => t.slug === "popular-treks")?.activity ?? []
-  } catch {
-    const { data } = await getActivities({ limit: "4" })
-    activities = data
-  }
+    const { data: { tripCategories } } = await getTripCategories()
+    categories = tripCategories.slice(0, 4).map((c) => ({
+      img: c.categoryImage ?? "/images/cat-trekking.jpg",
+      title: c.categoryName,
+      sub: c.categoryHandle.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
+      cta: "Explore",
+    }))
+  } catch {}
 
-  const categories = tripCategories.slice(0, 4).map((c) => ({
-    img: c.categoryImage ?? "/images/cat-trekking.jpg",
-    title: c.categoryName,
-    sub: c.categoryHandle.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
-    cta: "Explore",
-  }))
+  try {
+    let activities: Activity[] = []
+    try {
+      const { data: { featuredTags } } = await getFeaturedTags()
+      activities = featuredTags.find((t) => t.slug === "popular-treks")?.activity ?? []
+    } catch {
+      const { data } = await getActivities({ limit: "4" })
+      activities = data
+    }
+    treks = activities.map((a) => ({
+      img: a.images[0] ?? "/images/trek-everest.jpg",
+      badge: a.duration,
+      title: a.title,
+      days: a.duration,
+      level: a.difficultyLevel?.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) ?? "Moderate",
+      stay: "Tea House",
+      price: `$${a.price}`,
+      slug: a.slug,
+    }))
+  } catch {}
 
-  const treks = activities.map((a) => ({
-    img: a.images[0] ?? "/images/trek-everest.jpg",
-    badge: a.duration,
-    title: a.title,
-    days: a.duration,
-    level:
-      a.difficultyLevel
-        ?.replace(/_/g, " ")
-        .replace(/\b\w/g, (l) => l.toUpperCase()) ?? "Moderate",
-    stay: "Tea House",
-    price: `$${a.price}`,
-    slug: a.slug,
-  }))
+  try {
+    const testimonials = await getTestimonials()
+    testimonialList = testimonials.map((t) => ({
+      name: t.author,
+      country: "Nepal",
+      text: t.content,
+    }))
+  } catch {}
+
+  try {
+    const { blogs } = await getPublishedPosts(1, 4)
+    blogList = blogs.map((b) => ({
+      img: img(b.coverImage),
+      tag: b.category?.name?.toUpperCase() ?? "TRAVEL",
+      title: b.title,
+      desc: b.metaDescription ?? stripHtml(b.content).slice(0, 120) + "...",
+      date: new Date(b.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
+      read: "Blog",
+    }))
+  } catch {}
 
   const reasons = [
-    {
-      icon: Users,
-      title: "Local Experts",
-      text: "Real Nepal based team with in-depth knowledge.",
-    },
-    {
-      icon: ClipboardList,
-      title: "Flexible Itineraries",
-      text: "Customize your trip to match your time and budget.",
-    },
-    {
-      icon: Heart,
-      title: "Responsible Tourism",
-      text: "We support local communities and sustainable travel.",
-    },
-    {
-      icon: PhoneCall,
-      title: "24/7 Support",
-      text: "We're with you before, during and after your trip.",
-    },
+    { icon: Users, title: "Local Experts", text: "Real Nepal based team with in-depth knowledge." },
+    { icon: ClipboardList, title: "Flexible Itineraries", text: "Customize your trip to match your time and budget." },
+    { icon: Heart, title: "Responsible Tourism", text: "We support local communities and sustainable travel." },
+    { icon: PhoneCall, title: "24/7 Support", text: "We're with you before, during and after your trip." },
   ]
-
-  const blogList = blogs.map((b) => ({
-    img: img(b.coverImage),
-    tag: b.category?.name?.toUpperCase() ?? "TRAVEL",
-    title: b.title,
-    desc: b.metaDescription ?? stripHtml(b.content).slice(0, 120) + "...",
-    date: new Date(b.createdAt).toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }),
-    read: "Blog",
-  }))
-
-  const testimonialList = testimonials.map((t) => ({
-    name: t.author,
-    country: "Nepal",
-    text: t.content,
-  }))
 
   return (
     <div className="min-h-screen bg-background text-foreground">

@@ -13,7 +13,7 @@ async function fetchJSON<T>(base: string, path: string, options?: RequestInit): 
     ...options,
     headers: {
       "Content-Type": "application/json",
-      "User-Agent": "Mozilla/5.0 (compatible; WalkThroughNepal/1.0)",
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
       ...options?.headers,
     },
     next: { revalidate: 60 },
