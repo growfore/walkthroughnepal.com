@@ -18,10 +18,9 @@ import {
   Home,
 } from "lucide-react"
 import Link from "next/link"
-import type { Activity } from "@/lib/types"
+import type { FeaturedTag } from "@/lib/types"
 import {
   getFeaturedTags,
-  getActivities,
   getTestimonials,
   getTripCategories,
   getPublishedPosts,
@@ -36,7 +35,7 @@ export const dynamic = "force-dynamic"
 
 export default async function HomePage() {
   let categories: { img: string; title: string; sub: string; cta: string }[] = []
-  let treks: { img: string; badge: string; title: string; days: string; level: string; stay: string; price: string; slug: string }[] = []
+  let featuredSections: FeaturedTag[] = []
   let testimonialList: { name: string; country: string; text: string }[] = []
   let blogList: { img: string; tag: string; title: string; desc: string; date: string; read: string }[] = []
 
@@ -51,24 +50,8 @@ export default async function HomePage() {
   } catch {}
 
   try {
-    let activities: Activity[] = []
-    try {
-      const { data: { featuredTags } } = await getFeaturedTags()
-      activities = featuredTags.find((t) => t.slug === "popular-treks")?.activity ?? []
-    } catch {
-      const { data } = await getActivities({ limit: "4" })
-      activities = data
-    }
-    treks = activities.map((a) => ({
-      img: a.images[0] ?? "/images/trek-everest.jpg",
-      badge: a.duration,
-      title: a.title,
-      days: a.duration,
-      level: a.difficultyLevel?.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) ?? "Moderate",
-      stay: "Tea House",
-      price: `$${a.price}`,
-      slug: a.slug,
-    }))
+    const { data: { featuredTags } } = await getFeaturedTags()
+    featuredSections = featuredTags
   } catch {}
 
   try {
@@ -202,72 +185,71 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Popular Treks */}
-      <section className="pb-20">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-6 flex items-end justify-between">
-            <h2 className="text-3xl font-bold text-navy">Popular Treks</h2>
-            <a
-              href="#"
-              className="flex items-center gap-1 text-sm font-medium text-orange"
-            >
-              View All Treks <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {treks.map((t) => (
-              <div
-                key={t.title}
-                className="overflow-hidden rounded-lg border border-border bg-card shadow-sm transition hover:shadow-md"
-              >
-                <div className="relative h-44">
-                  <img
-                    src={t.img}
-                    alt={t.title}
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                  />
-                  <span className="absolute top-3 left-3 rounded bg-orange px-2.5 py-1 text-[10px] font-bold text-orange-foreground">
-                    {t.badge}
-                  </span>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-bold text-navy">
-                    {t.title.substring(0, 50) + "..."}
-                  </h3>
-                  <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" /> {t.days}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <TrendingUp className="h-3 w-3" /> {t.level}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Home className="h-3 w-3" /> {t.stay}
+      {/* Featured sections */}
+      {featuredSections.map((tag) => (
+        <section key={tag.slug} className="pb-16">
+          <div className="mx-auto max-w-7xl px-4">
+            <div className="mb-6">
+              <h2 className="text-3xl font-bold text-navy">
+                {tag.name.split("::")[0] || tag.name}
+              </h2>
+              {tag.description && (
+                <p className="mt-1 text-sm text-muted-foreground">{tag.description}</p>
+              )}
+            </div>
+            <div className="flex gap-5 overflow-x-auto pb-4">
+              {tag.activity?.map((a) => (
+                <div
+                  key={a.slug}
+                  className="min-w-[280px] flex-1 overflow-hidden rounded-lg border border-border bg-card shadow-sm transition hover:shadow-md"
+                >
+                  <div className="relative h-44">
+                    <img
+                      src={a.images[0] ?? "/images/trek-everest.jpg"}
+                      alt={a.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                    <span className="absolute top-3 left-3 rounded bg-orange px-2.5 py-1 text-[10px] font-bold text-orange-foreground">
+                      {a.duration}
                     </span>
                   </div>
-                  <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-                    <div>
-                      <div className="text-[10px] text-muted-foreground">
-                        From
-                      </div>
-                      <div className="text-lg font-bold text-navy">
-                        {t.price}
-                      </div>
+                  <div className="p-4">
+                    <h3 className="font-bold text-navy">
+                      {a.title.length > 50 ? a.title.substring(0, 50) + "..." : a.title}
+                    </h3>
+                    <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" /> {a.duration}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <TrendingUp className="h-3 w-3" />{" "}
+                        {a.difficultyLevel?.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) ??
+                          "Moderate"}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Home className="h-3 w-3" /> Tea House
+                      </span>
                     </div>
-                    <a
-                      href={`/package/${t.slug}`}
-                      className="flex items-center gap-1 text-sm font-medium text-orange"
-                    >
-                      View Details <ArrowRight className="h-3.5 w-3.5" />
-                    </a>
+                    <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
+                      <div>
+                        <div className="text-[10px] text-muted-foreground">From</div>
+                        <div className="text-lg font-bold text-navy">${a.price}</div>
+                      </div>
+                      <a
+                        href={`/package/${a.slug}`}
+                        className="flex items-center gap-1 text-sm font-medium text-orange"
+                      >
+                        View Details <ArrowRight className="h-3.5 w-3.5" />
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ))}
 
       {/* Nepal at a Glance + Why */}
       <section className="pb-20">
