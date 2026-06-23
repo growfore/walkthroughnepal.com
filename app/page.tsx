@@ -106,10 +106,10 @@ export default async function HomePage() {
                 and local experiences across the Himalayas.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <button className="rounded-md bg-orange px-6 py-3 font-semibold text-orange-foreground hover:opacity-90">
+                <button className="rounded-full bg-orange px-6 py-3 font-semibold text-orange-foreground hover:opacity-90">
                   Find Your Adventure
                 </button>
-                <button className="flex items-center gap-2 rounded-md border border-white/70 px-6 py-3 font-semibold text-white hover:bg-white/10">
+                <button className="flex items-center gap-2 rounded-full border border-white/70 px-6 py-3 font-semibold text-white hover:bg-white/10">
                   Talk To An Expert <Headphones className="h-4 w-4" />
                 </button>
               </div>
@@ -143,7 +143,7 @@ export default async function HomePage() {
                 <span className="text-xs font-medium">{c.label}</span>
               </button>
             ))}
-            <button className="flex items-center gap-2 rounded-md bg-navy px-6 py-3 font-semibold text-navy-foreground hover:opacity-90">
+            <button className="flex items-center gap-2 rounded-full bg-navy px-6 py-3 font-semibold text-navy-foreground hover:opacity-90">
               <Search className="h-4 w-4" /> Search
             </button>
           </div>
@@ -264,7 +264,7 @@ export default async function HomePage() {
               loading="lazy"
               className="w-full"
             />
-            <button className="mt-6 flex items-center gap-2 rounded-md border border-navy px-4 py-2 text-sm font-medium text-navy transition hover:bg-navy hover:text-navy-foreground">
+            <button className="mt-6 flex items-center gap-2 rounded-full border border-navy px-5 py-2.5 text-sm font-semibold text-navy transition hover:bg-navy hover:text-navy-foreground">
               Explore All Regions <ArrowRight className="h-4 w-4" />
             </button>
           </div>
@@ -396,7 +396,7 @@ export default async function HomePage() {
                 </div>
               </div>
             </div>
-            <button className="flex items-center gap-2 rounded-md border border-white px-5 py-2.5 font-semibold hover:bg-white/10">
+            <button className="flex items-center gap-2 rounded-full border border-white px-5 py-2.5 font-semibold hover:bg-white/10">
               Talk To An Expert <ArrowRight className="h-4 w-4" />
             </button>
           </div>

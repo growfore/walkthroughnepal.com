@@ -4,7 +4,7 @@ import "./globals.css"
 import "react-toastify/dist/ReactToastify.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
-import { Nav } from "@/components/nav"
+import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { ToastContainer } from "react-toastify"
 
@@ -34,7 +34,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body>
         <ThemeProvider>
-          <Nav />
+          <Navigation />
           <main className="pt-[100px] md:pt-[100px]">{children}</main>
           <Footer />
           <ToastContainer position="bottom-right" />

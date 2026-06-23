@@ -183,7 +183,7 @@ export default function DesignYourTrip() {
   const [step, setStep] = useState(0)
 
   const form = useForm<ItineraryFormValues>({
-    resolver: zodResolver(itineraryFormSchema),
+    resolver: zodResolver(itineraryFormSchema) as never,
     defaultValues: {
       fullName: "",
       email: "",
