@@ -12,7 +12,11 @@ export function img(path: string | null | undefined, base = API): string {
 async function fetchJSON<T>(base: string, path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${base}${path}`, {
     ...options,
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers: {
+      "Content-Type": "application/json",
+      "User-Agent": "Mozilla/5.0 (compatible; WalkThroughNepal/1.0)",
+      ...options?.headers,
+    },
     next: { revalidate: 60 },
   })
   if (!res.ok) throw new Error(`API ${res.status} on ${path}`)

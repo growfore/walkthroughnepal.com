@@ -18,8 +18,10 @@ import {
   Home,
 } from "lucide-react"
 import Link from "next/link"
+import type { Activity } from "@/lib/types"
 import {
   getFeaturedTags,
+  getActivities,
   getTestimonials,
   getTripCategories,
   getPublishedPosts,
@@ -33,31 +35,32 @@ function stripHtml(html: string) {
 export default async function HomePage() {
   const [
     {
-      data: { featuredTags },
-    },
-    {
       data: { tripCategories },
     },
     testimonials,
     { posts: blogs },
   ] = await Promise.all([
-    getFeaturedTags(),
     getTripCategories(),
     getTestimonials(),
     getPublishedPosts(1, 4),
   ])
 
+  let activities: Activity[] = []
+  try {
+    const { data: { featuredTags } } = await getFeaturedTags()
+    activities = featuredTags.find((t) => t.slug === "popular-treks")?.activity ?? []
+  } catch {
+    const { data } = await getActivities({ limit: "4" })
+    activities = data
+  }
+
   const categories = tripCategories.slice(0, 4).map((c) => ({
     img: c.categoryImage ?? "/images/cat-trekking.jpg",
     title: c.categoryName,
-    sub: c.categoryHandle
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, (l) => l.toUpperCase()),
+    sub: c.categoryHandle.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
     cta: "Explore",
   }))
 
-  const activities =
-    featuredTags.find((t) => t.slug === "popular-treks")?.activity ?? []
   const treks = activities.map((a) => ({
     img: a.images[0] ?? "/images/trek-everest.jpg",
     badge: a.duration,
