@@ -201,7 +201,7 @@ export default async function HomePage() {
               {tag.activity?.map((a) => (
                 <div
                   key={a.slug}
-                  className="min-w-[280px] flex-1 overflow-hidden rounded-lg border border-border bg-card shadow-sm transition hover:shadow-md"
+                  className="w-72 shrink-0 overflow-hidden rounded-lg border border-border bg-card shadow-sm transition hover:shadow-md"
                 >
                   <div className="relative h-44">
                     <img
