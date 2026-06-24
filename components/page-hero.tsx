@@ -2,6 +2,7 @@ import { Globe, ShieldCheck, MessageCircle, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import type { ReactNode } from "react"
 import { img } from "@/lib/api"
+import { Lightbox } from "@/components/lightbox"
 
 const DEFAULT_HERO = "/manaslu-view.webp"
 
@@ -26,7 +27,7 @@ export function PageHero({ title, description, image, breadcrumbs }: PageHeroPro
   return (
     <section className="relative overflow-hidden bg-navy pt-28">
       <div className="absolute inset-0">
-        <img src={src} alt="" className="h-full w-full object-cover" />
+        <Lightbox src={src} alt={title} />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40" />
       </div>
       <div className="relative mx-auto max-w-3xl px-4 pb-28 pt-16 text-center text-white">

@@ -14,6 +14,7 @@ export interface Activity {
   highlights: string[]
   images: string[]
   price: number
+  maxPrice: number
   duration: string
   difficultyLevel: string
   maximumAltitude: string
@@ -33,6 +34,12 @@ export interface Activity {
   canonicalPath: string
   locations: string[]
   reviewCount: number
+  bestSeason: string
+  groupSize: string
+  transportation: string
+  meals: string
+  videoUrl: string
+  map: string
   createdAt: string
   updatedAt: string
 }
