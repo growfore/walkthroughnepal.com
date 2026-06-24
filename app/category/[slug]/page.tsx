@@ -2,6 +2,7 @@ import { getActivitiesByCategory } from "@/lib/api"
 import Link from "next/link"
 import { Mountain } from "lucide-react"
 import { TripCard } from "@/components/trip-card"
+import { PageHero } from "@/components/page-hero"
 
 export const dynamic = "force-dynamic"
 
@@ -18,14 +19,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   return (
     <div className="min-h-screen">
-      <section className="bg-navy py-16 text-navy-foreground">
-        <div className="mx-auto max-w-7xl px-4 text-center">
-          <h1 className="text-5xl font-bold">{label}</h1>
-          <p className="mt-3 text-lg text-white/80">
-            Explore our {label.toLowerCase()} packages in Nepal
-          </p>
-        </div>
-      </section>
+      <PageHero title={label} description={`Explore our ${label.toLowerCase()} packages in Nepal`} />
 
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4">

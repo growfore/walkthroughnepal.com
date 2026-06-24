@@ -2,6 +2,7 @@ import { getActivities, getTripCategories } from "@/lib/api"
 import Link from "next/link"
 import { Mountain } from "lucide-react"
 import { TripCard } from "@/components/trip-card"
+import { PageHero } from "@/components/page-hero"
 
 export const dynamic = "force-dynamic"
 
@@ -36,14 +37,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
 
   return (
     <div className="min-h-screen">
-      <section className="bg-navy py-16 text-navy-foreground">
-        <div className="mx-auto max-w-7xl px-4 text-center">
-          <h1 className="text-5xl font-bold">Explore All Trips</h1>
-          <p className="mt-3 text-lg text-white/80">
-            Browse our complete collection of Nepal adventures
-          </p>
-        </div>
-      </section>
+      <PageHero title="Explore All Trips" description="Browse our complete collection of Nepal adventures" />
 
       <section className="py-10">
         <div className="mx-auto max-w-7xl px-4">

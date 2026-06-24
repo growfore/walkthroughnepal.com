@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Mail, Phone, MapPin, ChevronDown } from "lucide-react"
+import { PageHero } from "@/components/page-hero"
 
 const faqs = [
   {
@@ -35,17 +36,8 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background pt-28">
-      {/* Hero */}
-      <section className="border-b border-border bg-muted/30 py-12">
-        <div className="mx-auto max-w-7xl px-4 text-center">
-          <h1 className="text-4xl font-bold text-navy md:text-5xl">Contact Us</h1>
-          <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
-            Have a question about a trek, need help planning your trip, or just want to say hello?
-            We&apos;d love to hear from you.
-          </p>
-        </div>
-      </section>
+    <main className="min-h-screen bg-background">
+      <PageHero title="Contact Us" description="Have a question about a trek, need help planning your trip, or just want to say hello? We'd love to hear from you." />
 
       {/* Form + Info */}
       <section className="py-16">
@@ -146,8 +138,7 @@ export default function ContactPage() {
             </div>
 
             {/* Sidebar */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Company Info */}
+            <div className="lg:col-span-2">
               <div className="rounded-xl border border-border bg-card p-6">
                 <h3 className="text-lg font-bold text-navy">Company Info</h3>
                 <ul className="mt-4 space-y-4">
@@ -173,35 +164,35 @@ export default function ContactPage() {
                     <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-orange" />
                     <div>
                       <p className="text-sm font-semibold text-navy">Address</p>
-                      <p className="text-sm text-muted-foreground">
-                        Kathmandu, Nepal
-                      </p>
+                      <p className="text-sm text-muted-foreground">Kathmandu, Nepal</p>
                     </div>
                   </li>
                 </ul>
               </div>
-
-              {/* FAQ */}
-              <div className="rounded-xl border border-border bg-card p-6">
-                <h3 className="text-lg font-bold text-navy">Frequently Asked Questions</h3>
-                <div className="mt-4 space-y-2">
-                  {faqs.map((faq, i) => (
-                    <div key={i} className="border-b border-border pb-2 last:border-0">
-                      <button
-                        onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                        className="flex w-full items-center justify-between gap-2 py-2 text-left text-sm font-semibold text-navy"
-                      >
-                        {faq.q}
-                        <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition ${openFaq === i ? "rotate-180" : ""}`} />
-                      </button>
-                      {openFaq === i && (
-                        <p className="pb-2 text-sm leading-relaxed text-muted-foreground">{faq.a}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="pb-20">
+        <div className="mx-auto max-w-3xl px-4">
+          <h3 className="text-2xl font-bold text-navy text-center">Frequently Asked Questions</h3>
+          <div className="mt-6 space-y-2 rounded-xl border border-border bg-card p-6">
+            {faqs.map((faq, i) => (
+              <div key={i} className="border-b border-border pb-2 last:border-0">
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="flex w-full items-center justify-between gap-2 py-2 text-left text-sm font-semibold text-navy"
+                >
+                  {faq.q}
+                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition ${openFaq === i ? "rotate-180" : ""}`} />
+                </button>
+                {openFaq === i && (
+                  <p className="pb-2 text-sm leading-relaxed text-muted-foreground">{faq.a}</p>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </section>

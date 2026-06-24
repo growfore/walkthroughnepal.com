@@ -1,5 +1,6 @@
 import { getPublishedPosts, img } from "@/lib/api"
 import Link from "next/link"
+import { PageHero } from "@/components/page-hero"
 
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const params = await searchParams
@@ -8,12 +9,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
 
   return (
     <div className="min-h-screen">
-      <section className="bg-navy py-16 text-navy-foreground">
-        <div className="mx-auto max-w-7xl px-4 text-center">
-          <h1 className="text-5xl font-bold">Travel Blog</h1>
-          <p className="mt-3 text-lg text-white/80">Trekking tips, travel stories & insights from Nepal</p>
-        </div>
-      </section>
+      <PageHero title="Travel Blog" description="Trekking tips, travel stories & insights from Nepal" />
 
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4">
