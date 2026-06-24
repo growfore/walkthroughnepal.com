@@ -23,6 +23,7 @@ import { TripCard } from "@/components/trip-card"
 import { SectionHeader } from "@/components/section-header"
 import { TeamCard } from "@/components/team-card"
 import { SearchBox } from "@/components/search-box"
+import { BlogCard } from "@/components/blog-card"
 
 function stripHtml(html: string) {
   return html.replace(/<[^>]*>/g, "").trim()
@@ -41,12 +42,12 @@ export default async function HomePage() {
   let featuredSections: FeaturedTag[] = []
   let testimonialList: { name: string; country: string; text: string }[] = []
   let blogList: {
-    img: string
+    slug: string
+    image: string
     tag: string
     title: string
-    desc: string
+    description: string
     date: string
-    read: string
   }[] = []
   let teamMembers: TeamMember[] = []
 
@@ -84,16 +85,16 @@ export default async function HomePage() {
   try {
     const { blogs } = await getPublishedPosts(1, 4)
     blogList = blogs.map((b) => ({
-      img: img(b.coverImage),
+      slug: b.slug,
+      image: img(b.coverImage),
       tag: b.category?.name?.toUpperCase() ?? "TRAVEL",
       title: b.title,
-      desc: b.metaDescription ?? stripHtml(b.content).slice(0, 120) + "...",
+      description: b.metaDescription ?? stripHtml(b.content).slice(0, 120) + "...",
       date: new Date(b.createdAt).toLocaleDateString("en-US", {
         month: "long",
         day: "numeric",
         year: "numeric",
       }),
-      read: "Blog",
     }))
   } catch {}
 
@@ -248,33 +249,7 @@ export default async function HomePage() {
           />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {blogList.map((b) => (
-              <article
-                key={b.title}
-                className="overflow-hidden rounded-lg border border-border bg-card"
-              >
-                <div className="relative h-40">
-                  <img
-                    src={b.img}
-                    alt={b.title}
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                  />
-                  <span className="absolute top-3 left-3 rounded bg-navy px-2.5 py-1 text-[10px] font-bold text-navy-foreground">
-                    {b.tag}
-                  </span>
-                </div>
-                <div className="p-4">
-                  <h3 className="leading-snug font-bold text-navy">
-                    {b.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{b.desc}</p>
-                  <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>{b.date}</span>
-                    <span>•</span>
-                    <span>{b.read}</span>
-                  </div>
-                </div>
-              </article>
+              <BlogCard key={b.slug} {...b} />
             ))}
           </div>
         </div>

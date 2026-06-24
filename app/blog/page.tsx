@@ -1,6 +1,7 @@
 import { getPublishedPosts, img } from "@/lib/api"
 import Link from "next/link"
 import { PageHero } from "@/components/page-hero"
+import { BlogCard } from "@/components/blog-card"
 
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const params = await searchParams
@@ -15,27 +16,15 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
         <div className="mx-auto max-w-7xl px-4">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {blogs.map((post) => (
-              <article key={post.slug} className="overflow-hidden rounded-lg border border-border bg-card transition hover:shadow-md">
-                <Link href={`/blog/${post.slug}`}>
-                  <div className="relative h-48">
-                    <img src={img(post.coverImage)} alt={post.title} loading="lazy" className="h-full w-full object-cover" />
-                    {post.category && (
-                      <span className="absolute left-3 top-3 rounded bg-navy px-2.5 py-1 text-[10px] font-bold text-navy-foreground">
-                        {post.category.name.toUpperCase()}
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-5">
-                    <h2 className="text-lg font-bold leading-snug text-navy">{post.title}</h2>
-                    {post.metaDescription && (
-                      <p className="mt-2 text-sm text-muted-foreground">{post.metaDescription.slice(0, 150)}</p>
-                    )}
-                    <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
-                      <span>{new Date(post.publishedAt || post.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>
-                    </div>
-                  </div>
-                </Link>
-              </article>
+              <BlogCard
+                key={post.slug}
+                slug={post.slug}
+                image={img(post.coverImage)}
+                tag={post.category?.name?.toUpperCase() ?? "TRAVEL"}
+                title={post.title}
+                description={post.metaDescription?.slice(0, 150) ?? ""}
+                date={new Date(post.publishedAt || post.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+              />
             ))}
           </div>
 
