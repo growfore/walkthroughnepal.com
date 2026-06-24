@@ -118,7 +118,7 @@ export function MenuController({ items }: MenuControllerProps) {
       >
         <div className="flex items-center gap-2">
           <Link href="/" className="p-1">
-            <img src="/walkthrough-nepal-logo.png" alt="Walk Through Nepal" className="h-12 w-auto" />
+            <img src="/walkthrough-nepal-logo.png" alt="Walk Through Nepal" className="h-10 w-auto sm:h-12" />
           </Link>
           {items.map((item) => {
             const itemHasChildren = hasChildren(item)

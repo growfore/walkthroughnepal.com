@@ -29,11 +29,11 @@ export function ItineraryList({ days }: { days: Day[] }) {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-2xl font-bold text-navy">Itinerary</h2>
         <button
           onClick={() => setOpen(allOpen ? new Set() : new Set(days.map((d) => d.day)))}
-          className="rounded-md border border-border px-4 py-1.5 text-sm font-semibold text-navy hover:bg-muted transition-colors"
+          className="rounded-md border border-border px-3 py-1.5 text-xs font-semibold text-navy hover:bg-muted transition-colors sm:text-sm sm:px-4"
         >
           {allOpen ? "Collapse All" : "Expand All"}
         </button>
@@ -45,22 +45,22 @@ export function ItineraryList({ days }: { days: Day[] }) {
             <div key={d.day} className="rounded-lg border border-border">
               <button
                 onClick={() => toggle(d.day)}
-                className="flex w-full items-center gap-4 p-4 text-left"
+                className="flex w-full items-center gap-3 p-3 sm:gap-4 sm:p-4 text-left"
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-navy/15 text-navy">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-navy/15 text-navy sm:h-12 sm:w-12">
                   <div className="text-center leading-tight">
-                    <div className="text-[9px] font-semibold text-muted-foreground">Day</div>
-                    <div className="text-sm font-bold">{String(d.day).padStart(2, "0")}</div>
+                    <div className="text-[8px] font-semibold text-muted-foreground sm:text-[9px]">Day</div>
+                    <div className="text-[11px] font-bold sm:text-sm">{String(d.day).padStart(2, "0")}</div>
                   </div>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="font-semibold text-navy break-words">{d.title}</div>
+                  <div className="text-sm font-semibold text-navy break-words sm:text-base">{d.title}</div>
                 </div>
                 <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition ${isOpen ? "rotate-180" : ""}`} />
               </button>
               {isOpen && (
-                <div className="border-t border-border p-4 pt-3 overflow-hidden">
-                  <div className="prose max-w-none prose-p:m-0 prose-p:text-muted-foreground [&_*]:break-words" dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(d.description) }} />
+                <div className="border-t border-border p-3 pt-2 sm:p-4 sm:pt-3 overflow-hidden">
+                  <div className="prose prose-sm sm:prose-base max-w-none w-full prose-p:m-0 prose-p:text-muted-foreground wrap-break-word **:wrap-break-word" dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(d.description) }} />
                   <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                     {d.ascent && <span><TrendingUp className="mr-1 inline h-3.5 w-3.5" />↑ {d.ascent}</span>}
                     {d.descent && <span><TrendingUp className="mr-1 inline h-3.5 w-3.5" />↓ {d.descent}</span>}

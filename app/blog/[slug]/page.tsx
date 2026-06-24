@@ -70,7 +70,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       />
 
       <section className="mx-auto max-w-4xl px-4 pb-16 pt-8">
-        <article className="prose prose-lg prose-gray max-w-none">
+        <article className="prose prose-lg prose-gray max-w-none w-full wrap-break-word **:wrap-break-word">
           {toc.length > 0 && (
             <div className="not-prose mb-8">
               <h2 className="text-2xl font-bold text-navy mb-4">Contents</h2>

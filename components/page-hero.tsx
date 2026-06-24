@@ -30,7 +30,7 @@ export function PageHero({ title, description, image, breadcrumbs }: PageHeroPro
         <Lightbox src={src} alt={title} />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40" />
       </div>
-      <div className="relative mx-auto max-w-3xl px-4 pb-28 pt-16 text-center text-white">
+      <div className="relative mx-auto max-w-3xl px-4 pb-16 pt-12 text-center text-white md:pb-28 md:pt-16">
         {breadcrumbs && breadcrumbs.length > 0 && (
           <nav className="mb-4 flex items-center justify-center gap-1.5 text-sm text-white/60">
             {breadcrumbs.map((cr, i) => (
@@ -47,7 +47,7 @@ export function PageHero({ title, description, image, breadcrumbs }: PageHeroPro
             ))}
           </nav>
         )}
-        <h1 className="text-4xl font-bold md:text-5xl">{title}</h1>
+        <h1 className="text-3xl font-bold md:text-5xl">{title}</h1>
         {description && (
           <p className="mt-3 text-lg text-white/80">{description}</p>
         )}

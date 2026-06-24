@@ -86,7 +86,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
     <div className="min-h-screen bg-background text-foreground">
       {/* ── Hero ── */}
       <section className="relative">
-        <div className="relative h-[520px] w-full overflow-hidden">
+        <div className="relative h-[400px] w-full overflow-hidden md:h-[520px]">
           <Lightbox src={heroImg} alt={pkg.title} />
           <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/10" />
 
@@ -95,11 +95,11 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             <span className="text-white">{pkg.title}</span>
           </div>
 
-          <div className="relative mx-auto mt-8 max-w-7xl px-4 text-white">
+            <div className="relative mx-auto mt-6 md:mt-8 max-w-7xl px-4 text-white">
             <span className="inline-block rounded bg-orange px-3 py-1 text-[11px] font-bold tracking-wider text-orange-foreground">
               {pkg.isFeatured ? "FEATURED" : "BEST SELLER"}
             </span>
-            <h1 className="mt-4 text-5xl font-bold leading-tight md:text-6xl">{pkg.title}</h1>
+            <h1 className="mt-4 text-3xl font-bold leading-tight md:text-5xl lg:text-6xl">{pkg.title}</h1>
             <div className="mt-3 flex items-center gap-2 text-white/90">
               <MapPin className="h-4 w-4 text-orange" /> {pkg.locations?.join(", ") || pkg.meetingPoint}
             </div>
@@ -109,7 +109,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
               <span className="text-sm text-white/80">({pkg.reviewCount || 0} Reviews)</span>
             </div>
 
-            <div className="mt-7 flex flex-wrap gap-8 text-white/95">
+            <div className="mt-6 grid grid-cols-2 gap-4 text-white/95 sm:flex sm:flex-wrap sm:gap-8">
               <FactBadge icon={Clock} label="Duration" value={pkg.duration} />
               <FactBadge icon={TrendingUp} label="Max Altitude" value={pkg.maximumAltitude} />
               <FactBadge icon={Mountain} label="Difficulty" value={difficulty} />
@@ -138,8 +138,8 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
       {/* ── Main content ── */}
       <section className="py-12 text-base font-medium leading-relaxed">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 lg:grid-cols-3">
-          <div className="lg:col-span-2">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 lg:grid-cols-3 min-w-0">
+          <div className="lg:col-span-2 min-w-0">
             {/* Tabs */}
             <StickyWrapper className="sticky z-10 py-3" offset={96}>
               <div className="flex flex-nowrap gap-1.5 overflow-x-auto scrollbar-hide rounded-2xl border border-border bg-card p-1.5 shadow-sm">
@@ -156,15 +156,15 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             {/* ── Overview ── */}
             <div id="overview" className="mt-8">
-              <h2 className="text-2xl font-bold text-navy">Overview</h2>
+              <h2 className="text-xl font-bold text-navy md:text-2xl">Overview</h2>
               <div
-                className="mt-3 prose max-w-none prose-p:leading-relaxed prose-p:text-muted-foreground prose-headings:text-navy prose-a:text-primary prose-strong:text-navy"
+                className="mt-3 prose prose-sm sm:prose-base max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground prose-headings:text-navy prose-a:text-primary prose-strong:text-navy wrap-break-word **:wrap-break-word"
                 dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(pkg.shortDescription) }}
               />
 
               {pkg.fullDescription && (
                 <div
-                  className="mt-6 prose max-w-none prose-p:leading-relaxed prose-p:text-muted-foreground prose-headings:text-navy prose-a:text-primary prose-strong:text-navy"
+                  className="mt-6 prose prose-sm sm:prose-base max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground prose-headings:text-navy prose-a:text-primary prose-strong:text-navy wrap-break-word **:wrap-break-word"
                   dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(pkg.fullDescription) }}
                 />
               )}
@@ -181,7 +181,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                       .map((item, i) => (
                         <div key={i} className="flex items-start gap-3 text-sm text-navy">
                           <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
-                          <span dangerouslySetInnerHTML={{ __html: item }} />
+                          <span className="wrap-break-word" dangerouslySetInnerHTML={{ __html: item }} />
                         </div>
                       ))}
                   </div>
@@ -202,9 +202,9 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             {/* ── Includes ── */}
             <div id="includes" className="mt-12 scroll-mt-24">
-              <h2 className="text-2xl font-bold text-navy">What&apos;s Included</h2>
+              <h2 className="text-xl font-bold text-navy md:text-2xl">What&apos;s Included</h2>
               <div className="mt-4 rounded-lg border border-border bg-card p-6">
-                <div className="prose prose-sm max-w-none prose-li:text-navy prose-li:marker:text-green-600">
+                <div className="prose prose-sm max-w-none w-full prose-li:text-navy prose-li:marker:text-green-600 wrap-break-word **:wrap-break-word">
                   {(pkg.inclusions ?? []).map((section, i) => (
                     <div key={i} dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(section) }} />
                   ))}
@@ -214,9 +214,9 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             {/* ── Excludes ── */}
             <div id="excludes" className="mt-12 scroll-mt-24">
-              <h2 className="text-2xl font-bold text-navy">What&apos;s Excluded</h2>
+              <h2 className="text-xl font-bold text-navy md:text-2xl">What&apos;s Excluded</h2>
               <div className="mt-4 rounded-lg border border-border bg-card p-6">
-                <div className="prose max-w-none prose-li:text-navy prose-li:marker:text-red-500">
+                <div className="prose max-w-none w-full prose-li:text-navy prose-li:marker:text-red-500 wrap-break-word **:wrap-break-word">
                   {(pkg.exclusions ?? []).map((section, i) => (
                     <div key={i} dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(section) }} />
                   ))}
@@ -227,12 +227,12 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             {/* ── Useful Info ── */}
             {(pkg.additionalInfo ?? []).length > 0 && (
               <div id="useful-info" className="mt-12 scroll-mt-24">
-                <h2 className="text-2xl font-bold text-navy">Useful Information</h2>
+                <h2 className="text-xl font-bold text-navy md:text-2xl">Useful Information</h2>
                 <div className="mt-4 space-y-6">
                   {pkg.additionalInfo.map((info, i) => (
                     <div key={i}>
                       <h3 className="font-bold text-navy">{info.title}</h3>
-                      <div className="mt-2 prose max-w-none prose-p:leading-relaxed prose-p:text-muted-foreground"
+                      <div className="mt-2 prose max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground wrap-break-word **:wrap-break-word"
                         dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(info.description) }}
                       />
                     </div>
@@ -243,7 +243,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             {/* ── Reviews ── */}
             <div id="reviews" className="mt-12 scroll-mt-24">
-              <h2 className="text-2xl font-bold text-navy">Traveler Reviews</h2>
+              <h2 className="text-xl font-bold text-navy md:text-2xl">Traveler Reviews</h2>
               <div className="mt-4 rounded-lg border border-border bg-card p-6">
                 <div className="flex flex-wrap items-center gap-6">
                   <div className="text-center">
@@ -267,7 +267,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             {/* ── FAQs ── */}
             {(pkg.faqs ?? []).length > 0 && (
               <div id="faqs" className="mt-12 scroll-mt-24">
-                <h2 className="text-2xl font-bold text-navy">Frequently Asked Questions</h2>
+                <h2 className="text-xl font-bold text-navy md:text-2xl">Frequently Asked Questions</h2>
                 <div className="mt-4 space-y-3">
                   {pkg.faqs.map((faq, i) => (
                     <details key={i} className="group rounded-lg border border-border">
@@ -276,7 +276,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                         <Plus className="h-4 w-4 shrink-0 group-open:hidden" />
                         <Minus className="h-4 w-4 shrink-0 hidden group-open:block" />
                       </summary>
-                      <div className="border-t border-border px-4 py-3 prose max-w-none prose-p:leading-relaxed prose-p:text-muted-foreground"
+                      <div className="border-t border-border px-4 py-3 prose max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground wrap-break-word **:wrap-break-word"
                         dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(faq.answer) }}
                       />
                     </details>
@@ -288,7 +288,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             {/* Video */}
             {pkg.videoUrl && (
               <div className="mt-12">
-                <h2 className="text-2xl font-bold text-navy">Video</h2>
+                <h2 className="text-xl font-bold text-navy md:text-2xl">Video</h2>
                 <div className="mt-4 aspect-video overflow-hidden rounded-lg">
                   <iframe src={pkg.videoUrl} className="h-full w-full" allowFullScreen title="Trip video" />
                 </div>
@@ -297,9 +297,9 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
           </div>
 
           {/* ── Sidebar ── */}
-          <StickyWrapper className="sticky self-start space-y-6" offset={120}>
+          <StickyWrapper className="sticky max-lg:static self-start space-y-6" offset={120}>
             {/* Price */}
-            <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+            <div className="rounded-lg border border-border bg-card p-4 shadow-sm sm:p-6">
               <div className="text-sm text-muted-foreground">From</div>
               <div className="flex items-baseline gap-2">
                 <div className="text-4xl font-bold text-navy">${pkg.price}</div>
@@ -366,9 +366,9 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                 <div className="text-2xl font-bold">Subscribe to Our Newsletter</div>
                 <div className="mt-1 text-sm text-white/80">Get the latest updates on new trips, travel tips &amp; exclusive offers.</div>
               </div>
-              <div className="flex w-full gap-2 md:w-auto">
+              <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto">
                 <input placeholder="Enter your email address" className="flex-1 rounded-md bg-white px-4 py-3 text-navy outline-none md:w-80" />
-                <button className="rounded-md bg-orange px-6 py-3 font-semibold text-orange-foreground hover:opacity-90">Subscribe</button>
+                <button className="rounded-md bg-orange px-6 py-3 font-semibold text-orange-foreground hover:opacity-90 whitespace-nowrap">Subscribe</button>
               </div>
             </div>
           </div>

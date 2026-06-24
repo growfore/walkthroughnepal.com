@@ -45,7 +45,7 @@ export default async function InfoPage({ params }: Props) {
       />
 
       <section className="mx-auto max-w-4xl px-4 pb-16 pt-8">
-        <article className="prose prose-lg prose-gray max-w-none">
+        <article className="prose prose-lg prose-gray max-w-none w-full wrap-break-word **:wrap-break-word">
           <BlogRenderer html={contentHtml} />
         </article>
 

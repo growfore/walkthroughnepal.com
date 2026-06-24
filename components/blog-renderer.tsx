@@ -4,7 +4,8 @@ export function BlogRenderer({ html }: { html: string }) {
   const markup = { __html: decodeHtmlEntities(html) }
   return (
     <div
-      className="prose md:prose-lg max-w-none
+      className="prose md:prose-lg max-w-none w-full
+        wrap-break-word **:wrap-break-word
         prose-headings:foreground prose-headings:font-bold
         prose-h1:text-2xl md:prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-8
         prose-h2:text-xl md:prose-h2:text-3xl prose-h2:mt-6 prose-h2:mb-2
