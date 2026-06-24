@@ -1,5 +1,6 @@
 import { Globe, ShieldCheck, MessageCircle, ChevronRight } from "lucide-react"
 import Link from "next/link"
+import type { ReactNode } from "react"
 import { img } from "@/lib/api"
 
 const DEFAULT_HERO = "/manaslu-view.webp"
@@ -14,7 +15,7 @@ type Breadcrumb = { label: string; href?: string }
 
 type PageHeroProps = {
   title: string
-  description?: string
+  description?: string | ReactNode
   image?: string | null
   breadcrumbs?: Breadcrumb[]
 }
