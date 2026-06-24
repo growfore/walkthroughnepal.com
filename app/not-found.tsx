@@ -1,12 +1,12 @@
 import Link from "next/link"
-import { Mountain, Home } from "lucide-react"
+import { Home } from "lucide-react"
 
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
       <div className="text-center">
-        <Mountain className="mx-auto h-16 w-16 text-muted-foreground/30" />
-        <h1 className="mt-6 text-7xl font-bold text-navy">404</h1>
+        <img src="/yeti.svg" alt="" className="mx-auto h-28 w-28 opacity-40" aria-hidden="true" />
+        <h1 className="mt-4 text-7xl font-bold text-navy">404</h1>
         <p className="mt-2 text-xl font-semibold text-foreground">Page not found</p>
         <p className="mt-2 text-muted-foreground max-w-md">
           The page you are looking for does not exist or has been moved. It might have been eaten by a yeti.
