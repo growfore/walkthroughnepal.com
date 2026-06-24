@@ -73,14 +73,14 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <section className="mx-auto max-w-4xl px-4 pb-16 pt-8">
         <article className="prose prose-lg prose-gray max-w-none">
           {toc.length > 0 && (
-            <div className="not-prose mb-8 rounded-lg border border-border bg-muted/50 p-5">
-              <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-navy">Content</h2>
+            <div className="not-prose mb-8">
+              <h2 className="mb-3 text-base font-bold text-navy">Content</h2>
               <nav className="space-y-1">
                 {toc.map((item) => (
                   <a
                     key={item.id}
                     href={`#${item.id}`}
-                    className={`block text-sm leading-relaxed text-muted-foreground hover:text-orange transition-colors ${item.level === 3 ? "pl-4" : ""}`}
+                    className={`block text-base text-orange hover:underline ${item.level === 3 ? "pl-5" : ""}`}
                   >
                     {item.text}
                   </a>
