@@ -37,7 +37,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
 
   return (
     <div className="min-h-screen">
-      <PageHero title="Explore All Trips" description="Browse our complete collection of Nepal adventures" />
+      <PageHero title="Explore All Trips" description="Browse our complete collection of Nepal adventures" breadcrumbs={[{ label: "Home", href: "/" }, { label: "All Trips" }]} />
 
       <section className="py-10">
         <div className="mx-auto max-w-7xl px-4">

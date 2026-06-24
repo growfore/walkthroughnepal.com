@@ -1,4 +1,5 @@
-import { Globe, ShieldCheck, MessageCircle } from "lucide-react"
+import { Globe, ShieldCheck, MessageCircle, ChevronRight } from "lucide-react"
+import Link from "next/link"
 import { img } from "@/lib/api"
 
 const DEFAULT_HERO = "/manaslu-view.webp"
@@ -9,13 +10,16 @@ const valueProps = [
   { icon: MessageCircle, text: "Quick personal advice" },
 ]
 
+type Breadcrumb = { label: string; href?: string }
+
 type PageHeroProps = {
   title: string
   description?: string
   image?: string | null
+  breadcrumbs?: Breadcrumb[]
 }
 
-export function PageHero({ title, description, image }: PageHeroProps) {
+export function PageHero({ title, description, image, breadcrumbs }: PageHeroProps) {
   const src = image ? img(image) : DEFAULT_HERO
 
   return (
@@ -25,6 +29,22 @@ export function PageHero({ title, description, image }: PageHeroProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40" />
       </div>
       <div className="relative mx-auto max-w-3xl px-4 pb-28 pt-16 text-center text-white">
+        {breadcrumbs && breadcrumbs.length > 0 && (
+          <nav className="mb-4 flex items-center justify-center gap-1.5 text-sm text-white/60">
+            {breadcrumbs.map((cr, i) => (
+              <span key={i} className="flex items-center gap-1.5">
+                {i > 0 && <ChevronRight className="h-3.5 w-3.5" />}
+                {cr.href ? (
+                  <Link href={cr.href} className="hover:text-white transition-colors">
+                    {cr.label}
+                  </Link>
+                ) : (
+                  <span className="text-white/90">{cr.label}</span>
+                )}
+              </span>
+            ))}
+          </nav>
+        )}
         <h1 className="text-4xl font-bold md:text-5xl">{title}</h1>
         {description && (
           <p className="mt-3 text-lg text-white/80">{description}</p>

@@ -9,7 +9,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
 
   return (
     <div className="min-h-screen">
-      <PageHero title="Travel Blog" description="Trekking tips, travel stories & insights from Nepal" />
+      <PageHero title="Travel Blog" description="Trekking tips, travel stories & insights from Nepal" breadcrumbs={[{ label: "Home", href: "/" }, { label: "Blog" }]} />
 
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4">

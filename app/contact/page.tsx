@@ -37,7 +37,7 @@ export default function ContactPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <PageHero title="Contact Us" description="Have a question about a trek, need help planning your trip, or just want to say hello? We'd love to hear from you." />
+      <PageHero title="Contact Us" description="Have a question about a trek, need help planning your trip, or just want to say hello? We'd love to hear from you." breadcrumbs={[{ label: "Home", href: "/" }, { label: "Contact" }]} />
 
       {/* Form + Info */}
       <section className="py-16">

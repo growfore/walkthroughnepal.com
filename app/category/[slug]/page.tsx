@@ -19,7 +19,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   return (
     <div className="min-h-screen">
-      <PageHero title={label} description={`Explore our ${label.toLowerCase()} packages in Nepal`} />
+      <PageHero title={label} description={`Explore our ${label.toLowerCase()} packages in Nepal`} breadcrumbs={[{ label: "Home", href: "/" }, { label }]} />
 
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4">
