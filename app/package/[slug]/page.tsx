@@ -3,6 +3,7 @@ import {
   Check, Plus, Minus, Mail, Phone, X, Info, Route, HelpCircle, MessageCircle, Utensils, Bus,
 } from "lucide-react"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 import { getActivityBySlug, img } from "@/lib/api"
 import { decodeHtmlEntities } from "@/lib/html-decoder"
 import { StickyWrapper } from "@/components/sticky-wrapper"
@@ -61,14 +62,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
     const res = await getActivityBySlug(slug)
     pkg = res.data
   } catch {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-navy">Package not found</h1>
-          <Link href="/" className="mt-4 inline-block text-orange">Go back home</Link>
-        </div>
-      </div>
-    )
+    notFound()
   }
 
   const difficulty = pkg.difficultyLevel?.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) ?? "Moderate"
