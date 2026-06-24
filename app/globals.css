@@ -104,6 +104,12 @@
   --orange: #fb8500;
   --orange-foreground: #ffffff;
 }
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
