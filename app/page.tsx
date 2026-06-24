@@ -84,7 +84,7 @@ export default async function HomePage() {
       <section className="relative">
         <div className="relative h-[480px] w-full overflow-hidden">
           <img
-            src="/images/hero-trekker.jpg"
+            src="/images/hero-narphu.jpg"
             alt="Trekker in Himalayas"
             className="absolute inset-0 h-full w-full object-cover"
           />
