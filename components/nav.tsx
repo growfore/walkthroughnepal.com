@@ -12,7 +12,7 @@ const navLinks = [
   { label: "About Us", href: "#" },
   { label: "Travel Info", href: "#" },
   { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "#" },
+  { label: "Contact", href: "/contact" },
 ]
 
 export function Nav() {
