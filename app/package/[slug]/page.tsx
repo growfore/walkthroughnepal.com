@@ -1,7 +1,6 @@
 import {
   Mountain, MapPin, Clock, ChevronRight, Star, Calendar, TrendingUp, Users, Home as HomeIcon,
-  Download, Check, Plus, Minus, Mail, Phone, X, Info, Route, HelpCircle, MessageCircle,
-  Utensils, Bus,
+  Check, Plus, Minus, Mail, Phone, X, Info, Route, HelpCircle, MessageCircle, Utensils, Bus,
 } from "lucide-react"
 import Link from "next/link"
 import { getActivityBySlug, img } from "@/lib/api"
@@ -9,6 +8,7 @@ import { decodeHtmlEntities } from "@/lib/html-decoder"
 import { StickyWrapper } from "@/components/sticky-wrapper"
 import { ItineraryList } from "@/components/itinerary-list"
 import { Lightbox } from "@/components/lightbox"
+import { DownloadItineraryButton } from "@/components/download-itinerary-button"
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
@@ -318,9 +318,21 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
               <button className="mt-5 w-full rounded-md bg-orange py-3 font-semibold text-orange-foreground hover:opacity-90">
                 Check Availability
               </button>
-              <button className="mt-3 flex w-full items-center justify-center gap-2 rounded-md border border-border py-3 font-semibold text-navy hover:bg-secondary">
-                <Download className="h-4 w-4" /> Download Itinerary
-              </button>
+              <DownloadItineraryButton
+                title={pkg.title}
+                slug={slug}
+                itinerary={pkg.itinerary ?? []}
+                duration={pkg.duration}
+                difficulty={difficulty}
+                maxAltitude={pkg.maximumAltitude}
+                bestSeason={pkg.bestSeason}
+                accommodations={pkg.accommodations?.join(", ") || "Tea House"}
+                meals={pkg.meals}
+                groupSize={pkg.groupSize || `${pkg.guestCapacity || 1} Pax`}
+                transportation={pkg.transportation || "N/A"}
+                meetingPoint={pkg.meetingPoint}
+                dropOffPoint={pkg.dropOffPoint}
+              />
 
               <ul className="mt-6 space-y-3 text-sm">
                 {sidebarFacts.map((f) => (

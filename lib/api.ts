@@ -1,4 +1,4 @@
-import type { Activity, CMSPost, FeaturedTag, Pagination, Testimonial, TripCategory } from "./types"
+import type { Activity, CMSPost, FeaturedTag, InfoPage, Pagination, Testimonial, TripCategory } from "./types"
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
@@ -68,4 +68,8 @@ export function getPublishedPosts(page = 1, limit = 10) {
 
 export function getPostBySlug(slug: string) {
   return fetchJSON<CMSPost>(API, `/api/v1/blogs/${slug}`)
+}
+
+export function getInfoPageBySlug(slug: string) {
+  return fetchJSON<{ infoPage: InfoPage }>(API, `/api/v1/info-page/slug/${slug}`)
 }

@@ -111,6 +111,20 @@ export interface TeamMember {
   department: { id: string; name: string } | null
 }
 
+export interface InfoPage {
+  id: string
+  title: string
+  slug: string
+  content: string
+  coverImage: string | null
+  metaTitle: string | null
+  metaDescription: string | null
+  published: boolean
+  createdAt: string
+  updatedAt: string
+  infoPageCategory: { id: string; categoryHandle: string; categoryName: string } | null
+}
+
 export interface Pagination {
   page: number
   limit: number
