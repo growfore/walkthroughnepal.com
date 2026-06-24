@@ -148,12 +148,12 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
           <div className="lg:col-span-2">
             {/* Tabs */}
             <StickyWrapper className="sticky z-10 py-3" offset={96}>
-              <div className="flex flex-wrap gap-1.5 rounded-2xl border border-border bg-card p-1.5 shadow-sm">
+              <div className="flex flex-nowrap gap-1.5 overflow-x-auto scrollbar-hide rounded-2xl border border-border bg-card p-1.5 shadow-sm">
                 {tabs.map((t, i) => {
                   const Icon = t.icon
                   return (
                     <a key={t.label} href={`#${t.label.toLowerCase().replace(/\s+/g, "-")}`}
-                      className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${i === 0 ? "bg-navy text-navy-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-navy"}`}
+                      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${i === 0 ? "bg-navy text-navy-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-navy"}`}
                     ><Icon className="h-4 w-4 shrink-0" />{t.label}</a>
                   )
                 })}
