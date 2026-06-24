@@ -30,11 +30,11 @@ export function PageHero({ title, description, image }: PageHeroProps) {
           <p className="mt-3 text-lg text-white/80">{description}</p>
         )}
       </div>
-      <div className="relative bg-secondary/15">
+      <div className="relative bg-[#dff0e6]">
         <div className="mx-auto grid max-w-4xl grid-cols-1 gap-6 px-4 py-6 sm:grid-cols-3">
           {valueProps.map((vp) => (
-            <div key={vp.text} className="flex items-center gap-3 text-sm font-semibold text-white">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
+            <div key={vp.text} className="flex items-center gap-3 text-sm font-semibold text-[#1a4a3a]">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#1a4a3a]/10 text-[#1a4a3a]">
                 <vp.icon className="h-4 w-4" />
               </span>
               {vp.text}
