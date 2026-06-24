@@ -325,11 +325,11 @@ export default async function HomePage() {
         <section className="pb-20">
           <div className="mx-auto max-w-7xl px-4">
             <SectionHeader title="Meet Our Experts" align="center" />
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <HorizontalScroll>
               {teamMembers.map((m) => (
                 <TeamCard key={m.id} member={m} />
               ))}
-            </div>
+            </HorizontalScroll>
           </div>
         </section>
       )}
