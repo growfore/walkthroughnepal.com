@@ -246,20 +246,16 @@ export function MenuController({ items }: MenuControllerProps) {
               </div>
             </div>
           ) : activeMegaItem && hasActiveChildren ? (
-            <div className="bg-white border border-[#dee1e6] rounded-xl pointer-events-auto shadow-[0_4px_12px_rgba(0,0,0,0.04)] py-6">
-              <div className="max-w-7xl mx-auto px-4 md:px-8">
-                <div className="grid grid-cols-4 gap-x-8 gap-y-1">
-                  {activeMegaChildren.map((child) => (
-                    <Link
-                      key={child.id}
-                      href={child.url || "#"}
-                      className="block py-2 text-sm text-[#5b616e] hover:text-navy transition-colors"
-                    >
-                      {child.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+            <div className="bg-white border border-[#dee1e6] rounded-xl pointer-events-auto shadow-[0_4px_12px_rgba(0,0,0,0.04)] py-2 min-w-[220px]">
+              {activeMegaChildren.map((child) => (
+                <Link
+                  key={child.id}
+                  href={child.url || "#"}
+                  className="block px-5 py-2.5 text-sm text-[#5b616e] hover:text-navy hover:bg-[#f7f7f7] transition-colors"
+                >
+                  {child.label}
+                </Link>
+              ))}
             </div>
           ) : null}
         </div>
