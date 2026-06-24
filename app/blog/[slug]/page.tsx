@@ -1,4 +1,4 @@
-import { getPostBySlug, img } from "@/lib/api"
+import { getPostBySlug, img, resolveContentImages } from "@/lib/api"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { BlogRenderer } from "@/components/blog-renderer"
@@ -14,7 +14,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound()
   }
 
-  const contentHtml = decodeHtmlEntities(post.content)
+  const contentHtml = resolveContentImages(decodeHtmlEntities(post.content))
 
   return (
     <div className="min-h-screen">

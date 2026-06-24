@@ -17,6 +17,8 @@ import {
   Headphones,
   Home,
 } from "lucide-react"
+import { CategoryScroll } from "@/components/category-scroll"
+import { HorizontalScroll } from "@/components/horizontal-scroll"
 import Link from "next/link"
 import type { FeaturedTag } from "@/lib/types"
 import {
@@ -34,18 +36,19 @@ function stripHtml(html: string) {
 export const dynamic = "force-dynamic"
 
 export default async function HomePage() {
-  let categories: { img: string; title: string; sub: string; cta: string }[] = []
+  let categories: { img: string; title: string; sub: string; cta: string; handle: string }[] = []
   let featuredSections: FeaturedTag[] = []
   let testimonialList: { name: string; country: string; text: string }[] = []
   let blogList: { img: string; tag: string; title: string; desc: string; date: string; read: string }[] = []
 
   try {
     const { data: { tripCategories } } = await getTripCategories()
-    categories = tripCategories.slice(0, 4).map((c) => ({
-      img: c.categoryImage ?? "/images/cat-trekking.jpg",
+    categories = tripCategories.map((c) => ({
+      img: img(c.categoryImage) ?? "/images/cat-trekking.jpg",
       title: c.categoryName,
       sub: c.categoryHandle.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
       cta: "Explore",
+      handle: c.categoryHandle,
     }))
   } catch {}
 
@@ -159,28 +162,31 @@ export default async function HomePage() {
               <span className="mx-auto mt-2 block h-1 w-16 rounded-full bg-orange" />
             </h2>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {categories.map((c) => (
-              <div
-                key={c.title}
-                className="group relative h-64 cursor-pointer overflow-hidden rounded-lg"
-              >
-                <img
-                  src={c.img}
-                  alt={c.title}
-                  loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                <div className="absolute inset-0 flex flex-col justify-end p-5 text-white">
-                  <h3 className="text-xl font-bold">{c.title}</h3>
-                  <div className="text-sm text-white/80">{c.sub}</div>
-                  <div className="mt-2 flex items-center gap-1 text-sm font-medium text-orange">
-                    {c.cta} <ArrowRight className="h-4 w-4" />
-                  </div>
-                </div>
+          <CategoryScroll categories={categories} />
+        </div>
+      </section>
+
+      {/* Why Travel With Us */}
+      <section className="pb-16">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="rounded-lg bg-navy p-8 text-navy-foreground md:p-12">
+            <div className="mb-8 text-center">
+              <h3 className="text-2xl font-bold">Why Travel With</h3>
+              <div className="text-2xl font-bold text-orange">
+                Walk Through Nepal?
               </div>
-            ))}
+            </div>
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+              {reasons.map((r) => (
+                <div key={r.title} className="text-center">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-orange/60 text-orange">
+                    <r.icon className="h-6 w-6" />
+                  </div>
+                  <div className="mt-4 font-semibold">{r.title}</div>
+                  <div className="mt-1 text-sm text-white/70">{r.text}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -197,7 +203,7 @@ export default async function HomePage() {
                 <p className="mt-1 text-sm text-muted-foreground">{tag.description}</p>
               )}
             </div>
-            <div className="flex gap-5 overflow-x-auto pb-4">
+            <HorizontalScroll>
               {tag.activity?.map((a) => (
                 <div
                   key={a.slug}
@@ -205,7 +211,7 @@ export default async function HomePage() {
                 >
                   <div className="relative h-44">
                     <img
-                      src={a.images[0] ?? "/images/trek-everest.jpg"}
+                      src={img(a.images[0]) ?? "/images/trek-everest.jpg"}
                       alt={a.title}
                       loading="lazy"
                       className="h-full w-full object-cover"
@@ -246,6 +252,14 @@ export default async function HomePage() {
                   </div>
                 </div>
               ))}
+            </HorizontalScroll>
+            <div className="mt-6 text-center">
+              <Link
+                href="/explore"
+                className="inline-flex items-center gap-2 rounded-full border border-navy px-6 py-2.5 text-sm font-semibold text-navy transition hover:bg-navy hover:text-navy-foreground"
+              >
+                Explore More <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </section>
@@ -268,24 +282,17 @@ export default async function HomePage() {
               Explore All Regions <ArrowRight className="h-4 w-4" />
             </button>
           </div>
-          <div className="rounded-lg bg-navy p-8 text-navy-foreground">
-            <h3 className="text-2xl font-bold">Why Travel With</h3>
-            <div className="mb-6 text-2xl font-bold text-orange">
-              Walk Through Nepal?
-            </div>
-            <div className="space-y-5">
-              {reasons.map((r) => (
-                <div key={r.title} className="flex gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-orange/60 text-orange">
-                    <r.icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <div className="font-semibold">{r.title}</div>
-                    <div className="text-sm text-white/70">{r.text}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="flex flex-col justify-center rounded-lg bg-orange p-8 text-orange-foreground">
+            <h3 className="text-xl font-bold">Ready to Begin?</h3>
+            <p className="mt-2 text-sm opacity-90">
+              Let our experts craft your dream Nepal itinerary.
+            </p>
+            <Link
+              href="/design-your-trip"
+              className="mt-6 inline-flex items-center gap-2 self-start rounded-full border border-white px-5 py-2.5 text-sm font-semibold hover:bg-white/10"
+            >
+              Plan Your Trip <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>

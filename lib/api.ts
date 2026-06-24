@@ -3,9 +3,20 @@ import type { Activity, CMSPost, FeaturedTag, Pagination, Testimonial, TripCateg
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
 export function img(path: string | null | undefined, base = API): string {
-  if (!path) return "/placholder-image.png"
-  if (path.startsWith("http")) return path
-  return `${base}${path.startsWith("/") ? "" : "/"}${path}`
+  if (!path) return "/placeholder-image.png"
+  const p = path.trim()
+  if (p.startsWith("http://") || p.startsWith("https://")) return p
+  if (p.startsWith("//")) return `https:${p}`
+  const sep = p.startsWith("/") ? "" : "/"
+  const b = base.endsWith("/") ? base.slice(0, -1) : base
+  return `${b}${sep}${p}`
+}
+
+export function resolveContentImages(html: string, base = API): string {
+  return html.replace(
+    /(<img[^>]+src\s*=\s*)["']\/(?!\/)/gi,
+    (m, prefix) => `${prefix}"${base}/`
+  )
 }
 
 async function fetchJSON<T>(base: string, path: string, options?: RequestInit): Promise<T> {
@@ -41,6 +52,10 @@ export function getTestimonials() {
 
 export function getFeaturedTags() {
   return fetchJSON<{ data: { featuredTags: FeaturedTag[] } }>(API, "/api/v1/featured?includeActivity=true")
+}
+
+export function getActivitiesByCategory(categoryHandle: string) {
+  return getActivities({ category: categoryHandle })
 }
 
 export function getPublishedPosts(page = 1, limit = 10) {
