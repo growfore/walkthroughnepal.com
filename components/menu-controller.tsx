@@ -80,6 +80,9 @@ export function MenuController({ items }: MenuControllerProps) {
   const hasActiveGrandchildren = activeMegaItem
     ? hasGrandchildren(activeMegaItem)
     : false
+  const hasActiveChildren = activeMegaItem
+    ? hasChildren(activeMegaItem)
+    : false
 
   const activeSidebarItem = activeSidebar
     ? activeMegaChildren.find((c) => c.id === activeSidebar)
@@ -121,20 +124,20 @@ export function MenuController({ items }: MenuControllerProps) {
             <img src="/walkthrough-nepal-logo.png" alt="Walk Through Nepal" className="h-12 w-auto" />
           </Link>
           {items.map((item) => {
-            const itemHasGrandchildren = hasGrandchildren(item)
+            const itemHasChildren = hasChildren(item)
             const isActive = activeMega === item.id
             return (
               <div
                 key={item.id}
                 className="relative max-lg:hidden"
                 onMouseEnter={() => {
-                  if (itemHasGrandchildren) {
+                  if (itemHasChildren) {
                     openMega(item.id)
                     setActiveSidebar(null)
                   }
                 }}
               >
-                {itemHasGrandchildren ? (
+                {itemHasChildren ? (
                   <button
                     className={`inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium transition-colors ${
                       isActive
@@ -187,11 +190,11 @@ export function MenuController({ items }: MenuControllerProps) {
         <div
           onMouseEnter={cancelHide}
           className={`max-lg:hidden absolute inset-x-0 top-0 z-40 pointer-events-none ${
-            activeMegaItem && hasActiveGrandchildren ? "block" : "hidden"
+            activeMegaItem && hasActiveChildren ? "block" : "hidden"
           }`}
         >
           <div className="h-16" aria-hidden="true" />
-          {activeMegaItem && hasActiveGrandchildren && (
+          {activeMegaItem && hasActiveGrandchildren ? (
             <div className="bg-white border border-[#dee1e6] rounded-xl pointer-events-auto shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
               <div className="max-w-7xl mx-auto px-4 md:px-8">
                 <div className="flex">
@@ -242,7 +245,23 @@ export function MenuController({ items }: MenuControllerProps) {
                 </div>
               </div>
             </div>
-          )}
+          ) : activeMegaItem && hasActiveChildren ? (
+            <div className="bg-white border border-[#dee1e6] rounded-xl pointer-events-auto shadow-[0_4px_12px_rgba(0,0,0,0.04)] py-6">
+              <div className="max-w-7xl mx-auto px-4 md:px-8">
+                <div className="grid grid-cols-4 gap-x-8 gap-y-1">
+                  {activeMegaChildren.map((child) => (
+                    <Link
+                      key={child.id}
+                      href={child.url || "#"}
+                      className="block py-2 text-sm text-[#5b616e] hover:text-navy transition-colors"
+                    >
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
 
