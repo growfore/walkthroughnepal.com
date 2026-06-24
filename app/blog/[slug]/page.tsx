@@ -78,7 +78,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 <ul className="space-y-2 list-disc list-inside">
                   {toc.map((item) => (
                     <li key={item.id}>
-                      <a href={`#${item.id}`} className="text-secondary hover:underline text-base">
+                      <a href={`#${item.id}`} className="text-navy hover:underline text-base">
                         {item.text}
                       </a>
                     </li>
