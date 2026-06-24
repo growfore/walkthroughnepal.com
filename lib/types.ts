@@ -95,6 +95,15 @@ export interface CMSPost {
   postType: string
 }
 
+export interface TeamMember {
+  id: string
+  name: string
+  designation: string
+  about: string
+  image: string | null
+  department: { id: string; name: string } | null
+}
+
 export interface Pagination {
   page: number
   limit: number

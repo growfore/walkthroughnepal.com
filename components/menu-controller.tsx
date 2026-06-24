@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, Award, Mail, Phone, ChevronDown, LucidePlus } from "lucide-react"
+import { Menu, X, Mail, Phone, ChevronDown, LucidePlus } from "lucide-react"
 import { MobileMenuOverlay } from "./mobile-menu-overlay"
 
 type MenuItem = {
@@ -92,19 +92,21 @@ export function MenuController({ items }: MenuControllerProps) {
       }`}
     >
       {/* Top bar */}
-      <div className="hidden md:block bg-navy text-navy-foreground text-xs">
-        <div className="mx-auto flex h-9 max-w-7xl items-center justify-between px-4 md:px-8">
+      <div className="hidden md:block bg-navy text-navy-foreground">
+        <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 md:px-8">
           <div className="flex items-center gap-2">
-            <Award className="size-4 text-orange" />
-            <span className="font-medium">20+ Years of Himalayan Expertise</span>
+            <span className="flex items-center gap-1 text-sm font-medium">
+              <span className="flex text-orange">★★★★★</span>
+              <span>4.9 <span className="text-navy-foreground/60">·</span> 2,800+ reviews</span>
+            </span>
           </div>
           <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5">
-              <Phone className="h-3.5 w-3.5" /> +977 984 123 4567
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Mail className="h-3.5 w-3.5" /> info@walkthroughnepal.com
-            </span>
+            <a href="tel:+9779841234567" className="flex items-center gap-1.5 text-sm font-semibold hover:text-orange transition-colors">
+              <Phone className="h-4 w-4" /> +977 984 123 4567
+            </a>
+            <a href="mailto:info@walkthroughnepal.com" className="flex items-center gap-1.5 text-sm font-semibold hover:text-orange transition-colors">
+              <Mail className="h-4 w-4" /> info@walkthroughnepal.com
+            </a>
           </div>
         </div>
       </div>

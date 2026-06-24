@@ -1,33 +1,16 @@
+import { Star, ArrowRight, Headphones, Users, ClipboardList, Heart, PhoneCall } from "lucide-react"
+import Link from "next/link"
+import type { FeaturedTag, TeamMember } from "@/lib/types"
 import {
-  Mountain,
-  Search,
-  MapPin,
-  Compass,
-  Bird,
-  Clock,
-  TrendingUp,
-  Users,
-  ArrowRight,
-  ClipboardList,
-  Heart,
-  PhoneCall,
-  Star,
-  ChevronLeft,
-  ChevronRight,
-  Headphones,
-  Home,
-} from "lucide-react"
+  getFeaturedTags, getTestimonials, getTripCategories,
+  getPublishedPosts, getTeamMembers, img,
+} from "@/lib/api"
 import { CategoryScroll } from "@/components/category-scroll"
 import { HorizontalScroll } from "@/components/horizontal-scroll"
-import Link from "next/link"
-import type { FeaturedTag } from "@/lib/types"
-import {
-  getFeaturedTags,
-  getTestimonials,
-  getTripCategories,
-  getPublishedPosts,
-  img,
-} from "@/lib/api"
+import { TripCard } from "@/components/trip-card"
+import { SectionHeader } from "@/components/section-header"
+import { TeamCard } from "@/components/team-card"
+import { SearchBox } from "@/components/search-box"
 
 function stripHtml(html: string) {
   return html.replace(/<[^>]*>/g, "").trim()
@@ -40,13 +23,14 @@ export default async function HomePage() {
   let featuredSections: FeaturedTag[] = []
   let testimonialList: { name: string; country: string; text: string }[] = []
   let blogList: { img: string; tag: string; title: string; desc: string; date: string; read: string }[] = []
+  let teamMembers: TeamMember[] = []
 
   try {
     const { data: { tripCategories } } = await getTripCategories()
     categories = tripCategories.map((c) => ({
       img: img(c.categoryImage) ?? "/images/cat-trekking.jpg",
       title: c.categoryName,
-      sub: c.categoryHandle.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
+      sub: c.categoryHandle.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase()),
       cta: "Explore",
       handle: c.categoryHandle,
     }))
@@ -78,6 +62,14 @@ export default async function HomePage() {
     }))
   } catch {}
 
+  try {
+    const res = await getTeamMembers()
+    const grouped = res.data
+    if (grouped && typeof grouped === "object") {
+      teamMembers = (Object.values(grouped) as any[]).flat().slice(0, 4).map((m: any) => ({ ...m, department: null }))
+    }
+  } catch {}
+
   const reasons = [
     { icon: Users, title: "Local Experts", text: "Real Nepal based team with in-depth knowledge." },
     { icon: ClipboardList, title: "Flexible Itineraries", text: "Customize your trip to match your time and budget." },
@@ -87,9 +79,10 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Hero */}
+
+      {/* ── Hero ── */}
       <section className="relative">
-        <div className="relative h-[640px] w-full overflow-hidden">
+        <div className="relative h-[480px] w-full overflow-hidden">
           <img
             src="/images/hero-trekker.jpg"
             alt="Trekker in Himalayas"
@@ -98,9 +91,7 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
           <div className="relative mx-auto flex h-full max-w-7xl items-center px-4">
             <div className="max-w-2xl text-white">
-              <h1 className="text-6xl leading-[1.05] font-bold md:text-7xl">
-                Explore Nepal
-              </h1>
+              <h1 className="text-6xl leading-[1.05] font-bold md:text-7xl">Explore Nepal</h1>
               <h2 className="mt-1 text-5xl leading-[1.05] font-bold text-orange md:text-6xl">
                 Beyond The Guidebook
               </h2>
@@ -108,188 +99,78 @@ export default async function HomePage() {
                 Discover authentic treks, cultural journeys, wildlife adventures
                 and local experiences across the Himalayas.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <button className="rounded-full bg-orange px-6 py-3 font-semibold text-orange-foreground hover:opacity-90">
-                  Find Your Adventure
-                </button>
-                <button className="flex items-center gap-2 rounded-full border border-white/70 px-6 py-3 font-semibold text-white hover:bg-white/10">
-                  Talk To An Expert <Headphones className="h-4 w-4" />
-                </button>
-              </div>
+
             </div>
           </div>
         </div>
 
-        {/* Quick search bar */}
-        <div className="relative z-10 mx-auto -mt-12 max-w-7xl px-4">
-          <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card p-4 shadow-xl">
-            <div className="min-w-[220px] flex-1 px-4 py-2">
-              <div className="text-sm font-semibold text-navy">
-                Where do you want to go?
+        {/* Search */}
+        <div className="relative z-10 mx-auto -mt-10 max-w-2xl px-4">
+          <SearchBox />
+        </div>
+      </section>
+
+      {/* ── Selling Points ── */}
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {reasons.map((r) => (
+              <div key={r.title} className="rounded-lg border border-border bg-card p-6 text-center shadow-sm">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange/10 text-orange">
+                  <r.icon className="h-6 w-6" />
+                </div>
+                <h3 className="mt-4 font-bold text-navy">{r.title}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{r.text}</p>
               </div>
-              <div className="text-xs text-muted-foreground">
-                Find your perfect adventure in Nepal
-              </div>
-            </div>
-            {[
-              { icon: Mountain, label: "Trek" },
-              { icon: MapPin, label: "Tour" },
-              { icon: TrendingUp, label: "Peak Climbing" },
-              { icon: Compass, label: "Adventure" },
-              { icon: Bird, label: "Wildlife" },
-            ].map((c) => (
-              <button
-                key={c.label}
-                className="flex flex-col items-center gap-1 px-5 py-2 text-navy transition hover:text-orange"
-              >
-                <c.icon className="h-5 w-5" />
-                <span className="text-xs font-medium">{c.label}</span>
-              </button>
             ))}
-            <button className="flex items-center gap-2 rounded-full bg-navy px-6 py-3 font-semibold text-navy-foreground hover:opacity-90">
-              <Search className="h-4 w-4" /> Search
-            </button>
           </div>
         </div>
       </section>
 
-      {/* Explore by Category */}
-      <section className="py-20">
+      {/* ── Explore by Category ── */}
+      <section className="pb-20">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-10 text-center">
-            <h2 className="relative inline-block text-3xl font-bold text-navy">
-              Explore by Category
-              <span className="mx-auto mt-2 block h-1 w-16 rounded-full bg-orange" />
-            </h2>
-          </div>
+          <SectionHeader title="Explore by Category" align="center" />
           <CategoryScroll categories={categories} />
         </div>
       </section>
 
-      {/* Why Travel With Us */}
-      <section className="pb-16">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="rounded-lg bg-navy p-8 text-navy-foreground md:p-12">
-            <div className="mb-8 text-center">
-              <h3 className="text-2xl font-bold">Why Travel With</h3>
-              <div className="text-2xl font-bold text-orange">
-                Walk Through Nepal?
-              </div>
-            </div>
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-              {reasons.map((r) => (
-                <div key={r.title} className="text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-orange/60 text-orange">
-                    <r.icon className="h-6 w-6" />
-                  </div>
-                  <div className="mt-4 font-semibold">{r.title}</div>
-                  <div className="mt-1 text-sm text-white/70">{r.text}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured sections */}
+      {/* ── Featured Trips ── */}
       {featuredSections.map((tag) => (
         <section key={tag.slug} className="pb-16">
           <div className="mx-auto max-w-7xl px-4">
-            <div className="mb-6">
-              <h2 className="text-3xl font-bold text-navy">
-                {tag.name.split("::")[0] || tag.name}
-              </h2>
-              {tag.description && (
-                <p className="mt-1 text-sm text-muted-foreground">{tag.description}</p>
-              )}
-            </div>
+            <SectionHeader
+              title={tag.name.split("::")[0] || tag.name}
+              description={tag.description}
+              link={{ href: "/explore", label: "Explore More" }}
+            />
             <HorizontalScroll>
               {tag.activity?.map((a) => (
-                <div
-                  key={a.slug}
-                  className="w-72 shrink-0 overflow-hidden rounded-lg border border-border bg-card shadow-sm transition hover:shadow-md"
-                >
-                  <div className="relative h-44">
-                    <img
-                      src={img(a.images[0]) ?? "/images/trek-everest.jpg"}
-                      alt={a.title}
-                      loading="lazy"
-                      className="h-full w-full object-cover"
-                    />
-                    <span className="absolute top-3 left-3 rounded bg-orange px-2.5 py-1 text-[10px] font-bold text-orange-foreground">
-                      {a.duration}
-                    </span>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-bold text-navy">
-                      {a.title.length > 50 ? a.title.substring(0, 50) + "..." : a.title}
-                    </h3>
-                    <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" /> {a.duration}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <TrendingUp className="h-3 w-3" />{" "}
-                        {a.difficultyLevel?.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) ??
-                          "Moderate"}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Home className="h-3 w-3" /> Tea House
-                      </span>
-                    </div>
-                    <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-                      <div>
-                        <div className="text-[10px] text-muted-foreground">From</div>
-                        <div className="text-lg font-bold text-navy">${a.price}</div>
-                      </div>
-                      <a
-                        href={`/package/${a.slug}`}
-                        className="flex items-center gap-1 text-sm font-medium text-orange"
-                      >
-                        View Details <ArrowRight className="h-3.5 w-3.5" />
-                      </a>
-                    </div>
-                  </div>
+                <div key={a.slug} className="w-72 shrink-0 snap-start">
+                  <TripCard activity={a} compact />
                 </div>
               ))}
             </HorizontalScroll>
-            <div className="mt-6 text-center">
-              <Link
-                href="/explore"
-                className="inline-flex items-center gap-2 rounded-full border border-navy px-6 py-2.5 text-sm font-semibold text-navy transition hover:bg-navy hover:text-navy-foreground"
-              >
-                Explore More <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
           </div>
         </section>
       ))}
 
-      {/* Nepal at a Glance + Why */}
+      {/* ── Plan Your Trip CTA ── */}
       <section className="pb-20">
-        <div className="mx-auto grid max-w-7xl gap-5 px-4 lg:grid-cols-[1.4fr_1fr]">
-          <div className="rounded-lg border border-border bg-[#fcfaf3] p-8">
-            <h3 className="mb-6 text-2xl font-bold text-navy">
-              Nepal At A Glance
-            </h3>
-            <img
-              src="/images/nepal-map.png"
-              alt="Map of Nepal"
-              loading="lazy"
-              className="w-full"
-            />
-            <button className="mt-6 flex items-center gap-2 rounded-full border border-navy px-5 py-2.5 text-sm font-semibold text-navy transition hover:bg-navy hover:text-navy-foreground">
-              Explore All Regions <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="flex flex-col justify-center rounded-lg bg-orange p-8 text-orange-foreground">
-            <h3 className="text-xl font-bold">Ready to Begin?</h3>
-            <p className="mt-2 text-sm opacity-90">
-              Let our experts craft your dream Nepal itinerary.
-            </p>
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="flex flex-wrap items-center justify-between gap-6 rounded-lg bg-navy p-10 text-navy-foreground">
+            <div className="flex items-center gap-4">
+              <Headphones className="h-12 w-12 shrink-0 text-orange" />
+              <div>
+                <h3 className="text-2xl font-bold">Ready to start your adventure?</h3>
+                <p className="mt-1 text-sm text-white/70">
+                  Tell us your preferences and we&apos;ll craft a custom itinerary for you.
+                </p>
+              </div>
+            </div>
             <Link
               href="/design-your-trip"
-              className="mt-6 inline-flex items-center gap-2 self-start rounded-full border border-white px-5 py-2.5 text-sm font-semibold hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full border border-white px-6 py-3 font-semibold hover:bg-white/10"
             >
               Plan Your Trip <ArrowRight className="h-4 w-4" />
             </Link>
@@ -297,23 +178,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Travel Inspiration */}
+      {/* ── Travel Inspiration ── */}
       <section className="pb-20">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-6 flex items-end justify-between">
-            <div>
-              <h2 className="text-3xl font-bold text-navy">
-                Travel Inspiration
-              </h2>
-              <span className="mt-2 block h-1 w-16 rounded-full bg-orange" />
-            </div>
-            <Link
-              href="/blog"
-              className="flex items-center gap-1 text-sm font-medium text-orange"
-            >
-              Visit Our Blog <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+          <SectionHeader
+            title="Travel Inspiration"
+            link={{ href: "/blog", label: "Visit Our Blog" }}
+          />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {blogList.map((b) => (
               <article
@@ -332,9 +203,7 @@ export default async function HomePage() {
                   </span>
                 </div>
                 <div className="p-4">
-                  <h3 className="leading-snug font-bold text-navy">
-                    {b.title}
-                  </h3>
+                  <h3 className="leading-snug font-bold text-navy">{b.title}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{b.desc}</p>
                   <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
                     <span>{b.date}</span>
@@ -348,7 +217,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* ── Testimonials ── */}
       <section className="pb-12">
         <div className="mx-auto max-w-7xl px-4">
           <div className="relative rounded-lg bg-navy p-10 text-navy-foreground">
@@ -360,9 +229,7 @@ export default async function HomePage() {
                     <Star key={i} className="h-4 w-4 fill-current" />
                   ))}
                 </div>
-                <span className="text-white/80">
-                  4.9/5 from {testimonialList.length}+ Happy Travelers
-                </span>
+                <span className="text-white/80">4.9/5 from {testimonialList.length}+ Happy Travelers</span>
               </div>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
@@ -371,10 +238,7 @@ export default async function HomePage() {
                   <p className="text-white/90 italic">&ldquo;{t.text}&rdquo;</p>
                   <div className="mt-4 flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange/30 font-bold">
-                      {t.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
+                      {t.name.split(" ").map((n) => n[0]).join("")}
                     </div>
                     <div>
                       <div className="font-semibold">{t.name}</div>
@@ -388,24 +252,37 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* ── Meet Our Team ── */}
+      {teamMembers.length > 0 && (
+        <section className="pb-20">
+          <div className="mx-auto max-w-7xl px-4">
+            <SectionHeader title="Meet Our Experts" align="center" />
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {teamMembers.map((m) => (
+                <TeamCard key={m.id} member={m} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Final CTA ── */}
       <section className="pb-16">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-orange p-6 text-orange-foreground">
             <div className="flex items-center gap-4">
               <Headphones className="h-10 w-10" />
               <div>
-                <div className="text-lg font-bold">
-                  Ready to start your adventure in Nepal?
-                </div>
-                <div className="text-sm opacity-90">
-                  Our travel experts are here to help you plan the perfect trip.
-                </div>
+                <div className="text-lg font-bold">Ready to start your adventure in Nepal?</div>
+                <div className="text-sm opacity-90">Our travel experts are here to help you plan the perfect trip.</div>
               </div>
             </div>
-            <button className="flex items-center gap-2 rounded-full border border-white px-5 py-2.5 font-semibold hover:bg-white/10">
+            <Link
+              href="/design-your-trip"
+              className="flex items-center gap-2 rounded-full border border-white px-5 py-2.5 font-semibold hover:bg-white/10"
+            >
               Talk To An Expert <ArrowRight className="h-4 w-4" />
-            </button>
+            </Link>
           </div>
         </div>
       </section>

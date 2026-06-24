@@ -54,6 +54,10 @@ export function getFeaturedTags() {
   return fetchJSON<{ data: { featuredTags: FeaturedTag[] } }>(API, "/api/v1/featured?includeActivity=true")
 }
 
+export function getTeamMembers() {
+  return fetchJSON<{ message: string; data: any }>(API, "/api/v1/team")
+}
+
 export function getActivitiesByCategory(categoryHandle: string) {
   return getActivities({ category: categoryHandle })
 }
