@@ -24,6 +24,7 @@ import { SectionHeader } from "@/components/section-header"
 import { TeamCard } from "@/components/team-card"
 import { SearchBox } from "@/components/search-box"
 import { BlogCard } from "@/components/blog-card"
+import { TestimonialCarousel } from "@/components/testimonial-carousel"
 
 function stripHtml(html: string) {
   return html.replace(/<[^>]*>/g, "").trim()
@@ -258,38 +259,20 @@ export default async function HomePage() {
       {/* ── Testimonials ── */}
       <section className="pb-12">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="relative rounded-lg bg-navy p-10 text-navy-foreground">
-            <div className="mb-8 flex flex-wrap items-center gap-5">
-              <h3 className="text-2xl font-bold">What Our Travelers Say</h3>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="flex text-orange">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-current" />
-                  ))}
-                </div>
-                <span className="text-white/80">
-                  4.9/5 from {testimonialList.length}+ Happy Travelers
-                </span>
+          <div className="mb-6 flex flex-wrap items-center justify-center gap-4">
+            <h3 className="text-2xl font-bold text-navy">What Our Travelers Say</h3>
+            <div className="flex items-center gap-2 text-sm text-navy/70">
+              <div className="flex text-orange">
+                {[...Array(5)].map((_, idx) => (
+                  <Star key={idx} className="h-4 w-4 fill-current" />
+                ))}
               </div>
+              <span>4.9/5 &middot; {testimonialList.length}+ reviews</span>
             </div>
-            <div className="grid gap-6 md:grid-cols-3">
-              {testimonialList.map((t) => (
-                <div key={t.name} className="text-sm">
-                  <p className="text-white/90 italic">&ldquo;{t.text}&rdquo;</p>
-                  <div className="mt-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange/30 font-bold">
-                      {t.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
-                    </div>
-                    <div>
-                      <div className="font-semibold">{t.name}</div>
-                      <div className="text-xs text-white/60">{t.country}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+          </div>
+          <div className="rounded-lg bg-navy p-10 text-navy-foreground">
+            <div className="mx-auto max-w-2xl">
+              <TestimonialCarousel items={testimonialList} />
             </div>
           </div>
         </div>
