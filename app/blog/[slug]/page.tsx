@@ -6,15 +6,14 @@ import { PageHero } from "@/components/page-hero"
 import { decodeHtmlEntities } from "@/lib/html-decoder"
 import { Calendar } from "lucide-react"
 
-function extractToc(html: string): { id: string; text: string; level: number }[] {
-  const toc: { id: string; text: string; level: number }[] = []
-  const regex = /<h([23])\b[^>]*>(.*?)<\/h[23]>/gi
+function extractToc(html: string): { id: string; text: string }[] {
+  const toc: { id: string; text: string }[] = []
+  const regex = /<h2\b[^>]*>(.*?)<\/h2>/gi
   let match
   while ((match = regex.exec(html)) !== null) {
-    const level = Number(match[1])
-    const text = match[2].replace(/<[^>]*>/g, "").trim()
+    const text = match[1].replace(/<[^>]*>/g, "").trim()
     const id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
-    toc.push({ id, text, level })
+    toc.push({ id, text })
   }
   return toc
 }
@@ -80,7 +79,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   <a
                     key={item.id}
                     href={`#${item.id}`}
-                    className={`block text-base text-orange hover:underline ${item.level === 3 ? "pl-5" : ""}`}
+                    className="block text-base text-orange hover:underline"
                   >
                     {item.text}
                   </a>
