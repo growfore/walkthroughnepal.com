@@ -47,8 +47,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Blog", href: "/blog" }, { label: post.title }]}
       />
 
-      <section className="mx-auto max-w-3xl px-4 -mt-10 relative z-10 pb-16">
-        <article className="rounded-lg bg-card p-8 shadow-sm border border-border">
+      <section className="mx-auto max-w-4xl px-4 pb-16 pt-8">
+        <article className="prose prose-lg prose-gray max-w-none">
           <BlogRenderer html={contentHtml} />
         </article>
 
