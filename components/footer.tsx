@@ -1,7 +1,8 @@
 "use client"
 
-import { Globe, ExternalLink, MapPinned, Phone, Mail, Clock, MapPin } from "lucide-react"
+import { Globe, ExternalLink, MapPinned, Phone, Mail, Clock, MapPin, Loader2 } from "lucide-react"
 import Link from "next/link"
+import { useState, FormEvent } from "react"
 
 function Logo() {
   return (
@@ -23,6 +24,26 @@ function FooterCol({ title, items }: { title: string; items: string[] }) {
 }
 
 export function Footer() {
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
+  const [message, setMessage] = useState("")
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setStatus("loading")
+    const form = e.currentTarget
+    const email = new FormData(form).get("email") as string
+    const res = await fetch("/api/newsletter", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) })
+    const data = await res.json()
+    if (res.ok) {
+      setStatus("success")
+      setMessage("Thanks for subscribing!")
+      form.reset()
+    } else {
+      setStatus("error")
+      setMessage(data.error || data.message || "Something went wrong")
+    }
+  }
+
   return (
     <footer className="bg-navy text-navy-foreground">
       <div className="border-b border-white/10">
@@ -32,11 +53,15 @@ export function Footer() {
               <h3 className="text-xl font-bold">Subscribe to our newsletter</h3>
               <p className="mt-1 text-sm text-white/60">Get the latest trek updates and travel tips straight to your inbox.</p>
             </div>
-            <form onSubmit={(e) => e.preventDefault()} className="flex w-full max-w-md gap-2">
-              <input type="email" placeholder="Enter your email" required className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white placeholder-white/40 outline-none focus:border-orange focus:ring-1 focus:ring-orange" />
-              <button type="submit" className="shrink-0 rounded-lg bg-orange px-5 py-2.5 text-sm font-semibold text-orange-foreground hover:bg-orange/90 transition-colors">Subscribe</button>
+            <form onSubmit={handleSubmit} className="flex w-full max-w-md gap-2">
+              <input type="email" name="email" placeholder="Enter your email" required className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white placeholder-white/40 outline-none focus:border-orange focus:ring-1 focus:ring-orange disabled:opacity-50" disabled={status === "loading"} />
+              <button type="submit" disabled={status === "loading"} className="shrink-0 rounded-lg bg-orange px-5 py-2.5 text-sm font-semibold text-orange-foreground hover:bg-orange/90 transition-colors disabled:opacity-50">
+                {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : "Subscribe"}
+              </button>
             </form>
           </div>
+          {status === "success" && <p className="mt-3 text-center text-sm text-green-400 sm:text-left">{message}</p>}
+          {status === "error" && <p className="mt-3 text-center text-sm text-red-400 sm:text-left">{message}</p>}
         </div>
       </div>
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 pb-10 pt-14 md:grid-cols-3 lg:grid-cols-6">
