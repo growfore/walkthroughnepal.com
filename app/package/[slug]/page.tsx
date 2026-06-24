@@ -148,7 +148,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
           <div className="lg:col-span-2">
             {/* Tabs */}
             <StickyWrapper className="sticky z-10 py-3" offset={96}>
-              <div className="flex flex-nowrap gap-1.5 overflow-x-auto scrollbar-hide rounded-2xl border border-border bg-card p-1.5 shadow-sm">
+              <div className="flex flex-wrap gap-1.5 rounded-2xl border border-border bg-card p-1.5 shadow-sm">
                 {tabs.map((t, i) => {
                   const Icon = t.icon
                   return (

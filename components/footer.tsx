@@ -1,3 +1,5 @@
+"use client"
+
 import { Globe, ExternalLink, MapPinned, Phone, Mail, Clock, MapPin } from "lucide-react"
 import Link from "next/link"
 
@@ -22,8 +24,22 @@ function FooterCol({ title, items }: { title: string; items: string[] }) {
 
 export function Footer() {
   return (
-    <footer className="bg-navy pt-14 text-navy-foreground">
-      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 pb-10 md:grid-cols-3 lg:grid-cols-6">
+    <footer className="bg-navy text-navy-foreground">
+      <div className="border-b border-white/10">
+        <div className="mx-auto max-w-7xl px-4 py-10">
+          <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+            <div className="sm:flex-1">
+              <h3 className="text-xl font-bold">Subscribe to our newsletter</h3>
+              <p className="mt-1 text-sm text-white/60">Get the latest trek updates and travel tips straight to your inbox.</p>
+            </div>
+            <form onSubmit={(e) => e.preventDefault()} className="flex w-full max-w-md gap-2">
+              <input type="email" placeholder="Enter your email" required className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white placeholder-white/40 outline-none focus:border-orange focus:ring-1 focus:ring-orange" />
+              <button type="submit" className="shrink-0 rounded-lg bg-orange px-5 py-2.5 text-sm font-semibold text-orange-foreground hover:bg-orange/90 transition-colors">Subscribe</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 pb-10 pt-14 md:grid-cols-3 lg:grid-cols-6">
         <div className="col-span-2">
           <Logo />
           <p className="mt-4 max-w-xs text-sm text-white/70">
