@@ -10,6 +10,7 @@ import { StickyWrapper } from "@/components/sticky-wrapper"
 import { ItineraryList } from "@/components/itinerary-list"
 import { Lightbox } from "@/components/lightbox"
 import { DownloadItineraryButton } from "@/components/download-itinerary-button"
+import { ThumbnailGallery } from "@/components/thumbnail-gallery"
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
@@ -66,7 +67,6 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
   }
 
   const difficulty = pkg.difficultyLevel?.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) ?? "Moderate"
-  const thumbnails = (pkg.images ?? []).slice(0, 5)
   const heroImg = img(pkg.images[0], API)
 
   const sidebarFacts = [
@@ -119,21 +119,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
         </div>
 
         {/* Thumbnails */}
-        {thumbnails.length > 0 && (
-          <div className="bg-navy/95">
-            <div className="mx-auto flex max-w-7xl gap-3 overflow-x-auto scrollbar-hide px-4 py-3">
-              {thumbnails.map((src, i) => (
-                <img key={i} src={img(src, API)} alt="Trek photo" className="h-20 w-32 flex-shrink-0 rounded object-cover" />
-              ))}
-              {pkg.images.length > 5 && (
-                <div className="flex h-20 w-32 flex-shrink-0 flex-col items-center justify-center rounded bg-white/10 text-sm text-white">
-                  <span className="font-semibold">+{pkg.images.length - 5}</span>
-                  <span className="text-xs text-white/70">View all photos</span>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+        {pkg.images.length > 0 && <ThumbnailGallery images={pkg.images} apiUrl={API} />}
       </section>
 
       {/* ── Main content ── */}
