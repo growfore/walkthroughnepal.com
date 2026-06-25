@@ -19,12 +19,19 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", montserrat.variable)}
+      className={cn(
+        "antialiased",
+        fontMono.variable,
+        "font-sans",
+        montserrat.variable
+      )}
     >
       <head>
         <link
@@ -35,7 +42,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <ThemeProvider>
           <Navigation />
-          <main className="pt-[100px] md:pt-[100px]">{children}</main>
+          <main className="pt-[40px] md:pt-[100px]">{children}</main>
           <Footer />
           <ToastContainer position="bottom-right" />
         </ThemeProvider>
