@@ -1,4 +1,4 @@
-import { Geist_Mono, Montserrat } from "next/font/google"
+import { Geist_Mono, Outfit } from "next/font/google"
 
 import "./globals.css"
 import "react-toastify/dist/ReactToastify.css"
@@ -8,7 +8,7 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { ToastContainer } from "react-toastify"
 
-const montserrat = Montserrat({
+const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-sans",
   weight: ["300", "400", "500", "600", "700"],
@@ -30,7 +30,7 @@ export default function RootLayout({
         "antialiased",
         fontMono.variable,
         "font-sans",
-        montserrat.variable
+        outfit.variable
       )}
     >
       <head>
