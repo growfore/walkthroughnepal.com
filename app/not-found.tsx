@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Home } from "lucide-react"
+
 
 export default function NotFound() {
   return (
@@ -16,7 +16,6 @@ export default function NotFound() {
             href="/"
             className="inline-flex items-center gap-2 rounded-lg bg-navy px-6 py-3 text-sm font-semibold text-navy-foreground hover:opacity-90 transition-opacity"
           >
-            <Home className="h-4 w-4" />
             Back to Home
           </Link>
           <Link
