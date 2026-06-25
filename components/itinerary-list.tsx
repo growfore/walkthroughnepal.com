@@ -30,10 +30,10 @@ export function ItineraryList({ days }: { days: Day[] }) {
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-2xl font-bold text-navy">Itinerary</h2>
+        <h2 className="text-2xl font-bold text-navy md:text-3xl">Itinerary</h2>
         <button
           onClick={() => setOpen(allOpen ? new Set() : new Set(days.map((d) => d.day)))}
-          className="rounded-md border border-border px-3 py-1.5 text-sm font-semibold text-navy hover:bg-muted transition-colors sm:text-base sm:px-4"
+          className="rounded-md border border-border px-4 py-2 text-base font-semibold text-navy hover:bg-muted transition-colors sm:text-lg sm:px-5"
         >
           {allOpen ? "Collapse All" : "Expand All"}
         </button>
@@ -54,18 +54,18 @@ export function ItineraryList({ days }: { days: Day[] }) {
                   </div>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-base font-semibold text-navy break-words">{d.title}</div>
+                  <div className="text-lg font-semibold text-navy break-words">{d.title}</div>
                 </div>
                 <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition ${isOpen ? "rotate-180" : ""}`} />
               </button>
               {isOpen && (
                 <div className="border-t border-border p-3 pt-2 sm:p-4 sm:pt-3 overflow-hidden">
-                  <div className="prose prose-base max-w-none w-full prose-p:m-0 prose-p:text-muted-foreground wrap-break-word **:wrap-break-word" dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(d.description) }} />
-                  <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-base text-muted-foreground">
+                  <div className="prose prose-lg max-w-none w-full prose-p:m-0 prose-p:text-muted-foreground wrap-break-word **:wrap-break-word" dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(d.description) }} />
+                  <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-lg text-muted-foreground">
                     {d.ascent && <span><TrendingUp className="mr-1 inline h-3.5 w-3.5" />↑ {d.ascent}</span>}
                     {d.descent && <span><TrendingUp className="mr-1 inline h-3.5 w-3.5" />↓ {d.descent}</span>}
                   </div>
-                  <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted-foreground">
+                  <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-base text-muted-foreground">
                     {d.accommodations?.length > 0 && (
                       <span><HomeIcon className="mr-1 inline h-3 w-3" /> {d.accommodations.join(", ")}</span>
                     )}

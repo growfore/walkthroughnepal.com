@@ -123,7 +123,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
       </section>
 
       {/* ── Main content ── */}
-      <section className="py-12 pb-20 text-base font-medium leading-relaxed lg:pb-12">
+      <section className="py-12 pb-20 text-lg font-medium leading-relaxed lg:pb-12">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 lg:grid-cols-3 min-w-0">
           <div className="lg:col-span-2 min-w-0">
             {/* Tabs */}
@@ -133,7 +133,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                   const Icon = t.icon
                   return (
                     <a key={t.label} href={`#${t.label.toLowerCase().replace(/\s+/g, "-")}`}
-                      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-4 py-2 text-base font-semibold transition-colors ${i === 0 ? "bg-navy text-navy-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-navy"}`}
+                      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-5 py-2.5 text-base font-semibold transition-colors ${i === 0 ? "bg-navy text-navy-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-navy"}`}
                     ><Icon className="h-4 w-4 shrink-0" />{t.label}</a>
                   )
                 })}
@@ -142,15 +142,15 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             {/* ── Overview ── */}
             <div id="overview" className="mt-8">
-              <h2 className="text-xl font-bold text-navy md:text-2xl">Overview</h2>
+              <h2 className="text-2xl font-bold text-navy md:text-3xl">Overview</h2>
               <div
-                className="mt-3 prose prose-base max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground prose-headings:text-navy prose-a:text-primary prose-strong:text-navy wrap-break-word **:wrap-break-word"
+                className="mt-3 prose prose-lg max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground prose-headings:text-navy prose-a:text-primary prose-strong:text-navy wrap-break-word **:wrap-break-word"
                 dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(pkg.shortDescription) }}
               />
 
               {pkg.fullDescription && (
                 <div
-                  className="mt-6 prose prose-base max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground prose-headings:text-navy prose-a:text-primary prose-strong:text-navy wrap-break-word **:wrap-break-word"
+                  className="mt-6 prose prose-lg max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground prose-headings:text-navy prose-a:text-primary prose-strong:text-navy wrap-break-word **:wrap-break-word"
                   dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(pkg.fullDescription) }}
                 />
               )}
@@ -165,7 +165,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                         return m ? m.map((s) => s.replace(/<\/?li>/gi, "")) : [h]
                       })
                       .map((item, i) => (
-                        <div key={i} className="flex items-start gap-3 text-base text-navy">
+                        <div key={i} className="flex items-start gap-3 text-lg text-navy">
                           <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
                           <span className="wrap-break-word" dangerouslySetInnerHTML={{ __html: item }} />
                         </div>
@@ -188,9 +188,9 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             {/* ── Includes ── */}
             <div id="includes" className="mt-12 scroll-mt-24">
-              <h2 className="text-xl font-bold text-navy md:text-2xl">What&apos;s Included</h2>
+              <h2 className="text-2xl font-bold text-navy md:text-3xl">What&apos;s Included</h2>
               <div className="mt-4 rounded-lg border border-border bg-card p-6">
-                <div className="prose prose-base max-w-none w-full prose-li:text-navy prose-li:marker:text-green-600 wrap-break-word **:wrap-break-word">
+                <div className="prose prose-lg max-w-none w-full prose-li:text-navy prose-li:marker:text-green-600 wrap-break-word **:wrap-break-word">
                   {(pkg.inclusions ?? []).map((section, i) => (
                     <div key={i} dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(section) }} />
                   ))}
@@ -200,9 +200,9 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             {/* ── Excludes ── */}
             <div id="excludes" className="mt-12 scroll-mt-24">
-              <h2 className="text-xl font-bold text-navy md:text-2xl">What&apos;s Excluded</h2>
+              <h2 className="text-2xl font-bold text-navy md:text-3xl">What&apos;s Excluded</h2>
               <div className="mt-4 rounded-lg border border-border bg-card p-6">
-                <div className="prose prose-base max-w-none w-full prose-li:text-navy prose-li:marker:text-red-500 wrap-break-word **:wrap-break-word">
+                <div className="prose prose-lg max-w-none w-full prose-li:text-navy prose-li:marker:text-red-500 wrap-break-word **:wrap-break-word">
                   {(pkg.exclusions ?? []).map((section, i) => (
                     <div key={i} dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(section) }} />
                   ))}
@@ -213,12 +213,12 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             {/* ── Useful Info ── */}
             {(pkg.additionalInfo ?? []).length > 0 && (
               <div id="useful-info" className="mt-12 scroll-mt-24">
-                <h2 className="text-xl font-bold text-navy md:text-2xl">Useful Information</h2>
+                <h2 className="text-2xl font-bold text-navy md:text-3xl">Useful Information</h2>
                 <div className="mt-4 space-y-6">
                   {pkg.additionalInfo.map((info, i) => (
                     <div key={i}>
                       <h3 className="font-bold text-navy">{info.title}</h3>
-                      <div className="mt-2 prose prose-base max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground wrap-break-word **:wrap-break-word"
+                      <div className="mt-2 prose prose-lg max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground wrap-break-word **:wrap-break-word"
                         dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(info.description) }}
                       />
                     </div>
@@ -229,7 +229,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             {/* ── Reviews ── */}
             <div id="reviews" className="mt-12 scroll-mt-24">
-              <h2 className="text-xl font-bold text-navy md:text-2xl">Traveler Reviews</h2>
+              <h2 className="text-2xl font-bold text-navy md:text-3xl">Traveler Reviews</h2>
               <div className="mt-4 rounded-lg border border-border bg-card p-6">
                 <div className="flex flex-wrap items-center gap-6">
                   <div className="text-center">
@@ -240,7 +240,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                     <div className="mt-1 text-xs text-muted-foreground">{pkg.reviewCount || 0} Reviews</div>
                   </div>
                   <div className="flex-1">
-                    <p className="text-base text-muted-foreground">
+                    <p className="text-lg text-muted-foreground">
                       {pkg.reviewCount > 0
                         ? "Reviews from travelers who have completed this trip."
                         : "No reviews yet. Be the first to share your experience!"}
@@ -253,16 +253,16 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             {/* ── FAQs ── */}
             {(pkg.faqs ?? []).length > 0 && (
               <div id="faqs" className="mt-12 scroll-mt-24">
-                <h2 className="text-xl font-bold text-navy md:text-2xl">Frequently Asked Questions</h2>
+                <h2 className="text-2xl font-bold text-navy md:text-3xl">Frequently Asked Questions</h2>
                 <div className="mt-4 space-y-3">
                   {pkg.faqs.map((faq, i) => (
                     <details key={i} className="group rounded-lg border border-border">
-                      <summary className="flex cursor-pointer items-center justify-between p-4 text-base font-semibold text-navy">
+                      <summary className="flex cursor-pointer items-center justify-between p-4 text-lg font-semibold text-navy">
                         {faq.question}
                         <Plus className="h-4 w-4 shrink-0 group-open:hidden" />
                         <Minus className="h-4 w-4 shrink-0 hidden group-open:block" />
                       </summary>
-                      <div className="border-t border-border px-4 py-3 prose prose-base max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground wrap-break-word **:wrap-break-word"
+                      <div className="border-t border-border px-4 py-3 prose prose-lg max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground wrap-break-word **:wrap-break-word"
                         dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(faq.answer) }}
                       />
                     </details>
@@ -274,7 +274,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             {/* Video */}
             {pkg.videoUrl && (
               <div className="mt-12">
-                <h2 className="text-xl font-bold text-navy md:text-2xl">Video</h2>
+                <h2 className="text-2xl font-bold text-navy md:text-3xl">Video</h2>
                 <div className="mt-4 aspect-video overflow-hidden rounded-lg">
                   <iframe src={pkg.videoUrl} className="h-full w-full" allowFullScreen title="Trip video" />
                 </div>
@@ -314,7 +314,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                 dropOffPoint={pkg.dropOffPoint}
               />
 
-              <ul className="mt-6 space-y-3 text-base">
+              <ul className="mt-6 space-y-4 text-lg">
                 {sidebarFacts.map((f) => (
                   <SidebarFact key={f.label} {...f} />
                 ))}
@@ -326,12 +326,12 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
               <div className="flex items-start gap-4">
                 <div className="flex-1">
                   <h3 className="font-bold text-navy">Need Help Planning?</h3>
-                  <p className="mt-1 text-base text-muted-foreground">Our travel experts are here to help you plan your perfect trip.</p>
-                  <div className="mt-3 space-y-1 text-base">
+                  <p className="mt-1 text-lg text-muted-foreground">Our travel experts are here to help you plan your perfect trip.</p>
+                  <div className="mt-3 space-y-1 text-lg">
                     <div className="flex items-center gap-2 text-navy"><Phone className="h-4 w-4 text-orange" /> +977 984 123 4567</div>
                     <div className="flex items-center gap-2 text-navy"><Mail className="h-4 w-4 text-orange" /> info@walkthroughnepal.com</div>
                   </div>
-                  <button className="mt-4 rounded-md bg-navy px-4 py-2 text-base font-semibold text-navy-foreground hover:opacity-90">
+                  <button className="mt-4 rounded-md bg-navy px-5 py-3 text-base font-semibold text-navy-foreground hover:opacity-90">
                     Talk To An Expert
                   </button>
                 </div>
