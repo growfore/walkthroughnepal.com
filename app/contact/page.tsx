@@ -176,7 +176,7 @@ export default function ContactPage() {
 
       {/* FAQ */}
       <section className="pb-20">
-        <div className="mx-auto max-w-3xl px-4">
+        <div className="mx-auto max-w-7xl px-4">
           <h3 className="text-2xl font-bold text-navy text-center">Frequently Asked Questions</h3>
           <div className="mt-6 space-y-2 rounded-xl border border-border bg-card p-6">
             {faqs.map((faq, i) => (
