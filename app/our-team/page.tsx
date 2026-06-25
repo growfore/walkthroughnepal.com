@@ -1,7 +1,6 @@
 import { getTeamMembers, img } from "@/lib/api"
 import type { TeamMember } from "@/lib/types"
 import { PageHero } from "@/components/page-hero"
-import { Mail } from "lucide-react"
 
 export default async function OurTeamPage() {
   let departments: { name: string; members: TeamMember[] }[] = []
@@ -60,21 +59,7 @@ export default async function OurTeamPage() {
                             </span>
                           )}
                         </div>
-                        <div className="mt-3 flex flex-wrap items-center gap-2">
-                          <a
-                            href={`/design-your-trip?expert=${m.name}`}
-                            className="inline-flex items-center gap-1.5 rounded-full bg-[#0f766e] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#115e59]"
-                          >
-                            About {m.name.split(" ")[0]}
-                          </a>
-                          <a
-                            href={`mailto:info@walkthroughnepal.com?subject=Inquiry about ${m.name}`}
-                            className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#0f766e] px-4 py-2 text-xs font-semibold text-[#0f766e] transition hover:bg-[#0f766e] hover:text-white"
-                          >
-                            <Mail className="h-3.5 w-3.5" />
-                            Contact
-                          </a>
-                        </div>
+
                       </div>
                     </div>
                     {m.about && (
