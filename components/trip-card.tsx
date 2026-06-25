@@ -21,9 +21,9 @@ export function TripCard({
   return (
     <Link
       href={`/package/${a.slug}`}
-      className="group block overflow-hidden rounded-lg border border-border bg-card shadow-sm transition hover:shadow-md"
+      className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm transition hover:shadow-md"
     >
-      <div className={`relative ${compact ? "h-44" : "h-48"}`}>
+      <div className={`relative shrink-0 ${compact ? "h-44" : "h-48"}`}>
         <img
           src={img(a.images?.[0]) ?? "/images/trek-everest.jpg"}
           alt={a.title}
@@ -34,7 +34,7 @@ export function TripCard({
           {a.duration}
         </span>
       </div>
-      <div className={compact ? "p-4" : "p-5"}>
+      <div className={`flex flex-1 flex-col ${compact ? "p-4" : "p-5"}`}>
         <h3 className={`font-bold leading-snug text-navy ${compact ? "" : "text-lg"}`}>
           {a.title.length > 60 ? a.title.substring(0, 60) + "..." : a.title}
         </h3>
@@ -56,7 +56,7 @@ export function TripCard({
             </span>
           ) : null}
         </div>
-        <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
+        <div className="mt-auto flex items-center justify-between border-t border-border pt-3">
           <div>
             <div className="text-[10px] text-muted-foreground">From</div>
             <div className="text-lg font-bold text-navy">${a.price}</div>
