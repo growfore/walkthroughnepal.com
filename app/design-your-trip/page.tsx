@@ -286,20 +286,20 @@ export default function DesignYourTrip() {
   const goPrev = () => setStep((s) => Math.max(s - 1, 0))
 
   return (
-    <main className="bg-canvas min-h-screen">
-      <section className="bg-navy py-14 px-6">
+    <main className="bg-canvas min-h-screen" style={{ "--primary": "#fb8500", "--primary-foreground": "#ffffff" } as React.CSSProperties}>
+      <section className="bg-navy pt-20 pb-10 px-6 md:pt-28 md:pb-14">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold text-navy-foreground leading-tight mb-3">
+          <h1 className="text-2xl md:text-4xl font-bold text-navy-foreground leading-tight mb-3">
             Plan Your Custom Itinerary
           </h1>
-          <p className="text-navy-foreground/80 text-base max-w-lg">
+          <p className="text-navy-foreground/80 text-sm md:text-base max-w-lg">
             Tell us your dream adventure and we&apos;ll craft a personalised
             trek just for you — dates, pace, locations, and every detail.
           </p>
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-6 py-14 grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+      <section className="max-w-6xl mx-auto px-6 py-10 md:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 items-start">
         <div className="lg:col-span-2">
           <div className="flex items-center gap-0 mb-10 overflow-x-auto pb-2">
             {STEPS.map((s, i) => {
