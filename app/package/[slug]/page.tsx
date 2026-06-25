@@ -342,24 +342,6 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
 
-      {/* ── Newsletter ── */}
-      <section className="pb-16">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="relative overflow-hidden rounded-lg bg-navy p-8 text-navy-foreground">
-            <img src={heroImg} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
-            <div className="relative grid items-center gap-6 md:grid-cols-[1fr_auto]">
-              <div>
-                <div className="text-2xl font-bold">Subscribe to Our Newsletter</div>
-                <div className="mt-1 text-sm text-white/80">Get the latest updates on new trips, travel tips &amp; exclusive offers.</div>
-              </div>
-              <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto">
-                <input placeholder="Enter your email address" className="flex-1 rounded-md bg-white px-4 py-3 text-navy outline-none md:w-80" />
-                <button className="rounded-md bg-orange px-6 py-3 font-semibold text-orange-foreground hover:opacity-90 whitespace-nowrap">Subscribe</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
