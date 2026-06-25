@@ -35,8 +35,8 @@ export function TripCard({
         </span>
       </div>
       <div className={`flex flex-1 flex-col ${compact ? "p-4" : "p-5"}`}>
-        <h3 className={`font-bold leading-snug text-navy ${compact ? "" : "text-lg"}`}>
-          {a.title.length > 60 ? a.title.substring(0, 60) + "..." : a.title}
+        <h3 className={`font-bold leading-snug text-navy line-clamp-2 ${compact ? "" : "text-lg"}`}>
+          {a.title}
         </h3>
         <div className={`flex flex-wrap items-center gap-3 text-xs text-muted-foreground ${compact ? "mt-2" : "mt-3"}`}>
           <span className="flex items-center gap-1">
