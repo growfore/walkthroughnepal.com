@@ -5,6 +5,13 @@ export interface TripCategory {
   categoryImage: string | null
 }
 
+export interface TripType {
+  id: string
+  tripTypeHandle: string
+  tripTypeName: string
+  tripTypeImage: string | null
+}
+
 export interface Activity {
   id: number
   title: string

@@ -1,5 +1,6 @@
-import { getActivitiesByCategory } from "@/lib/api"
+import { getActivitiesByType, getTripTypes } from "@/lib/api"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 import { Mountain } from "lucide-react"
 import { TripCard } from "@/components/trip-card"
@@ -9,24 +10,37 @@ export const dynamic = "force-dynamic"
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  const label = slug.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase())
-  return { title: `${label} — Walk Through Nepal`, description: `Explore our ${label.toLowerCase()} packages in Nepal.` }
+  let label = slug.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase())
+  try {
+    const res = await getTripTypes()
+    const match = res.data.tripTypes.find((t) => t.tripTypeHandle === slug)
+    if (match) label = match.tripTypeName
+  } catch {}
+  return { title: `${label} Trips — Walk Through Nepal`, description: `Explore our ${label.toLowerCase()} packages in Nepal.` }
 }
 
 export default async function ActivitiesByTypePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const label = slug.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase())
+
+  let typeName: string | null = null
+  try {
+    const res = await getTripTypes()
+    const match = res.data.tripTypes.find((t) => t.tripTypeHandle === slug)
+    if (!match) notFound()
+    typeName = match.tripTypeName
+  } catch {
+    notFound()
+  }
 
   let activities: any[] = []
-
   try {
-    const res = await getActivitiesByCategory(slug)
+    const res = await getActivitiesByType(slug)
     activities = res.data ?? []
   } catch {}
 
   return (
     <div className="min-h-screen">
-      <PageHero title={label} description={`Explore our ${label.toLowerCase()} packages in Nepal`} breadcrumbs={[{ label: "Home", href: "/" }, { label: "Activities", href: "/explore" }, { label }]} />
+      <PageHero title={typeName} description={`Explore our ${typeName.toLowerCase()} packages in Nepal`} breadcrumbs={[{ label: "Home", href: "/" }, { label: "Activities", href: "/explore" }, { label: typeName }]} />
 
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4">

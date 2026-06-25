@@ -1,4 +1,4 @@
-import type { Activity, CMSPost, FeaturedTag, InfoPage, Pagination, Testimonial, TripCategory } from "./types"
+import type { Activity, CMSPost, FeaturedTag, InfoPage, Pagination, Testimonial, TripCategory, TripType } from "./types"
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
@@ -60,6 +60,14 @@ export function getTeamMembers() {
 
 export function getActivitiesByCategory(categoryHandle: string) {
   return getActivities({ category: categoryHandle })
+}
+
+export function getActivitiesByType(typeSlug: string) {
+  return getActivities({ type: typeSlug })
+}
+
+export function getTripTypes() {
+  return fetchJSON<{ message: string; data: { tripTypes: TripType[] } }>(API, "/api/v1/trip-type")
 }
 
 export function getPublishedPosts(page = 1, limit = 10) {
