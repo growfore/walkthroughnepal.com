@@ -123,7 +123,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
       </section>
 
       {/* ── Main content ── */}
-      <section className="py-12 text-base font-medium leading-relaxed">
+      <section className="py-12 pb-20 text-base font-medium leading-relaxed lg:pb-12">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 lg:grid-cols-3 min-w-0">
           <div className="lg:col-span-2 min-w-0">
             {/* Tabs */}
@@ -342,6 +342,24 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
 
+      {/* Mobile sticky booking bar */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-white p-3 shadow-lg lg:hidden">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <div className="text-sm text-muted-foreground">From</div>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-xl font-bold text-navy">${pkg.price}</span>
+              {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
+                <span className="text-sm text-muted-foreground line-through">${pkg.maxPrice}</span>
+              )}
+              <span className="text-xs text-muted-foreground">/person</span>
+            </div>
+          </div>
+          <button className="rounded-md bg-orange px-6 py-3 font-semibold text-orange-foreground hover:opacity-90 whitespace-nowrap">
+            Check Availability
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
