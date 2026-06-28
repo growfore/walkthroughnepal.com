@@ -312,6 +312,11 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                 transportation={pkg.transportation || "N/A"}
                 meetingPoint={pkg.meetingPoint}
                 dropOffPoint={pkg.dropOffPoint}
+                shortDescription={pkg.shortDescription}
+                fullDescription={pkg.fullDescription}
+                highlights={pkg.highlights}
+                additionalInfo={pkg.additionalInfo}
+                faqs={pkg.faqs}
               />
 
               <ul className="mt-6 space-y-4 text-lg">

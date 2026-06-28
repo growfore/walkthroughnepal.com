@@ -13,10 +13,8 @@ export function img(path: string | null | undefined, base = API): string {
 }
 
 export function resolveContentImages(html: string, base = API): string {
-  return html.replace(
-    /(<img[^>]+src\s*=\s*)["']\/(?!\/)/gi,
-    (m, prefix) => `${prefix}"${base}/`
-  )
+  const b = base.endsWith("/") ? base.slice(0, -1) : base
+  return html.replace(/(["'])\/(?!\/)(uploads\/[^"'\s>]*)/gi, `$1${b}/$2`)
 }
 
 async function fetchJSON<T>(base: string, path: string, options?: RequestInit): Promise<T> {
