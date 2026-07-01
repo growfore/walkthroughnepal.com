@@ -1,13 +1,27 @@
 "use client"
 
 import { Star, ChevronLeft, ChevronRight } from "lucide-react"
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 type Testimonial = { name: string; country: string; text: string }
 
 export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
   const [i, setI] = useState(0)
   const t = items[i]
+
+  const prev = useCallback(() => setI((idx) => (idx - 1 + items.length) % items.length), [items.length])
+  const next = useCallback(() => setI((idx) => (idx + 1) % items.length), [items.length])
+
+  useEffect(() => {
+    if (!items.length) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") prev()
+      if (e.key === "ArrowRight") next()
+    }
+    document.addEventListener("keydown", handler)
+    return () => document.removeEventListener("keydown", handler)
+  }, [prev, next, items.length])
+
   if (!t) return null
 
   return (

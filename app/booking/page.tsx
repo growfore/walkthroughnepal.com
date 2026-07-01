@@ -9,6 +9,9 @@ export const revalidate = 3600
 export const metadata: Metadata = {
   title: "Plan Your Adventure",
   description: "Plan your Nepal adventure with Walk Through Nepal. Book trekking, tours, and travel experiences through our easy online inquiry form.",
+  alternates: {
+    canonical: "/booking",
+  },
   openGraph: {
     title: "Plan Your Adventure | Walk Through Nepal",
     description: "Start planning your Nepal trekking adventure. Submit an inquiry and our team will help create the perfect itinerary for you.",

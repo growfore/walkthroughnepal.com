@@ -1,6 +1,13 @@
+import type { Metadata } from "next"
 import { getTeamMembers, img } from "@/lib/api"
 import type { TeamMember } from "@/lib/types"
 import { PageHero } from "@/components/page-hero"
+
+export const metadata: Metadata = {
+  title: "Our Team",
+  description:
+    "Meet the passionate Nepal-based team behind Walk Through Nepal — local trekking experts dedicated to making your Himalayan adventure unforgettable.",
+}
 
 export default async function OurTeamPage() {
   let departments: { name: string; members: TeamMember[] }[] = []

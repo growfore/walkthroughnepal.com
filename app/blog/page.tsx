@@ -1,7 +1,14 @@
+import type { Metadata } from "next"
 import { getPublishedPosts, img } from "@/lib/api"
 import Link from "next/link"
 import { PageHero } from "@/components/page-hero"
 import { BlogCard } from "@/components/blog-card"
+
+export const metadata: Metadata = {
+  title: "Travel Blog",
+  description:
+    "Trekking tips, travel stories, and insider insights from Nepal. Read about Himalayan adventures, culture, and off-the-beaten-path destinations.",
+}
 
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const params = await searchParams

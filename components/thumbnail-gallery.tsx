@@ -10,13 +10,18 @@ export function ThumbnailGallery({ images, apiUrl }: { images: string[]; apiUrl:
 
   if (images.length === 0) return null
 
+  function makeAlt(src: string, i: number) {
+    const name = src.split("/").pop()?.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ") || ""
+    return `Photo ${i + 1}${name ? `: ${name}` : ""}`
+  }
+
   return (
     <>
       <div className="bg-navy/95">
         <div className="mx-auto flex max-w-7xl gap-3 overflow-x-auto scrollbar-hide px-4 py-3">
           {thumbnails.map((src, i) => (
             <button key={i} onClick={() => setOpenIdx(i)} className="flex-shrink-0">
-              <img src={img(src, apiUrl)} alt="Trek photo" className="h-20 w-32 rounded object-cover cursor-pointer hover:opacity-80 transition-opacity" />
+              <img src={img(src, apiUrl)} alt={makeAlt(src, i)} className="h-20 w-32 rounded object-cover cursor-pointer hover:opacity-80 transition-opacity" />
             </button>
           ))}
           {images.length > 5 && (
@@ -30,7 +35,7 @@ export function ThumbnailGallery({ images, apiUrl }: { images: string[]; apiUrl:
 
       {openIdx !== null && (
         <GalleryLightbox
-          images={images.map((src) => ({ src: img(src, apiUrl), alt: "Trek photo" }))}
+          images={images.map((src, i) => ({ src: img(src, apiUrl), alt: makeAlt(src, i) }))}
           index={openIdx}
           onClose={() => setOpenIdx(null)}
         />

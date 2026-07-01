@@ -1,8 +1,23 @@
+import type { Metadata } from "next"
 import { getActivitiesByCategory } from "@/lib/api"
 import Link from "next/link"
 import { Mountain } from "lucide-react"
 import { TripCard } from "@/components/trip-card"
 import { PageHero } from "@/components/page-hero"
+
+type Props = { params: Promise<{ slug: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const label = slug
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (l: string) => l.toUpperCase())
+  return {
+    title: `${label} Trips`,
+    description: `Explore our ${label.toLowerCase()} packages in Nepal. Find authentic treks, tours, and adventures in the Himalayas.`,
+    alternates: { canonical: `/category/${slug}` },
+  }
+}
 
 export const dynamic = "force-dynamic"
 

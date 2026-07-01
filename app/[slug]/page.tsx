@@ -16,6 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: infoPage.metaTitle || infoPage.title,
       description: infoPage.metaDescription || undefined,
+      alternates: { canonical: `/${slug}` },
     }
   } catch {
     return {}

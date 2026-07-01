@@ -1,8 +1,15 @@
+import type { Metadata } from "next"
 import { getActivities, getTripCategories } from "@/lib/api"
 import Link from "next/link"
 import { Mountain } from "lucide-react"
 import { TripCard } from "@/components/trip-card"
 import { PageHero } from "@/components/page-hero"
+
+export const metadata: Metadata = {
+  title: "Explore All Trips",
+  description:
+    "Browse our complete collection of Nepal trekking and travel packages. Find the perfect Himalayan adventure for your next journey.",
+}
 
 export const dynamic = "force-dynamic"
 

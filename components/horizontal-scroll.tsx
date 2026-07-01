@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, useEffect, type ReactNode } from "react"
+import { useRef, useState, useEffect, useCallback, type ReactNode } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 export function HorizontalScroll({ children }: { children: ReactNode }) {
@@ -20,11 +20,25 @@ export function HorizontalScroll({ children }: { children: ReactNode }) {
     ref.current?.scrollBy({ left: dir * 300, behavior: "smooth" })
   }
 
+  const scrollLeft = useCallback(() => scroll(-1), [])
+  const scrollRight = useCallback(() => scroll(1), [])
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") { scroll(-1); e.preventDefault() }
+      if (e.key === "ArrowRight") { scroll(1); e.preventDefault() }
+    }
+    el.addEventListener("keydown", handler)
+    return () => el.removeEventListener("keydown", handler)
+  }, [])
+
   return (
     <div className="relative">
       {canScroll && (
         <button
-          onClick={() => scroll(-1)}
+          onClick={scrollLeft}
           aria-label="Scroll left"
           className="absolute left-0 top-1/2 z-10 -translate-y-1/2 -translate-x-3 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card shadow-md text-navy hover:bg-border"
         >
@@ -33,7 +47,7 @@ export function HorizontalScroll({ children }: { children: ReactNode }) {
       )}
       {canScroll && (
         <button
-          onClick={() => scroll(1)}
+          onClick={scrollRight}
           aria-label="Scroll right"
           className="absolute right-0 top-1/2 z-10 -translate-y-1/2 translate-x-3 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card shadow-md text-navy hover:bg-border"
         >
@@ -42,7 +56,10 @@ export function HorizontalScroll({ children }: { children: ReactNode }) {
       )}
       <div
         ref={ref}
-        className="flex gap-5 overflow-x-auto [&::-webkit-scrollbar]:hidden snap-x snap-mandatory"
+        tabIndex={0}
+        role="region"
+        aria-label="Scrollable content"
+        className="flex gap-5 overflow-x-auto [&::-webkit-scrollbar]:hidden snap-x snap-mandatory focus:outline-none focus:ring-2 focus:ring-orange/50 rounded-lg"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {children}

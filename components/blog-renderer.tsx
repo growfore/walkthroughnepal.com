@@ -16,6 +16,7 @@ export function BlogRenderer({ html }: { html: string }) {
         prose-ul:my-2 prose-ol:my-2
         prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-foreground/80
         prose-img:rounded-lg prose-img:my-6
+        [&_img]:!w-full [&_img]:!h-auto
         prose-code:bg-accent prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm
         prose-pre:bg-foreground prose-pre:text-foreground prose-pre:rounded-lg prose-pre:p-4"
       dangerouslySetInnerHTML={markup}

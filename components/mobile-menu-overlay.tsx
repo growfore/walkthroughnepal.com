@@ -1,6 +1,6 @@
 "use client"
 
-import { Dispatch, SetStateAction, useEffect } from "react"
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef } from "react"
 import { MobileMenuItem } from "./mobile-menu-item"
 
 type MenuItem = {
@@ -23,6 +23,19 @@ export function MobileMenuOverlay({
   setIsOpen,
   onNavigate,
 }: MobileMenuOverlayProps) {
+  const overlayRef = useRef<HTMLDivElement>(null)
+
+  const close = useCallback(() => setIsOpen(false), [setIsOpen])
+
+  useEffect(() => {
+    if (!isOpen) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close()
+    }
+    document.addEventListener("keydown", handler)
+    return () => document.removeEventListener("keydown", handler)
+  }, [isOpen, close])
+
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : ""
     return () => { document.body.style.overflow = "" }
@@ -33,12 +46,19 @@ export function MobileMenuOverlay({
       {isOpen && (
         <div
           className="lg:hidden fixed inset-x-0 top-16 bottom-0 bg-black/30 z-40"
-          onClick={() => setIsOpen(false)}
+          onClick={close}
+          aria-hidden="true"
         />
       )}
 
       {isOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-16 bg-white border-b border-[#dee1e6] z-50 overflow-y-auto max-h-[calc(100vh-64px)]">
+        <div
+          ref={overlayRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+          className="lg:hidden fixed inset-x-0 top-16 bg-white border-b border-[#dee1e6] z-50 overflow-y-auto max-h-[calc(100vh-64px)]"
+        >
           {items.map((item) => (
             <MobileMenuItem key={item.id} item={item} onNavigate={onNavigate} />
           ))}

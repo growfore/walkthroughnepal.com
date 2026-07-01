@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { getPostBySlug, resolveContentImages } from "@/lib/api"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -5,6 +6,22 @@ import { BlogRenderer } from "@/components/blog-renderer"
 import { PageHero } from "@/components/page-hero"
 import { decodeHtmlEntities } from "@/lib/html-decoder"
 import { Calendar } from "lucide-react"
+
+type Props = { params: Promise<{ slug: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  try {
+    const { slug } = await params
+    const post = await getPostBySlug(slug)
+    return {
+      title: post.metaTitle || post.title,
+      description: post.metaDescription || undefined,
+      alternates: { canonical: `/blog/${slug}` },
+    }
+  } catch {
+    return {}
+  }
+}
 
 function extractToc(html: string): { id: string; text: string }[] {
   const toc: { id: string; text: string }[] = []

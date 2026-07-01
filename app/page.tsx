@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import {
   Star,
   ArrowRight,
@@ -9,6 +10,17 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import type { FeaturedTag, TeamMember } from "@/lib/types"
+
+export const metadata: Metadata = {
+  title: "Walk Through Nepal",
+  description:
+    "Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas with Walk Through Nepal.",
+  openGraph: {
+    title: "Walk Through Nepal",
+    description:
+      "Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas.",
+  },
+}
 import {
   getFeaturedTags,
   getTestimonials,

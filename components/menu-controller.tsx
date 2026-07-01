@@ -29,6 +29,7 @@ export function MenuController({ items }: MenuControllerProps) {
   const [activeMega, setActiveMega] = useState<string | null>(null)
   const pathname = usePathname()
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const navRef = useRef<HTMLElement>(null)
 
   const cancelHide = useCallback(() => {
     if (hideTimer.current) {
@@ -42,6 +43,8 @@ export function MenuController({ items }: MenuControllerProps) {
     hideTimer.current = setTimeout(() => setActiveMega(null), 200)
   }, [cancelHide])
 
+  const closeMega = useCallback(() => setActiveMega(null), [])
+
   const openMega = useCallback(
     (id: string) => {
       cancelHide()
@@ -54,6 +57,14 @@ export function MenuController({ items }: MenuControllerProps) {
     cancelHide()
     return cancelHide
   }, [cancelHide])
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeMega()
+    }
+    document.addEventListener("keydown", handler)
+    return () => document.removeEventListener("keydown", handler)
+  }, [closeMega])
 
   useEffect(() => {
     let lastY = window.scrollY
@@ -87,6 +98,8 @@ export function MenuController({ items }: MenuControllerProps) {
 
   return (
     <nav
+      ref={navRef}
+      aria-label="Main navigation"
       className={`fixed inset-x-0 top-0 z-50 bg-white border-b border-[#dee1e6] transition-transform duration-300 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
@@ -137,6 +150,8 @@ export function MenuController({ items }: MenuControllerProps) {
               >
                 {itemHasChildren ? (
                   <button
+                    aria-haspopup="true"
+                    aria-expanded={isActive}
                     className={`inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium transition-colors ${
                       isActive
                         ? "text-navy bg-[#f7f7f7]"

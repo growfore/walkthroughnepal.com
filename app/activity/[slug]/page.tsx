@@ -16,7 +16,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const match = res.data.tripTypes.find((t) => t.tripTypeHandle === slug)
     if (match) label = match.tripTypeName
   } catch {}
-  return { title: `${label} Trips — Walk Through Nepal`, description: `Explore our ${label.toLowerCase()} packages in Nepal.` }
+  return {
+    title: `${label} Trips — Walk Through Nepal`,
+    description: `Explore our ${label.toLowerCase()} packages in Nepal.`,
+    alternates: { canonical: `/activity/${slug}` },
+  }
 }
 
 export default async function ActivitiesByTypePage({ params }: { params: Promise<{ slug: string }> }) {

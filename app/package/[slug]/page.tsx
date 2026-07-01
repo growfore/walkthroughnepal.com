@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import {
   Mountain, MapPin, Clock, ChevronRight, Star, Calendar, TrendingUp, Users, Home as HomeIcon,
   Check, Plus, Minus, Mail, Phone, X, Info, Route, HelpCircle, MessageCircle, Utensils, Bus,
@@ -5,6 +6,23 @@ import {
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getActivityBySlug, img } from "@/lib/api"
+
+type Props = { params: Promise<{ slug: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  try {
+    const { slug } = await params
+    const res = await getActivityBySlug(slug)
+    const pkg = res.data
+    return {
+      title: pkg.title,
+      description: pkg.shortDescription?.replace(/<[^>]*>/g, "").slice(0, 160) || undefined,
+      alternates: { canonical: `/package/${slug}` },
+    }
+  } catch {
+    return {}
+  }
+}
 import { decodeHtmlEntities } from "@/lib/html-decoder"
 import { StickyWrapper } from "@/components/sticky-wrapper"
 import { ItineraryList } from "@/components/itinerary-list"

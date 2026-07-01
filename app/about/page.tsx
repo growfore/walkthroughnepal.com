@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import type { TeamMember } from "@/lib/types"
 import { getTeamMembers, img } from "@/lib/api"
 import { PageHero } from "@/components/page-hero"
@@ -5,6 +6,12 @@ import { HorizontalScroll } from "@/components/horizontal-scroll"
 import { TeamCard } from "@/components/team-card"
 import { SectionHeader } from "@/components/section-header"
 import { Users, MapPin, Shield, HeartHandshake } from "lucide-react"
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description:
+    "Meet the Nepal-based team behind Walk Through Nepal. Local trekking experts with over 20 years of experience crafting authentic Himalayan adventures.",
+}
 
 export const dynamic = "force-dynamic"
 

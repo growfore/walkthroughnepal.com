@@ -6,7 +6,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-heading: "Clash Display", sans-serif;
+  --font-heading: var(--font-heading), sans-serif;
   --font-sans: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -78,7 +78,7 @@
   --secondary: #ffb703;
   --secondary-foreground: #023047;
   --muted: #ede9e3;
-  --muted-foreground: #7d7f82;
+  --muted-foreground: #636568;
   --accent: #8ecae6;
   --accent-foreground: #023047;
   --destructive: #d9534f;

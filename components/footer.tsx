@@ -54,7 +54,7 @@ export function Footer() {
               <p className="mt-1 text-sm text-white/60">Get the latest trek updates and travel tips straight to your inbox.</p>
             </div>
             <form onSubmit={handleSubmit} className="flex w-full max-w-md gap-2">
-              <input type="email" name="email" placeholder="Enter your email" required className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white placeholder-white/40 outline-none focus:border-orange focus:ring-1 focus:ring-orange disabled:opacity-50" disabled={status === "loading"} />
+              <input type="email" name="email" placeholder="Enter your email" required aria-label="Email address for newsletter" className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white placeholder-white/40 outline-none focus:border-orange focus:ring-1 focus:ring-orange disabled:opacity-50" disabled={status === "loading"} />
               <button type="submit" disabled={status === "loading"} className="shrink-0 rounded-lg bg-orange px-5 py-2.5 text-sm font-semibold text-orange-foreground hover:bg-orange/90 transition-colors disabled:opacity-50">
                 {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : "Subscribe"}
               </button>
