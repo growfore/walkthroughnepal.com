@@ -32,29 +32,40 @@ export function Nav() {
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : ""
-    return () => { document.body.style.overflow = "" }
+    return () => {
+      document.body.style.overflow = ""
+    }
   }, [mobileOpen])
 
   return (
     <nav
-      className={`fixed inset-x-0 top-0 z-50 bg-background border-b border-border transition-transform duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 border-b border-border bg-background transition-transform duration-300 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
       {/* Top bar */}
-      <div className="hidden md:block bg-navy text-navy-foreground">
+      <div className="hidden bg-navy text-navy-foreground md:block">
         <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 md:px-8">
           <div className="flex items-center gap-2">
             <span className="flex items-center gap-1 text-sm font-medium">
               <span className="flex text-orange">★★★★★</span>
-              <span>4.9 <span className="text-navy-foreground/60">·</span> 2,800+ reviews</span>
+              <span>
+                4.9 <span className="text-navy-foreground/60">·</span> 2,800+
+                reviews
+              </span>
             </span>
           </div>
           <div className="flex items-center gap-6">
-            <a href="tel:+9779841234567" className="flex items-center gap-1.5 text-sm font-semibold hover:text-orange transition-colors">
+            <a
+              href="tel:+9779841234567"
+              className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-orange"
+            >
               <Phone className="h-4 w-4" /> +977 984 123 4567
             </a>
-            <a href="mailto:info@walkthroughnepal.com" className="flex items-center gap-1.5 text-sm font-semibold hover:text-orange transition-colors">
+            <a
+              href="mailto:info@walkthroughnepal.com"
+              className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-orange"
+            >
               <Mail className="h-4 w-4" /> info@walkthroughnepal.com
             </a>
           </div>
@@ -65,14 +76,18 @@ export function Nav() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8">
         <div className="flex items-center gap-6">
           <Link href="/">
-            <img src="/walkthrough-nepal-logo.png" alt="Walk Through Nepal" className="h-14 w-auto p-1" />
+            <img
+              src="/logo-no-bg.png"
+              alt="Walk Through Nepal"
+              className="h-14 w-auto p-1"
+            />
           </Link>
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="hidden items-center gap-1 lg:flex">
             {navLinks.map((l) => (
               <Link
                 key={l.label}
                 href={l.href}
-                className="px-3 py-1.5 text-sm font-bold uppercase tracking-wider text-ink/80 hover:text-ink transition-colors"
+                className="px-3 py-1.5 text-sm font-bold tracking-wider text-ink/80 uppercase transition-colors hover:text-ink"
               >
                 {l.label}
               </Link>
@@ -83,40 +98,44 @@ export function Nav() {
         <div className="flex items-center gap-2">
           <Link
             href="/design-your-trip"
-            className="hidden md:inline-flex rounded-md border border-navy px-4 py-2 text-sm font-semibold text-navy transition hover:bg-navy hover:text-navy-foreground"
+            className="hidden rounded-md border border-navy px-4 py-2 text-sm font-semibold text-navy transition hover:bg-navy hover:text-navy-foreground md:inline-flex"
           >
             Customize My Trip
           </Link>
-          <button className="hidden md:inline-flex rounded-md bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground transition hover:opacity-90">
+          <button className="hidden rounded-md bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground transition hover:opacity-90 md:inline-flex">
             Book Now
           </button>
           <button
-            className="lg:hidden p-2"
+            className="p-2 lg:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
           >
-            {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+            {mobileOpen ? (
+              <X className="size-6" />
+            ) : (
+              <Menu className="size-6" />
+            )}
           </button>
         </div>
       </div>
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="lg:hidden border-t border-border bg-background">
+        <div className="border-t border-border bg-background lg:hidden">
           {navLinks.map((l) => (
             <Link
               key={l.label}
               href={l.href}
-              className="block px-4 md:px-8 py-3 text-sm font-bold uppercase tracking-wider text-ink/80 hover:text-ink hover:bg-muted transition-colors"
+              className="block px-4 py-3 text-sm font-bold tracking-wider text-ink/80 uppercase transition-colors hover:bg-muted hover:text-ink md:px-8"
               onClick={() => setMobileOpen(false)}
             >
               {l.label}
             </Link>
           ))}
-          <div className="flex gap-2 p-4 md:px-8 border-t border-border">
+          <div className="flex gap-2 border-t border-border p-4 md:px-8">
             <Link
               href="/design-your-trip"
-              className="flex-1 rounded-md border border-navy px-4 py-2 text-sm font-semibold text-navy text-center"
+              className="flex-1 rounded-md border border-navy px-4 py-2 text-center text-sm font-semibold text-navy"
             >
               Customize My Trip
             </Link>

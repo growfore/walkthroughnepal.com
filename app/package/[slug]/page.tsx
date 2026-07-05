@@ -3,6 +3,7 @@ import {
   Mountain, MapPin, Clock, ChevronRight, Star, Calendar, TrendingUp, Users, Home as HomeIcon,
   Check, Plus, Minus, Mail, Phone, X, Info, Route, HelpCircle, MessageCircle, Utensils, Bus,
 } from "lucide-react"
+import { SectionNav } from "@/components/section-nav"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getActivityBySlug, img } from "@/lib/api"
@@ -142,21 +143,25 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
       {/* ── Main content ── */}
       <section className="py-12 pb-20 text-lg font-medium leading-relaxed lg:pb-12">
+        <SectionNav />
+
         <div className="mx-auto grid max-w-7xl gap-8 px-4 lg:grid-cols-3 min-w-0">
           <div className="lg:col-span-2 min-w-0">
-            {/* Tabs */}
-            <StickyWrapper className="sticky z-10 py-3" offset={96}>
-              <div className="flex flex-nowrap gap-1.5 overflow-x-auto scrollbar-hide rounded-2xl border border-border bg-card p-1.5 shadow-sm">
-                {tabs.map((t, i) => {
-                  const Icon = t.icon
-                  return (
-                    <a key={t.label} href={`#${t.label.toLowerCase().replace(/\s+/g, "-")}`}
-                      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-5 py-2.5 text-base font-semibold transition-colors ${i === 0 ? "bg-navy text-navy-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-navy"}`}
-                    ><Icon className="h-4 w-4 shrink-0" />{t.label}</a>
-                  )
-                })}
-              </div>
-            </StickyWrapper>
+            {/* Mobile tabs */}
+            <div className="lg:hidden">
+              <StickyWrapper className="sticky z-10 py-3" offset={96}>
+                <div className="flex flex-nowrap gap-1.5 overflow-x-auto scrollbar-hide rounded-2xl border border-border bg-card p-1.5 shadow-sm">
+                  {tabs.map((t, i) => {
+                    const Icon = t.icon
+                    return (
+                      <a key={t.label} href={`#${t.label.toLowerCase().replace(/\s+/g, "-")}`}
+                        className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-5 py-2.5 text-base font-semibold transition-colors ${i === 0 ? "bg-navy text-navy-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-navy"}`}
+                      ><Icon className="h-4 w-4 shrink-0" />{t.label}</a>
+                    )
+                  })}
+                </div>
+              </StickyWrapper>
+            </div>
 
             {/* ── Overview ── */}
             <div id="overview" className="mt-8">

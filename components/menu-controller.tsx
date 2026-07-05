@@ -50,7 +50,7 @@ export function MenuController({ items }: MenuControllerProps) {
       cancelHide()
       setActiveMega(id)
     },
-    [cancelHide],
+    [cancelHide]
   )
 
   useEffect(() => {
@@ -100,24 +100,33 @@ export function MenuController({ items }: MenuControllerProps) {
     <nav
       ref={navRef}
       aria-label="Main navigation"
-      className={`fixed inset-x-0 top-0 z-50 bg-white border-b border-[#dee1e6] transition-transform duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 border-b border-[#dee1e6] bg-white transition-transform duration-300 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
       {/* Top bar */}
-      <div className="hidden md:block bg-navy text-navy-foreground">
+      <div className="hidden bg-navy text-navy-foreground md:block">
         <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 md:px-8">
           <div className="flex items-center gap-2">
             <span className="flex items-center gap-1 text-sm font-medium">
               <span className="flex text-orange">★★★★★</span>
-              <span>4.9 <span className="text-navy-foreground/60">·</span> 2,800+ reviews</span>
+              <span>
+                4.9 <span className="text-navy-foreground/60">·</span> 2,800+
+                reviews
+              </span>
             </span>
           </div>
           <div className="flex items-center gap-6">
-            <a href="tel:+9779841234567" className="flex items-center gap-1.5 text-sm font-semibold hover:text-orange transition-colors">
+            <a
+              href="tel:+9779841234567"
+              className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-orange"
+            >
               <Phone className="h-4 w-4" /> +977 984 123 4567
             </a>
-            <a href="mailto:info@walkthroughnepal.com" className="flex items-center gap-1.5 text-sm font-semibold hover:text-orange transition-colors">
+            <a
+              href="mailto:info@walkthroughnepal.com"
+              className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-orange"
+            >
               <Mail className="h-4 w-4" /> info@walkthroughnepal.com
             </a>
           </div>
@@ -126,12 +135,16 @@ export function MenuController({ items }: MenuControllerProps) {
 
       {/* Main nav */}
       <div
-        className="relative flex items-center justify-between h-16 mx-auto max-w-7xl px-4 md:px-8"
+        className="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8"
         onMouseLeave={queueHide}
       >
         <div className="flex items-center gap-2">
-          <Link href="/" className="p-1">
-            <img src="/walkthrough-nepal-logo.png" alt="Walk Through Nepal" className="h-10 w-auto sm:h-12" />
+          <Link href="/" className="p-4 pl-0">
+            <img
+              src="/logo-no-bg.png"
+              alt="Walk Through Nepal"
+              className="h-auto w-80"
+            />
           </Link>
           {items.map((item) => {
             const itemHasChildren = hasChildren(item)
@@ -154,8 +167,8 @@ export function MenuController({ items }: MenuControllerProps) {
                     aria-expanded={isActive}
                     className={`inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium transition-colors ${
                       isActive
-                        ? "text-navy bg-[#f7f7f7]"
-                        : "text-[#5b616e] hover:text-navy hover:bg-[#f7f7f7]"
+                        ? "bg-[#f7f7f7] text-navy"
+                        : "text-[#5b616e] hover:bg-[#f7f7f7] hover:text-navy"
                     }`}
                   >
                     {item.label}
@@ -164,19 +177,22 @@ export function MenuController({ items }: MenuControllerProps) {
                 ) : (
                   <Link
                     href={item.url || "#"}
-                    className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-[#5b616e] hover:text-navy hover:bg-[#f7f7f7] transition-colors"
+                    className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-[#5b616e] transition-colors hover:bg-[#f7f7f7] hover:text-navy"
                   >
                     {item.label}
                   </Link>
                 )}
                 {itemHasChildren && !itemHasGrandchildren && isActive && (
-                  <div onMouseEnter={cancelHide} className="absolute left-0 top-full z-40 pt-1">
-                    <div className="bg-white border border-[#dee1e6] rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] py-2 min-w-[220px] max-w-[320px]">
+                  <div
+                    onMouseEnter={cancelHide}
+                    className="absolute top-full left-0 z-40 pt-1"
+                  >
+                    <div className="max-w-[320px] min-w-[220px] rounded-xl border border-[#dee1e6] bg-white py-2 shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
                       {item.children.map((child) => (
                         <Link
                           key={child.id}
                           href={child.url || "#"}
-                          className="block px-5 py-2.5 text-sm text-[#5b616e] hover:text-navy hover:bg-[#f7f7f7] transition-colors"
+                          className="block px-5 py-2.5 text-sm text-[#5b616e] transition-colors hover:bg-[#f7f7f7] hover:text-navy"
                         >
                           {child.label}
                         </Link>
@@ -190,7 +206,7 @@ export function MenuController({ items }: MenuControllerProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden items-center gap-2 md:flex">
             <Link
               href="/design-your-trip"
               className="inline-flex items-center gap-1.5 rounded-full border border-[#dee1e6] px-5 py-2 text-sm font-semibold text-navy transition hover:bg-[#f7f7f7]"
@@ -206,11 +222,15 @@ export function MenuController({ items }: MenuControllerProps) {
             </Link>
           </div>
           <button
-            className="lg:hidden p-2"
+            className="p-2 lg:hidden"
             onClick={() => setIsMobileOpen(!isMobileOpen)}
             aria-label={isMobileOpen ? "Close menu" : "Open menu"}
           >
-            {isMobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+            {isMobileOpen ? (
+              <X className="size-6" />
+            ) : (
+              <Menu className="size-6" />
+            )}
           </button>
         </div>
 
@@ -218,24 +238,25 @@ export function MenuController({ items }: MenuControllerProps) {
         {activeMegaItem && hasActiveGrandchildren && (
           <div
             onMouseEnter={cancelHide}
-            className="max-lg:hidden absolute inset-x-0 top-0 z-40 pointer-events-none"
+            className="pointer-events-none absolute inset-x-0 top-0 z-40 max-lg:hidden"
           >
             <div className="h-16" aria-hidden="true" />
-            <div className="bg-white border border-[#dee1e6] rounded-xl pointer-events-auto shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
-              <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <div className="pointer-events-auto rounded-xl border border-[#dee1e6] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
+              <div className="mx-auto max-w-7xl px-4 md:px-8">
                 <div className="flex">
-                  <div className="w-[240px] shrink-0 py-6 pr-6 border-r border-[#dee1e6]">
+                  <div className="w-[240px] shrink-0 border-r border-[#dee1e6] py-6 pr-6">
                     <ul className="space-y-1">
                       {activeMegaChildren.map((child) => {
-                        const isActiveSidebar = child.id === activeSidebarItem?.id
+                        const isActiveSidebar =
+                          child.id === activeSidebarItem?.id
                         return (
                           <li key={child.id}>
                             <button
                               onMouseEnter={() => setActiveSidebar(child.id)}
-                              className={`w-full text-left px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                              className={`w-full rounded-lg px-4 py-3 text-left text-sm font-medium transition-colors ${
                                 isActiveSidebar
-                                  ? "text-orange bg-[#f7f7f7] border-l-2 border-orange"
-                                  : "text-[#5b616e] hover:text-navy hover:bg-[#f7f7f7] border-l-2 border-transparent"
+                                  ? "border-l-2 border-orange bg-[#f7f7f7] text-orange"
+                                  : "border-l-2 border-transparent text-[#5b616e] hover:bg-[#f7f7f7] hover:text-navy"
                               }`}
                             >
                               {child.label}
@@ -246,14 +267,14 @@ export function MenuController({ items }: MenuControllerProps) {
                     </ul>
                   </div>
 
-                  <div className="flex-1 min-w-0 py-6 pl-8">
+                  <div className="min-w-0 flex-1 py-6 pl-8">
                     {activeSidebarItem && hasChildren(activeSidebarItem) ? (
                       <div className="grid grid-cols-2 gap-x-12 gap-y-1">
                         {activeSidebarItem.children.map((subChild) => (
                           <Link
                             key={subChild.id}
                             href={subChild.url || "#"}
-                            className="block py-2 text-sm text-[#5b616e] hover:text-navy transition-colors"
+                            className="block py-2 text-sm text-[#5b616e] transition-colors hover:text-navy"
                           >
                             {subChild.label}
                           </Link>
@@ -262,7 +283,7 @@ export function MenuController({ items }: MenuControllerProps) {
                     ) : activeSidebarItem ? (
                       <Link
                         href={activeSidebarItem.url || "#"}
-                        className="text-[#5b616e] hover:text-navy transition-colors"
+                        className="text-[#5b616e] transition-colors hover:text-navy"
                       >
                         {activeSidebarItem.label}
                       </Link>
