@@ -1,14 +1,15 @@
 import type { NextConfig } from "next"
 
+const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
+
 const nextConfig: NextConfig = {
-  images: {
-    remotePatterns: [
+  async rewrites() {
+    return [
       {
-        protocol: "https",
-        hostname: "api.walkthroughnepal.com",
-        pathname: "/**",
+        source: "/uploads/:path*",
+        destination: `${API}/uploads/:path*`,
       },
-    ],
+    ]
   },
   async headers() {
     return [

@@ -1,13 +1,5 @@
 import type { Metadata } from "next"
-import {
-  Star,
-  ArrowRight,
-  Headphones,
-  Users,
-  ClipboardList,
-  Heart,
-  PhoneCall,
-} from "lucide-react"
+import { Star, ArrowRight, Headphones, Users, ClipboardList, Heart, PhoneCall } from "lucide-react"
 import Link from "next/link"
 import type { FeaturedTag, TeamMember } from "@/lib/types"
 
@@ -123,26 +115,10 @@ export default async function HomePage() {
   } catch {}
 
   const reasons = [
-    {
-      icon: Users,
-      title: "Local Experts",
-      text: "Real Nepal based team with in-depth knowledge.",
-    },
-    {
-      icon: ClipboardList,
-      title: "Flexible Itineraries",
-      text: "Customize your trip to match your time and budget.",
-    },
-    {
-      icon: Heart,
-      title: "Responsible Tourism",
-      text: "We support local communities and sustainable travel.",
-    },
-    {
-      icon: PhoneCall,
-      title: "24/7 Support",
-      text: "We're with you before, during and after your trip.",
-    },
+    { icon: Users, title: "Local Experts", text: "Real Nepal based team with in-depth knowledge." },
+    { icon: ClipboardList, title: "Flexible Itineraries", text: "Customize your trip to match your time and budget." },
+    { icon: Heart, title: "Responsible Tourism", text: "We support local communities and sustainable travel." },
+    { icon: PhoneCall, title: "24/7 Support", text: "We're with you before, during and after your trip." },
   ]
 
   return (
@@ -184,10 +160,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl px-4">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {reasons.map((r) => (
-              <div
-                key={r.title}
-                className="rounded-lg border border-border bg-card p-6 text-center shadow-sm"
-              >
+              <div key={r.title} className="text-center">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange/10 text-orange">
                   <r.icon className="h-6 w-6" />
                 </div>
@@ -269,11 +242,11 @@ export default async function HomePage() {
       </section>
 
       {/* ── Testimonials ── */}
-      <section className="pb-12">
+      <section className="bg-navy py-20 text-navy-foreground">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-6 flex flex-wrap items-center justify-center gap-4">
-            <h3 className="text-2xl font-bold text-navy">What Our Travelers Say</h3>
-            <div className="flex items-center gap-2 text-sm text-navy/70">
+          <div className="mb-10 flex flex-col items-center gap-3 text-center">
+            <h3 className="text-3xl font-bold">What Our Travelers Say</h3>
+            <div className="flex items-center gap-2 text-sm text-white/70">
               <div className="flex text-orange">
                 {[...Array(5)].map((_, idx) => (
                   <Star key={idx} className="h-4 w-4 fill-current" />
@@ -282,17 +255,15 @@ export default async function HomePage() {
               <span>4.9/5 &middot; {testimonialList.length}+ reviews</span>
             </div>
           </div>
-          <div className="rounded-lg bg-navy p-10 text-navy-foreground">
-            <div className="mx-auto max-w-2xl">
-              <TestimonialCarousel items={testimonialList} />
-            </div>
+          <div className="mx-auto max-w-3xl">
+            <TestimonialCarousel items={testimonialList} />
           </div>
         </div>
       </section>
 
       {/* ── Meet Our Team ── */}
       {teamMembers.length > 0 && (
-        <section className="pb-20">
+        <section className="py-20">
           <div className="mx-auto max-w-7xl px-4">
             <SectionHeader title="Meet Our Experts" align="center" />
             <HorizontalScroll>

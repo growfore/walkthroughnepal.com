@@ -2,19 +2,19 @@ import type { Activity, CMSPost, FeaturedTag, InfoPage, Pagination, Testimonial,
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
-export function img(path: string | null | undefined, base = API): string {
+export function img(path: string | null | undefined, _base?: string): string {
   if (!path) return "/placeholder-image.png"
   const p = path.trim()
   if (p.startsWith("http://") || p.startsWith("https://")) return p
   if (p.startsWith("//")) return `https:${p}`
-  const sep = p.startsWith("/") ? "" : "/"
-  const b = base.endsWith("/") ? base.slice(0, -1) : base
-  return `${b}${sep}${p}`
+  // ponytail: same-domain proxy via rewrite at /uploads/*
+  if (p.startsWith("/")) return p
+  return `/${p}`
 }
 
-export function resolveContentImages(html: string, base = API): string {
-  const b = base.endsWith("/") ? base.slice(0, -1) : base
-  return html.replace(/(["'])\/(?!\/)(uploads\/[^"'\s>]*)/gi, `$1${b}/$2`)
+export function resolveContentImages(html: string, _base?: string): string {
+  // ponytail: images served via rewrite at /uploads/* — no URL resolution needed
+  return html
 }
 
 async function fetchJSON<T>(base: string, path: string, options?: RequestInit): Promise<T> {

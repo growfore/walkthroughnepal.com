@@ -71,7 +71,7 @@ export function SearchBox() {
     } else if (e.key === "Enter") {
       if (idx >= 0) {
         const item = allResults[idx]
-        window.location.href = item.type === "trip" ? `/package/${item.slug}` : `/blog/${item.slug}`
+        window.location.href = item.type === "trip" ? `/trip/${item.slug}` : `/blog/${item.slug}`
       } else if (query.trim()) {
         window.location.href = `/explore?search=${encodeURIComponent(query.trim())}`
       }
@@ -94,7 +94,7 @@ export function SearchBox() {
           return (
             <Link
               key={`${item.type}-${item.slug}`}
-              href={item.type === "trip" ? `/package/${item.slug}` : `/blog/${item.slug}`}
+              href={item.type === "trip" ? `/trip/${item.slug}` : `/blog/${item.slug}`}
               className={`flex items-center gap-3 px-4 py-2.5 text-sm transition ${globalIdx === idx ? "bg-accent/30" : "hover:bg-accent/20"}`}
               onMouseEnter={() => setIdx(globalIdx)}
             >

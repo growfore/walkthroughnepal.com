@@ -1,7 +1,26 @@
 import type { Metadata } from "next"
 import {
-  Mountain, MapPin, Clock, ChevronRight, Star, Calendar, TrendingUp, Users, Home as HomeIcon,
-  Check, Plus, Minus, Mail, Phone, X, Info, Route, HelpCircle, MessageCircle, Utensils, Bus,
+  Mountain,
+  MapPin,
+  Clock,
+  ChevronRight,
+  Star,
+  Calendar,
+  TrendingUp,
+  Users,
+  Home as HomeIcon,
+  Check,
+  Plus,
+  Minus,
+  Mail,
+  Phone,
+  X,
+  Info,
+  Route,
+  HelpCircle,
+  MessageCircle,
+  Utensils,
+  Bus,
 } from "lucide-react"
 import { SectionNav } from "@/components/section-nav"
 import Link from "next/link"
@@ -17,8 +36,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const pkg = res.data
     return {
       title: pkg.title,
-      description: pkg.shortDescription?.replace(/<[^>]*>/g, "").slice(0, 160) || undefined,
-      alternates: { canonical: `/package/${slug}` },
+      description:
+        pkg.shortDescription?.replace(/<[^>]*>/g, "").slice(0, 160) ||
+        undefined,
+      alternates: { canonical: `/trip/${slug}` },
     }
   } catch {
     return {}
@@ -43,17 +64,34 @@ const tabs = [
   { label: "FAQs", icon: MessageCircle },
 ]
 
-function RatingStars({ rating, size = "h-4 w-4" }: { rating: number; size?: string }) {
+function RatingStars({
+  rating,
+  size = "h-4 w-4",
+}: {
+  rating: number
+  size?: string
+}) {
   return (
     <div className="flex">
       {[...Array(5)].map((_, i) => (
-        <Star key={i} className={`${size} ${i < Math.round(rating) ? "fill-orange text-orange" : "text-white/30"}`} />
+        <Star
+          key={i}
+          className={`${size} ${i < Math.round(rating) ? "fill-orange text-orange" : "text-white/30"}`}
+        />
       ))}
     </div>
   )
 }
 
-function FactBadge({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function FactBadge({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: any
+  label: string
+  value: string
+}) {
   return (
     <div className="flex items-center gap-3">
       <Icon className="h-6 w-6 shrink-0" />
@@ -65,16 +103,30 @@ function FactBadge({ icon: Icon, label, value }: { icon: any; label: string; val
   )
 }
 
-function SidebarFact({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function SidebarFact({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: any
+  label: string
+  value: string
+}) {
   return (
     <li className="flex items-center justify-between gap-4 border-b border-border pb-3 last:border-0">
-      <span className="flex items-center gap-2 text-muted-foreground"><Icon className="h-4 w-4 text-orange shrink-0" /> {label}</span>
+      <span className="flex items-center gap-2 text-muted-foreground">
+        <Icon className="h-4 w-4 shrink-0 text-orange" /> {label}
+      </span>
       <span className="text-right font-semibold text-navy">{value}</span>
     </li>
   )
 }
 
-export default async function PackagePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PackagePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
   const { slug } = await params
 
   let pkg
@@ -85,7 +137,10 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
     notFound()
   }
 
-  const difficulty = pkg.difficultyLevel?.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) ?? "Moderate"
+  const difficulty =
+    pkg.difficultyLevel
+      ?.replace(/_/g, " ")
+      .replace(/\b\w/g, (l) => l.toUpperCase()) ?? "Moderate"
   const heroImg = img(pkg.images[0], API)
 
   const sidebarFacts = [
@@ -93,12 +148,23 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
     { icon: TrendingUp, label: "Max Altitude", value: pkg.maximumAltitude },
     { icon: Mountain, label: "Difficulty", value: difficulty },
     { icon: Calendar, label: "Best Season", value: pkg.bestSeason },
-    { icon: HomeIcon, label: "Accommodation", value: pkg.accommodations?.join(", ") || "Tea House" },
+    {
+      icon: HomeIcon,
+      label: "Accommodation",
+      value: pkg.accommodations?.join(", ") || "Tea House",
+    },
     { icon: Utensils, label: "Meals", value: pkg.meals },
-    { icon: Users, label: "Group Size", value: pkg.groupSize || `${pkg.guestCapacity || 1} Pax` },
+    {
+      icon: Users,
+      label: "Group Size",
+      value: pkg.groupSize || `${pkg.guestCapacity || 1} Pax`,
+    },
     { icon: Bus, label: "Transportation", value: pkg.transportation || "N/A" },
-    { icon: MapPin, label: "Meeting Point", value: pkg.meetingPoint },
-    { icon: MapPin, label: "Drop Off", value: pkg.dropOffPoint },
+    {
+      icon: MapPin,
+      label: "Meeting/ Dropoff Point",
+      value: pkg.meetingPoint + "/ " + pkg.dropOffPoint,
+    },
   ]
 
   return (
@@ -110,53 +176,82 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
           <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/10" />
 
           <div className="relative mx-auto flex max-w-7xl items-center gap-2 px-4 pt-6 text-sm text-white/80">
-            <Link href="/" className="hover:text-orange">Home</Link><ChevronRight className="h-3.5 w-3.5" />
+            <Link href="/" className="hover:text-orange">
+              Home
+            </Link>
+            <ChevronRight className="h-3.5 w-3.5" />
             <span className="text-white">{pkg.title}</span>
           </div>
 
-            <div className="relative mx-auto mt-6 md:mt-8 max-w-7xl px-4 text-white">
+          <div className="relative mx-auto mt-6 max-w-7xl px-4 text-white md:mt-8">
             <span className="inline-block rounded bg-orange px-3 py-1 text-[11px] font-bold tracking-wider text-orange-foreground">
               {pkg.isFeatured ? "FEATURED" : "BEST SELLER"}
             </span>
-            <h1 className="mt-4 text-3xl font-bold leading-tight md:text-5xl lg:text-6xl">{pkg.title}</h1>
+            <h1 className="mt-4 text-3xl leading-tight font-bold md:text-5xl lg:text-6xl">
+              {pkg.title}
+            </h1>
             <div className="mt-3 flex items-center gap-2 text-white/90">
-              <MapPin className="h-4 w-4 text-orange" /> {pkg.locations?.join(", ") || pkg.meetingPoint}
+              <MapPin className="h-4 w-4 text-orange" />{" "}
+              {pkg.locations?.join(", ") || pkg.meetingPoint}
             </div>
             <div className="mt-3 flex items-center gap-2">
               <RatingStars rating={pkg.averageRating} />
-              <span className="text-sm font-semibold">{pkg.averageRating || "New"}</span>
-              <span className="text-sm text-white/80">({pkg.reviewCount || 0} Reviews)</span>
+              <span className="text-sm font-semibold">
+                {pkg.averageRating || "New"}
+              </span>
+              <span className="text-sm text-white/80">
+                ({pkg.reviewCount || 0} Reviews)
+              </span>
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-4 text-white/95 sm:flex sm:flex-wrap sm:gap-8">
               <FactBadge icon={Clock} label="Duration" value={pkg.duration} />
-              <FactBadge icon={TrendingUp} label="Max Altitude" value={pkg.maximumAltitude} />
-              <FactBadge icon={Mountain} label="Difficulty" value={difficulty} />
-              <FactBadge icon={Calendar} label="Best Season" value={pkg.bestSeason} />
+              <FactBadge
+                icon={TrendingUp}
+                label="Max Altitude"
+                value={pkg.maximumAltitude}
+              />
+              <FactBadge
+                icon={Mountain}
+                label="Difficulty"
+                value={difficulty}
+              />
+              <FactBadge
+                icon={Calendar}
+                label="Best Season"
+                value={pkg.bestSeason}
+              />
             </div>
           </div>
         </div>
 
         {/* Thumbnails */}
-        {pkg.images.length > 0 && <ThumbnailGallery images={pkg.images} apiUrl={API} />}
+        {pkg.images.length > 0 && (
+          <ThumbnailGallery images={pkg.images} apiUrl={API} />
+        )}
       </section>
 
       {/* ── Main content ── */}
-      <section className="py-12 pb-20 text-lg font-medium leading-relaxed lg:pb-12">
+      <section className="py-12 pb-20 text-lg leading-relaxed font-medium lg:pb-12">
         <SectionNav />
 
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 lg:grid-cols-3 min-w-0">
-          <div className="lg:col-span-2 min-w-0">
+        <div className="mx-auto grid max-w-7xl min-w-0 gap-8 px-4 lg:grid-cols-3">
+          <div className="min-w-0 lg:col-span-2">
             {/* Mobile tabs */}
             <div className="lg:hidden">
               <StickyWrapper className="sticky z-10 py-3" offset={96}>
-                <div className="flex flex-nowrap gap-1.5 overflow-x-auto scrollbar-hide rounded-2xl border border-border bg-card p-1.5 shadow-sm">
+                <div className="scrollbar-hide flex flex-nowrap gap-1.5 overflow-x-auto rounded-2xl border border-border bg-card p-1.5 shadow-sm">
                   {tabs.map((t, i) => {
                     const Icon = t.icon
                     return (
-                      <a key={t.label} href={`#${t.label.toLowerCase().replace(/\s+/g, "-")}`}
-                        className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-5 py-2.5 text-base font-semibold transition-colors ${i === 0 ? "bg-navy text-navy-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-navy"}`}
-                      ><Icon className="h-4 w-4 shrink-0" />{t.label}</a>
+                      <a
+                        key={t.label}
+                        href={`#${t.label.toLowerCase().replace(/\s+/g, "-")}`}
+                        className={`inline-flex items-center gap-1.5 rounded-xl px-5 py-2.5 text-base font-semibold whitespace-nowrap transition-colors ${i === 0 ? "bg-navy text-navy-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-navy"}`}
+                      >
+                        <Icon className="h-4 w-4 shrink-0" />
+                        {t.label}
+                      </a>
                     )
                   })}
                 </div>
@@ -165,32 +260,49 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             {/* ── Overview ── */}
             <div id="overview" className="mt-8">
-              <h2 className="text-2xl font-bold text-navy md:text-3xl">Overview</h2>
+              <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                Overview
+              </h2>
               <div
-                className="mt-3 prose prose-lg max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground prose-headings:text-navy prose-a:text-primary prose-strong:text-navy wrap-break-word **:wrap-break-word"
-                dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(pkg.shortDescription) }}
+                className="prose prose-lg mt-3 w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy"
+                dangerouslySetInnerHTML={{
+                  __html: decodeHtmlEntities(pkg.shortDescription),
+                }}
               />
 
               {pkg.fullDescription && (
                 <div
-                  className="mt-6 prose prose-lg max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground prose-headings:text-navy prose-a:text-primary prose-strong:text-navy wrap-break-word **:wrap-break-word"
-                  dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(pkg.fullDescription) }}
+                  className="prose prose-lg mt-6 w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy"
+                  dangerouslySetInnerHTML={{
+                    __html: decodeHtmlEntities(pkg.fullDescription),
+                  }}
                 />
               )}
 
               {(pkg.highlights ?? []).length > 0 && (
                 <div className="mt-8">
-                  <h3 className="text-lg font-bold text-navy">Trip Highlights</h3>
+                  <h3 className="text-lg font-bold text-navy">
+                    Trip Highlights
+                  </h3>
                   <div className="mt-4 space-y-3">
                     {pkg.highlights
                       .flatMap((h) => {
-                        const m = decodeHtmlEntities(h).match(/<li>(.*?)<\/li>/gi)
-                        return m ? m.map((s) => s.replace(/<\/?li>/gi, "")) : [h]
+                        const m =
+                          decodeHtmlEntities(h).match(/<li>(.*?)<\/li>/gi)
+                        return m
+                          ? m.map((s) => s.replace(/<\/?li>/gi, ""))
+                          : [h]
                       })
                       .map((item, i) => (
-                        <div key={i} className="flex items-start gap-3 text-lg text-navy">
+                        <div
+                          key={i}
+                          className="flex items-start gap-3 text-lg text-navy"
+                        >
                           <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
-                          <span className="wrap-break-word" dangerouslySetInnerHTML={{ __html: item }} />
+                          <span
+                            className="wrap-break-word"
+                            dangerouslySetInnerHTML={{ __html: item }}
+                          />
                         </div>
                       ))}
                   </div>
@@ -199,7 +311,11 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
               {pkg.map && (
                 <div className="mt-8 overflow-hidden rounded-lg border border-border bg-card">
-                  <img src={img(pkg.map, API)} alt="Route map" className="h-72 w-full object-cover" />
+                  <img
+                    src={img(pkg.map, API)}
+                    alt="Route map"
+                    className="h-72 w-full object-cover"
+                  />
                 </div>
               )}
             </div>
@@ -211,11 +327,18 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             {/* ── Includes ── */}
             <div id="includes" className="mt-12 scroll-mt-24">
-              <h2 className="text-2xl font-bold text-navy md:text-3xl">What&apos;s Included</h2>
+              <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                What&apos;s Included
+              </h2>
               <div className="mt-4 rounded-lg border border-border bg-card p-6">
-                <div className="prose prose-lg max-w-none w-full prose-li:text-navy prose-li:marker:text-green-600 wrap-break-word **:wrap-break-word">
+                <div className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-li:text-navy prose-li:marker:text-green-600">
                   {(pkg.inclusions ?? []).map((section, i) => (
-                    <div key={i} dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(section) }} />
+                    <div
+                      key={i}
+                      dangerouslySetInnerHTML={{
+                        __html: decodeHtmlEntities(section),
+                      }}
+                    />
                   ))}
                 </div>
               </div>
@@ -223,11 +346,18 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             {/* ── Excludes ── */}
             <div id="excludes" className="mt-12 scroll-mt-24">
-              <h2 className="text-2xl font-bold text-navy md:text-3xl">What&apos;s Excluded</h2>
+              <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                What&apos;s Excluded
+              </h2>
               <div className="mt-4 rounded-lg border border-border bg-card p-6">
-                <div className="prose prose-lg max-w-none w-full prose-li:text-navy prose-li:marker:text-red-500 wrap-break-word **:wrap-break-word">
+                <div className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-li:text-navy prose-li:marker:text-red-500">
                   {(pkg.exclusions ?? []).map((section, i) => (
-                    <div key={i} dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(section) }} />
+                    <div
+                      key={i}
+                      dangerouslySetInnerHTML={{
+                        __html: decodeHtmlEntities(section),
+                      }}
+                    />
                   ))}
                 </div>
               </div>
@@ -236,13 +366,18 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             {/* ── Useful Info ── */}
             {(pkg.additionalInfo ?? []).length > 0 && (
               <div id="useful-info" className="mt-12 scroll-mt-24">
-                <h2 className="text-2xl font-bold text-navy md:text-3xl">Useful Information</h2>
+                <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                  Useful Information
+                </h2>
                 <div className="mt-4 space-y-6">
                   {pkg.additionalInfo.map((info, i) => (
                     <div key={i}>
                       <h3 className="font-bold text-navy">{info.title}</h3>
-                      <div className="mt-2 prose prose-lg max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground wrap-break-word **:wrap-break-word"
-                        dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(info.description) }}
+                      <div
+                        className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word prose-p:leading-relaxed prose-p:text-muted-foreground"
+                        dangerouslySetInnerHTML={{
+                          __html: decodeHtmlEntities(info.description),
+                        }}
                       />
                     </div>
                   ))}
@@ -252,15 +387,21 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             {/* ── Reviews ── */}
             <div id="reviews" className="mt-12 scroll-mt-24">
-              <h2 className="text-2xl font-bold text-navy md:text-3xl">Traveler Reviews</h2>
+              <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                Traveler Reviews
+              </h2>
               <div className="mt-4 rounded-lg border border-border bg-card p-6">
                 <div className="flex flex-wrap items-center gap-6">
                   <div className="text-center">
-                    <div className="text-5xl font-bold text-navy">{pkg.averageRating || "New"}</div>
+                    <div className="text-5xl font-bold text-navy">
+                      {pkg.averageRating || "New"}
+                    </div>
                     <div className="mt-1 flex justify-center">
                       <RatingStars rating={pkg.averageRating} />
                     </div>
-                    <div className="mt-1 text-xs text-muted-foreground">{pkg.reviewCount || 0} Reviews</div>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      {pkg.reviewCount || 0} Reviews
+                    </div>
                   </div>
                   <div className="flex-1">
                     <p className="text-lg text-muted-foreground">
@@ -276,17 +417,25 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             {/* ── FAQs ── */}
             {(pkg.faqs ?? []).length > 0 && (
               <div id="faqs" className="mt-12 scroll-mt-24">
-                <h2 className="text-2xl font-bold text-navy md:text-3xl">Frequently Asked Questions</h2>
+                <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                  Frequently Asked Questions
+                </h2>
                 <div className="mt-4 space-y-3">
                   {pkg.faqs.map((faq, i) => (
-                    <details key={i} className="group rounded-lg border border-border">
+                    <details
+                      key={i}
+                      className="group rounded-lg border border-border"
+                    >
                       <summary className="flex cursor-pointer items-center justify-between p-4 text-lg font-semibold text-navy">
                         {faq.question}
                         <Plus className="h-4 w-4 shrink-0 group-open:hidden" />
-                        <Minus className="h-4 w-4 shrink-0 hidden group-open:block" />
+                        <Minus className="hidden h-4 w-4 shrink-0 group-open:block" />
                       </summary>
-                      <div className="border-t border-border px-4 py-3 prose prose-lg max-w-none w-full prose-p:leading-relaxed prose-p:text-muted-foreground wrap-break-word **:wrap-break-word"
-                        dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(faq.answer) }}
+                      <div
+                        className="prose prose-lg w-full max-w-none border-t border-border px-4 py-3 wrap-break-word **:wrap-break-word prose-p:leading-relaxed prose-p:text-muted-foreground"
+                        dangerouslySetInnerHTML={{
+                          __html: decodeHtmlEntities(faq.answer),
+                        }}
                       />
                     </details>
                   ))}
@@ -297,23 +446,35 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             {/* Video */}
             {pkg.videoUrl && (
               <div className="mt-12">
-                <h2 className="text-2xl font-bold text-navy md:text-3xl">Video</h2>
+                <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                  Video
+                </h2>
                 <div className="mt-4 aspect-video overflow-hidden rounded-lg">
-                  <iframe src={pkg.videoUrl} className="h-full w-full" allowFullScreen title="Trip video" />
+                  <iframe
+                    src={pkg.videoUrl}
+                    className="h-full w-full"
+                    allowFullScreen
+                    title="Trip video"
+                  />
                 </div>
               </div>
             )}
           </div>
 
           {/* ── Sidebar ── */}
-          <StickyWrapper className="sticky max-lg:static self-start space-y-6" offset={120}>
+          <StickyWrapper
+            className="sticky space-y-6 self-start max-lg:static"
+            offset={120}
+          >
             {/* Price */}
             <div className="rounded-lg border border-border bg-card p-4 shadow-sm sm:p-6">
               <div className="text-sm text-muted-foreground">From</div>
               <div className="flex items-baseline gap-2">
                 <div className="text-4xl font-bold text-navy">${pkg.price}</div>
                 {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
-                  <div className="text-lg text-muted-foreground line-through">${pkg.maxPrice}</div>
+                  <div className="text-lg text-muted-foreground line-through">
+                    ${pkg.maxPrice}
+                  </div>
                 )}
               </div>
               <div className="text-sm text-muted-foreground">per person</div>
@@ -354,16 +515,29 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
               <div className="flex items-start gap-4">
                 <div className="flex-1">
                   <h3 className="font-bold text-navy">Need Help Planning?</h3>
-                  <p className="mt-1 text-lg text-muted-foreground">Our travel experts are here to help you plan your perfect trip.</p>
+                  <p className="mt-1 text-lg text-muted-foreground">
+                    Our travel experts are here to help you plan your perfect
+                    trip.
+                  </p>
                   <div className="mt-3 space-y-1 text-lg">
-                    <div className="flex items-center gap-2 text-navy"><Phone className="h-4 w-4 text-orange" /> +977 984 123 4567</div>
-                    <div className="flex items-center gap-2 text-navy"><Mail className="h-4 w-4 text-orange" /> info@walkthroughnepal.com</div>
+                    <div className="flex items-center gap-2 text-navy">
+                      <Phone className="h-4 w-4 text-orange" /> +977 984 123
+                      4567
+                    </div>
+                    <div className="flex items-center gap-2 text-navy">
+                      <Mail className="h-4 w-4 text-orange" />{" "}
+                      info@walkthroughnepal.com
+                    </div>
                   </div>
                   <button className="mt-4 rounded-md bg-navy px-5 py-3 text-base font-semibold text-navy-foreground hover:opacity-90">
                     Talk To An Expert
                   </button>
                 </div>
-                <img src="/images/hero-trekker.jpg" alt="Travel expert" className="h-24 w-20 rounded-md object-cover" />
+                <img
+                  src="/images/hero-trekker.jpg"
+                  alt="Travel expert"
+                  className="h-24 w-20 rounded-md object-cover"
+                />
               </div>
             </div>
           </StickyWrapper>
@@ -378,12 +552,14 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             <div className="flex items-baseline gap-1.5">
               <span className="text-xl font-bold text-navy">${pkg.price}</span>
               {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
-                <span className="text-sm text-muted-foreground line-through">${pkg.maxPrice}</span>
+                <span className="text-sm text-muted-foreground line-through">
+                  ${pkg.maxPrice}
+                </span>
               )}
               <span className="text-xs text-muted-foreground">/person</span>
             </div>
           </div>
-          <button className="rounded-md bg-orange px-6 py-3 font-semibold text-orange-foreground hover:opacity-90 whitespace-nowrap">
+          <button className="rounded-md bg-orange px-6 py-3 font-semibold whitespace-nowrap text-orange-foreground hover:opacity-90">
             Check Availability
           </button>
         </div>

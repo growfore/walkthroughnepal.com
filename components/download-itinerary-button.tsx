@@ -1,6 +1,7 @@
 "use client"
 
 import { Download } from "lucide-react"
+import html2pdf from "html2pdf.js"
 
 type ItineraryDay = { day: number; title: string; description: string }
 type FAQ = { question: string; answer: string }
@@ -48,7 +49,7 @@ export function DownloadItineraryButton({
   additionalInfo?: AdditionalInfo[]
   faqs?: FAQ[]
 }) {
-  const handleDownload = () => {
+  const handleDownload = async () => {
     const facts = [
       ["Duration", duration],
       ["Difficulty", difficulty],
@@ -158,15 +159,36 @@ export function DownloadItineraryButton({
   </div>
 </body></html>`
 
-    const blob = new Blob([html], { type: "text/html" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `${title.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}-itinerary.html`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+    const iframe = document.createElement("iframe")
+    iframe.style.position = "fixed"
+    iframe.style.top = "0"
+    iframe.style.left = "-9999px"
+    iframe.style.width = "210mm"
+    iframe.style.border = "none"
+    iframe.style.opacity = "0.01"
+    iframe.style.pointerEvents = "none"
+    document.body.appendChild(iframe)
+
+    const loaded = new Promise<void>((r) => { iframe.onload = () => r() })
+    const doc = iframe.contentDocument!
+    doc.open()
+    doc.write(html)
+    doc.close()
+    await loaded
+
+    const filename = `${title.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}-itinerary.pdf`
+    await html2pdf()
+      .set({
+        filename,
+        margin: [15, 15, 15, 15],
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: null },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      })
+      .from(doc.body)
+      .save()
+
+    document.body.removeChild(iframe)
   }
 
   return (

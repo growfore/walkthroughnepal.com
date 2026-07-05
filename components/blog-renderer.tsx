@@ -1,7 +1,5 @@
-import { decodeHtmlEntities } from "@/lib/html-decoder"
-
 export function BlogRenderer({ html }: { html: string }) {
-  const markup = { __html: decodeHtmlEntities(html) }
+  const markup = { __html: html }
   return (
     <div
       className="prose md:prose-lg max-w-none w-full

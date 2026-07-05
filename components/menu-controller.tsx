@@ -139,12 +139,13 @@ export function MenuController({ items }: MenuControllerProps) {
         onMouseLeave={queueHide}
       >
         <div className="flex items-center gap-2">
-          <Link href="/" className="p-4 pl-0">
-            <img
+          <Link href="/" className="p-4 pl-0 font-black">
+            {/*<img
               src="/logo-no-bg.png"
               alt="Walk Through Nepal"
               className="h-auto w-80"
-            />
+            />*/}
+            walkthroughnepal.com
           </Link>
           {items.map((item) => {
             const itemHasChildren = hasChildren(item)
