@@ -138,14 +138,13 @@ export function MenuController({ items }: MenuControllerProps) {
         className="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8"
         onMouseLeave={queueHide}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-2">
           <Link href="/" className="p-4 pl-0 font-black">
-            {/*<img
+            <img
               src="/logo-no-bg.png"
               alt="Walk Through Nepal"
-              className="h-auto w-80"
-            />*/}
-            walkthroughnepal.com
+              className="h-auto w-40 sm:w-60"
+            />
           </Link>
           {items.map((item) => {
             const itemHasChildren = hasChildren(item)
