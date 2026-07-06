@@ -195,7 +195,6 @@ export default async function HomePage() {
             <SectionHeader
               title={tag.name.split("::")[0] || tag.name}
               description={tag.description}
-              link={{ href: "/explore", label: "Explore More" }}
             />
             <HorizontalScroll>
               {tag.activity?.map((a) => (
@@ -204,6 +203,11 @@ export default async function HomePage() {
                 </div>
               ))}
             </HorizontalScroll>
+            <div className="mt-8 text-center">
+              <Link href="/explore" className="inline-flex items-center gap-1 rounded-full bg-orange px-6 py-3 text-sm font-semibold text-orange-foreground hover:opacity-90">
+                Explore More <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </section>
       ))}
