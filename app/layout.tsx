@@ -1,4 +1,4 @@
-import { Geist_Mono, Inter, Sora } from "next/font/google"
+import { Geist_Mono, Montserrat, Sora } from "next/font/google"
 import type { Metadata, Viewport } from "next"
 
 import "./globals.css"
@@ -9,10 +9,10 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { ToastContainer } from "react-toastify"
 
-const inter = Inter({
+const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
 })
 
 const fontMono = Geist_Mono({
@@ -75,7 +75,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn(
         "antialiased",
-        inter.variable,
+        montserrat.variable,
         fontMono.variable,
         sora.variable
       )}
