@@ -65,25 +65,6 @@ const tabs = [
   { label: "FAQs", icon: MessageCircle },
 ]
 
-function RatingStars({
-  rating,
-  size = "h-4 w-4",
-}: {
-  rating: number
-  size?: string
-}) {
-  return (
-    <div className="flex">
-      {[...Array(5)].map((_, i) => (
-        <Star
-          key={i}
-          className={`${size} ${i < Math.round(rating) ? "fill-orange text-orange" : "text-white/30"}`}
-        />
-      ))}
-    </div>
-  )
-}
-
 export default async function PackagePage({
   params,
 }: {
@@ -145,7 +126,7 @@ export default async function PackagePage({
           <Lightbox src={heroImg} alt={pkg.title} />
           <div className="absolute inset-0 bg-black/65" />
 
-          <div className="relative mx-auto flex max-w-7xl items-center gap-2 px-4 pt-6 text-sm text-white/80">
+          <div className="relative mx-auto flex max-w-7xl items-center gap-2 px-4 pt-12 text-sm text-white/80">
             <Link href="/" className="hover:text-orange">
               Home
             </Link>
@@ -164,11 +145,8 @@ export default async function PackagePage({
               <MapPin className="h-4 w-4 text-orange" />{" "}
               {pkg.locations?.join(", ") || pkg.meetingPoint}
             </div>
-            <div className="mt-3 flex items-center gap-2 text-sm text-white/80">
-              <span>{pkg.reviewCount || 0} reviews</span>
-            </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-3 text-white/95">
+            <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2 text-white/95 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-3">
               {sidebarFacts.map((f) => {
                 const Icon = f.icon
                 return (
@@ -283,11 +261,11 @@ export default async function PackagePage({
             {/* ── Reviews ── */}
             <div id="reviews" className="mt-12 scroll-mt-24">
               <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-                  <div>
-                    <h2 className="text-2xl font-bold text-navy md:text-3xl">
-                      Traveler Reviews
-                    </h2>
-                  </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                    Traveler Reviews
+                  </h2>
+                </div>
               </div>
 
               <ReviewsCarousel items={testimonials} />
@@ -358,8 +336,6 @@ export default async function PackagePage({
               </div>
             )}
 
-
-
             {/* ── FAQs ── */}
             {(pkg.faqs ?? []).length > 0 && (
               <div id="faqs" className="mt-12 scroll-mt-24">
@@ -416,7 +392,9 @@ export default async function PackagePage({
             <div className="rounded-lg border border-border bg-card p-4 shadow-sm sm:p-5">
               <div className="text-sm text-muted-foreground">From</div>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-navy">${pkg.price}</span>
+                <span className="text-3xl font-bold text-navy">
+                  ${pkg.price}
+                </span>
                 {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
                   <span className="text-sm text-muted-foreground line-through">
                     ${pkg.maxPrice}
@@ -476,7 +454,7 @@ export default async function PackagePage({
                 <img
                   src="/images/hero-trekker.jpg"
                   alt="Travel expert"
-                  className="h-24 w-20 rounded-md object-cover"
+                  className="hidden h-24 w-20 shrink-0 rounded-md object-cover sm:block"
                 />
               </div>
             </div>

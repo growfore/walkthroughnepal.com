@@ -139,11 +139,11 @@ export function MenuController({ items }: MenuControllerProps) {
         onMouseLeave={queueHide}
       >
         <div className="flex items-center justify-between gap-2">
-          <Link href="/" className="p-4 pl-0 font-black">
+          <Link href="/" className="p-8 pl-0 font-black">
             <img
-              src="/logo-no-bg.png"
+              src="/logo-july-5.png"
               alt="Walk Through Nepal"
-              className="h-auto w-40 sm:w-60"
+              className="h-auto w-36"
             />
           </Link>
         </div>
