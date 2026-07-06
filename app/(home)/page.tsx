@@ -200,14 +200,16 @@ export default async function HomePage() {
       {/* ── Plan Your Trip CTA ── */}
       <section className="pb-20">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="flex flex-wrap items-center justify-between gap-6 rounded-lg bg-navy p-10 text-navy-foreground">
-            <div className="flex items-center gap-4">
-              <Headphones className="h-12 w-12 shrink-0 text-orange" />
+          <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-navy p-14 text-navy-foreground shadow-lg">
+            <div className="flex items-center gap-6">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-orange/20">
+                <Headphones className="h-8 w-8 text-orange" />
+              </div>
               <div>
-                <h3 className="text-2xl font-bold">
+                <h3 className="text-3xl font-bold">
                   Ready to start your adventure?
                 </h3>
-                <p className="mt-1 text-sm text-white/70">
+                <p className="mt-2 text-base text-white/70 max-w-lg">
                   Tell us your preferences and we&apos;ll craft a custom
                   itinerary for you.
                 </p>
@@ -215,9 +217,9 @@ export default async function HomePage() {
             </div>
             <Link
               href="/design-your-trip"
-              className="inline-flex items-center gap-2 rounded-full border border-white px-6 py-3 font-semibold hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-base font-bold text-orange-foreground shadow-md hover:shadow-xl hover:scale-105 transition-all"
             >
-              Plan Your Trip <ArrowRight className="h-4 w-4" />
+              Plan Your Trip <ArrowRight className="h-5 w-5" />
             </Link>
           </div>
         </div>
@@ -243,7 +245,7 @@ export default async function HomePage() {
                 <span>4.9/5 &middot; {testimonialList.length}+ reviews</span>
               </div>
             </div>
-            <AutoScroll className="max-h-[420px] space-y-10 overflow-y-auto pr-2">
+            <AutoScroll className="max-h-[280px] space-y-10 overflow-y-auto pr-2 md:max-h-[420px]">
               {testimonialList.map((t, i) => (
                 <div key={i} className="border-l-4 border-orange pl-6">
                   <p className="leading-relaxed text-foreground/85">
@@ -261,14 +263,19 @@ export default async function HomePage() {
       {/* ── Travel Inspiration ── */}
       <section className="pb-20">
         <div className="mx-auto max-w-7xl px-4">
-          <SectionHeader
-            title="Travel Inspiration"
-            link={{ href: "/blog", label: "Visit Our Blog" }}
-          />
+          <SectionHeader title="Travel Inspiration" />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {blogList.map((b) => (
               <BlogCard key={b.slug} {...b} />
             ))}
+          </div>
+          <div className="mt-8 text-center">
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-1 rounded-full border border-orange px-6 py-3 text-sm font-semibold text-orange hover:bg-orange hover:text-orange-foreground transition-colors"
+            >
+              Visit Our Blog <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>

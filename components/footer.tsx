@@ -7,7 +7,7 @@ import { useState, FormEvent } from "react"
 function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2">
-      <img src="/walkthrough-nepal-logo-white.png" alt="Walk Through Nepal" className="h-20 w-auto" />
+      <img src="/logo-july-6.png" alt="Walk Through Nepal" className="h-14 w-auto" />
     </Link>
   )
 }
