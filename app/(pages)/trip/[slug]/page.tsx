@@ -160,7 +160,7 @@ export default async function PackagePage({
           {sidebarFacts.map((f) => {
             const Icon = f.icon
             return (
-              <div key={f.label} className="rounded-lg border border-border bg-card p-4 text-center shadow-sm">
+              <div key={f.label} className="rounded-lg border border-border bg-success-soft p-4 text-center shadow-sm">
                 <Icon className="mx-auto h-6 w-6 text-orange" />
                 <div className="mt-2 text-lg font-bold text-navy">{f.value}</div>
                 <div className="text-xs text-muted-foreground">{f.label}</div>
