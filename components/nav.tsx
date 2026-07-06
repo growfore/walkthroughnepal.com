@@ -79,7 +79,7 @@ export function Nav() {
             <img
               src="/logo-jul-6.png"
               alt="Walk Through Nepal"
-              className="h-14 w-auto p-1"
+              className="h-14 w-auto p-2"
             />
           </Link>
         </div>
@@ -89,7 +89,7 @@ export function Nav() {
             <Link
               key={l.label}
               href={l.href}
-              className="px-3 py-1.5 text-sm font-bold tracking-wider text-ink/80 uppercase transition-colors hover:text-ink"
+              className="px-3 py-1.5 text-lg font-bold tracking-wider text-ink/80 uppercase transition-colors hover:text-ink"
             >
               {l.label}
             </Link>

@@ -135,11 +135,11 @@ export function MenuController({ items }: MenuControllerProps) {
 
       {/* Main nav */}
       <div
-        className="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8"
+        className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8"
         onMouseLeave={queueHide}
       >
         <div className="flex items-center justify-between gap-2">
-          <Link href="/" className="p-8 pl-0 font-black">
+          <Link href="/" className="pl-0 font-black">
             <img
               src="/logo-jul-6.png"
               alt="Walk Through Nepal"
@@ -167,7 +167,7 @@ export function MenuController({ items }: MenuControllerProps) {
                   <button
                     aria-haspopup="true"
                     aria-expanded={isActive}
-                    className={`inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium transition-colors ${
+                    className={`inline-flex items-center gap-0.5 px-3 py-1.5 text-lg font-medium transition-colors ${
                       isActive
                         ? "bg-[#f7f7f7] text-navy"
                         : "text-[#5b616e] hover:bg-[#f7f7f7] hover:text-navy"
@@ -179,7 +179,7 @@ export function MenuController({ items }: MenuControllerProps) {
                 ) : (
                   <Link
                     href={item.url || "#"}
-                    className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-[#5b616e] transition-colors hover:bg-[#f7f7f7] hover:text-navy"
+                    className="inline-flex items-center px-3 py-1.5 text-lg font-medium text-[#5b616e] transition-colors hover:bg-[#f7f7f7] hover:text-navy"
                   >
                     {item.label}
                   </Link>
