@@ -139,4 +139,7 @@
   small, .text-sm {
     @apply leading-6;
   }
+  .bg-card {
+    @apply border-0;
+  }
 }
