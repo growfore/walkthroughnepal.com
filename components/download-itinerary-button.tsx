@@ -64,14 +64,14 @@ export function DownloadItineraryButton({
     ].filter(([, v]) => v && v !== "N/A")
 
     const factsHtml = facts.map(([k, v]) =>
-      `<tr><td style="font-weight:600;color:#023047;padding:4px 0;width:160px">${k}</td><td style="padding:4px 0;color:#555">${v}</td></tr>`
+      `<tr><td style="font-weight:600;color:#1A3F4F;padding:4px 0;width:160px">${k}</td><td style="padding:4px 0;color:#555">${v}</td></tr>`
     ).join("")
 
     const daysHtml = itinerary.map((d) => `
       <tr style="page-break-inside:avoid">
-        <td style="width:60px;vertical-align:top;padding:8px 0;font-weight:700;color:#023047">Day ${d.day}</td>
+        <td style="width:60px;vertical-align:top;padding:8px 0;font-weight:700;color:#1A3F4F">Day ${d.day}</td>
         <td style="vertical-align:top;padding:8px 0">
-          <div style="font-weight:600;color:#023047;margin-bottom:4px">${d.title}</div>
+          <div style="font-weight:600;color:#1A3F4F;margin-bottom:4px">${d.title}</div>
           <div class="desc">${nbs(d.description)}</div>
         </td>
       </tr>`
@@ -109,12 +109,12 @@ export function DownloadItineraryButton({
   @page { margin: 20mm 15mm; }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:Georgia,serif; font-size:14px; line-height:1.6; color:#333; padding:40px 30px; max-width:800px; margin:0 auto; }
-  .header { text-align:center; border-bottom:2px solid #023047; padding-bottom:20px; margin-bottom:24px; }
+  .header { text-align:center; border-bottom:2px solid #1A3F4F; padding-bottom:20px; margin-bottom:24px; }
   .header img { height:50px; margin-bottom:12px; }
-  .header h1 { font-size:24px; color:#023047; margin:0; }
+  .header h1 { font-size:24px; color:#1A3F4F; margin:0; }
   .section { margin-bottom:24px; }
-  .section h2 { font-size:18px; color:#023047; margin-bottom:8px; border-bottom:1px solid #ddd; padding-bottom:4px; }
-  .section h3 { font-size:14px; color:#023047; margin-bottom:4px; margin-top:12px; }
+  .section h2 { font-size:18px; color:#1A3F4F; margin-bottom:8px; border-bottom:1px solid #ddd; padding-bottom:4px; }
+  .section h3 { font-size:14px; color:#1A3F4F; margin-bottom:4px; margin-top:12px; }
   table { width:100%; border-collapse:collapse; }
   .desc { font-size:13px; line-height:1.6; color:#555; }
   .desc p { margin-bottom:6px; }
@@ -130,9 +130,9 @@ export function DownloadItineraryButton({
   .prose br { display:block; content:""; margin:4px 0; }
   .info-block { margin-bottom:12px; }
   .faq { margin-bottom:12px; page-break-inside:avoid; }
-  .faq strong { display:block; font-size:13px; color:#023047; margin-bottom:2px; }
-  .footer { margin-top:32px; padding-top:16px; border-top:2px solid #023047; text-align:center; font-size:13px; color:#555; }
-  .footer strong { color:#023047; }
+  .faq strong { display:block; font-size:13px; color:#1A3F4F; margin-bottom:2px; }
+  .footer { margin-top:32px; padding-top:16px; border-top:2px solid #1A3F4F; text-align:center; font-size:13px; color:#555; }
+  .footer strong { color:#1A3F4F; }
 </style></head>
 <body>
   <div class="header">

@@ -404,33 +404,31 @@ export default async function PackagePage({
             </div>
 
             {/* Contact */}
-            <div className="rounded-lg border border-border bg-card p-6">
-              <div className="flex items-start gap-4">
-                <div className="flex-1">
-                  <h3 className="font-bold text-navy">Need Help Planning?</h3>
-                  <p className="mt-1 text-lg text-muted-foreground">
-                    Our travel experts are here to help you plan your perfect
-                    trip.
-                  </p>
-                  <div className="mt-3 space-y-1 text-lg">
-                    <div className="flex items-center gap-2 text-navy">
-                      <Phone className="h-4 w-4 text-orange" /> +977 984 123
-                      4567
-                    </div>
-                    <div className="flex items-center gap-2 text-navy">
-                      <Mail className="h-4 w-4 text-orange" />{" "}
-                      info@walkthroughnepal.com
-                    </div>
+            <div className="overflow-hidden rounded-lg border border-border bg-card">
+              <img
+                src="/images/hero-trekker.jpg"
+                alt="Travel expert"
+                className="h-32 w-full object-cover"
+              />
+              <div className="p-6 pt-4">
+                <h3 className="font-bold text-navy">Need Help Planning?</h3>
+                <p className="mt-1 text-lg text-muted-foreground">
+                  Our travel experts are here to help you plan your perfect
+                  trip.
+                </p>
+                <div className="mt-3 space-y-1 text-lg">
+                  <div className="flex items-center gap-2 text-navy">
+                    <Phone className="h-4 w-4 text-orange" /> +977 984 123
+                    4567
                   </div>
-                  <button className="mt-4 rounded-md bg-navy px-5 py-3 text-base font-semibold text-navy-foreground hover:opacity-90">
-                    Talk To An Expert
-                  </button>
+                  <div className="flex items-center gap-2 text-navy">
+                    <Mail className="h-4 w-4 text-orange" />{" "}
+                    info@walkthroughnepal.com
+                  </div>
                 </div>
-                <img
-                  src="/images/hero-trekker.jpg"
-                  alt="Travel expert"
-                  className="hidden h-24 w-20 shrink-0 rounded-md object-cover sm:block"
-                />
+                <button className="mt-4 rounded-md bg-navy px-5 py-3 text-base font-semibold text-navy-foreground hover:opacity-90">
+                  Talk To An Expert
+                </button>
               </div>
             </div>
           </StickyWrapper>

@@ -1,12 +1,5 @@
 import Link from "next/link"
-import {
-  Clock,
-  TrendingUp,
-  ArrowRight,
-  MapPin,
-  Home,
-  Gauge,
-} from "lucide-react"
+import { Clock } from "lucide-react"
 import { img } from "@/lib/api"
 
 export function TripCard({
@@ -25,51 +18,61 @@ export function TripCard({
   compact?: boolean
 }) {
   const a = activity
+  const imageUrl = img(a.images?.[0]) ?? "/images/trek-everest.jpg"
+
+  const difficultyLabel = a.difficultyLevel
+    ?.replace(/_/g, " ")
+    .replace(/\b\w/g, (l: string) => l.toUpperCase()) ?? "Moderate"
+
+  const level = a.difficultyLevel?.toLowerCase() ?? ""
+  // ponytail: fixed fill widths/colors, map properly when levels are numeric
+  const levelFill = level.includes("easy") ? "40%"
+    : level.includes("moderate") ? "60%"
+    : level.includes("hard") || level.includes("strenuous") ? "85%"
+    : "70%"
+  const levelColor = level.includes("easy") ? "from-emerald-400 to-emerald-500"
+    : level.includes("moderate") ? "from-orange-400 to-orange-500"
+    : "from-red-400 to-red-500"
+
   return (
     <Link
       href={`/trip/${a.slug}`}
-      className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm transition hover:shadow-md"
+      className={`group relative block overflow-hidden rounded-lg shadow-md hover:shadow-lg ${
+        compact ? "h-[480px] min-w-72 shrink-0" : "h-[600px]"
+      } transition-shadow duration-500`}
     >
-      <div
-        className={`relative shrink-0 overflow-hidden ${compact ? "h-44" : "h-48"}`}
-      >
+      <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-110">
         <img
-          src={img(a.images?.[0]) ?? "/images/trek-everest.jpg"}
-          alt={a.title}
+          src={imageUrl}
+          alt=""
+          className="h-full w-full object-cover"
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-125"
         />
-        <span className="absolute top-3 left-3 rounded bg-orange px-2.5 py-1 text-[10px] font-bold text-orange-foreground">
-          {a.duration}
-        </span>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent" />
       </div>
-      <div className={`flex flex-1 flex-col ${compact ? "p-4" : "p-5"}`}>
-        <h3
-          className={`line-clamp-2 min-h-[3.5rem] leading-snug font-bold text-navy ${compact ? "" : "text-lg"}`}
-        >
+
+      <span className="absolute top-4 left-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-orange/90 px-3 py-1.5 text-xs font-bold text-orange-foreground shadow-sm backdrop-blur-sm">
+        <Clock className="h-3 w-3" /> {a.duration}
+      </span>
+
+      <div className="absolute inset-x-0 bottom-0 z-10 p-5 text-white">
+        <h3 className={`font-extrabold tracking-tight ${compact ? "" : "text-lg"}`}>
           {a.title}
         </h3>
-        <div
-          className={`flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground ${compact ? "mt-2" : "mt-3"}`}
-        >
-          <span className="flex items-center gap-1">
-            <Clock className="h-3 w-3" /> {a.duration}
-          </span>
-          <span className="flex items-center gap-1">
-            <Gauge className="h-3 w-3" />{" "}
-            {a.difficultyLevel
-              ?.replace(/_/g, " ")
-              .replace(/\b\w/g, (l: string) => l.toUpperCase()) ?? "Moderate"}
-          </span>
+
+        <div className="mt-1 flex items-baseline gap-2 text-sm">
+          <span className="opacity-75">{a.duration} from</span>
+          <span className="text-xl font-extrabold text-orange">${a.price}</span>
         </div>
-        <div className="mt-auto flex items-center justify-between border-border pt-3">
-          <div>
-            <div className="text-[10px] text-muted-foreground">From</div>
-            <div className="text-lg font-bold text-navy">${a.price}</div>
+
+        <div className="mt-3 flex items-center gap-3 text-sm">
+          <span className="opacity-80">{difficultyLabel}</span>
+          <div className="h-1 w-24 overflow-hidden rounded-full bg-white/30">
+            <div
+              className={`h-full rounded-full bg-gradient-to-r ${levelColor}`}
+              style={{ width: levelFill }}
+            />
           </div>
-          <span className="flex items-center gap-1 text-sm font-medium text-orange group-hover:underline">
-            View Details <ArrowRight className="h-3.5 w-3.5" />
-          </span>
         </div>
       </div>
     </Link>

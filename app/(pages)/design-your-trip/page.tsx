@@ -286,7 +286,7 @@ export default function DesignYourTrip() {
   const goPrev = () => setStep((s) => Math.max(s - 1, 0))
 
   return (
-    <main className="bg-canvas min-h-screen" style={{ "--primary": "#fb8500", "--primary-foreground": "#ffffff" } as React.CSSProperties}>
+    <main className="bg-canvas min-h-screen" style={{ "--primary": "#CB7040", "--primary-foreground": "#ffffff" } as React.CSSProperties}>
       <section className="bg-navy pt-20 pb-10 px-6 md:pt-28 md:pb-14">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-2xl md:text-4xl font-bold text-navy-foreground leading-tight mb-3">
