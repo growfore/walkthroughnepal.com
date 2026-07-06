@@ -145,20 +145,6 @@ export default async function PackagePage({
               {pkg.locations?.join(", ") || pkg.meetingPoint}
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2 text-white/95 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-3">
-              {sidebarFacts.map((f) => {
-                const Icon = f.icon
-                return (
-                  <div key={f.label} className="flex items-center gap-2">
-                    <Icon className="h-5 w-5 shrink-0 text-white/80" />
-                    <div className="text-sm leading-tight">
-                      <div className="font-semibold">{f.value}</div>
-                      <div className="text-xs text-white/70">{f.label}</div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
           </div>
 
           {/* Thumbnails */}
@@ -168,8 +154,24 @@ export default async function PackagePage({
         </div>
       </section>
 
+      {/* ── Facts ── */}
+      <section className="mx-auto max-w-7xl px-4 -mt-16 relative z-10">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {sidebarFacts.map((f) => {
+            const Icon = f.icon
+            return (
+              <div key={f.label} className="rounded-lg border border-border bg-card p-4 text-center shadow-sm">
+                <Icon className="mx-auto h-6 w-6 text-orange" />
+                <div className="mt-2 text-lg font-bold text-navy">{f.value}</div>
+                <div className="text-xs text-muted-foreground">{f.label}</div>
+              </div>
+            )
+          })}
+        </div>
+      </section>
+
       {/* ── Main content ── */}
-      <section className="py-12 pb-20 text-lg leading-relaxed font-medium lg:pb-12">
+      <section className="pb-20 pt-12 text-lg leading-relaxed font-medium lg:pb-12">
         <SectionNav />
 
         <div className="mx-auto grid max-w-7xl min-w-0 gap-8 px-4 lg:grid-cols-3">
