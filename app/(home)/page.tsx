@@ -1,5 +1,13 @@
 import type { Metadata } from "next"
-import { Star, ArrowRight, Headphones, Users, ClipboardList, Heart, PhoneCall } from "lucide-react"
+import {
+  Star,
+  ArrowRight,
+  Headphones,
+  Users,
+  ClipboardList,
+  Heart,
+  PhoneCall,
+} from "lucide-react"
 import Link from "next/link"
 import type { FeaturedTag, TeamMember } from "@/lib/types"
 
@@ -94,7 +102,8 @@ export default async function HomePage() {
       image: img(b.coverImage),
       tag: b.category?.name?.toUpperCase() ?? "TRAVEL",
       title: b.title,
-      description: b.metaDescription ?? stripHtml(b.content).slice(0, 120) + "...",
+      description:
+        b.metaDescription ?? stripHtml(b.content).slice(0, 120) + "...",
       date: new Date(b.createdAt).toLocaleDateString("en-US", {
         month: "long",
         day: "numeric",
@@ -115,10 +124,26 @@ export default async function HomePage() {
   } catch {}
 
   const reasons = [
-    { icon: Users, title: "Local Experts", text: "Real Nepal based team with in-depth knowledge." },
-    { icon: ClipboardList, title: "Flexible Itineraries", text: "Customize your trip to match your time and budget." },
-    { icon: Heart, title: "Responsible Tourism", text: "We support local communities and sustainable travel." },
-    { icon: PhoneCall, title: "24/7 Support", text: "We're with you before, during and after your trip." },
+    {
+      icon: Users,
+      title: "Local Experts",
+      text: "Real Nepal based team with in-depth knowledge.",
+    },
+    {
+      icon: ClipboardList,
+      title: "Flexible Itineraries",
+      text: "Customize your trip to match your time and budget.",
+    },
+    {
+      icon: Heart,
+      title: "Responsible Tourism",
+      text: "We support local communities and sustainable travel.",
+    },
+    {
+      icon: PhoneCall,
+      title: "24/7 Support",
+      text: "We're with you before, during and after your trip.",
+    },
   ]
 
   return (
@@ -155,25 +180,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── Selling Points ── */}
-      <section className="py-20">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {reasons.map((r) => (
-              <div key={r.title} className="text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange/10 text-orange">
-                  <r.icon className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 font-bold text-navy">{r.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{r.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── Explore by Category ── */}
-      <section className="pb-20">
+      <section className="mt-12 pb-20">
         <div className="mx-auto max-w-7xl px-4">
           <SectionHeader title="Explore by Category" align="center" />
           <CategoryScroll categories={categories} />
@@ -200,6 +208,22 @@ export default async function HomePage() {
         </section>
       ))}
 
+      {/* ── Selling Points ── */}
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {reasons.map((r) => (
+              <div key={r.title} className="text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange/10 text-orange">
+                  <r.icon className="h-6 w-6" />
+                </div>
+                <h3 className="mt-4 font-bold text-navy">{r.title}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{r.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
       {/* ── Plan Your Trip CTA ── */}
       <section className="pb-20">
         <div className="mx-auto max-w-7xl px-4">

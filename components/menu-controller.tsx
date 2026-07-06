@@ -146,6 +146,8 @@ export function MenuController({ items }: MenuControllerProps) {
               className="h-auto w-40 sm:w-60"
             />
           </Link>
+        </div>
+        <div className="flex items-center gap-4">
           {items.map((item) => {
             const itemHasChildren = hasChildren(item)
             const itemHasGrandchildren = hasGrandchildren(item)

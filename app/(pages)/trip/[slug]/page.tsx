@@ -25,7 +25,7 @@ import {
 import { SectionNav } from "@/components/section-nav"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getActivityBySlug, img } from "@/lib/api"
+import { getActivityBySlug, getTestimonials, img } from "@/lib/api"
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -51,6 +51,7 @@ import { ItineraryList } from "@/components/itinerary-list"
 import { Lightbox } from "@/components/lightbox"
 import { DownloadItineraryButton } from "@/components/download-itinerary-button"
 import { ThumbnailGallery } from "@/components/thumbnail-gallery"
+import { ReviewsCarousel } from "@/components/reviews-carousel"
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
@@ -80,45 +81,6 @@ function RatingStars({
         />
       ))}
     </div>
-  )
-}
-
-function FactBadge({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: any
-  label: string
-  value: string
-}) {
-  return (
-    <div className="flex items-center gap-3">
-      <Icon className="h-6 w-6 shrink-0" />
-      <div className="text-sm leading-tight">
-        <div className="font-semibold">{value}</div>
-        <div className="text-xs text-white/70">{label}</div>
-      </div>
-    </div>
-  )
-}
-
-function SidebarFact({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: any
-  label: string
-  value: string
-}) {
-  return (
-    <li className="flex items-center justify-between gap-4 border-b border-border pb-3 last:border-0">
-      <span className="flex items-center gap-2 text-muted-foreground">
-        <Icon className="h-4 w-4 shrink-0 text-orange" /> {label}
-      </span>
-      <span className="text-right font-semibold text-navy">{value}</span>
-    </li>
   )
 }
 
@@ -167,13 +129,21 @@ export default async function PackagePage({
     },
   ]
 
+  let testimonials: { author: string; content: string }[] = []
+  try {
+    testimonials = (await getTestimonials()).map((t) => ({
+      author: t.author,
+      content: t.content,
+    }))
+  } catch {}
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* ── Hero ── */}
       <section className="relative">
-        <div className="relative h-[400px] w-full overflow-hidden md:h-[520px]">
+        <div className="relative h-[580px] w-full overflow-hidden md:h-[520px]">
           <Lightbox src={heroImg} alt={pkg.title} />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/10" />
+          <div className="absolute inset-0 bg-black/65" />
 
           <div className="relative mx-auto flex max-w-7xl items-center gap-2 px-4 pt-6 text-sm text-white/80">
             <Link href="/" className="hover:text-orange">
@@ -194,41 +164,31 @@ export default async function PackagePage({
               <MapPin className="h-4 w-4 text-orange" />{" "}
               {pkg.locations?.join(", ") || pkg.meetingPoint}
             </div>
-            <div className="mt-3 flex items-center gap-2">
-              <RatingStars rating={pkg.averageRating} />
-              <span className="text-sm font-semibold">
-                {pkg.averageRating || "New"}
-              </span>
-              <span className="text-sm text-white/80">
-                ({pkg.reviewCount || 0} Reviews)
-              </span>
+            <div className="mt-3 flex items-center gap-2 text-sm text-white/80">
+              <span>{pkg.reviewCount || 0} reviews</span>
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-4 text-white/95 sm:flex sm:flex-wrap sm:gap-8">
-              <FactBadge icon={Clock} label="Duration" value={pkg.duration} />
-              <FactBadge
-                icon={TrendingUp}
-                label="Max Altitude"
-                value={pkg.maximumAltitude}
-              />
-              <FactBadge
-                icon={Mountain}
-                label="Difficulty"
-                value={difficulty}
-              />
-              <FactBadge
-                icon={Calendar}
-                label="Best Season"
-                value={pkg.bestSeason}
-              />
+            <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-3 text-white/95">
+              {sidebarFacts.map((f) => {
+                const Icon = f.icon
+                return (
+                  <div key={f.label} className="flex items-center gap-2">
+                    <Icon className="h-5 w-5 shrink-0 text-white/80" />
+                    <div className="text-sm leading-tight">
+                      <div className="font-semibold">{f.value}</div>
+                      <div className="text-xs text-white/70">{f.label}</div>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
-        </div>
 
-        {/* Thumbnails */}
-        {pkg.images.length > 0 && (
-          <ThumbnailGallery images={pkg.images} apiUrl={API} />
-        )}
+          {/* Thumbnails */}
+          {pkg.images.length > 0 && (
+            <ThumbnailGallery images={pkg.images} apiUrl={API} />
+          )}
+        </div>
       </section>
 
       {/* ── Main content ── */}
@@ -320,6 +280,19 @@ export default async function PackagePage({
               )}
             </div>
 
+            {/* ── Reviews ── */}
+            <div id="reviews" className="mt-12 scroll-mt-24">
+              <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                      Traveler Reviews
+                    </h2>
+                  </div>
+              </div>
+
+              <ReviewsCarousel items={testimonials} />
+            </div>
+
             {/* ── Itinerary ── */}
             <div id="itinerary" className="mt-12 scroll-mt-24">
               <ItineraryList days={pkg.itinerary ?? []} />
@@ -385,34 +358,7 @@ export default async function PackagePage({
               </div>
             )}
 
-            {/* ── Reviews ── */}
-            <div id="reviews" className="mt-12 scroll-mt-24">
-              <h2 className="text-2xl font-bold text-navy md:text-3xl">
-                Traveler Reviews
-              </h2>
-              <div className="mt-4 rounded-lg border border-border bg-card p-6">
-                <div className="flex flex-wrap items-center gap-6">
-                  <div className="text-center">
-                    <div className="text-5xl font-bold text-navy">
-                      {pkg.averageRating || "New"}
-                    </div>
-                    <div className="mt-1 flex justify-center">
-                      <RatingStars rating={pkg.averageRating} />
-                    </div>
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      {pkg.reviewCount || 0} Reviews
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-lg text-muted-foreground">
-                      {pkg.reviewCount > 0
-                        ? "Reviews from travelers who have completed this trip."
-                        : "No reviews yet. Be the first to share your experience!"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+
 
             {/* ── FAQs ── */}
             {(pkg.faqs ?? []).length > 0 && (
@@ -467,19 +413,19 @@ export default async function PackagePage({
             offset={120}
           >
             {/* Price */}
-            <div className="rounded-lg border border-border bg-card p-4 shadow-sm sm:p-6">
+            <div className="rounded-lg border border-border bg-card p-4 shadow-sm sm:p-5">
               <div className="text-sm text-muted-foreground">From</div>
               <div className="flex items-baseline gap-2">
-                <div className="text-4xl font-bold text-navy">${pkg.price}</div>
+                <span className="text-3xl font-bold text-navy">${pkg.price}</span>
                 {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
-                  <div className="text-lg text-muted-foreground line-through">
+                  <span className="text-sm text-muted-foreground line-through">
                     ${pkg.maxPrice}
-                  </div>
+                  </span>
                 )}
               </div>
               <div className="text-sm text-muted-foreground">per person</div>
 
-              <button className="mt-5 w-full rounded-md bg-orange py-3 font-semibold text-orange-foreground hover:opacity-90">
+              <button className="mt-4 w-full rounded-md bg-orange py-2.5 text-sm font-semibold text-orange-foreground hover:opacity-90">
                 Check Availability
               </button>
               <DownloadItineraryButton
@@ -502,12 +448,6 @@ export default async function PackagePage({
                 additionalInfo={pkg.additionalInfo}
                 faqs={pkg.faqs}
               />
-
-              <ul className="mt-6 space-y-4 text-lg">
-                {sidebarFacts.map((f) => (
-                  <SidebarFact key={f.label} {...f} />
-                ))}
-              </ul>
             </div>
 
             {/* Contact */}

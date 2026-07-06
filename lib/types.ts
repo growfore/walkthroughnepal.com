@@ -61,6 +61,7 @@ export interface ItineraryDay {
   descent: string
   distance: string
   duration: string
+  dayFeaturedImages: { alt: string; image: string }[]
 }
 
 export interface FAQ {

@@ -46,7 +46,7 @@ export function Nav() {
       {/* Top bar */}
       <div className="hidden bg-navy text-navy-foreground md:block">
         <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 md:px-8">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-1 items-center justify-end gap-2">
             <span className="flex items-center gap-1 text-sm font-medium">
               <span className="flex text-orange">★★★★★</span>
               <span>
@@ -73,8 +73,8 @@ export function Nav() {
       </div>
 
       {/* Main nav */}
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8">
-        <div className="flex items-center gap-6">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 md:px-8">
+        <div className="flex flex-1">
           <Link href="/">
             <img
               src="/logo-no-bg.png"
@@ -82,20 +82,21 @@ export function Nav() {
               className="h-14 w-auto p-1"
             />
           </Link>
-          <div className="hidden items-center gap-1 lg:flex">
-            {navLinks.map((l) => (
-              <Link
-                key={l.label}
-                href={l.href}
-                className="px-3 py-1.5 text-sm font-bold tracking-wider text-ink/80 uppercase transition-colors hover:text-ink"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="hidden justify-center gap-1 lg:flex">
+          {navLinks.map((l) => (
+            <Link
+              key={l.label}
+              href={l.href}
+              className="px-3 py-1.5 text-sm font-bold tracking-wider text-ink/80 uppercase transition-colors hover:text-ink"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="flex items-center justify-end gap-2">
           <Link
             href="/design-your-trip"
             className="hidden rounded-md border border-navy px-4 py-2 text-sm font-semibold text-navy transition hover:bg-navy hover:text-navy-foreground md:inline-flex"
@@ -126,7 +127,7 @@ export function Nav() {
             <Link
               key={l.label}
               href={l.href}
-              className="block px-4 py-3 text-sm font-bold tracking-wider text-ink/80 uppercase transition-colors hover:bg-muted hover:text-ink md:px-8"
+              className="block px-4 py-3 text-center text-sm font-bold tracking-wider text-ink/80 uppercase transition-colors hover:bg-muted hover:text-ink md:px-8"
               onClick={() => setMobileOpen(false)}
             >
               {l.label}

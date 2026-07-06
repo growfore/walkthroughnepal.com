@@ -9,7 +9,7 @@ export function decodeHtmlEntities(html: string): string {
       .replace(/&#39;/g, "'")
   } else {
     const textarea = document.createElement("textarea")
-    textarea.innerHTML = html
-    return textarea.value
+    textarea.innerHTML = html.replace(/&nbsp;/g, " ")
+    return textarea.value.replace(/\u00A0/g, " ")
   }
 }
