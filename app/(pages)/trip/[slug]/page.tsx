@@ -96,33 +96,8 @@ export default async function PackagePage({
     <div className="min-h-screen bg-background text-foreground">
       {/* ── Hero ── */}
       <section className="relative">
-        <div className="relative h-[580px] w-full overflow-hidden md:h-[520px]">
+        <div className="relative h-[400px] w-full overflow-hidden md:h-[480px]">
           <Lightbox src={heroImg} alt={pkg.title} />
-          <div className="absolute inset-0 bg-black/65" />
-
-          <div className="relative mx-auto flex max-w-7xl items-center gap-2 px-4 pt-12 text-sm text-white/80">
-            <Link href="/" className="hover:text-orange">
-              Home
-            </Link>
-            <ChevronRight className="h-3.5 w-3.5" />
-            <span className="text-white">{pkg.title}</span>
-          </div>
-
-          <div className="relative mx-auto mt-6 max-w-7xl px-4 text-white md:mt-8">
-            <span className="inline-block rounded-full bg-orange px-3 py-1 text-[11px] font-bold tracking-wider text-orange-foreground">
-              {pkg.isFeatured ? "FEATURED" : "BEST SELLER"}
-            </span>
-            <h1 className="mt-4 text-3xl leading-tight font-bold md:text-5xl lg:text-6xl">
-              {pkg.title}
-            </h1>
-            <div className="mt-3 flex items-center gap-2 text-white/90">
-              <MapPin className="h-4 w-4 text-orange" />{" "}
-              {pkg.locations?.join(", ") || pkg.meetingPoint}
-            </div>
-
-          </div>
-
-          {/* Thumbnails */}
           {pkg.images.length > 0 && (
             <ThumbnailGallery images={pkg.images} apiUrl={API} />
           )}
@@ -135,6 +110,24 @@ export default async function PackagePage({
 
         <div className="mx-auto grid max-w-7xl min-w-0 gap-8 px-4 lg:grid-cols-3">
           <div className="min-w-0 lg:col-span-2">
+            {/* ── Title & Breadcrumb ── */}
+            <div className="mb-6">
+              <nav className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Link href="/" className="hover:text-orange">Home</Link>
+                <ChevronRight className="h-3.5 w-3.5" />
+                <span className="text-navy">{pkg.title}</span>
+              </nav>
+
+              <span className="mt-4 inline-block rounded-full bg-orange px-3 py-1 text-[11px] font-bold tracking-wider text-orange-foreground">
+                {pkg.isFeatured ? "FEATURED" : "BEST SELLER"}
+              </span>
+
+              <h1 className="mt-3 text-3xl leading-tight font-bold text-navy md:text-5xl">
+                {pkg.title}
+              </h1>
+
+            </div>
+
             {/* ── Facts ── */}
             <div className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4">
               {[

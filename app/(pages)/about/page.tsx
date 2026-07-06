@@ -122,7 +122,9 @@ export default async function AboutPage() {
             <SectionHeader title="Meet Our Experts" align="center" />
             <HorizontalScroll>
               {teamMembers.map((m) => (
-                <TeamCard key={m.id} member={m} />
+                <div key={m.id} className="w-[320px] shrink-0 rounded-xl border border-border bg-card p-6 shadow-sm">
+                  <TeamCard member={m} />
+                </div>
               ))}
             </HorizontalScroll>
           </div>
