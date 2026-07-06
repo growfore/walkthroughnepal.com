@@ -167,7 +167,7 @@ export function MenuController({ items }: MenuControllerProps) {
                   <button
                     aria-haspopup="true"
                     aria-expanded={isActive}
-                    className={`inline-flex items-center gap-0.5 px-3 py-1.5 text-lg font-medium transition-colors ${
+                    className={`text-md inline-flex items-center gap-0.5 px-3 py-1.5 font-medium transition-colors ${
                       isActive
                         ? "bg-[#f7f7f7] text-navy"
                         : "text-[#5b616e] hover:bg-[#f7f7f7] hover:text-navy"
@@ -179,7 +179,7 @@ export function MenuController({ items }: MenuControllerProps) {
                 ) : (
                   <Link
                     href={item.url || "#"}
-                    className="inline-flex items-center px-3 py-1.5 text-lg font-medium text-[#5b616e] transition-colors hover:bg-[#f7f7f7] hover:text-navy"
+                    className="text-md inline-flex items-center px-3 py-1.5 font-medium text-[#5b616e] transition-colors hover:bg-[#f7f7f7] hover:text-navy"
                   >
                     {item.label}
                   </Link>
