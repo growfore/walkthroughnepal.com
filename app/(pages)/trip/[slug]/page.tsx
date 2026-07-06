@@ -159,7 +159,7 @@ export default async function PackagePage({
                   {group.map((f) => {
                     const Icon = f.icon
                     return (
-                      <div key={f.label} className="flex items-center gap-2 py-1 first:pb-1.5">
+                      <div key={f.label} className="flex items-start gap-2 py-1 first:pb-1.5">
                         <Icon className="h-4 w-4 shrink-0 text-navy/60" />
                         <div className="min-w-0 text-sm leading-tight">
                           <div className="font-semibold text-navy">{f.value}</div>
