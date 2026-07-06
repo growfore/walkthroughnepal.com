@@ -84,30 +84,6 @@ export default async function PackagePage({
       .replace(/\b\w/g, (l) => l.toUpperCase()) ?? "Moderate"
   const heroImg = img(pkg.images[0], API)
 
-  const sidebarFacts = [
-    { icon: Clock, label: "Duration", value: pkg.duration },
-    { icon: TrendingUp, label: "Max Altitude", value: pkg.maximumAltitude },
-    { icon: Mountain, label: "Difficulty", value: difficulty },
-    { icon: Calendar, label: "Best Season", value: pkg.bestSeason },
-    {
-      icon: HomeIcon,
-      label: "Accommodation",
-      value: pkg.accommodations?.join(", ") || "Tea House",
-    },
-    { icon: Utensils, label: "Meals", value: pkg.meals },
-    {
-      icon: Users,
-      label: "Group Size",
-      value: pkg.groupSize || `${pkg.guestCapacity || 1} Pax`,
-    },
-    { icon: Bus, label: "Transportation", value: pkg.transportation || "N/A" },
-    {
-      icon: MapPin,
-      label: "Meeting/ Dropoff Point",
-      value: pkg.meetingPoint + "/ " + pkg.dropOffPoint,
-    },
-  ]
-
   let testimonials: { author: string; content: string }[] = []
   try {
     testimonials = (await getTestimonials()).map((t) => ({
@@ -183,11 +159,11 @@ export default async function PackagePage({
                   {group.map((f) => {
                     const Icon = f.icon
                     return (
-                      <div key={f.label} className="flex items-center gap-2 py-0.5 first:pb-1.5">
+                      <div key={f.label} className="flex items-center gap-2 py-1 first:pb-1.5">
                         <Icon className="h-4 w-4 shrink-0 text-navy/60" />
                         <div className="min-w-0 text-sm leading-tight">
-                          <span className="font-semibold text-navy">{f.value}</span>
-                          <span className="text-navy/50"> — {f.label}</span>
+                          <div className="font-semibold text-navy">{f.value}</div>
+                          <div className="text-xs text-navy/50">{f.label}</div>
                         </div>
                       </div>
                     )
