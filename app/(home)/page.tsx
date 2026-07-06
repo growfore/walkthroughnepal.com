@@ -34,6 +34,7 @@ import { TripCard } from "@/components/trip-card"
 import { SectionHeader } from "@/components/section-header"
 import { SearchBox } from "@/components/search-box"
 import { BlogCard } from "@/components/blog-card"
+import { AutoScroll } from "@/components/auto-scroll"
 
 function stripHtml(html: string) {
   return html.replace(/<[^>]*>/g, "").trim()
@@ -242,7 +243,7 @@ export default async function HomePage() {
                 <span>4.9/5 &middot; {testimonialList.length}+ reviews</span>
               </div>
             </div>
-            <div className="max-h-[420px] space-y-10 overflow-y-auto pr-2">
+            <AutoScroll className="max-h-[420px] space-y-10 overflow-y-auto pr-2">
               {testimonialList.map((t, i) => (
                 <div key={i} className="border-l-4 border-orange pl-6">
                   <p className="leading-relaxed text-foreground/85">
@@ -252,7 +253,7 @@ export default async function HomePage() {
                   <div className="text-sm text-muted-foreground">{t.country}</div>
                 </div>
               ))}
-            </div>
+            </AutoScroll>
           </div>
         </div>
       </section>
