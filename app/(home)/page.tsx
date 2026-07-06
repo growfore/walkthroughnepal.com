@@ -242,8 +242,8 @@ export default async function HomePage() {
                 <span>4.9/5 &middot; {testimonialList.length}+ reviews</span>
               </div>
             </div>
-            <div className="space-y-10">
-              {testimonialList.slice(0, 3).map((t, i) => (
+            <div className="max-h-[420px] space-y-10 overflow-y-auto pr-2">
+              {testimonialList.map((t, i) => (
                 <div key={i} className="border-l-4 border-orange pl-6">
                   <p className="leading-relaxed text-foreground/85">
                     &ldquo;{t.text}&rdquo;
