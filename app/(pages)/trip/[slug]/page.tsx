@@ -6,7 +6,6 @@ import {
   ChevronRight,
   Star,
   Calendar,
-  TrendingUp,
   Users,
   Home as HomeIcon,
   Check,
@@ -168,7 +167,7 @@ export default async function PackagePage({
                   { icon: Mountain, label: "Difficulty", value: difficulty },
                 ],
                 [
-                  { icon: TrendingUp, label: "Max Altitude", value: pkg.maximumAltitude },
+                  { icon: () => <span className="text-sm font-bold">↑</span>, label: "Max Altitude", value: pkg.maximumAltitude },
                   { icon: Calendar, label: "Best Season", value: pkg.bestSeason },
                 ],
                 [
@@ -180,7 +179,7 @@ export default async function PackagePage({
                   { icon: Bus, label: "Transportation", value: pkg.transportation || "N/A" },
                 ],
               ].map((group, gi) => (
-                <div key={gi} className="rounded-lg border border-border bg-success-soft p-3 shadow-sm">
+                <div key={gi} className="rounded-lg bg-[#DFEFE6] p-3">
                   {group.map((f) => {
                     const Icon = f.icon
                     return (
