@@ -68,8 +68,11 @@ export function getTripTypes() {
   return fetchJSON<{ message: string; data: { tripTypes: TripType[] } }>(API, "/api/v1/trip-type")
 }
 
-export function getPublishedPosts(page = 1, limit = 10) {
-  return fetchJSON<{ blogs: CMSPost[]; pagination: Pagination }>(API, `/api/v1/blogs/published?page=${page}&limit=${limit}`)
+export function getPublishedPosts(page = 1, limit = 10, search?: string, category?: string) {
+  let url = `/api/v1/blogs/published?page=${page}&limit=${limit}`
+  if (search) url += `&search=${encodeURIComponent(search)}`
+  if (category) url += `&category=${encodeURIComponent(category)}`
+  return fetchJSON<{ blogs: CMSPost[]; pagination: Pagination }>(API, url)
 }
 
 export function getPostBySlug(slug: string) {
