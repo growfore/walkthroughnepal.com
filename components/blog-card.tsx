@@ -20,7 +20,7 @@ export function BlogCard({ slug, image, tag, title, description, date }: BlogCar
             loading="lazy"
             className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
           />
-          <span className="absolute left-3 top-3 rounded bg-navy px-2.5 py-1 text-[10px] font-bold text-navy-foreground">
+          <span className="absolute left-3 top-3 rounded-full bg-navy px-2.5 py-1 text-[10px] font-bold text-navy-foreground">
             {tag}
           </span>
         </div>

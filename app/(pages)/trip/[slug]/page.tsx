@@ -109,7 +109,7 @@ export default async function PackagePage({
           </div>
 
           <div className="relative mx-auto mt-6 max-w-7xl px-4 text-white md:mt-8">
-            <span className="inline-block rounded bg-orange px-3 py-1 text-[11px] font-bold tracking-wider text-orange-foreground">
+            <span className="inline-block rounded-full bg-orange px-3 py-1 text-[11px] font-bold tracking-wider text-orange-foreground">
               {pkg.isFeatured ? "FEATURED" : "BEST SELLER"}
             </span>
             <h1 className="mt-4 text-3xl leading-tight font-bold md:text-5xl lg:text-6xl">
@@ -364,43 +364,62 @@ export default async function PackagePage({
             offset={120}
           >
             {/* Price */}
-            <div className="rounded-lg border border-border bg-card p-4 shadow-sm sm:p-5">
-              <div className="text-sm text-muted-foreground">From</div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-navy">
-                  ${pkg.price}
-                </span>
+            <div className="rounded-lg border border-border bg-card shadow-sm">
+              <div className="p-4 sm:p-5">
                 {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
-                  <span className="text-sm text-muted-foreground line-through">
-                    ${pkg.maxPrice}
+                  <span className="mb-2 inline-block rounded-full bg-success-soft px-2 py-0.5 text-xs font-bold text-success">
+                    Save ${pkg.maxPrice - pkg.price}
                   </span>
                 )}
-              </div>
-              <div className="text-sm text-muted-foreground">per person</div>
+                <div className="text-sm text-muted-foreground">From</div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-bold text-navy">
+                    ${pkg.price}
+                  </span>
+                  {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
+                    <span className="text-sm text-muted-foreground line-through">
+                      ${pkg.maxPrice}
+                    </span>
+                  )}
+                </div>
+                <div className="text-sm text-muted-foreground">per person</div>
 
-              <button className="mt-4 w-full rounded-md bg-orange py-2.5 text-sm font-semibold text-orange-foreground hover:opacity-90">
-                Check Availability
-              </button>
-              <DownloadItineraryButton
-                title={pkg.title}
-                slug={slug}
-                itinerary={pkg.itinerary ?? []}
-                duration={pkg.duration}
-                difficulty={difficulty}
-                maxAltitude={pkg.maximumAltitude}
-                bestSeason={pkg.bestSeason}
-                accommodations={pkg.accommodations?.join(", ") || "Tea House"}
-                meals={pkg.meals}
-                groupSize={pkg.groupSize || `${pkg.guestCapacity || 1} Pax`}
-                transportation={pkg.transportation || "N/A"}
-                meetingPoint={pkg.meetingPoint}
-                dropOffPoint={pkg.dropOffPoint}
-                shortDescription={pkg.shortDescription}
-                fullDescription={pkg.fullDescription}
-                highlights={pkg.highlights}
-                additionalInfo={pkg.additionalInfo}
-                faqs={pkg.faqs}
-              />
+                <button className="mt-4 w-full rounded-md bg-orange py-2.5 text-sm font-semibold text-orange-foreground hover:opacity-90">
+                  Check Availability
+                </button>
+
+                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Check className="h-3 w-3 text-success" /> Free cancellation
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Check className="h-3 w-3 text-success" /> Best price guarantee
+                  </span>
+                </div>
+              </div>
+
+              <div className="border-t border-border px-4 py-3 sm:px-5">
+                <DownloadItineraryButton
+                  title={pkg.title}
+                  slug={slug}
+                  itinerary={pkg.itinerary ?? []}
+                  duration={pkg.duration}
+                  difficulty={difficulty}
+                  maxAltitude={pkg.maximumAltitude}
+                  bestSeason={pkg.bestSeason}
+                  accommodations={pkg.accommodations?.join(", ") || "Tea House"}
+                  meals={pkg.meals}
+                  groupSize={pkg.groupSize || `${pkg.guestCapacity || 1} Pax`}
+                  transportation={pkg.transportation || "N/A"}
+                  meetingPoint={pkg.meetingPoint}
+                  dropOffPoint={pkg.dropOffPoint}
+                  shortDescription={pkg.shortDescription}
+                  fullDescription={pkg.fullDescription}
+                  highlights={pkg.highlights}
+                  additionalInfo={pkg.additionalInfo}
+                  faqs={pkg.faqs}
+                />
+              </div>
             </div>
 
             {/* Contact */}

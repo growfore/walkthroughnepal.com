@@ -106,11 +106,11 @@ export function DownloadItineraryButton({
 <html>
 <head><meta charset="utf-8"><title>${title} - Itinerary</title>
 <style>
-  @page { margin: 20mm 15mm; }
+  @page { margin: 25mm 15mm 25mm 15mm; }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:Georgia,serif; font-size:14px; line-height:1.6; color:#333; padding:40px 30px; max-width:800px; margin:0 auto; }
-  .header { text-align:center; border-bottom:2px solid #1A3F4F; padding-bottom:20px; margin-bottom:24px; }
-  .header img { height:50px; margin-bottom:12px; }
+  .header { text-align:center; border-bottom:2px solid #1A3F4F; padding:12px 0 20px; margin-bottom:24px; }
+  .header img { height:55px; margin-bottom:14px; }
   .header h1 { font-size:24px; color:#1A3F4F; margin:0; }
   .section { margin-bottom:24px; }
   .section h2 { font-size:18px; color:#1A3F4F; margin-bottom:8px; border-bottom:1px solid #ddd; padding-bottom:4px; }
@@ -131,12 +131,12 @@ export function DownloadItineraryButton({
   .info-block { margin-bottom:12px; }
   .faq { margin-bottom:12px; page-break-inside:avoid; }
   .faq strong { display:block; font-size:13px; color:#1A3F4F; margin-bottom:2px; }
-  .footer { margin-top:32px; padding-top:16px; border-top:2px solid #1A3F4F; text-align:center; font-size:13px; color:#555; }
+  .footer { margin-top:32px; padding:20px 0 12px; border-top:2px solid #1A3F4F; text-align:center; font-size:13px; color:#555; }
   .footer strong { color:#1A3F4F; }
 </style></head>
 <body>
   <div class="header">
-    <img src="${window.location.origin}/walkthrough-nepal-logo.png" alt="Walk Through Nepal" />
+    <img src="${window.location.origin}/images/logo-july-7.png" alt="Walk Through Nepal" />
     <h1>${title}</h1>
   </div>
   <div class="section">
@@ -180,7 +180,7 @@ export function DownloadItineraryButton({
     await html2pdf()
       .set({
         filename,
-        margin: [15, 15, 15, 15],
+        margin: [20, 15, 20, 15],
         image: { type: "jpeg", quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, backgroundColor: null },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
