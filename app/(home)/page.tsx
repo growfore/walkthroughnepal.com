@@ -9,7 +9,7 @@ import {
   PhoneCall,
 } from "lucide-react"
 import Link from "next/link"
-import type { FeaturedTag, TeamMember } from "@/lib/types"
+import type { FeaturedTag } from "@/lib/types"
 
 export const metadata: Metadata = {
   title: "Walk Through Nepal",
@@ -26,14 +26,12 @@ import {
   getTestimonials,
   getTripCategories,
   getPublishedPosts,
-  getTeamMembers,
   img,
 } from "@/lib/api"
 import { CategoryScroll } from "@/components/category-scroll"
 import { HorizontalScroll } from "@/components/horizontal-scroll"
 import { TripCard } from "@/components/trip-card"
 import { SectionHeader } from "@/components/section-header"
-import { TeamCard } from "@/components/team-card"
 import { SearchBox } from "@/components/search-box"
 import { BlogCard } from "@/components/blog-card"
 import { TestimonialCarousel } from "@/components/testimonial-carousel"
@@ -62,8 +60,6 @@ export default async function HomePage() {
     description: string
     date: string
   }[] = []
-  let teamMembers: TeamMember[] = []
-
   try {
     const {
       data: { tripCategories },
@@ -110,17 +106,6 @@ export default async function HomePage() {
         year: "numeric",
       }),
     }))
-  } catch {}
-
-  try {
-    const res = await getTeamMembers()
-    const grouped = res.data
-    if (grouped && typeof grouped === "object") {
-      teamMembers = (Object.values(grouped) as any[])
-        .flat()
-        .slice(0, 4)
-        .map((m: any) => ({ ...m, department: null }))
-    }
   } catch {}
 
   const reasons = [
@@ -212,22 +197,6 @@ export default async function HomePage() {
         </section>
       ))}
 
-      {/* ── Selling Points ── */}
-      <section className="py-20">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {reasons.map((r) => (
-              <div key={r.title} className="text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange/10 text-orange">
-                  <r.icon className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 font-bold text-navy">{r.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{r.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
       {/* ── Plan Your Trip CTA ── */}
       <section className="pb-20">
         <div className="mx-auto max-w-7xl px-4">
@@ -254,6 +223,31 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── Testimonials ── */}
+      <section className="bg-muted py-20">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="mx-auto max-w-3xl">
+            <div className="relative">
+              <span className="absolute -top-6 -left-2 text-7xl leading-none text-orange/20 select-none">&ldquo;</span>
+              <div className="mb-8 flex items-center justify-between">
+                <div>
+                  <h3 className="text-3xl font-bold text-navy">What Our Travelers Say</h3>
+                  <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="flex text-orange">
+                      {[...Array(5)].map((_, idx) => (
+                        <Star key={idx} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                    <span>4.9/5 &middot; {testimonialList.length}+ reviews</span>
+                  </div>
+                </div>
+              </div>
+              <TestimonialCarousel items={testimonialList} />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Travel Inspiration ── */}
       <section className="pb-20">
         <div className="mx-auto max-w-7xl px-4">
@@ -269,61 +263,19 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── Testimonials ── */}
-      <section className="bg-navy py-20 text-navy-foreground">
+      {/* ── Selling Points ── */}
+      <section className="border-b border-white/10 bg-navy py-16 text-navy-foreground">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-10 flex flex-col items-center gap-3 text-center">
-            <h3 className="text-3xl font-bold">What Our Travelers Say</h3>
-            <div className="flex items-center gap-2 text-sm text-white/70">
-              <div className="flex text-orange">
-                {[...Array(5)].map((_, idx) => (
-                  <Star key={idx} className="h-4 w-4 fill-current" />
-                ))}
-              </div>
-              <span>4.9/5 &middot; {testimonialList.length}+ reviews</span>
-            </div>
-          </div>
-          <div className="mx-auto max-w-3xl">
-            <TestimonialCarousel items={testimonialList} />
-          </div>
-        </div>
-      </section>
-
-      {/* ── Meet Our Team ── */}
-      {teamMembers.length > 0 && (
-        <section className="py-20">
-          <div className="mx-auto max-w-7xl px-4">
-            <SectionHeader title="Meet Our Experts" align="center" />
-            <HorizontalScroll>
-              {teamMembers.map((m) => (
-                <TeamCard key={m.id} member={m} />
-              ))}
-            </HorizontalScroll>
-          </div>
-        </section>
-      )}
-
-      {/* ── Final CTA ── */}
-      <section className="pb-16">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-orange p-6 text-orange-foreground">
-            <div className="flex items-center gap-4">
-              <Headphones className="h-10 w-10" />
-              <div>
-                <div className="text-lg font-bold">
-                  Ready to start your adventure in Nepal?
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {reasons.map((r) => (
+              <div key={r.title} className="text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange/10 text-orange">
+                  <r.icon className="h-6 w-6" />
                 </div>
-                <div className="text-sm opacity-90">
-                  Our travel experts are here to help you plan the perfect trip.
-                </div>
+                <h3 className="mt-4 font-bold">{r.title}</h3>
+                <p className="mt-1 text-sm text-white/70">{r.text}</p>
               </div>
-            </div>
-            <Link
-              href="/design-your-trip"
-              className="flex items-center gap-2 rounded-full border border-white px-5 py-2.5 font-semibold hover:bg-white/10"
-            >
-              Talk To An Expert <ArrowRight className="h-4 w-4" />
-            </Link>
+            ))}
           </div>
         </div>
       </section>

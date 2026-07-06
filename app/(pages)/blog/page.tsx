@@ -11,12 +11,11 @@ export const metadata: Metadata = {
     "Trekking tips, travel stories, and insider insights from Nepal. Read about Himalayan adventures, culture, and off-the-beaten-path destinations.",
 }
 
-export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string; search?: string; category?: string }> }) {
+export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string; search?: string }> }) {
   const params = await searchParams
   const page = Number(params.page) || 1
   const search = params.search || ""
-  const category = params.category || ""
-  const { blogs, pagination } = await getPublishedPosts(page, 12, search, category)
+  const { blogs, pagination } = await getPublishedPosts(page, 12, search)
 
   return (
     <div className="min-h-screen">
@@ -37,16 +36,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                   type="text"
                   defaultValue={search}
                   placeholder="Search posts…"
-                  className="h-10 w-56 rounded-md border border-border bg-card pl-9 pr-3 text-sm text-navy outline-none focus:border-orange"
-                />
-              </div>
-              <div className="relative">
-                <input
-                  name="category"
-                  type="text"
-                  defaultValue={category}
-                  placeholder="Category…"
-                  className="h-10 w-40 rounded-md border border-border bg-card px-3 text-sm text-navy outline-none focus:border-orange"
+                  className="h-10 w-80 rounded-md border border-border bg-card pl-9 pr-3 text-sm text-navy outline-none focus:border-orange"
                 />
               </div>
               <button
@@ -55,7 +45,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
               >
                 Filter
               </button>
-              {(search || category) && (
+              {search && (
                 <Link
                   href="/blog"
                   className="inline-flex h-10 items-center gap-1 rounded-md border border-border px-3 text-sm text-muted-foreground hover:bg-border"

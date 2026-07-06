@@ -67,7 +67,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
     >
       <div className={`transition-opacity duration-150 ${fading ? "opacity-0" : "opacity-100"}`}>
         <span className="absolute -top-2 -left-2 text-5xl leading-none text-orange/30">&ldquo;</span>
-        <p className="pl-6 text-lg leading-relaxed text-white/90 italic">
+        <p className="pl-6 text-lg leading-relaxed text-foreground/90 italic">
           {t.text}
         </p>
         <div className="mt-5 flex items-center gap-4">
@@ -82,7 +82,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
                   <Star key={idx} className="h-3.5 w-3.5 fill-current" />
                 ))}
               </div>
-              <span className="text-xs text-white/60">{t.country}</span>
+              <span className="text-xs text-muted-foreground">{t.country}</span>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
                 startTimer()
               }}
               className={`h-2 w-2 rounded-full transition-colors ${
-                idx === i ? "bg-orange" : "bg-white/30"
+                idx === i ? "bg-orange" : "bg-muted-foreground/30"
               }`}
               aria-label={`Go to testimonial ${idx + 1}`}
             />
@@ -109,7 +109,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
               go(-1)
               startTimer()
             }}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-white/30 text-white/70 hover:border-white hover:text-white transition-colors"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
             aria-label="Previous testimonial"
           >
             <ChevronLeft className="h-4 w-4" />
@@ -119,7 +119,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
               go(1)
               startTimer()
             }}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-white/30 text-white/70 hover:border-white hover:text-white transition-colors"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
             aria-label="Next testimonial"
           >
             <ChevronRight className="h-4 w-4" />
