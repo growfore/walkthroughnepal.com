@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import {
   Star,
   ArrowRight,
-  Headphones,
+  Send,
   Users,
   ClipboardList,
   Heart,
@@ -203,7 +203,7 @@ export default async function HomePage() {
           <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-navy p-14 text-navy-foreground shadow-lg">
             <div className="flex items-center gap-6">
               <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-orange/20">
-                <Headphones className="h-8 w-8 text-orange" />
+                <Send className="h-8 w-8 text-orange" />
               </div>
               <div>
                 <h3 className="text-3xl font-bold">
