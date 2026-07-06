@@ -150,7 +150,7 @@ export default async function HomePage() {
     <div className="min-h-screen bg-background text-foreground">
       {/* ── Hero ── */}
       <section className="relative">
-        <div className="relative h-[480px] w-full overflow-hidden">
+        <div className="relative h-[540px] w-full overflow-hidden">
           <img
             src="/manaslu-view.webp"
             alt="Trekker in Himalayas"

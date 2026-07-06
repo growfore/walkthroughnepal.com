@@ -135,7 +135,7 @@ export function MenuController({ items }: MenuControllerProps) {
 
       {/* Main nav */}
       <div
-        className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8"
+        className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-2 md:px-8"
         onMouseLeave={queueHide}
       >
         <div className="flex items-center justify-between gap-2">
