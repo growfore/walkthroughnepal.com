@@ -161,17 +161,40 @@ export default async function PackagePage({
         <div className="mx-auto grid max-w-7xl min-w-0 gap-8 px-4 lg:grid-cols-3">
           <div className="min-w-0 lg:col-span-2">
             {/* ── Facts ── */}
-            <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-3">
-              {sidebarFacts.map((f) => {
-                const Icon = f.icon
-                return (
-                  <div key={f.label} className="rounded-lg border border-border bg-success-soft p-4 text-center shadow-sm">
-                    <Icon className="mx-auto h-6 w-6 text-orange" />
-                    <div className="mt-2 text-lg font-bold text-navy">{f.value}</div>
-                    <div className="text-xs text-muted-foreground">{f.label}</div>
-                  </div>
-                )
-              })}
+            <div className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4">
+              {[
+                [
+                  { icon: Clock, label: "Duration", value: pkg.duration },
+                  { icon: Mountain, label: "Difficulty", value: difficulty },
+                ],
+                [
+                  { icon: TrendingUp, label: "Max Altitude", value: pkg.maximumAltitude },
+                  { icon: Calendar, label: "Best Season", value: pkg.bestSeason },
+                ],
+                [
+                  { icon: HomeIcon, label: "Accommodation", value: pkg.accommodations?.join(", ") || "Tea House" },
+                  { icon: Utensils, label: "Meals", value: pkg.meals },
+                ],
+                [
+                  { icon: Users, label: "Group Size", value: pkg.groupSize || `${pkg.guestCapacity || 1} Pax` },
+                  { icon: Bus, label: "Transportation", value: pkg.transportation || "N/A" },
+                ],
+              ].map((group, gi) => (
+                <div key={gi} className="rounded-lg border border-border bg-success-soft p-3 shadow-sm">
+                  {group.map((f) => {
+                    const Icon = f.icon
+                    return (
+                      <div key={f.label} className="flex items-center gap-2 py-0.5 first:pb-1.5">
+                        <Icon className="h-4 w-4 shrink-0 text-navy/60" />
+                        <div className="min-w-0 text-sm leading-tight">
+                          <span className="font-semibold text-navy">{f.value}</span>
+                          <span className="text-navy/50"> — {f.label}</span>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ))}
             </div>
 
             {/* Mobile tabs */}
