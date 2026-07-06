@@ -70,7 +70,7 @@
 :root {
   --background: #fff;
   --foreground: #17212b;
-  --card: #dfefe6;
+  --card: #fff;
   --card-foreground: #17212b;
   --popover: #faf8f5;
   --popover-foreground: #17212b;
@@ -140,6 +140,6 @@
     @apply leading-6;
   }
   .bg-card {
-    @apply border-0;
+    @apply border-0 shadow-sm;
   }
 }
