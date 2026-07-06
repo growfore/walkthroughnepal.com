@@ -141,7 +141,7 @@ export function MenuController({ items }: MenuControllerProps) {
         <div className="flex items-center justify-between gap-2">
           <Link href="/" className="pl-0 font-black">
             <img
-              src="/logo-jul-6.png"
+              src="/logo-july-6.png"
               alt="Walk Through Nepal"
               className="h-auto w-36"
             />
