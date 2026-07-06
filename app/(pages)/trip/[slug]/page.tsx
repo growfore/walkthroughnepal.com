@@ -154,28 +154,26 @@ export default async function PackagePage({
         </div>
       </section>
 
-      {/* ── Facts ── */}
-      <section className="mx-auto max-w-7xl px-4 -mt-16 relative z-10">
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-          {sidebarFacts.map((f) => {
-            const Icon = f.icon
-            return (
-              <div key={f.label} className="rounded-lg border border-border bg-success-soft p-4 text-center shadow-sm">
-                <Icon className="mx-auto h-6 w-6 text-orange" />
-                <div className="mt-2 text-lg font-bold text-navy">{f.value}</div>
-                <div className="text-xs text-muted-foreground">{f.label}</div>
-              </div>
-            )
-          })}
-        </div>
-      </section>
-
       {/* ── Main content ── */}
       <section className="pb-20 pt-12 text-lg leading-relaxed font-medium lg:pb-12">
         <SectionNav />
 
         <div className="mx-auto grid max-w-7xl min-w-0 gap-8 px-4 lg:grid-cols-3">
           <div className="min-w-0 lg:col-span-2">
+            {/* ── Facts ── */}
+            <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-3">
+              {sidebarFacts.map((f) => {
+                const Icon = f.icon
+                return (
+                  <div key={f.label} className="rounded-lg border border-border bg-success-soft p-4 text-center shadow-sm">
+                    <Icon className="mx-auto h-6 w-6 text-orange" />
+                    <div className="mt-2 text-lg font-bold text-navy">{f.value}</div>
+                    <div className="text-xs text-muted-foreground">{f.label}</div>
+                  </div>
+                )
+              })}
+            </div>
+
             {/* Mobile tabs */}
             <div className="lg:hidden">
               <StickyWrapper className="sticky z-10 py-3" offset={96}>
