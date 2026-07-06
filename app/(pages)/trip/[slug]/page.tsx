@@ -10,8 +10,6 @@ import {
   Users,
   Home as HomeIcon,
   Check,
-  Plus,
-  Minus,
   Mail,
   Phone,
   X,
@@ -23,6 +21,7 @@ import {
   Bus,
 } from "lucide-react"
 import { SectionNav } from "@/components/section-nav"
+import { FAQSection } from "@/components/faq-section"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getActivityBySlug, getTestimonials, img } from "@/lib/api"
@@ -337,33 +336,11 @@ export default async function PackagePage({
             )}
 
             {/* ── FAQs ── */}
-            {(pkg.faqs ?? []).length > 0 && (
-              <div id="faqs" className="mt-12 scroll-mt-24">
-                <h2 className="text-2xl font-bold text-navy md:text-3xl">
-                  Frequently Asked Questions
-                </h2>
-                <div className="mt-4 space-y-3">
-                  {pkg.faqs.map((faq, i) => (
-                    <details
-                      key={i}
-                      className="group rounded-lg border border-border"
-                    >
-                      <summary className="flex cursor-pointer items-center justify-between p-4 text-lg font-semibold text-navy">
-                        {faq.question}
-                        <Plus className="h-4 w-4 shrink-0 group-open:hidden" />
-                        <Minus className="hidden h-4 w-4 shrink-0 group-open:block" />
-                      </summary>
-                      <div
-                        className="prose prose-lg w-full max-w-none border-t border-border px-4 py-3 wrap-break-word **:wrap-break-word prose-p:leading-relaxed prose-p:text-muted-foreground"
-                        dangerouslySetInnerHTML={{
-                          __html: decodeHtmlEntities(faq.answer),
-                        }}
-                      />
-                    </details>
-                  ))}
-                </div>
-              </div>
-            )}
+            <FAQSection
+              items={pkg.faqs ?? []}
+              prose
+              className="mt-12 scroll-mt-24"
+            />
 
             {/* Video */}
             {pkg.videoUrl && (

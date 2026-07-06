@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Mail, Phone, MapPin, ChevronDown } from "lucide-react"
+import { Mail, Phone, MapPin } from "lucide-react"
 import { PageHero } from "@/components/page-hero"
+import { FAQSection } from "@/components/faq-section"
 
 const faqs = [
   {
@@ -26,8 +27,6 @@ const faqs = [
 export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" })
   const [sent, setSent] = useState(false)
-  const [openFaq, setOpenFaq] = useState<number | null>(null)
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     // ponytail: mailto fallback, replace with API endpoint when backend exists
@@ -175,27 +174,10 @@ export default function ContactPage() {
       </section>
 
       {/* FAQ */}
-      <section className="pb-20">
-        <div className="mx-auto max-w-7xl px-4">
-          <h3 className="text-2xl font-bold text-navy text-center">Frequently Asked Questions</h3>
-          <div className="mt-6 space-y-2 rounded-xl border border-border bg-card p-6">
-            {faqs.map((faq, i) => (
-              <div key={i} className="border-b border-border pb-2 last:border-0">
-                <button
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="flex w-full items-center justify-between gap-2 py-2 text-left text-sm font-semibold text-navy"
-                >
-                  {faq.q}
-                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition ${openFaq === i ? "rotate-180" : ""}`} />
-                </button>
-                {openFaq === i && (
-                  <p className="pb-2 text-sm leading-relaxed text-muted-foreground">{faq.a}</p>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FAQSection
+        items={faqs.map((f) => ({ question: f.q, answer: f.a }))}
+        className="pb-20 max-w-3xl mx-auto px-4"
+      />
     </main>
   )
 }
