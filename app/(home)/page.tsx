@@ -34,7 +34,6 @@ import { TripCard } from "@/components/trip-card"
 import { SectionHeader } from "@/components/section-header"
 import { SearchBox } from "@/components/search-box"
 import { BlogCard } from "@/components/blog-card"
-import { TestimonialCarousel } from "@/components/testimonial-carousel"
 
 function stripHtml(html: string) {
   return html.replace(/<[^>]*>/g, "").trim()
@@ -224,26 +223,63 @@ export default async function HomePage() {
       </section>
 
       {/* ── Testimonials ── */}
-      <section className="bg-muted py-20">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="mx-auto max-w-3xl">
-            <div className="relative">
-              <span className="absolute -top-6 -left-2 text-7xl leading-none text-orange/20 select-none">&ldquo;</span>
-              <div className="mb-8 flex items-center justify-between">
-                <div>
-                  <h3 className="text-3xl font-bold text-navy">What Our Travelers Say</h3>
-                  <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-                    <div className="flex text-orange">
-                      {[...Array(5)].map((_, idx) => (
-                        <Star key={idx} className="h-4 w-4 fill-current" />
-                      ))}
-                    </div>
-                    <span>4.9/5 &middot; {testimonialList.length}+ reviews</span>
+      <section className="relative overflow-hidden bg-muted py-24 md:py-32">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 50% at 10% 30%, #CB7040 0%, transparent 60%), radial-gradient(ellipse 70% 50% at 90% 70%, #1A3F4F 0%, transparent 60%)",
+          }}
+        />
+        <div className="relative mx-auto max-w-7xl px-4">
+          <div className="mb-14 text-center">
+            <p className="mb-2 text-sm font-semibold tracking-widest uppercase text-orange">
+              Testimonials
+            </p>
+            <h2 className="text-3xl font-bold text-navy md:text-4xl">
+              What Our Travelers Say
+            </h2>
+            <div className="mt-3 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+              <div className="flex text-orange">
+                {[...Array(5)].map((_, idx) => (
+                  <Star key={idx} className="h-4 w-4 fill-current" />
+                ))}
+              </div>
+              <span>4.9/5 &middot; {testimonialList.length}+ reviews</span>
+            </div>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {testimonialList.map((t, i) => (
+              <div key={i} className="relative flex flex-col border border-border bg-card p-8">
+                <svg
+                  className="absolute -top-1 -left-1 h-8 w-8 text-orange/20"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151C7.546 6.068 5.983 8.789 5.983 11H10v10H0z" />
+                </svg>
+                <p className="mt-6 flex-1 text-sm leading-relaxed text-muted-foreground italic">
+                  &ldquo;{t.text}&rdquo;
+                </p>
+                <div className="mb-4 mt-6 flex gap-0.5">
+                  {[...Array(5)].map((_, idx) => (
+                    <svg key={idx} className="h-4 w-4 text-orange" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <div className="mt-auto flex items-center gap-3 border-t border-border pt-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-bold text-navy">
+                    {t.name.split(" ").map((n) => n[0]).join("")}
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-navy">{t.name}</div>
+                    <div className="text-xs text-muted-foreground">{t.country}</div>
                   </div>
                 </div>
               </div>
-              <TestimonialCarousel items={testimonialList} />
-            </div>
+            ))}
           </div>
         </div>
       </section>
