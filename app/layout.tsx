@@ -1,4 +1,4 @@
-import { Geist_Mono, Sora } from "next/font/google"
+import { Geist_Mono, Inter, Sora } from "next/font/google"
 import type { Metadata, Viewport } from "next"
 
 import "./globals.css"
@@ -8,6 +8,12 @@ import { cn } from "@/lib/utils"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { ToastContainer } from "react-toastify"
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["300", "400", "500", "600", "700"],
+})
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -69,13 +75,11 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn(
         "antialiased",
+        inter.variable,
         fontMono.variable,
         sora.variable
       )}
     >
-      <head>
-        <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" />
-      </head>
       <body>
         <a
           href="#main-content"
