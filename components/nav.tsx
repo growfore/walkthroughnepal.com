@@ -77,7 +77,7 @@ export function Nav() {
         <div className="flex flex-1">
           <Link href="/">
             <img
-              src="/logo-july-5.png"
+              src="/logo-jul-6.png"
               alt="Walk Through Nepal"
               className="h-14 w-auto p-1"
             />

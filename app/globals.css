@@ -67,7 +67,7 @@
 }
 
 :root {
-  --background: #eaebec;
+  --background: #fff;
   --foreground: #17212b;
   --card: #faf8f5;
   --card-foreground: #17212b;
@@ -107,7 +107,9 @@
 @utility scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @layer base {
