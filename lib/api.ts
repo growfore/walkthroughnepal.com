@@ -1,4 +1,4 @@
-import type { Activity, CMSPost, FeaturedTag, InfoPage, Pagination, Testimonial, TripCategory, TripType } from "./types"
+import type { Activity, CMSPost, FeaturedTag, InfoPage, Pagination, Slot, Testimonial, TripCategory, TripType } from "./types"
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
@@ -81,4 +81,8 @@ export function getPostBySlug(slug: string) {
 
 export function getInfoPageBySlug(slug: string) {
   return fetchJSON<{ infoPage: InfoPage }>(API, `/api/v1/info-page/slug/${slug}`)
+}
+
+export function getSlots(activityId: number) {
+  return fetchJSON<{ message: string; data: { slots: Slot[] } }>(API, `/api/v1/slot?activityId=${activityId}`)
 }

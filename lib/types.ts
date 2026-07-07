@@ -133,6 +133,17 @@ export interface InfoPage {
   infoPageCategory: { id: string; categoryHandle: string; categoryName: string } | null
 }
 
+export interface Slot {
+  id: number
+  activityId: number
+  days: number
+  departureDate: string
+  maxGroupSize: number
+  remainingSeats: number
+  price: string
+  visible: boolean
+}
+
 export interface Pagination {
   page: number
   limit: number

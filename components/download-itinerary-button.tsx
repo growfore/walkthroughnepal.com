@@ -1,8 +1,6 @@
 "use client"
 
 import { Download } from "lucide-react"
-import html2pdf from "html2pdf.js"
-
 type ItineraryDay = { day: number; title: string; description: string }
 type FAQ = { question: string; answer: string }
 type AdditionalInfo = { title: string; description: string }
@@ -177,6 +175,7 @@ export function DownloadItineraryButton({
     await loaded
 
     const filename = `${title.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}-itinerary.pdf`
+    const html2pdf = (await import("html2pdf.js")).default
     await html2pdf()
       .set({
         filename,

@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import {
   Mountain,
-  MapPin,
   Clock,
   ChevronRight,
   Star,
@@ -23,7 +22,8 @@ import { SectionNav } from "@/components/section-nav"
 import { FAQSection } from "@/components/faq-section"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getActivityBySlug, getTestimonials, img } from "@/lib/api"
+import { getActivityBySlug, getTestimonials, getSlots, img } from "@/lib/api"
+import { BookDialog } from "@/components/book-dialog"
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -58,6 +58,7 @@ const tabs = [
   { label: "Itinerary", icon: Route },
   { label: "Includes", icon: Check },
   { label: "Excludes", icon: X },
+  { label: "Departures", icon: Calendar },
   { label: "Useful Info", icon: HelpCircle },
   { label: "Reviews", icon: Star },
   { label: "FAQs", icon: MessageCircle },
@@ -91,6 +92,18 @@ export default async function PackagePage({
       content: t.content,
     }))
   } catch {}
+
+  let slots: import("@/lib/types").Slot[] = []
+  try {
+    const slotRes = await getSlots(pkg.id)
+    slots = slotRes.data.slots
+  } catch {}
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const upcomingSlots = slots
+    .filter((s) => s.visible && new Date(s.departureDate) >= today)
+    .sort((a, b) => new Date(a.departureDate).getTime() - new Date(b.departureDate).getTime())
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -229,7 +242,7 @@ export default async function PackagePage({
                           <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
                           <span
                             className="wrap-break-word"
-                            dangerouslySetInnerHTML={{ __html: item }}
+                            dangerouslySetInnerHTML={{ __html: item.replace(/&nbsp;/g, " ") }}
                           />
                         </div>
                       ))}
@@ -304,6 +317,57 @@ export default async function PackagePage({
               </div>
             </div>
 
+            {/* ── Upcoming Departures ── */}
+            {upcomingSlots.length > 0 && (
+              <div id="departures" className="mt-16 scroll-mt-24">
+                <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                  Upcoming Departures
+                </h2>
+                <p className="mt-2 text-muted-foreground">
+                  Choose your preferred departure date
+                </p>
+                <div className="mt-6 overflow-hidden rounded-xl border border-border shadow-sm">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-border bg-muted/50">
+                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">Date</th>
+                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">Price</th>
+                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">Availability</th>
+                        <th className="px-5 py-3.5 text-right text-sm font-semibold text-navy">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {upcomingSlots.map((s) => (
+                        <tr key={s.id} className="transition-colors hover:bg-muted/30">
+                          <td className="px-5 py-4">
+                            <div className="flex items-center gap-2">
+                              <Calendar className="h-4 w-4 text-orange shrink-0" />
+                              <span className="font-medium text-navy">
+                                {new Date(s.departureDate).toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric", year: "numeric" })}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-5 py-4">
+                            <span className="text-lg font-bold text-navy">${Number(s.price).toLocaleString()}</span>
+                            <span className="text-sm text-muted-foreground"> / person</span>
+                          </td>
+                          <td className="px-5 py-4">
+                            <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${s.remainingSeats > 5 ? "bg-success-soft text-success" : s.remainingSeats > 0 ? "bg-warning-soft text-warning" : "bg-red-50 text-red-600"}`}>
+                              <span className={`h-1.5 w-1.5 rounded-full ${s.remainingSeats > 5 ? "bg-success" : s.remainingSeats > 0 ? "bg-warning" : "bg-red-600"}`} />
+                              {s.remainingSeats > 5 ? `${s.remainingSeats} seats` : s.remainingSeats > 0 ? `Only ${s.remainingSeats} left` : "Full"}
+                            </span>
+                          </td>
+                          <td className="px-5 py-4 text-right">
+                            <BookDialog slot={s} activityId={pkg.id} activityTitle={pkg.title} />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
             {/* ── Useful Info ── */}
             {(pkg.additionalInfo ?? []).length > 0 && (
               <div id="useful-info" className="mt-12 scroll-mt-24">
@@ -357,7 +421,7 @@ export default async function PackagePage({
             offset={120}
           >
             {/* Price */}
-            <div className="rounded-lg border border-border bg-card shadow-sm">
+            <div id="price-card" className="rounded-lg border border-border bg-card shadow-sm">
               <div className="p-4 sm:p-5">
                 {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
                   <span className="mb-2 inline-block rounded-full bg-success-soft px-2 py-0.5 text-xs font-bold text-success">
@@ -377,18 +441,12 @@ export default async function PackagePage({
                 </div>
                 <div className="text-sm text-muted-foreground">per person</div>
 
-                <button className="mt-4 w-full rounded-md bg-orange py-2.5 text-sm font-semibold text-orange-foreground hover:opacity-90">
-                  Check Availability
-                </button>
-
-                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Check className="h-3 w-3 text-success" /> Free cancellation
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Check className="h-3 w-3 text-success" /> Best price guarantee
-                  </span>
-                </div>
+                <a
+                  href={`mailto:info@walkthroughnepal.com?subject=Inquiry%20about%20${encodeURIComponent(pkg.title)}`}
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-navy px-4 py-3 text-sm font-semibold text-navy-foreground hover:opacity-90"
+                >
+                  <Mail className="h-4 w-4" /> Send Inquiry
+                </a>
               </div>
 
               <div className="border-t border-border px-4 py-3 sm:px-5">
@@ -462,9 +520,9 @@ export default async function PackagePage({
               <span className="text-xs text-muted-foreground">/person</span>
             </div>
           </div>
-          <button className="rounded-md bg-orange px-6 py-3 font-semibold whitespace-nowrap text-orange-foreground hover:opacity-90">
-            Check Availability
-          </button>
+          <a href="#price-card" className="rounded-md bg-orange px-6 py-3 font-semibold whitespace-nowrap text-orange-foreground hover:opacity-90">
+            View Dates
+          </a>
         </div>
       </div>
     </div>
