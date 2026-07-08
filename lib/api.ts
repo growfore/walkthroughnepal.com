@@ -1,4 +1,6 @@
+import { cache } from "react"
 import type { Activity, CMSPost, FeaturedTag, InfoPage, Pagination, Slot, Testimonial, TripCategory, TripType } from "./types"
+import type { SiteConfig } from "./siteConfig"
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
@@ -86,3 +88,27 @@ export function getInfoPageBySlug(slug: string) {
 export function getSlots(activityId: number) {
   return fetchJSON<{ message: string; data: { slots: Slot[] } }>(API, `/api/v1/slot?activityId=${activityId}`)
 }
+
+export interface FooterItem {
+  label: string
+  url: string
+  children?: Array<{ label: string; url: string }>
+}
+
+export const getSiteConfig = cache(async (): Promise<SiteConfig | null> => {
+  try {
+    const res = await fetchJSON<{ success: boolean; data: { config: SiteConfig } }>(API, "/api/v1/site-config")
+    return res?.data?.config ?? null
+  } catch {
+    return null
+  }
+})
+
+export const getFooterItems = cache(async (): Promise<FooterItem[]> => {
+  try {
+    const res = await fetchJSON<{ data: { items: FooterItem[] } }>(API, "/api/v1/footer")
+    return res?.data?.items ?? []
+  } catch {
+    return []
+  }
+})

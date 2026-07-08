@@ -287,7 +287,7 @@ export default function DesignYourTrip() {
   const goPrev = () => setStep((s) => Math.max(s - 1, 0))
 
   return (
-    <main className="bg-canvas min-h-screen" style={{ "--primary": "#CB7040", "--primary-foreground": "#ffffff" } as React.CSSProperties}>
+    <main className="bg-canvas min-h-screen" style={{ "--primary": "#D4520C", "--primary-foreground": "#ffffff" } as React.CSSProperties}>
       <PageHero
         title="Plan Your Custom Itinerary"
         description="Tell us your dream adventure and we'll craft a personalised trek just for you — dates, pace, locations, and every detail."

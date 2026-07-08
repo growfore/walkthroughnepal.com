@@ -1,97 +1,159 @@
-"use client"
-
-import { Globe, ExternalLink, MapPinned, Phone, Mail, Clock, MapPin, Loader2 } from "lucide-react"
 import Link from "next/link"
-import { useState, FormEvent } from "react"
+import {
+  Globe,
+  MapPin,
+  Phone,
+  Mail,
+  Clock,
+} from "lucide-react"
+import { siteConfig, type SiteConfig } from "@/lib/siteConfig"
+import { getFooterItems, getSiteConfig } from "@/lib/api"
+import { Logo } from "./logo"
+import { FooterNewsletter } from "./footer-newsletter"
 
-function Logo() {
-  return (
-    <Link href="/" className="flex items-center gap-2">
-      <img src="/logo-july-6.png" alt="Walk Through Nepal" className="h-14 w-auto" />
-    </Link>
-  )
+type SocialIconProps = { url: string }
+
+function SocialIcon({ url }: SocialIconProps) {
+  const d = url.toLowerCase()
+  if (d.includes("facebook"))
+    return (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+      </svg>
+    )
+  if (d.includes("youtube"))
+    return (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+        <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6a3 3 0 0 0-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8" />
+      </svg>
+    )
+  if (d.includes("tiktok"))
+    return (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+        <path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.62-.02-.28-.04-.56 0-.84.21-2.07 1.42-3.97 3.2-5.01 1.29-.78 2.83-1.11 4.34-.95.01 1.45-.02 2.91-.02 4.36-.7-.2-1.48-.15-2.1.2-.66.35-1.13.97-1.39 1.66-.21.58-.15 1.22.07 1.79.3.72.99 1.3 1.76 1.47.72.14 1.5-.02 2.07-.49.55-.45.86-1.15.88-1.85.04-2.23.01-4.46.02-6.69 0-.35.08-.69.23-1 .55-1.14 1.55-2 2.72-2.42.71-.25 1.47-.32 2.22-.27Z" />
+      </svg>
+    )
+  if (d.includes("instagram"))
+    return (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+        <path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.15-3.23 1.66-4.77 4.92-4.92 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 2.7.27.27 2.7.07 7.05 0 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.35 2.63 6.78 6.98 6.98 1.28.06 1.69.07 4.95.07s3.67-.01 4.95-.07c4.35-.2 6.78-2.63 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95C21.73 2.7 19.3.27 14.95.07 13.67 0 13.26 0 12 0m0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32m0 10.16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.4-7.56a1.44 1.44 0 1 0 0-2.88 1.44 1.44 0 0 0 0 2.88" />
+      </svg>
+    )
+  if (d.includes("twitter") || d.includes("x.com"))
+    return (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+      </svg>
+    )
+  return <Globe className="h-4 w-4" />
 }
 
-function FooterCol({ title, items }: { title: string; items: string[] }) {
+function SocialLinks({ socials }: { socials: Record<string, string> }) {
+  const entries = Object.entries(socials).filter(([, v]) => v)
+  if (entries.length === 0) return null
   return (
-    <div>
-      <h4 className="mb-4 font-semibold">{title}</h4>
-      <ul className="space-y-2 text-sm text-white/75">
-        {items.map((i) => <li key={i}><a href="#" className="hover:text-orange">{i}</a></li>)}
-      </ul>
+    <div className="flex gap-3 text-white/80">
+      {entries.map(([name, url]) => (
+        <a
+          key={name}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={name}
+        >
+          <SocialIcon url={url} />
+        </a>
+      ))}
     </div>
   )
 }
 
-export function Footer() {
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
-  const [message, setMessage] = useState("")
+export async function Footer() {
+  const [apiConfig, footerItems] = await Promise.all([
+    getSiteConfig(),
+    getFooterItems(),
+  ])
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setStatus("loading")
-    const form = e.currentTarget
-    const email = new FormData(form).get("email") as string
-    const res = await fetch("/api/newsletter", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) })
-    const data = await res.json()
-    if (res.ok) {
-      setStatus("success")
-      setMessage("Thanks for subscribing!")
-      form.reset()
-    } else {
-      setStatus("error")
-      setMessage(data.error || data.message || "Something went wrong")
-    }
-  }
+  const cfg: SiteConfig = apiConfig
+    ? {
+        ...siteConfig,
+        ...Object.fromEntries(
+          Object.entries(apiConfig).filter(([, v]) => v != null),
+        ),
+        phoneNumbers:
+          apiConfig.phoneNumbers?.filter(Boolean).length
+            ? apiConfig.phoneNumbers
+            : siteConfig.phoneNumbers,
+      }
+    : siteConfig
+  const items = footerItems.filter((i) => i.label && i.url)
 
   return (
     <footer className="bg-navy text-navy-foreground">
-      <div className="border-b border-white/10">
-        <div className="mx-auto max-w-7xl px-4 py-10">
-          <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
-            <div className="sm:flex-1">
-              <h3 className="text-xl font-bold">Subscribe to our newsletter</h3>
-              <p className="mt-1 text-sm text-white/60">Get the latest trek updates and travel tips straight to your inbox.</p>
-            </div>
-            <form onSubmit={handleSubmit} className="flex w-full max-w-md gap-2">
-              <input type="email" name="email" placeholder="Enter your email" required aria-label="Email address for newsletter" className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white placeholder-white/40 outline-none focus:border-orange focus:ring-1 focus:ring-orange disabled:opacity-50" disabled={status === "loading"} />
-              <button type="submit" disabled={status === "loading"} className="shrink-0 rounded-lg bg-orange px-5 py-2.5 text-sm font-semibold text-orange-foreground hover:bg-orange/90 transition-colors disabled:opacity-50">
-                {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : "Subscribe"}
-              </button>
-            </form>
-          </div>
-          {status === "success" && <p className="mt-3 text-center text-sm text-green-400 sm:text-left">{message}</p>}
-          {status === "error" && <p className="mt-3 text-center text-sm text-red-400 sm:text-left">{message}</p>}
-        </div>
-      </div>
-      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 pb-10 pt-14 md:grid-cols-3 lg:grid-cols-6">
+      <FooterNewsletter />
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 pt-14 pb-10 md:grid-cols-3 lg:grid-cols-6">
         <div className="col-span-2">
-          <Logo />
+          <Logo invert />
           <p className="mt-4 max-w-xs text-sm text-white/70">
-            Authentic adventures, meaningful connections and responsible travel experiences in Nepal.
+            {cfg.description}
           </p>
-          <div className="mt-5 flex gap-3 text-white/80">
-            <Globe className="h-4 w-4" /><ExternalLink className="h-4 w-4" /><MapPinned className="h-4 w-4" />
+          <div className="mt-5">
+            <SocialLinks socials={cfg.socials} />
           </div>
         </div>
-        <FooterCol title="Treks" items={["Everest Base Camp Trek", "Annapurna Circuit Trek", "Annapurna Base Camp Trek", "Langtang Valley Trek", "Manaslu Circuit Trek", "View All Treks"]} />
-        <FooterCol title="Tours" items={["Kathmandu Valley Tour", "Pokhara Tour", "Chitwan Wildlife Safari", "Upper Mustang Tour", "Lumbini Tour", "View All Tours"]} />
-        <FooterCol title="Travel Info" items={["Nepal Visa Information", "Best Time to Visit", "Trekking in Nepal", "Packing List", "Travel Insurance", "FAQs"]} />
-        <FooterCol title="Company" items={["About Us", "Our Team", "Reviews", "Responsible Tourism", "Careers", "Contact Us"]} />
+        {items.map((item) => (
+          <div key={item.label}>
+            <Link href={item.url}>
+              <h4 className="mb-4 font-semibold">{item.label}</h4>
+            </Link>
+            {item.children && item.children.length > 0 && (
+              <ul className="space-y-2 text-sm text-white/75">
+                {item.children.map((sub) => (
+                  <li key={sub.label}>
+                    <Link
+                      href={sub.url}
+                      className="hover:text-orange transition-colors"
+                    >
+                      {sub.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
         <div>
           <h4 className="mb-4 font-semibold">Contact Us</h4>
           <ul className="space-y-2 text-sm text-white/75">
-            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-orange" /> Thamel, Kathmandu, Nepal</li>
-            <li className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 text-orange" /> +977 984 123 4567</li>
-            <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 text-orange" /> info@walkthroughnepal.com</li>
-            <li className="flex items-start gap-2"><Clock className="mt-0.5 h-4 w-4 text-orange" /> Mon - Sat: 9AM - 6PM</li>
+            <li className="flex items-start gap-2">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-orange" />
+              {cfg.fullAddress}
+            </li>
+            <li className="flex items-start gap-2">
+              <Phone className="mt-0.5 h-4 w-4 shrink-0 text-orange" />
+              {cfg.phoneNumbers[0]?.phone}
+            </li>
+            <li className="flex items-start gap-2">
+              <Mail className="mt-0.5 h-4 w-4 shrink-0 text-orange" />
+              {cfg.email}
+            </li>
+            <li className="flex items-start gap-2">
+              <Clock className="mt-0.5 h-4 w-4 shrink-0 text-orange" />
+              {cfg.openHours}
+            </li>
           </ul>
         </div>
       </div>
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-3 px-4 py-5 text-xs text-white/60">
-          <span>© 2024 Walk Through Nepal. All Rights Reserved.</span>
-          <div className="flex gap-5"><a href="#">Privacy Policy</a><a href="#">Terms & Conditions</a><a href="#">Sitemap</a></div>
+          <span>
+            &copy; {cfg.name}. {new Date().getFullYear()}. All rights reserved.
+          </span>
+          <div className="flex gap-5">
+            <Link href="/privacy-policy">Privacy Policy</Link>
+            <Link href="/terms">Terms & Conditions</Link>
+            <Link href="/sitemap">Sitemap</Link>
+          </div>
         </div>
       </div>
     </footer>
