@@ -91,8 +91,8 @@ export async function Footer() {
   return (
     <footer className="bg-navy text-navy-foreground">
       <FooterNewsletter />
-      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 pt-14 pb-10 md:grid-cols-3 lg:grid-cols-6">
-        <div className="col-span-2">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pt-14 pb-10 md:grid-cols-3 lg:grid-cols-6">
+        <div className="md:col-span-2">
           <Logo invert />
           <p className="mt-4 max-w-xs text-sm text-white/70">
             {cfg.description}
