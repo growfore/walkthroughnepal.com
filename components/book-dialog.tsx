@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
-import { X, Calendar, Users, Shield, CreditCard, Loader2 } from "lucide-react"
+import { X, Calendar, Users, Shield, CreditCard, Loader2, ArrowRight } from "lucide-react"
 import type { Slot } from "@/lib/types"
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.walkthroughnepal.com"
@@ -167,12 +167,13 @@ export function BookDialog({ slot, activityId, activityTitle }: { slot: Slot; ac
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-orange py-2.5 text-sm font-semibold text-orange-foreground transition-all hover:opacity-90 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+                    style={{ backgroundColor: "#635bff" }}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {loading ? (
                       <><Loader2 className="h-4 w-4 animate-spin" /> Processing...</>
                     ) : (
-                      `Proceed to Checkout`
+                      <><CreditCard className="h-4 w-4" /> Proceed to Checkout <ArrowRight className="h-4 w-4" /></>
                     )}
                   </button>
                 </form>
