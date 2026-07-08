@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
+import { BackToTop } from "@/components/back-to-top"
 import { ToastContainer } from "react-toastify"
 
 const montserrat = Montserrat({
@@ -92,6 +93,7 @@ export default function RootLayout({
           <main id="main-content" className="pt-[40px] md:pt-[100px]">
             {children}
           </main>
+          <BackToTop />
           <Footer />
           <ToastContainer position="bottom-right" />
         </ThemeProvider>
