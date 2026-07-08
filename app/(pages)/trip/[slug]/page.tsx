@@ -351,6 +351,7 @@ export default async function PackagePage({
                           <td className="px-5 py-4">
                             <span className="text-lg font-bold text-navy">${Number(s.price).toLocaleString()}</span>
                             <span className="text-sm text-muted-foreground"> / person</span>
+                            <span className="ml-2 text-xs text-muted-foreground">&middot; {s.days} {s.days === 1 ? "day" : "days"}</span>
                           </td>
                           <td className="px-5 py-4">
                             <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${s.remainingSeats > 5 ? "bg-success-soft text-success" : s.remainingSeats > 0 ? "bg-warning-soft text-warning" : "bg-red-50 text-red-600"}`}>
@@ -381,6 +382,7 @@ export default async function PackagePage({
                             <div className="mt-2 flex items-center gap-3">
                               <span className="text-lg font-bold text-navy">${Number(s.price).toLocaleString()}</span>
                               <span className="text-sm text-muted-foreground">/ person</span>
+                              <span className="text-xs text-muted-foreground">&middot; {s.days} {s.days === 1 ? "day" : "days"}</span>
                               <span className={`ml-auto inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${s.remainingSeats > 5 ? "bg-success-soft text-success" : s.remainingSeats > 0 ? "bg-warning-soft text-warning" : "bg-red-50 text-red-600"}`}>
                                 <span className={`h-1.5 w-1.5 rounded-full ${s.remainingSeats > 5 ? "bg-success" : s.remainingSeats > 0 ? "bg-warning" : "bg-red-600"}`} />
                                 {s.remainingSeats > 5 ? `${s.remainingSeats} seats` : s.remainingSeats > 0 ? `Only ${s.remainingSeats} left` : "Full"}
