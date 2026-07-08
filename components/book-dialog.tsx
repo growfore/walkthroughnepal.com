@@ -25,22 +25,14 @@ function FormBody({ slot, activityId, activityTitle, onClose }: { slot: Slot; ac
     setLoading(true)
     setError("")
     try {
-      const res = await fetch(`${API}/api/v1/booking`, {
+      const res = await fetch(`${API}/api/v1/stripe/create-checkout-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ activityId, slotId: slot.id, groupSize, totalPrice: total, name, email, phone, paymentType }),
+        body: JSON.stringify({ activityId, slotId: slot.id, groupSize, name, email, phone, paymentType }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.message || "Booking failed")
-
-      const checkoutRes = await fetch(`${API}/api/v1/stripe/create-checkout-session`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bookingId: data.data.booking.id, customerEmail: email }),
-      })
-      const checkoutData = await checkoutRes.json()
-      if (!checkoutRes.ok) throw new Error(checkoutData.message || "Checkout failed")
-      window.location.href = checkoutData.data.url
+      if (!res.ok) throw new Error(data.message || "Checkout failed")
+      window.location.href = data.data.url
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong")
     } finally {
