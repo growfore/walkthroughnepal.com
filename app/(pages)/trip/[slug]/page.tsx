@@ -587,7 +587,10 @@ export default async function PackagePage({
                     info@walkthroughnepal.com
                   </div>
                 </div>
-                <Link href="/contact" className="mt-4 block rounded-md bg-navy px-5 py-3 text-center text-base font-semibold text-navy-foreground hover:opacity-90">
+                <Link
+                  href="/contact"
+                  className="mt-4 block rounded-md bg-navy px-5 py-3 text-center text-base font-semibold text-navy-foreground hover:opacity-90"
+                >
                   Talk To An Expert
                 </Link>
               </div>
