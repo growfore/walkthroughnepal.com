@@ -98,110 +98,130 @@ export function BookDialog({ slot, activityId, activityTitle }: { slot: Slot; ac
           onClick={(e) => { if (e.target === overlayRef.current) close() }}
         >
           <div
-            className={`w-full max-w-lg rounded-t-2xl bg-white shadow-2xl transition-all duration-200 sm:rounded-2xl ${visible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0 sm:translate-y-0"}`}
+            className={`flex w-full flex-col rounded-t-2xl bg-white shadow-2xl transition-all duration-200 sm:w-[80vw] sm:h-[80vh] sm:rounded-2xl ${visible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0 sm:translate-y-0"}`}
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-border px-6 py-4">
-              <div>
-                <h3 className="text-lg font-bold text-navy">Book Your Trip</h3>
-                <p className="text-sm text-muted-foreground">{activityTitle}</p>
+            <div className="flex shrink-0 items-center justify-between border-b border-border px-6 py-4">
+              <div className="min-w-0">
+                <h3 className="truncate text-lg font-bold text-navy">Book: {activityTitle}</h3>
+                <p className="text-sm text-muted-foreground">{new Date(slot.departureDate).toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric", year: "numeric" })}</p>
               </div>
-              <button onClick={close} className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-navy">
+              <button onClick={close} className="ml-4 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-navy shrink-0">
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Departure summary */}
-            <div className="mx-6 mt-4 flex items-center gap-3 rounded-xl bg-navy/5 p-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-navy/10">
-                <Calendar className="h-5 w-5 text-navy" />
-              </div>
-              <div className="min-w-0">
-                <p className="font-semibold text-navy">
-                  {new Date(slot.departureDate).toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric", year: "numeric" })}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  ${slot.price} / person &middot; {slot.remainingSeats} {slot.remainingSeats === 1 ? "seat" : "seats"} left
-                </p>
-              </div>
-            </div>
-
-            <div className="px-6 py-4">
-              {error && (
-                <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label className="mb-1.5 block text-sm font-semibold text-navy">Full Name <span className="text-orange">*</span></label>
-                    <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-orange focus:ring-2 focus:ring-orange/20" />
+            {/* Body */}
+            <div className="flex min-h-0 flex-1 flex-col gap-0 overflow-y-auto sm:flex-row">
+              {/* Form */}
+              <div className="flex-1 px-6 py-4">
+                {error && (
+                  <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+                )}
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-sm font-semibold text-navy">Full Name <span className="text-orange">*</span></label>
+                      <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20" />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-semibold text-navy">Email <span className="text-orange">*</span></label>
+                      <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20" />
+                    </div>
                   </div>
-                  <div>
-                    <label className="mb-1.5 block text-sm font-semibold text-navy">Email <span className="text-orange">*</span></label>
-                    <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-orange focus:ring-2 focus:ring-orange/20" />
-                  </div>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label className="mb-1.5 block text-sm font-semibold text-navy">Phone <span className="text-orange">*</span></label>
-                    <input required type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+977 ..." className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-orange focus:ring-2 focus:ring-orange/20" />
-                  </div>
-                  <div>
-                    <label className="mb-1.5 block text-sm font-semibold text-navy">Group Size <span className="text-orange">*</span></label>
-                    <input required type="number" min={1} max={slot.remainingSeats || 10} value={groupSize} onChange={(e) => setGroupSize(Number(e.target.value))} className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-orange focus:ring-2 focus:ring-orange/20" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-navy">Payment</label>
-                  <div className="space-y-2">
-                    <label className={`flex cursor-pointer items-center gap-3 rounded-lg border-2 p-3.5 text-sm transition-all ${paymentType === "DEPOSIT" ? "border-orange bg-orange/5" : "border-border hover:border-orange/30"}`}>
-                      <input type="radio" name="paymentType" checked={paymentType === "DEPOSIT"} onChange={() => setPaymentType("DEPOSIT")} className="accent-orange" />
-                      <div>
-                        <div className="font-semibold text-navy">Pay Deposit (30%)</div>
-                        <div className="mt-0.5 text-muted-foreground">Pay ${deposit} now, balance due before departure</div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-sm font-semibold text-navy">Phone <span className="text-orange">*</span></label>
+                      <input required type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+977 ..." className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20" />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-semibold text-navy">Group Size <span className="text-orange">*</span></label>
+                      <div className="relative">
+                        <Users className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <input required type="number" min={1} max={slot.remainingSeats || 10} value={groupSize} onChange={(e) => setGroupSize(Number(e.target.value))} className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20" />
                       </div>
-                    </label>
-                    <label className={`flex cursor-pointer items-center gap-3 rounded-lg border-2 p-3.5 text-sm transition-all ${paymentType === "FULL" ? "border-orange bg-orange/5" : "border-border hover:border-orange/30"}`}>
-                      <input type="radio" name="paymentType" checked={paymentType === "FULL"} onChange={() => setPaymentType("FULL")} className="accent-orange" />
-                      <div>
-                        <div className="font-semibold text-navy">Pay Full Amount</div>
-                        <div className="mt-0.5 text-muted-foreground">Pay ${total} now</div>
-                      </div>
-                    </label>
+                    </div>
                   </div>
-                </div>
 
-                {/* Price summary */}
-                <div className="rounded-xl bg-navy/5 p-4">
-                  <div className="space-y-2 text-sm">
-                    <div className="text-muted-foreground">${slot.price} x {groupSize} {groupSize === 1 ? "person" : "people"} &mdash; <span className="font-medium text-navy">${total.toLocaleString()}</span></div>
-                    <div className="text-muted-foreground">Due now &mdash; <span className="text-base font-bold text-orange">${payAmount.toLocaleString()}</span></div>
+                  <div>
+                    <label className="mb-2 block text-sm font-semibold text-navy">Payment</label>
+                    <div className="space-y-2">
+                      <label className={`flex cursor-pointer items-center gap-3 rounded-lg border-2 p-3 text-sm transition-all ${paymentType === "DEPOSIT" ? "border-orange bg-orange/5" : "border-border hover:border-orange/30"}`}>
+                        <input type="radio" name="paymentType" checked={paymentType === "DEPOSIT"} onChange={() => setPaymentType("DEPOSIT")} className="accent-orange" />
+                        <div>
+                          <div className="font-semibold text-navy">Pay Deposit (30%) &mdash; <span className="text-orange">${deposit}</span></div>
+                          <div className="mt-0.5 text-muted-foreground">Balance due before departure</div>
+                        </div>
+                      </label>
+                      <label className={`flex cursor-pointer items-center gap-3 rounded-lg border-2 p-3 text-sm transition-all ${paymentType === "FULL" ? "border-orange bg-orange/5" : "border-border hover:border-orange/30"}`}>
+                        <input type="radio" name="paymentType" checked={paymentType === "FULL"} onChange={() => setPaymentType("FULL")} className="accent-orange" />
+                        <div>
+                          <div className="font-semibold text-navy">Pay Full Amount &mdash; <span className="text-orange">${total}</span></div>
+                          <div className="mt-0.5 text-muted-foreground">Pay everything now</div>
+                        </div>
+                      </label>
+                    </div>
                   </div>
-                  <div className="mt-3 space-y-1.5 border-t border-border pt-3 text-xs text-muted-foreground">
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-orange py-2.5 text-sm font-semibold text-orange-foreground transition-all hover:opacity-90 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {loading ? (
+                      <><Loader2 className="h-4 w-4 animate-spin" /> Processing...</>
+                    ) : (
+                      `Pay $${payAmount.toLocaleString()}`
+                    )}
+                  </button>
+                </form>
+              </div>
+
+              {/* Summary sidebar */}
+              <div className="border-t border-border bg-navy/[0.02] px-6 py-4 sm:w-72 sm:shrink-0 sm:border-l sm:border-t-0">
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Departure</h4>
+                    <div className="flex items-center gap-2 text-sm font-medium text-navy">
+                      <Calendar className="h-4 w-4 shrink-0 text-orange" />
+                      {new Date(slot.departureDate).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Travelers</h4>
+                    <div className="flex items-center gap-2 text-sm font-medium text-navy">
+                      <Users className="h-4 w-4 shrink-0 text-orange" />
+                      {groupSize} {groupSize === 1 ? "person" : "people"}
+                    </div>
+                  </div>
+
+                  <hr className="border-border" />
+
+                  <div>
+                    <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Price Breakdown</h4>
+                    <div className="space-y-1.5 text-sm">
+                      <div><span className="text-muted-foreground">${slot.price} x {groupSize}</span> <span className="float-right font-medium text-navy">${total.toLocaleString()}</span></div>
+                      <div><span className="text-muted-foreground">{paymentType === "DEPOSIT" ? "Deposit (30%)" : "Full payment"}</span></div>
+                    </div>
+                  </div>
+
+                  <hr className="border-border" />
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Due now</span>
+                    <span className="text-lg font-bold text-orange">${payAmount.toLocaleString()}</span>
+                  </div>
+
+                  <div className="space-y-1.5 text-xs text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <Shield className="h-3.5 w-3.5 shrink-0 text-success" /> Secure payment via Stripe
                     </div>
                     <div className="flex items-center gap-2">
-                      <CreditCard className="h-3.5 w-3.5 shrink-0 text-success" /> Visa, Mastercard, Amex accepted
+                      <CreditCard className="h-3.5 w-3.5 shrink-0 text-success" /> Visa, Mastercard, Amex
                     </div>
                   </div>
                 </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-orange py-3 text-base font-semibold text-orange-foreground transition-all hover:opacity-90 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {loading ? (
-                    <><Loader2 className="h-4 w-4 animate-spin" /> Processing...</>
-                  ) : (
-                    `Pay $${payAmount.toLocaleString()}`
-                  )}
-                </button>
-              </form>
+              </div>
             </div>
           </div>
         </div>
