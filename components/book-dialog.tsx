@@ -136,9 +136,10 @@ export function BookDialog({ slot, activityId, activityTitle }: { slot: Slot; ac
                     </div>
                     <div>
                       <label className="mb-1 block text-sm font-semibold text-navy">Group Size <span className="text-orange">*</span></label>
-                      <div className="relative">
-                        <Users className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                        <input required type="number" min={1} max={slot.remainingSeats || 10} value={groupSize} onChange={(e) => setGroupSize(Number(e.target.value))} className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20" />
+                      <div className="flex items-center gap-0">
+                        <button type="button" onClick={() => setGroupSize(Math.max(1, groupSize - 1))} disabled={groupSize <= 1} className="flex h-10 w-10 items-center justify-center rounded-l-lg border border-border bg-background text-lg font-medium text-navy transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-30">&minus;</button>
+                        <div className="flex h-10 w-14 items-center justify-center border-y border-border bg-background text-sm font-semibold text-navy">{groupSize}</div>
+                        <button type="button" onClick={() => setGroupSize(Math.min(slot.remainingSeats || 10, groupSize + 1))} disabled={groupSize >= (slot.remainingSeats || 10)} className="flex h-10 w-10 items-center justify-center rounded-r-lg border border-border bg-background text-lg font-medium text-navy transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-30">+</button>
                       </div>
                     </div>
                   </div>
@@ -171,7 +172,7 @@ export function BookDialog({ slot, activityId, activityTitle }: { slot: Slot; ac
                     {loading ? (
                       <><Loader2 className="h-4 w-4 animate-spin" /> Processing...</>
                     ) : (
-                      `Pay $${payAmount.toLocaleString()}`
+                      `Proceed to Checkout`
                     )}
                   </button>
                 </form>
