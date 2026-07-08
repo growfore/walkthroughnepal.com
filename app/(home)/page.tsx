@@ -201,7 +201,7 @@ export default async function HomePage() {
       <section className="pb-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-navy p-14 text-navy-foreground shadow-lg">
-            <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:gap-6 sm:text-left">
+            <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-start sm:gap-6">
               <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-orange/20">
                 <Send className="h-8 w-8 text-orange" />
               </div>
