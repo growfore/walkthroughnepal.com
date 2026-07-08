@@ -68,7 +68,7 @@ export function BookDialog({ slot, activityId, activityTitle }: { slot: Slot; ac
       const checkoutRes = await fetch(`${API}/api/v1/stripe/create-checkout-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bookingId: data.data.booking.id }),
+        body: JSON.stringify({ bookingId: data.data.booking.id, customerEmail: email }),
       })
       const checkoutData = await checkoutRes.json()
       if (!checkoutRes.ok) throw new Error(checkoutData.message || "Checkout failed")
