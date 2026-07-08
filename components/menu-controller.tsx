@@ -134,7 +134,7 @@ export function MenuController({ items }: MenuControllerProps) {
             />
           </Link>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-0">
           {items.map((item) => {
             const itemHasChildren = hasChildren(item)
             const itemHasGrandchildren = hasGrandchildren(item)
