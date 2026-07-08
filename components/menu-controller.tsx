@@ -122,18 +122,16 @@ export function MenuController({ items }: MenuControllerProps) {
 
       {/* Main nav */}
       <div
-        className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-2 md:px-8"
+        className="relative mx-auto flex w-full max-w-7xl items-center justify-between gap-2 overflow-hidden px-4 py-2 md:gap-4 md:px-8"
         onMouseLeave={queueHide}
       >
-        <div className="flex items-center justify-between gap-2">
-          <Link href="/" className="pl-0 font-black">
-            <img
-              src="/logo-july-6.png"
-              alt="Walk Through Nepal"
-              className="h-auto w-36"
-            />
-          </Link>
-        </div>
+        <Link href="/" className="shrink-0">
+          <img
+            src="/logo-july-6.png"
+            alt="Walk Through Nepal"
+            className="h-auto w-32 md:w-36"
+          />
+        </Link>
         <div className="flex items-center gap-0">
           {items.map((item) => {
             const itemHasChildren = hasChildren(item)

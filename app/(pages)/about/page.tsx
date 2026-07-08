@@ -1,9 +1,5 @@
 import type { Metadata } from "next"
-import type { TeamMember } from "@/lib/types"
-import { getTeamMembers, img } from "@/lib/api"
 import { PageHero } from "@/components/page-hero"
-import { HorizontalScroll } from "@/components/horizontal-scroll"
-import { TeamCard } from "@/components/team-card"
 import { SectionHeader } from "@/components/section-header"
 import { Users, MapPin, Shield, HeartHandshake } from "lucide-react"
 
@@ -16,16 +12,6 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic"
 
 export default async function AboutPage() {
-  let teamMembers: TeamMember[] = []
-
-  try {
-    const res = await getTeamMembers()
-    const grouped = res.data
-    if (grouped && typeof grouped === "object") {
-      teamMembers = (Object.values(grouped) as any[]).flat().map((m: any) => ({ ...m, department: null }))
-    }
-  } catch {}
-
   const stats = [
     { icon: Users, value: "20+", label: "Years Experience" },
     { icon: MapPin, value: "50+", label: "Nepal Destinations" },
@@ -114,22 +100,6 @@ export default async function AboutPage() {
           </div>
         </div>
       </section>
-
-      {/* Team */}
-      {teamMembers.length > 0 && (
-        <section className="py-20">
-          <div className="mx-auto max-w-7xl px-4">
-            <SectionHeader title="Meet Our Experts" align="center" />
-            <HorizontalScroll>
-              {teamMembers.map((m) => (
-                <div key={m.id} className="w-[320px] shrink-0 rounded-xl border border-border bg-card p-6 shadow-sm">
-                  <TeamCard member={m} />
-                </div>
-              ))}
-            </HorizontalScroll>
-          </div>
-        </section>
-      )}
 
       {/* CTA */}
       <section className="pb-20">
