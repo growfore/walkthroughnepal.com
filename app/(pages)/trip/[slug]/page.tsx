@@ -326,8 +326,9 @@ export default async function PackagePage({
                 <p className="mt-2 text-muted-foreground">
                   Choose your preferred departure date
                 </p>
-                <div className="mt-6 overflow-hidden rounded-xl border border-border shadow-sm">
-                  <table className="w-full">
+                <div className="mt-6 rounded-xl border border-border shadow-sm">
+                  {/* Desktop table */}
+                  <table className="hidden w-full sm:table">
                     <thead>
                       <tr className="border-b border-border bg-muted/50">
                         <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">Date</th>
@@ -364,6 +365,33 @@ export default async function PackagePage({
                       ))}
                     </tbody>
                   </table>
+
+                  {/* Mobile cards */}
+                  <div className="divide-y divide-border sm:hidden">
+                    {upcomingSlots.map((s) => (
+                      <div key={s.id} className="p-4">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2">
+                              <Calendar className="h-4 w-4 shrink-0 text-orange" />
+                              <span className="font-medium text-navy text-sm">
+                                {new Date(s.departureDate).toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric", year: "numeric" })}
+                              </span>
+                            </div>
+                            <div className="mt-2 flex items-center gap-3">
+                              <span className="text-lg font-bold text-navy">${Number(s.price).toLocaleString()}</span>
+                              <span className="text-sm text-muted-foreground">/ person</span>
+                              <span className={`ml-auto inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${s.remainingSeats > 5 ? "bg-success-soft text-success" : s.remainingSeats > 0 ? "bg-warning-soft text-warning" : "bg-red-50 text-red-600"}`}>
+                                <span className={`h-1.5 w-1.5 rounded-full ${s.remainingSeats > 5 ? "bg-success" : s.remainingSeats > 0 ? "bg-warning" : "bg-red-600"}`} />
+                                {s.remainingSeats > 5 ? `${s.remainingSeats} seats` : s.remainingSeats > 0 ? `Only ${s.remainingSeats} left` : "Full"}
+                              </span>
+                            </div>
+                          </div>
+                          <BookDialog slot={s} activityId={pkg.id} activityTitle={pkg.title} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
@@ -520,9 +548,9 @@ export default async function PackagePage({
               <span className="text-xs text-muted-foreground">/person</span>
             </div>
           </div>
-          <a href="#price-card" className="rounded-md bg-orange px-6 py-3 font-semibold whitespace-nowrap text-orange-foreground hover:opacity-90">
-            View Dates
-          </a>
+          <a href="#departures" className="rounded-md bg-orange px-6 py-3 font-semibold whitespace-nowrap text-orange-foreground hover:opacity-90">
+  View Dates
+</a>
         </div>
       </div>
     </div>
