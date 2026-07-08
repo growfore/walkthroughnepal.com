@@ -4,7 +4,7 @@ import type { TeamMember } from "@/lib/types"
 export function TeamCard({ member }: { member: TeamMember }) {
   return (
     <div className="flex items-start gap-5 py-3">
-      <div className="h-46 w-46 shrink-0 overflow-hidden rounded-xl md:h-28 md:w-28">
+      <div className="h-24 w-24 shrink-0 overflow-hidden rounded-xl md:h-28 md:w-28">
         {member.image ? (
           <img
             src={img(member.image)}

@@ -54,7 +54,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
             <div className="mb-10 flex flex-wrap items-center gap-2">
               <Link
                 href="/explore"
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${!categoryFilter ? "bg-orange text-orange-foreground" : "border border-border text-navy hover:bg-border"}`}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition ${!categoryFilter ? "bg-orange text-orange-foreground" : "border border-border text-navy hover:bg-border"}`}
               >
                 All
               </Link>
@@ -62,7 +62,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
                 <Link
                   key={c.handle}
                   href={`/explore?category=${c.handle}`}
-                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${categoryFilter === c.handle ? "bg-orange text-orange-foreground" : "border border-border text-navy hover:bg-border"}`}
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition ${categoryFilter === c.handle ? "bg-orange text-orange-foreground" : "border border-border text-navy hover:bg-border"}`}
                 >
                   {c.name}
                 </Link>

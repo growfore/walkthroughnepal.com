@@ -36,7 +36,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                   type="text"
                   defaultValue={search}
                   placeholder="Search posts…"
-                  className="h-10 w-80 rounded-md border border-border bg-card pl-9 pr-3 text-sm text-navy outline-none focus:border-orange"
+                  className="h-10 w-full max-w-sm rounded-md border border-border bg-card pl-9 pr-3 text-sm text-navy outline-none focus:border-orange"
                 />
               </div>
               <button
