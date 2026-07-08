@@ -333,7 +333,7 @@ export default async function PackagePage({
                         <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">Date</th>
                         <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">Price</th>
                         <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">Availability</th>
-                        <th className="px-5 py-3.5 text-right text-sm font-semibold text-navy">Action</th>
+                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
@@ -357,7 +357,7 @@ export default async function PackagePage({
                               {s.remainingSeats > 5 ? `${s.remainingSeats} seats` : s.remainingSeats > 0 ? `Only ${s.remainingSeats} left` : "Full"}
                             </span>
                           </td>
-                          <td className="px-5 py-4 text-right">
+                          <td className="px-5 py-4 text-left">
                             <BookDialog slot={s} activityId={pkg.id} activityTitle={pkg.title} />
                           </td>
                         </tr>
