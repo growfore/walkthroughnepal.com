@@ -57,15 +57,15 @@ export function MobileMenuOverlay({
           role="dialog"
           aria-modal="true"
           aria-label="Navigation menu"
-          className="lg:hidden fixed inset-x-0 top-16 bg-white border-b border-[#dee1e6] z-50 overflow-y-auto max-h-[calc(100vh-64px)]"
+          className="lg:hidden fixed inset-x-0 top-16 bg-white border-b border-border z-50 overflow-y-auto max-h-[calc(100vh-64px)]"
         >
           {items.map((item) => (
             <MobileMenuItem key={item.id} item={item} onNavigate={onNavigate} />
           ))}
-          <div className="flex gap-2 p-4 border-t border-[#dee1e6]">
+          <div className="flex gap-2 p-4 border-t border-border">
             <a
               href="/design-your-trip"
-              className="flex-1 rounded-full border border-[#dee1e6] px-3 py-2 text-xs font-semibold text-navy text-center sm:px-5 sm:py-2.5 sm:text-sm"
+              className="flex-1 rounded-full border border-border px-3 py-2 text-xs font-semibold text-navy text-center sm:px-5 sm:py-2.5 sm:text-sm"
             >
               Customize My Trip
             </a>

@@ -191,7 +191,7 @@ export function DownloadItineraryButton({
   }
 
   return (
-    <button onClick={handleDownload} className="mt-3 flex w-full items-center justify-center gap-2 rounded-md border border-border py-3 font-semibold text-navy hover:bg-secondary">
+    <button onClick={handleDownload} className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-border py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-navy transition-colors">
       <Download className="h-4 w-4" /> Download Itinerary
     </button>
   )

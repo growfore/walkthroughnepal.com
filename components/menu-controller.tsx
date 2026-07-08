@@ -25,11 +25,11 @@ interface MenuControllerProps {
 
 export function MenuController({ items }: MenuControllerProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false)
-  const [isVisible, setIsVisible] = useState(true)
   const [activeMega, setActiveMega] = useState<string | null>(null)
   const pathname = usePathname()
-  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const isTripPage = pathname.startsWith("/trip/")
   const navRef = useRef<HTMLElement>(null)
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const cancelHide = useCallback(() => {
     if (hideTimer.current) {
@@ -53,6 +53,8 @@ export function MenuController({ items }: MenuControllerProps) {
     [cancelHide]
   )
 
+  const [activeSidebar, setActiveSidebar] = useState<string | null>(null)
+
   useEffect(() => {
     cancelHide()
     return cancelHide
@@ -67,22 +69,9 @@ export function MenuController({ items }: MenuControllerProps) {
   }, [closeMega])
 
   useEffect(() => {
-    let lastY = window.scrollY
-    const onScroll = () => {
-      const y = window.scrollY
-      setIsVisible(y <= 80 || y < lastY)
-      lastY = y
-    }
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [])
-
-  useEffect(() => {
     setActiveMega(null)
     setIsMobileOpen(false)
   }, [pathname])
-
-  const [activeSidebar, setActiveSidebar] = useState<string | null>(null)
 
   const activeMegaItem = activeMega
     ? items.find((i) => i.id === activeMega)
@@ -100,9 +89,7 @@ export function MenuController({ items }: MenuControllerProps) {
     <nav
       ref={navRef}
       aria-label="Main navigation"
-      className={`fixed inset-x-0 top-0 z-50 border-b border-[#dee1e6] bg-white transition-transform duration-300 ${
-        isVisible ? "translate-y-0" : "-translate-y-full"
-      }`}
+      className={`${isTripPage ? "relative w-full" : "fixed inset-x-0 top-0"} z-50 border-b border-border bg-white`}
     >
       {/* Top bar */}
       <div className="hidden bg-navy text-navy-foreground md:block">
@@ -167,19 +154,19 @@ export function MenuController({ items }: MenuControllerProps) {
                   <button
                     aria-haspopup="true"
                     aria-expanded={isActive}
-                    className={`text-md inline-flex items-center gap-0.5 px-3 py-1.5 font-medium transition-colors ${
+                    className={`text-md inline-flex items-center gap-0.5 rounded-lg px-3 py-1.5 font-medium transition-colors ${
                       isActive
-                        ? "bg-[#f7f7f7] text-navy"
-                        : "text-[#5b616e] hover:bg-[#f7f7f7] hover:text-navy"
+                        ? "bg-muted text-navy"
+                        : "text-muted-foreground hover:bg-muted hover:text-navy"
                     }`}
                   >
                     {item.label}
-                    <ChevronDown size={16} className="text-[#a8acb3]" />
+                    <ChevronDown size={16} className="text-muted-foreground" />
                   </button>
                 ) : (
                   <Link
                     href={item.url || "#"}
-                    className="text-md inline-flex items-center px-3 py-1.5 font-medium text-[#5b616e] transition-colors hover:bg-[#f7f7f7] hover:text-navy"
+                    className="text-md inline-flex items-center rounded-lg px-3 py-1.5 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-navy"
                   >
                     {item.label}
                   </Link>
@@ -189,12 +176,12 @@ export function MenuController({ items }: MenuControllerProps) {
                     onMouseEnter={cancelHide}
                     className="absolute top-full left-0 z-40 pt-1"
                   >
-                    <div className="max-w-[320px] min-w-[220px] rounded-xl border border-[#dee1e6] bg-white py-2 shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
+                    <div className="min-w-[220px] max-w-[320px] rounded-xl border border-border bg-white py-2 shadow-lg">
                       {item.children.map((child) => (
                         <Link
                           key={child.id}
                           href={child.url || "#"}
-                          className="block px-5 py-2.5 text-sm text-[#5b616e] transition-colors hover:bg-[#f7f7f7] hover:text-navy"
+                          className="block px-5 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-navy"
                         >
                           {child.label}
                         </Link>
@@ -211,7 +198,7 @@ export function MenuController({ items }: MenuControllerProps) {
           <div className="hidden items-center gap-2 md:flex">
             <Link
               href="/design-your-trip"
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#dee1e6] px-5 py-2 text-sm font-semibold text-navy transition hover:bg-[#f7f7f7]"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border px-5 py-2 text-sm font-semibold text-navy transition hover:bg-muted"
             >
               <LucidePlus className="size-4" />
               Customize My Trip
@@ -243,10 +230,10 @@ export function MenuController({ items }: MenuControllerProps) {
             className="pointer-events-none absolute inset-x-0 top-0 z-40 max-lg:hidden"
           >
             <div className="h-16" aria-hidden="true" />
-            <div className="pointer-events-auto rounded-xl border border-[#dee1e6] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
+            <div className="pointer-events-auto rounded-xl border border-border bg-white shadow-lg">
               <div className="mx-auto max-w-7xl px-4 md:px-8">
                 <div className="flex">
-                  <div className="w-[240px] shrink-0 border-r border-[#dee1e6] py-6 pr-6">
+                  <div className="w-[240px] shrink-0 border-r border-border py-6 pr-6">
                     <ul className="space-y-1">
                       {activeMegaChildren.map((child) => {
                         const isActiveSidebar =
@@ -257,8 +244,8 @@ export function MenuController({ items }: MenuControllerProps) {
                               onMouseEnter={() => setActiveSidebar(child.id)}
                               className={`w-full rounded-lg px-4 py-3 text-left text-sm font-medium transition-colors ${
                                 isActiveSidebar
-                                  ? "border-l-2 border-orange bg-[#f7f7f7] text-orange"
-                                  : "border-l-2 border-transparent text-[#5b616e] hover:bg-[#f7f7f7] hover:text-navy"
+                                  ? "border-l-2 border-orange bg-muted text-orange"
+                                  : "border-l-2 border-transparent text-muted-foreground hover:bg-muted hover:text-navy"
                               }`}
                             >
                               {child.label}
@@ -276,7 +263,7 @@ export function MenuController({ items }: MenuControllerProps) {
                           <Link
                             key={subChild.id}
                             href={subChild.url || "#"}
-                            className="block py-2 text-sm text-[#5b616e] transition-colors hover:text-navy"
+                            className="block py-2 text-sm text-muted-foreground transition-colors hover:text-navy"
                           >
                             {subChild.label}
                           </Link>
@@ -285,7 +272,7 @@ export function MenuController({ items }: MenuControllerProps) {
                     ) : activeSidebarItem ? (
                       <Link
                         href={activeSidebarItem.url || "#"}
-                        className="text-[#5b616e] transition-colors hover:text-navy"
+                        className="text-muted-foreground transition-colors hover:text-navy"
                       >
                         {activeSidebarItem.label}
                       </Link>

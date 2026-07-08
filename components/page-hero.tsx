@@ -25,7 +25,7 @@ export function PageHero({ title, description, image, breadcrumbs }: PageHeroPro
   const src = image ? img(image) : DEFAULT_HERO
 
   return (
-    <section className="relative overflow-hidden bg-navy pt-28">
+    <section className="relative overflow-hidden bg-navy">
       <div className="absolute inset-0">
         <Lightbox src={src} alt={title} />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40" />
@@ -52,11 +52,11 @@ export function PageHero({ title, description, image, breadcrumbs }: PageHeroPro
           <p className="mt-3 text-lg text-white/80">{description}</p>
         )}
       </div>
-      <div className="relative bg-[#dff0e6]">
+      <div className="relative bg-success-soft">
         <div className="mx-auto grid max-w-4xl grid-cols-1 gap-6 px-4 py-6 sm:grid-cols-3">
           {valueProps.map((vp) => (
-            <div key={vp.text} className="flex items-center gap-3 text-sm font-semibold text-[#1a4a3a]">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#1a4a3a]/10 text-[#1a4a3a]">
+            <div key={vp.text} className="flex items-center gap-3 text-sm font-semibold text-success">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-success/10 text-success">
                 <vp.icon className="h-4 w-4" />
               </span>
               {vp.text}

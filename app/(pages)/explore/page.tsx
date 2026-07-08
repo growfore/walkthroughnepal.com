@@ -20,6 +20,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
 
   let categories: { handle: string; name: string }[] = []
   let activities: any[] = []
+  let totalCount = 0
   let totalPages = 1
 
   try {
@@ -35,6 +36,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
   try {
     const res = await getActivities(filters)
     activities = res.data ?? []
+    totalCount = res.pagination.total
     totalPages = res.pagination.totalPages
   } catch {}
 
@@ -68,6 +70,12 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
             </div>
           )}
 
+          {activities.length > 0 && (
+            <p className="mb-6 text-sm text-muted-foreground">
+              Showing {activities.length} of {totalCount} trips
+              {categoryFilter && ` in this category`}
+            </p>
+          )}
           {activities.length === 0 ? (
             <div className="py-20 text-center text-muted-foreground">
               <Mountain className="mx-auto h-12 w-12 mb-4 opacity-40" />

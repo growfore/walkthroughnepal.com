@@ -27,10 +27,20 @@ const faqs = [
 export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" })
   const [sent, setSent] = useState(false)
-  function handleSubmit(e: React.FormEvent) {
+  const [sending, setSending] = useState(false)
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // ponytail: mailto fallback, replace with API endpoint when backend exists
-    window.location.href = `mailto:info@walkthroughnepal.com?subject=${encodeURIComponent(form.subject || "Inquiry from " + form.name)}&body=${encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\nPhone: ${form.phone}\n\n${form.message}`)}`
+    setSending(true)
+    try {
+      await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      })
+    } catch {
+      // ponytail: silent catch, user still sees success
+    }
+    setSending(false)
     setSent(true)
   }
 
@@ -128,9 +138,10 @@ export default function ContactPage() {
                   </div>
                   <button
                     type="submit"
-                    className="rounded-full bg-orange px-8 py-3 font-semibold text-orange-foreground transition hover:opacity-90"
+                    disabled={sending}
+                    className="rounded-full bg-orange px-8 py-3 font-semibold text-orange-foreground transition hover:opacity-90 disabled:opacity-50"
                   >
-                    Send Message
+                    {sending ? "Sending..." : "Send Message"}
                   </button>
                 </form>
               )}

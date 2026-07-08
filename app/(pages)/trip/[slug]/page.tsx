@@ -18,7 +18,6 @@ import {
   Utensils,
   Bus,
 } from "lucide-react"
-import { SectionNav } from "@/components/section-nav"
 import { FAQSection } from "@/components/faq-section"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -46,9 +45,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 import { decodeHtmlEntities } from "@/lib/html-decoder"
 import { StickyWrapper } from "@/components/sticky-wrapper"
 import { ItineraryList } from "@/components/itinerary-list"
-import { Lightbox } from "@/components/lightbox"
 import { DownloadItineraryButton } from "@/components/download-itinerary-button"
-import { ThumbnailGallery } from "@/components/thumbnail-gallery"
+import { HorizontalGallery } from "@/components/horizontal-gallery"
 import { ReviewsCarousel } from "@/components/reviews-carousel"
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
@@ -83,8 +81,6 @@ export default async function PackagePage({
     pkg.difficultyLevel
       ?.replace(/_/g, " ")
       .replace(/\b\w/g, (l) => l.toUpperCase()) ?? "Moderate"
-  const heroImg = img(pkg.images[0], API)
-
   let testimonials: { author: string; content: string }[] = []
   try {
     testimonials = (await getTestimonials()).map((t) => ({
@@ -103,30 +99,48 @@ export default async function PackagePage({
   today.setHours(0, 0, 0, 0)
   const upcomingSlots = slots
     .filter((s) => s.visible && new Date(s.departureDate) >= today)
-    .sort((a, b) => new Date(a.departureDate).getTime() - new Date(b.departureDate).getTime())
+    .sort(
+      (a, b) =>
+        new Date(a.departureDate).getTime() -
+        new Date(b.departureDate).getTime()
+    )
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* ── Hero ── */}
-      <section className="relative">
-        <div className="relative h-[400px] w-full overflow-hidden md:h-[480px]">
-          <Lightbox src={heroImg} alt={pkg.title} />
-          {pkg.images.length > 0 && (
-            <ThumbnailGallery images={pkg.images} apiUrl={API} />
-          )}
-        </div>
+      {/* ── Hero Gallery ── */}
+      <section className="-mt-[40px] pb-0 md:-mt-[100px]">
+        <HorizontalGallery images={pkg.images} apiUrl={API} />
       </section>
 
-      {/* ── Main content ── */}
-      <section className="pb-20 pt-12 text-lg leading-relaxed font-medium lg:pb-12">
-        <SectionNav />
+      {/* ── Sticky section nav ── */}
+      <div className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm">
+        <div className="mx-auto scrollbar-hide flex max-w-7xl flex-nowrap gap-1 overflow-x-auto px-4 py-3 md:px-8">
+          {tabs.map((t) => {
+            const Icon = t.icon
+            return (
+              <a
+                key={t.label}
+                href={`#${t.label.toLowerCase().replace(/\s+/g, "-")}`}
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-navy"
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                {t.label}
+              </a>
+            )
+          })}
+        </div>
+      </div>
 
+      {/* ── Main content ── */}
+      <section className="pt-4 pb-20 text-lg leading-relaxed font-medium lg:pb-12">
         <div className="mx-auto grid max-w-7xl min-w-0 gap-8 px-4 lg:grid-cols-3">
           <div className="min-w-0 lg:col-span-2">
             {/* ── Title & Breadcrumb ── */}
             <div className="mb-6">
               <nav className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Link href="/" className="hover:text-orange">Home</Link>
+                <Link href="/" className="hover:text-orange">
+                  Home
+                </Link>
                 <ChevronRight className="h-3.5 w-3.5" />
                 <span className="text-navy">{pkg.title}</span>
               </nav>
@@ -138,7 +152,6 @@ export default async function PackagePage({
               <h1 className="mt-3 text-3xl leading-tight font-bold text-navy md:text-5xl">
                 {pkg.title}
               </h1>
-
             </div>
 
             {/* ── Facts ── */}
@@ -149,26 +162,51 @@ export default async function PackagePage({
                   { icon: Mountain, label: "Difficulty", value: difficulty },
                 ],
                 [
-                  { icon: () => <span className="text-sm font-bold">↑</span>, label: "Max Altitude", value: pkg.maximumAltitude },
-                  { icon: Calendar, label: "Best Season", value: pkg.bestSeason },
+                  {
+                    icon: () => <span className="text-sm font-bold">↑</span>,
+                    label: "Max Altitude",
+                    value: pkg.maximumAltitude,
+                  },
+                  {
+                    icon: Calendar,
+                    label: "Best Season",
+                    value: pkg.bestSeason,
+                  },
                 ],
                 [
-                  { icon: HomeIcon, label: "Accommodation", value: pkg.accommodations?.join(", ") || "Tea House" },
+                  {
+                    icon: HomeIcon,
+                    label: "Accommodation",
+                    value: pkg.accommodations?.join(", ") || "Tea House",
+                  },
                   { icon: Utensils, label: "Meals", value: pkg.meals },
                 ],
                 [
-                  { icon: Users, label: "Group Size", value: pkg.groupSize || `${pkg.guestCapacity || 1} Pax` },
-                  { icon: Bus, label: "Transportation", value: pkg.transportation || "N/A" },
+                  {
+                    icon: Users,
+                    label: "Group Size",
+                    value: pkg.groupSize || `${pkg.guestCapacity || 1} Pax`,
+                  },
+                  {
+                    icon: Bus,
+                    label: "Transportation",
+                    value: pkg.transportation || "N/A",
+                  },
                 ],
               ].map((group, gi) => (
-                <div key={gi} className="rounded-lg bg-[#DFEFE6] p-3">
+                <div key={gi} className="rounded-lg bg-success-soft p-3">
                   {group.map((f) => {
                     const Icon = f.icon
                     return (
-                      <div key={f.label} className="flex items-start gap-2 py-1 first:pb-1.5">
+                      <div
+                        key={f.label}
+                        className="flex items-start gap-2 py-1 first:pb-1.5"
+                      >
                         <Icon className="h-4 w-4 shrink-0 text-navy/60" />
                         <div className="min-w-0 text-sm leading-tight">
-                          <div className="font-semibold text-navy">{f.value}</div>
+                          <div className="font-semibold text-navy">
+                            {f.value}
+                          </div>
                           <div className="text-xs text-navy/50">{f.label}</div>
                         </div>
                       </div>
@@ -178,29 +216,8 @@ export default async function PackagePage({
               ))}
             </div>
 
-            {/* Mobile tabs */}
-            <div className="lg:hidden">
-              <StickyWrapper className="sticky z-10 py-3" offset={96}>
-                <div className="scrollbar-hide flex flex-nowrap gap-1.5 overflow-x-auto rounded-2xl border border-border bg-card p-1.5 shadow-sm">
-                  {tabs.map((t, i) => {
-                    const Icon = t.icon
-                    return (
-                      <a
-                        key={t.label}
-                        href={`#${t.label.toLowerCase().replace(/\s+/g, "-")}`}
-                        className={`inline-flex items-center gap-1.5 rounded-xl px-5 py-2.5 text-base font-semibold whitespace-nowrap transition-colors ${i === 0 ? "bg-navy text-navy-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-navy"}`}
-                      >
-                        <Icon className="h-4 w-4 shrink-0" />
-                        {t.label}
-                      </a>
-                    )
-                  })}
-                </div>
-              </StickyWrapper>
-            </div>
-
             {/* ── Overview ── */}
-            <div id="overview" className="mt-8">
+            <div id="overview" className="mt-8 scroll-mt-40">
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
                 Overview
               </h2>
@@ -242,7 +259,9 @@ export default async function PackagePage({
                           <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
                           <span
                             className="wrap-break-word"
-                            dangerouslySetInnerHTML={{ __html: item.replace(/&nbsp;/g, " ") }}
+                            dangerouslySetInnerHTML={{
+                              __html: item.replace(/&nbsp;/g, " "),
+                            }}
                           />
                         </div>
                       ))}
@@ -262,7 +281,7 @@ export default async function PackagePage({
             </div>
 
             {/* ── Reviews ── */}
-            <div id="reviews" className="mt-12 scroll-mt-24">
+            <div id="reviews" className="mt-12 scroll-mt-40">
               <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <h2 className="text-2xl font-bold text-navy md:text-3xl">
@@ -275,12 +294,12 @@ export default async function PackagePage({
             </div>
 
             {/* ── Itinerary ── */}
-            <div id="itinerary" className="mt-12 scroll-mt-24">
+            <div id="itinerary" className="mt-12 scroll-mt-40">
               <ItineraryList days={pkg.itinerary ?? []} />
             </div>
 
             {/* ── Includes ── */}
-            <div id="includes" className="mt-12 scroll-mt-24">
+            <div id="includes" className="mt-12 scroll-mt-40">
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
                 What&apos;s Included
               </h2>
@@ -299,7 +318,7 @@ export default async function PackagePage({
             </div>
 
             {/* ── Excludes ── */}
-            <div id="excludes" className="mt-12 scroll-mt-24">
+            <div id="excludes" className="mt-12 scroll-mt-40">
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
                 What&apos;s Excluded
               </h2>
@@ -319,7 +338,7 @@ export default async function PackagePage({
 
             {/* ── Upcoming Departures ── */}
             {upcomingSlots.length > 0 && (
-              <div id="departures" className="mt-16 scroll-mt-24">
+              <div id="departures" className="mt-16 scroll-mt-40">
                 <h2 className="text-2xl font-bold text-navy md:text-3xl">
                   Upcoming Departures
                 </h2>
@@ -331,36 +350,74 @@ export default async function PackagePage({
                   <table className="hidden w-full sm:table">
                     <thead>
                       <tr className="border-b border-border bg-muted/50">
-                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">Date</th>
-                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">Price</th>
-                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">Availability</th>
-                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">Action</th>
+                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">
+                          Date
+                        </th>
+                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">
+                          Price
+                        </th>
+                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">
+                          Availability
+                        </th>
+                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">
+                          Action
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
                       {upcomingSlots.map((s) => (
-                        <tr key={s.id} className="transition-colors hover:bg-muted/30">
+                        <tr
+                          key={s.id}
+                          className="transition-colors hover:bg-muted/30"
+                        >
                           <td className="px-5 py-4">
                             <div className="flex items-center gap-2">
-                              <Calendar className="h-4 w-4 text-orange shrink-0" />
+                              <Calendar className="h-4 w-4 shrink-0 text-orange" />
                               <span className="font-medium text-navy">
-                                {new Date(s.departureDate).toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric", year: "numeric" })}
+                                {new Date(s.departureDate).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    weekday: "short",
+                                    month: "long",
+                                    day: "numeric",
+                                    year: "numeric",
+                                  }
+                                )}
                               </span>
                             </div>
                           </td>
                           <td className="px-5 py-4">
-                            <span className="text-lg font-bold text-navy">${Number(s.price).toLocaleString()}</span>
-                            <span className="text-sm text-muted-foreground"> / person</span>
-                            <span className="ml-2 rounded-md bg-orange/10 px-1.5 py-0.5 text-xs font-semibold text-orange">{s.days} {s.days === 1 ? "day" : "days"}</span>
+                            <span className="text-lg font-bold text-navy">
+                              ${Number(s.price).toLocaleString()}
+                            </span>
+                            <span className="text-sm text-muted-foreground">
+                              {" "}
+                              / person
+                            </span>
+                            <span className="ml-2 rounded-md bg-orange/10 px-1.5 py-0.5 text-xs font-semibold text-orange">
+                              {s.days} {s.days === 1 ? "day" : "days"}
+                            </span>
                           </td>
                           <td className="px-5 py-4">
-                            <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${s.remainingSeats > 5 ? "bg-success-soft text-success" : s.remainingSeats > 0 ? "bg-warning-soft text-warning" : "bg-red-50 text-red-600"}`}>
-                              <span className={`h-1.5 w-1.5 rounded-full ${s.remainingSeats > 5 ? "bg-success" : s.remainingSeats > 0 ? "bg-warning" : "bg-red-600"}`} />
-                              {s.remainingSeats > 5 ? `${s.remainingSeats} seats` : s.remainingSeats > 0 ? `Only ${s.remainingSeats} left` : "Full"}
+                            <span
+                              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${s.remainingSeats > 5 ? "bg-success-soft text-success" : s.remainingSeats > 0 ? "bg-warning-soft text-warning" : "bg-red-50 text-red-600"}`}
+                            >
+                              <span
+                                className={`h-1.5 w-1.5 rounded-full ${s.remainingSeats > 5 ? "bg-success" : s.remainingSeats > 0 ? "bg-warning" : "bg-red-600"}`}
+                              />
+                              {s.remainingSeats > 5
+                                ? `${s.remainingSeats} seats`
+                                : s.remainingSeats > 0
+                                  ? `Only ${s.remainingSeats} left`
+                                  : "Full"}
                             </span>
                           </td>
                           <td className="px-5 py-4 text-left">
-                            <BookDialog slot={s} activityId={pkg.id} activityTitle={pkg.title} />
+                            <BookDialog
+                              slot={s}
+                              activityId={pkg.id}
+                              activityTitle={pkg.title}
+                            />
                           </td>
                         </tr>
                       ))}
@@ -372,23 +429,49 @@ export default async function PackagePage({
                     {upcomingSlots.map((s) => (
                       <div key={s.id} className="space-y-2 p-4">
                         <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-center gap-2 min-w-0">
+                          <div className="flex min-w-0 items-center gap-2">
                             <Calendar className="h-4 w-4 shrink-0 text-orange" />
-                            <span className="font-medium text-navy text-sm">
-                              {new Date(s.departureDate).toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric", year: "numeric" })}
+                            <span className="text-sm font-medium text-navy">
+                              {new Date(s.departureDate).toLocaleDateString(
+                                "en-US",
+                                {
+                                  weekday: "short",
+                                  month: "long",
+                                  day: "numeric",
+                                  year: "numeric",
+                                }
+                              )}
                             </span>
                           </div>
-                          <BookDialog slot={s} activityId={pkg.id} activityTitle={pkg.title} />
+                          <BookDialog
+                            slot={s}
+                            activityId={pkg.id}
+                            activityTitle={pkg.title}
+                          />
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-lg font-bold text-navy">${Number(s.price).toLocaleString()}</span>
-                          <span className="text-sm text-muted-foreground">/ person</span>
+                          <span className="text-lg font-bold text-navy">
+                            ${Number(s.price).toLocaleString()}
+                          </span>
+                          <span className="text-sm text-muted-foreground">
+                            / person
+                          </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="rounded-md bg-orange/10 px-1.5 py-0.5 text-xs font-semibold text-orange">{s.days} {s.days === 1 ? "day" : "days"}</span>
-                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${s.remainingSeats > 5 ? "bg-success-soft text-success" : s.remainingSeats > 0 ? "bg-warning-soft text-warning" : "bg-red-50 text-red-600"}`}>
-                            <span className={`h-1.5 w-1.5 rounded-full ${s.remainingSeats > 5 ? "bg-success" : s.remainingSeats > 0 ? "bg-warning" : "bg-red-600"}`} />
-                            {s.remainingSeats > 5 ? `${s.remainingSeats} seats` : s.remainingSeats > 0 ? `Only ${s.remainingSeats} left` : "Full"}
+                          <span className="rounded-md bg-orange/10 px-1.5 py-0.5 text-xs font-semibold text-orange">
+                            {s.days} {s.days === 1 ? "day" : "days"}
+                          </span>
+                          <span
+                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${s.remainingSeats > 5 ? "bg-success-soft text-success" : s.remainingSeats > 0 ? "bg-warning-soft text-warning" : "bg-red-50 text-red-600"}`}
+                          >
+                            <span
+                              className={`h-1.5 w-1.5 rounded-full ${s.remainingSeats > 5 ? "bg-success" : s.remainingSeats > 0 ? "bg-warning" : "bg-red-600"}`}
+                            />
+                            {s.remainingSeats > 5
+                              ? `${s.remainingSeats} seats`
+                              : s.remainingSeats > 0
+                                ? `Only ${s.remainingSeats} left`
+                                : "Full"}
                           </span>
                         </div>
                       </div>
@@ -400,7 +483,7 @@ export default async function PackagePage({
 
             {/* ── Useful Info ── */}
             {(pkg.additionalInfo ?? []).length > 0 && (
-              <div id="useful-info" className="mt-12 scroll-mt-24">
+              <div id="useful-info" className="mt-12 scroll-mt-40">
                 <h2 className="text-2xl font-bold text-navy md:text-3xl">
                   Useful Information
                 </h2>
@@ -424,7 +507,7 @@ export default async function PackagePage({
             <FAQSection
               items={pkg.faqs ?? []}
               prose
-              className="mt-12 scroll-mt-24"
+              className="mt-12 scroll-mt-40"
             />
 
             {/* Video */}
@@ -447,11 +530,14 @@ export default async function PackagePage({
 
           {/* ── Sidebar ── */}
           <StickyWrapper
-            className="sticky space-y-6 self-start max-lg:static"
-            offset={120}
+            className="sticky space-y-4 self-start max-lg:static"
+            offset={100}
           >
             {/* Price */}
-            <div id="price-card" className="rounded-lg border border-border bg-card shadow-sm">
+            <div
+              id="price-card"
+              className="rounded-lg border border-border bg-card shadow-sm"
+            >
               <div className="p-4 sm:p-5">
                 {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
                   <span className="mb-2 inline-block rounded-full bg-success-soft px-2 py-0.5 text-xs font-bold text-success">
@@ -473,7 +559,7 @@ export default async function PackagePage({
 
                 <a
                   href={`mailto:info@walkthroughnepal.com?subject=Inquiry%20about%20${encodeURIComponent(pkg.title)}`}
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-navy px-4 py-3 text-sm font-semibold text-navy-foreground hover:opacity-90"
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-navy px-4 py-3 text-sm font-semibold text-navy-foreground hover:opacity-90"
                 >
                   <Mail className="h-4 w-4" /> Send Inquiry
                 </a>
@@ -518,8 +604,7 @@ export default async function PackagePage({
                 </p>
                 <div className="mt-3 space-y-1 text-lg">
                   <div className="flex items-center gap-2 text-navy">
-                    <Phone className="h-4 w-4 text-orange" /> +977 984 123
-                    4567
+                    <Phone className="h-4 w-4 text-orange" /> +977 984 123 4567
                   </div>
                   <div className="flex items-center gap-2 text-navy">
                     <Mail className="h-4 w-4 text-orange" />{" "}
@@ -536,7 +621,7 @@ export default async function PackagePage({
       </section>
 
       {/* Mobile sticky booking bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-white p-3 shadow-lg lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background p-3 shadow-lg lg:hidden">
         <div className="flex items-center justify-between gap-3">
           <div>
             <div className="text-sm text-muted-foreground">From</div>
@@ -550,9 +635,22 @@ export default async function PackagePage({
               <span className="text-xs text-muted-foreground">/person</span>
             </div>
           </div>
-          <a href="#departures" className="rounded-md bg-orange px-6 py-3 font-semibold whitespace-nowrap text-orange-foreground hover:opacity-90">
-  View Dates
-</a>
+          <div className="flex items-center gap-2">
+            <a
+              href="#departures"
+              className="rounded-md border border-orange px-4 py-2.5 text-sm font-semibold whitespace-nowrap text-orange transition-colors hover:bg-orange hover:text-orange-foreground"
+            >
+              View Dates
+            </a>
+            {upcomingSlots.length > 0 && (
+              <a
+                href="#departures"
+                className="rounded-md bg-orange px-4 py-2.5 text-sm font-semibold whitespace-nowrap text-orange-foreground hover:opacity-90"
+              >
+                Book Now
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </div>
