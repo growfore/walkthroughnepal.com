@@ -19,7 +19,7 @@ export function SectionHeader({
           {title}
           {align === "center" && <span className="mx-auto mt-2 block h-1 w-16 rounded-full bg-orange" />}
         </h2>
-        {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
+        {description && <div className="mt-1 text-sm text-muted-foreground" dangerouslySetInnerHTML={{ __html: description }} />}
         {align === "left" && <span className="mt-2 block h-1 w-16 rounded-full bg-orange" />}
       </div>
       {link && (

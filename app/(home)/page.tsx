@@ -201,12 +201,12 @@ export default async function HomePage() {
       <section className="pb-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-navy p-14 text-navy-foreground shadow-lg">
-            <div className="flex items-center gap-6">
+            <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:gap-6 sm:text-left">
               <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-orange/20">
                 <Send className="h-8 w-8 text-orange" />
               </div>
               <div>
-                <h3 className="text-3xl font-bold">
+                <h3 className="text-2xl font-bold sm:text-3xl">
                   Ready to start your adventure?
                 </h3>
                 <p className="mt-2 text-base text-white/70 max-w-lg">
