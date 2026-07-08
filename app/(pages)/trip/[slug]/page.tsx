@@ -114,7 +114,7 @@ export default async function PackagePage({
 
       {/* ── Sticky section nav ── */}
       <div className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm">
-        <div className="mx-auto scrollbar-hide flex max-w-7xl flex-nowrap gap-1 overflow-x-auto px-4 py-3 md:px-8">
+        <div className="mx-auto scrollbar-hide flex max-w-7xl flex-nowrap gap-1 overflow-x-auto py-3">
           {tabs.map((t) => {
             const Icon = t.icon
             return (
@@ -566,37 +566,13 @@ export default async function PackagePage({
               </div>
 
               <div className="border-t border-border px-4 py-3 sm:px-5">
-                <DownloadItineraryButton
-                  title={pkg.title}
-                  slug={slug}
-                  itinerary={pkg.itinerary ?? []}
-                  duration={pkg.duration}
-                  difficulty={difficulty}
-                  maxAltitude={pkg.maximumAltitude}
-                  bestSeason={pkg.bestSeason}
-                  accommodations={pkg.accommodations?.join(", ") || "Tea House"}
-                  meals={pkg.meals}
-                  groupSize={pkg.groupSize || `${pkg.guestCapacity || 1} Pax`}
-                  transportation={pkg.transportation || "N/A"}
-                  meetingPoint={pkg.meetingPoint}
-                  dropOffPoint={pkg.dropOffPoint}
-                  shortDescription={pkg.shortDescription}
-                  fullDescription={pkg.fullDescription}
-                  highlights={pkg.highlights}
-                  additionalInfo={pkg.additionalInfo}
-                  faqs={pkg.faqs}
-                />
+                <DownloadItineraryButton title={pkg.title} slug={slug} />
               </div>
             </div>
 
             {/* Contact */}
-            <div className="overflow-hidden rounded-lg border border-border bg-card">
-              <img
-                src="/images/hero-trekker.jpg"
-                alt="Travel expert"
-                className="h-32 w-full object-cover"
-              />
-              <div className="p-6 pt-4">
+            <div className="rounded-lg border border-border bg-card">
+              <div className="p-6">
                 <h3 className="font-bold text-navy">Need Help Planning?</h3>
                 <p className="mt-1 text-lg text-muted-foreground">
                   Our travel experts are here to help you plan your perfect
@@ -611,9 +587,9 @@ export default async function PackagePage({
                     info@walkthroughnepal.com
                   </div>
                 </div>
-                <button className="mt-4 rounded-md bg-navy px-5 py-3 text-base font-semibold text-navy-foreground hover:opacity-90">
+                <Link href="/contact" className="mt-4 block rounded-md bg-navy px-5 py-3 text-center text-base font-semibold text-navy-foreground hover:opacity-90">
                   Talk To An Expert
-                </button>
+                </Link>
               </div>
             </div>
           </StickyWrapper>
