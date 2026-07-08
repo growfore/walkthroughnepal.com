@@ -370,26 +370,26 @@ export default async function PackagePage({
                   {/* Mobile cards */}
                   <div className="divide-y divide-border sm:hidden">
                     {upcomingSlots.map((s) => (
-                      <div key={s.id} className="p-4">
+                      <div key={s.id} className="space-y-2 p-4">
                         <div className="flex items-start justify-between gap-2">
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="h-4 w-4 shrink-0 text-orange" />
-                              <span className="font-medium text-navy text-sm">
-                                {new Date(s.departureDate).toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric", year: "numeric" })}
-                              </span>
-                            </div>
-                            <div className="mt-2 flex items-center gap-3">
-                              <span className="text-lg font-bold text-navy">${Number(s.price).toLocaleString()}</span>
-                              <span className="text-sm text-muted-foreground">/ person</span>
-                              <span className="rounded-md bg-orange/10 px-1.5 py-0.5 text-xs font-semibold text-orange">{s.days} {s.days === 1 ? "day" : "days"}</span>
-                              <span className={`ml-auto inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${s.remainingSeats > 5 ? "bg-success-soft text-success" : s.remainingSeats > 0 ? "bg-warning-soft text-warning" : "bg-red-50 text-red-600"}`}>
-                                <span className={`h-1.5 w-1.5 rounded-full ${s.remainingSeats > 5 ? "bg-success" : s.remainingSeats > 0 ? "bg-warning" : "bg-red-600"}`} />
-                                {s.remainingSeats > 5 ? `${s.remainingSeats} seats` : s.remainingSeats > 0 ? `Only ${s.remainingSeats} left` : "Full"}
-                              </span>
-                            </div>
+                          <div className="flex items-center gap-2 min-w-0">
+                            <Calendar className="h-4 w-4 shrink-0 text-orange" />
+                            <span className="font-medium text-navy text-sm">
+                              {new Date(s.departureDate).toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric", year: "numeric" })}
+                            </span>
                           </div>
                           <BookDialog slot={s} activityId={pkg.id} activityTitle={pkg.title} />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg font-bold text-navy">${Number(s.price).toLocaleString()}</span>
+                          <span className="text-sm text-muted-foreground">/ person</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="rounded-md bg-orange/10 px-1.5 py-0.5 text-xs font-semibold text-orange">{s.days} {s.days === 1 ? "day" : "days"}</span>
+                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${s.remainingSeats > 5 ? "bg-success-soft text-success" : s.remainingSeats > 0 ? "bg-warning-soft text-warning" : "bg-red-50 text-red-600"}`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${s.remainingSeats > 5 ? "bg-success" : s.remainingSeats > 0 ? "bg-warning" : "bg-red-600"}`} />
+                            {s.remainingSeats > 5 ? `${s.remainingSeats} seats` : s.remainingSeats > 0 ? `Only ${s.remainingSeats} left` : "Full"}
+                          </span>
                         </div>
                       </div>
                     ))}
