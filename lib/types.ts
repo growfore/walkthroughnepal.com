@@ -25,7 +25,7 @@ export interface Activity {
   duration: string
   difficultyLevel: string
   maximumAltitude: string
-  itinerary: ItineraryDay[]
+  itinerary: ItineraryVariant[]
   inclusions: string[]
   exclusions: string[]
   whatToBring: string[]
@@ -62,6 +62,14 @@ export interface ItineraryDay {
   distance: string
   duration: string
   dayFeaturedImages: { alt: string; image: string }[]
+}
+
+export interface ItineraryVariant {
+  id: string
+  name: string
+  description?: string
+  isDefault?: boolean
+  days: ItineraryDay[]
 }
 
 export interface FAQ {

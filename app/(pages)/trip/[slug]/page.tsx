@@ -77,6 +77,12 @@ export default async function PackagePage({
     notFound()
   }
 
+  const rawItinerary = pkg.itinerary as any
+  const itineraryVariants: import("@/lib/types").ItineraryVariant[] =
+    Array.isArray(rawItinerary) && rawItinerary.length > 0 && !("days" in rawItinerary[0])
+      ? [{ id: "default", name: "Standard", description: "", isDefault: true, days: rawItinerary }]
+      : rawItinerary
+
   const difficulty =
     pkg.difficultyLevel
       ?.replace(/_/g, " ")
@@ -297,7 +303,7 @@ export default async function PackagePage({
 
             {/* ── Itinerary ── */}
             <div id="itinerary" className="mt-12 scroll-mt-40">
-              <ItineraryList days={pkg.itinerary ?? []} />
+              <ItineraryList variants={itineraryVariants ?? []} />
             </div>
 
             {/* ── Includes ── */}
