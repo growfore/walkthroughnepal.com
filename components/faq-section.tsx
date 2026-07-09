@@ -10,16 +10,18 @@ export function FAQSection({
   title = "Frequently Asked Questions",
   prose = false,
   className = "",
+  ...props
 }: {
   items: FAQ[]
   title?: string
   prose?: boolean
   className?: string
+  id?: string
 }) {
   if (items.length === 0) return null
 
   return (
-    <section className={className}>
+    <section className={className} {...props}>
       <h2 className="text-2xl font-bold text-navy">{title}</h2>
       <Accordion type="multiple" className="mt-4 space-y-3">
         {items.map((faq, i) => (

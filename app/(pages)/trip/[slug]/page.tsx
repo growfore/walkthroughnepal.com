@@ -550,6 +550,7 @@ export default async function PackagePage({
 
             {/* ── FAQs ── */}
             <FAQSection
+              id="faqs"
               items={pkg.faqs ?? []}
               prose
               className="mt-12 scroll-mt-40"
@@ -608,6 +609,21 @@ export default async function PackagePage({
                 >
                   <Mail className="h-4 w-4" /> Send Inquiry
                 </a>
+                {upcomingSlots.length > 0 ? (
+                  <a
+                    href="#departures"
+                    className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-4 py-3 text-sm font-semibold text-orange-foreground hover:opacity-90"
+                  >
+                    Book Now
+                  </a>
+                ) : (
+                  <Link
+                    href="/design-your-trip"
+                    className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-4 py-3 text-sm font-semibold text-orange-foreground hover:opacity-90"
+                  >
+                    Book Now
+                  </Link>
+                )}
               </div>
 
               <div className="border-t border-border px-4 py-3 sm:px-5">
