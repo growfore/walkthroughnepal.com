@@ -5,7 +5,7 @@ type BlogCardProps = {
   image: string
   tag: string
   title: string
-  description: string
+  description: string | null
   date: string
 }
 

@@ -36,10 +36,6 @@ import { SearchBox } from "@/components/search-box"
 import { BlogCard } from "@/components/blog-card"
 import { AutoScroll } from "@/components/auto-scroll"
 
-function stripHtml(html: string) {
-  return html.replace(/<[^>]*>/g, "").trim()
-}
-
 export const dynamic = "force-dynamic"
 
 export default async function HomePage() {
@@ -57,7 +53,7 @@ export default async function HomePage() {
     image: string
     tag: string
     title: string
-    description: string
+    description: string | null
     date: string
   }[] = []
   try {
@@ -98,8 +94,7 @@ export default async function HomePage() {
       image: img(b.coverImage),
       tag: b.category?.name?.toUpperCase() ?? "TRAVEL",
       title: b.title,
-      description:
-        b.metaDescription ?? stripHtml(b.content).slice(0, 120) + "...",
+      description: b.metaDescription ?? null,
       date: new Date(b.createdAt).toLocaleDateString("en-US", {
         month: "long",
         day: "numeric",
@@ -174,7 +169,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Featured Trips ── */}
-      {featuredSections.map((tag) => (
+      {featuredSections.filter((t) => t.activity?.length).map((tag) => (
         <section key={tag.slug} className="pb-16">
           <div className="mx-auto max-w-7xl px-4">
             <SectionHeader
