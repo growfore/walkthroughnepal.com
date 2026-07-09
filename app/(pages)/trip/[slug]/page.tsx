@@ -17,6 +17,7 @@ import {
   MessageCircle,
   Utensils,
   Bus,
+  DollarSign,
 } from "lucide-react"
 import { FAQSection } from "@/components/faq-section"
 import Link from "next/link"
@@ -53,6 +54,7 @@ const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 const tabs = [
   { label: "Overview", icon: Info },
   { label: "Itinerary", icon: Route },
+  { label: "Cost Breakdown", icon: DollarSign },
   { label: "Includes", icon: Check },
   { label: "Excludes", icon: X },
   { label: "Departures", icon: Calendar },
@@ -314,7 +316,7 @@ export default async function PackagePage({
 
             {/* ── Price Breakdown ── */}
             {pkg.priceBreakdown && (
-              <div id="price-breakdown" className="mt-12 scroll-mt-40">
+              <div id="cost-breakdown" className="mt-12 scroll-mt-40">
                 <div
                   className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy prose-th:text-navy prose-td:text-muted-foreground"
                   dangerouslySetInnerHTML={{
