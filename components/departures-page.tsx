@@ -224,6 +224,20 @@ export function DeparturesPage({
               <Calendar className="mx-auto h-8 w-8 text-muted-foreground" />
               <p className="mt-3 font-medium text-navy">No departures found</p>
               <p className="mt-1 text-sm text-muted-foreground">Try adjusting your filters</p>
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <Link
+                  href="/design-your-trip"
+                  className="rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-navy transition hover:bg-muted"
+                >
+                  Customize Your Trek
+                </Link>
+                <Link
+                  href="/inquiry"
+                  className="rounded-lg bg-orange px-5 py-2.5 text-sm font-semibold text-orange-foreground transition hover:opacity-90"
+                >
+                  Send an Inquiry
+                </Link>
+              </div>
             </div>
           )}
           {loading && (
