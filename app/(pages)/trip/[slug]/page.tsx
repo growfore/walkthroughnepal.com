@@ -618,10 +618,10 @@ export default async function PackagePage({
                   </a>
                 ) : (
                   <Link
-                    href="/design-your-trip"
+                    href="/inquiry"
                     className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-4 py-3 text-sm font-semibold text-orange-foreground hover:opacity-90"
                   >
-                    Book Now
+                    Send Inquiry
                   </Link>
                 )}
               </div>
