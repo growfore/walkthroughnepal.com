@@ -17,6 +17,7 @@ import {
   MessageCircle,
   Utensils,
   Bus,
+  Sparkles,
   DollarSign,
 } from "lucide-react"
 import { FAQSection } from "@/components/faq-section"
@@ -53,6 +54,7 @@ const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
 const tabs = [
   { label: "Overview", icon: Info },
+  { label: "Highlights", icon: Sparkles },
   { label: "Itinerary", icon: Route },
   { label: "Cost Breakdown", icon: DollarSign },
   { label: "Includes", icon: Check },
@@ -253,38 +255,6 @@ export default async function PackagePage({
                 />
               )}
 
-              {(pkg.highlights ?? []).length > 0 && (
-                <div className="mt-8">
-                  <h3 className="text-lg font-bold text-navy">
-                    Trip Highlights
-                  </h3>
-                  <div className="mt-4 space-y-3">
-                    {pkg.highlights
-                      .flatMap((h) => {
-                        const m =
-                          decodeHtmlEntities(h).match(/<li>(.*?)<\/li>/gi)
-                        return m
-                          ? m.map((s) => s.replace(/<\/?li>/gi, ""))
-                          : [h]
-                      })
-                      .map((item, i) => (
-                        <div
-                          key={i}
-                          className="flex items-start gap-3 text-lg text-navy"
-                        >
-                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
-                          <span
-                            className="wrap-break-word"
-                            dangerouslySetInnerHTML={{
-                              __html: item.replace(/&nbsp;/g, " "),
-                            }}
-                          />
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              )}
-
               {pkg.map && (
                 <div className="mt-8 overflow-hidden rounded-lg border border-border bg-card">
                   <img
@@ -295,6 +265,39 @@ export default async function PackagePage({
                 </div>
               )}
             </div>
+
+            {/* ── Highlights ── */}
+            {(pkg.highlights ?? []).length > 0 && (
+              <div id="highlights" className="mt-12 scroll-mt-40">
+                <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                  Trip Highlights
+                </h2>
+                <div className="mt-6 space-y-3">
+                  {pkg.highlights
+                    .flatMap((h) => {
+                      const m =
+                        decodeHtmlEntities(h).match(/<li>(.*?)<\/li>/gi)
+                      return m
+                        ? m.map((s) => s.replace(/<\/?li>/gi, ""))
+                        : [h]
+                    })
+                    .map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex items-start gap-3 text-lg text-navy"
+                      >
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
+                        <span
+                          className="wrap-break-word"
+                          dangerouslySetInnerHTML={{
+                            __html: item.replace(/&nbsp;/g, " "),
+                          }}
+                        />
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
 
             {/* ── Reviews ── */}
             <div id="reviews" className="mt-12 scroll-mt-40">
