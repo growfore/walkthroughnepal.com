@@ -1,8 +1,8 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import Link from "next/link"
 import { Calendar, Users, Loader2 } from "lucide-react"
-import { BookDialog } from "@/components/book-dialog"
 import type { Slot } from "@/lib/types"
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.walkthroughnepal.com"
@@ -196,7 +196,16 @@ export function DeparturesPage({
                     </div>
                   </div>
                 </div>
-                <BookDialog slot={slotTyped} activityId={slot.activity.id} activityTitle={slot.activity.title} />
+                {slot.remainingSeats < 1 ? (
+                  <span className="inline-flex items-center rounded-lg bg-muted px-4 py-2 text-sm font-semibold text-muted-foreground cursor-not-allowed">Full</span>
+                ) : (
+                  <Link
+                    href={`/booking?trip=${slot.activity.slug}&slot=${slot.id}`}
+                    className="inline-flex items-center rounded-lg bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground transition-all hover:opacity-90 hover:shadow-md"
+                  >
+                    Book Now
+                  </Link>
+                )}
               </div>
             )
           })}

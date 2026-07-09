@@ -22,7 +22,6 @@ import { FAQSection } from "@/components/faq-section"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getActivityBySlug, getTestimonials, getSlots, img } from "@/lib/api"
-import { BookDialog } from "@/components/book-dialog"
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -79,8 +78,18 @@ export default async function PackagePage({
 
   const rawItinerary = pkg.itinerary as any
   const itineraryVariants: import("@/lib/types").ItineraryVariant[] =
-    Array.isArray(rawItinerary) && rawItinerary.length > 0 && !("days" in rawItinerary[0])
-      ? [{ id: "default", name: "Standard", description: "", isDefault: true, days: rawItinerary }]
+    Array.isArray(rawItinerary) &&
+    rawItinerary.length > 0 &&
+    !("days" in rawItinerary[0])
+      ? [
+          {
+            id: "default",
+            name: "Standard",
+            description: "",
+            isDefault: true,
+            days: rawItinerary,
+          },
+        ]
       : rawItinerary
 
   const difficulty =
@@ -122,21 +131,21 @@ export default async function PackagePage({
       <div className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm">
         <div className="relative">
           <div className="mx-auto scrollbar-hide flex max-w-7xl flex-nowrap gap-1 overflow-x-auto py-3">
-          {tabs.map((t) => {
-            const Icon = t.icon
-            return (
-              <a
-                key={t.label}
-                href={`#${t.label.toLowerCase().replace(/\s+/g, "-")}`}
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-navy"
-              >
-                <Icon className="h-4 w-4 shrink-0" />
-                {t.label}
-              </a>
-            )
-          })}
+            {tabs.map((t) => {
+              const Icon = t.icon
+              return (
+                <a
+                  key={t.label}
+                  href={`#${t.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-navy"
+                >
+                  <Icon className="h-4 w-4 shrink-0" />
+                  {t.label}
+                </a>
+              )
+            })}
+          </div>
         </div>
-      </div>
       </div>
 
       {/* ── Main content ── */}
@@ -226,9 +235,6 @@ export default async function PackagePage({
 
             {/* ── Overview ── */}
             <div id="overview" className="mt-8 scroll-mt-40">
-              <h2 className="text-2xl font-bold text-navy md:text-3xl">
-                Overview
-              </h2>
               <div
                 className="prose prose-lg mt-3 w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy"
                 dangerouslySetInnerHTML={{
@@ -305,6 +311,18 @@ export default async function PackagePage({
             <div id="itinerary" className="mt-12 scroll-mt-40">
               <ItineraryList variants={itineraryVariants ?? []} />
             </div>
+
+            {/* ── Price Breakdown ── */}
+            {pkg.priceBreakdown && (
+              <div id="price-breakdown" className="mt-12 scroll-mt-40">
+                <div
+                  className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy prose-th:text-navy prose-td:text-muted-foreground"
+                  dangerouslySetInnerHTML={{
+                    __html: decodeHtmlEntities(pkg.priceBreakdown),
+                  }}
+                />
+              </div>
+            )}
 
             {/* ── Includes ── */}
             <div id="includes" className="mt-12 scroll-mt-40">
@@ -421,11 +439,18 @@ export default async function PackagePage({
                             </span>
                           </td>
                           <td className="px-5 py-4 text-left">
-                            <BookDialog
-                              slot={s}
-                              activityId={pkg.id}
-                              activityTitle={pkg.title}
-                            />
+                            {s.remainingSeats < 1 ? (
+                              <span className="inline-block cursor-not-allowed rounded-lg bg-muted px-4 py-2 text-sm font-semibold text-muted-foreground">
+                                Full
+                              </span>
+                            ) : (
+                              <Link
+                                href={`/booking?trip=${slug}&slot=${s.id}`}
+                                className="inline-block rounded-lg bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground transition-all hover:opacity-90 hover:shadow-md"
+                              >
+                                Book Now
+                              </Link>
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -451,11 +476,18 @@ export default async function PackagePage({
                               )}
                             </span>
                           </div>
-                          <BookDialog
-                            slot={s}
-                            activityId={pkg.id}
-                            activityTitle={pkg.title}
-                          />
+                          {s.remainingSeats < 1 ? (
+                            <span className="inline-block cursor-not-allowed rounded-lg bg-muted px-4 py-2 text-sm font-semibold text-muted-foreground">
+                              Full
+                            </span>
+                          ) : (
+                            <Link
+                              href={`/booking?trip=${slug}&slot=${s.id}`}
+                              className="inline-block rounded-lg bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground transition-all hover:opacity-90 hover:shadow-md"
+                            >
+                              Book Now
+                            </Link>
+                          )}
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-lg font-bold text-navy">
@@ -613,7 +645,9 @@ export default async function PackagePage({
           <div className="min-w-0 shrink">
             <div className="text-xs text-muted-foreground">From</div>
             <div className="flex items-baseline gap-1">
-              <span className="text-base font-bold text-navy">${pkg.price}</span>
+              <span className="text-base font-bold text-navy">
+                ${pkg.price}
+              </span>
               {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
                 <span className="text-xs text-muted-foreground line-through">
                   ${pkg.maxPrice}
@@ -622,7 +656,7 @@ export default async function PackagePage({
               <span className="text-xs text-muted-foreground">/person</span>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex shrink-0 items-center gap-1.5">
             <a
               href="#departures"
               className="rounded-md border border-orange px-3 py-2 text-xs font-semibold whitespace-nowrap text-orange transition-colors hover:bg-orange hover:text-orange-foreground"
@@ -630,12 +664,12 @@ export default async function PackagePage({
               View Dates
             </a>
             {upcomingSlots.length > 0 && (
-              <a
-                href="#departures"
+              <Link
+                href={`/booking?trip=${slug}&slot=${upcomingSlots[0].id}`}
                 className="rounded-md bg-orange px-3 py-2 text-xs font-semibold whitespace-nowrap text-orange-foreground hover:opacity-90"
               >
                 Book Now
-              </a>
+              </Link>
             )}
           </div>
         </div>

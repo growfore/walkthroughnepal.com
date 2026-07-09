@@ -70,7 +70,7 @@ export function MobileMenuOverlay({
               Customize My Trip
             </a>
             <a
-              href="/booking"
+              href="/departure"
               className="flex-1 rounded-full bg-orange px-3 py-2 text-xs font-semibold text-orange-foreground text-center sm:px-5 sm:py-2.5 sm:text-sm"
             >
               Book Now

@@ -45,6 +45,7 @@ export interface Activity {
   groupSize: string
   transportation: string
   meals: string
+  priceBreakdown: string
   videoUrl: string
   map: string
   createdAt: string

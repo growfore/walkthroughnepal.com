@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     q: "Can I modify or cancel my booking?",
-    a: "Yes — changes can be made up to 14 days before departure at no charge. Cancellations are free up to 8 weeks in advance. See our full cancellation policy on the booking page.",
+    a: "Yes — changes can be made up to 14 days before departure at no charge. Cancellations are free up to 8 weeks in advance. See our full cancellation policy on the departures page.",
   },
   {
     q: "Do I need travel insurance?",

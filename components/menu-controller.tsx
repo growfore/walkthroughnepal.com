@@ -122,7 +122,7 @@ export function MenuController({ items }: MenuControllerProps) {
 
       {/* Main nav */}
       <div
-        className="relative mx-auto flex w-full max-w-7xl items-center justify-between gap-2 overflow-hidden px-4 py-2 md:gap-4 md:px-8"
+        className="relative mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-4 py-2 md:gap-4 md:px-8"
         onMouseLeave={queueHide}
       >
         <Link href="/" className="shrink-0">
@@ -172,7 +172,7 @@ export function MenuController({ items }: MenuControllerProps) {
                 {itemHasChildren && !itemHasGrandchildren && isActive && (
                   <div
                     onMouseEnter={cancelHide}
-                    className="absolute top-full left-0 z-40 pt-1"
+                    className="absolute top-full left-0 z-[100] pt-1"
                   >
                     <div className="min-w-[220px] max-w-[320px] rounded-xl border border-border bg-white py-2 shadow-lg">
                       {item.children.map((child) => (
@@ -202,7 +202,7 @@ export function MenuController({ items }: MenuControllerProps) {
               Customize My Trip
             </Link>
             <Link
-              href="/booking"
+              href="/departure"
               className="inline-flex items-center rounded-full bg-orange px-5 py-2 text-sm font-semibold text-orange-foreground transition hover:opacity-90"
             >
               Book Now
@@ -225,7 +225,7 @@ export function MenuController({ items }: MenuControllerProps) {
         {activeMegaItem && hasActiveGrandchildren && (
           <div
             onMouseEnter={cancelHide}
-            className="pointer-events-none absolute inset-x-0 top-0 z-40 max-lg:hidden"
+            className="pointer-events-none absolute inset-x-0 top-0 z-[100] max-lg:hidden"
           >
             <div className="h-16" aria-hidden="true" />
             <div className="pointer-events-auto rounded-xl border border-border bg-white shadow-lg">
