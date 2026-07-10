@@ -43,9 +43,9 @@ export function AltitudeChart({ data }: { data: Point[] }) {
           ))}
         </div>
       </div>
-      <div className="h-64 w-full">
+      <div className="h-80 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+          <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 40 }}>
             <defs>
               <linearGradient id="altGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="var(--color-orange)" stopOpacity={0.3} />
@@ -54,11 +54,11 @@ export function AltitudeChart({ data }: { data: Point[] }) {
             </defs>
             <XAxis
               dataKey="location"
-              tick={{ fontSize: 12, fill: "var(--color-muted-foreground)", angle: -35, textAnchor: "end" }}
+              tick={{ fontSize: 11, fill: "var(--color-muted-foreground)", angle: -40, textAnchor: "end" }}
               tickLine={false}
               axisLine={false}
               interval={0}
-              height={60}
+              height={80}
             />
             <YAxis
               tick={{ fontSize: 12, fill: "var(--color-muted-foreground)" }}
