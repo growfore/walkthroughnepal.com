@@ -1,4 +1,4 @@
-import { Gabarito, Geist_Mono, Sora } from "next/font/google"
+import { Mulish, Geist_Mono, Sora } from "next/font/google"
 import type { Metadata, Viewport } from "next"
 
 import "./globals.css"
@@ -10,7 +10,7 @@ import { Footer } from "@/components/footer"
 import { BackToTop } from "@/components/back-to-top"
 import { ToastContainer } from "react-toastify"
 
-const gabarito = Gabarito({
+const mulish = Mulish({
   subsets: ["latin"],
   variable: "--font-sans",
   weight: ["400", "500", "600", "700", "800"],
@@ -76,7 +76,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn(
         "antialiased",
-        gabarito.variable,
+        mulish.variable,
         fontMono.variable,
         sora.variable
       )}

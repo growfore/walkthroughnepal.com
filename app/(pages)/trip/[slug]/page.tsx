@@ -275,11 +275,8 @@ export default async function PackagePage({
                 <div className="mt-6 space-y-3">
                   {pkg.highlights
                     .flatMap((h) => {
-                      const m =
-                        decodeHtmlEntities(h).match(/<li>(.*?)<\/li>/gi)
-                      return m
-                        ? m.map((s) => s.replace(/<\/?li>/gi, ""))
-                        : [h]
+                      const m = decodeHtmlEntities(h).match(/<li>(.*?)<\/li>/gi)
+                      return m ? m.map((s) => s.replace(/<\/?li>/gi, "")) : [h]
                     })
                     .map((item, i) => (
                       <div
