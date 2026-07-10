@@ -700,12 +700,12 @@ export default async function PackagePage({
       </section>
 
       {/* Mobile sticky booking bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background px-2 py-2 shadow-lg lg:hidden">
-        <div className="flex items-center justify-between gap-1">
-          <div className="min-w-0 shrink">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background px-4 py-3 shadow-lg lg:hidden">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
             <div className="text-xs text-muted-foreground">From</div>
             <div className="flex items-baseline gap-1">
-              <span className="text-base font-bold text-navy">
+              <span className="text-lg font-bold text-navy">
                 ${pkg.price}
               </span>
               {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
@@ -716,22 +716,21 @@ export default async function PackagePage({
               <span className="text-xs text-muted-foreground">/person</span>
             </div>
           </div>
-          <div className="flex shrink-0 items-center gap-1.5">
-            <a
-              href="#departures"
-              className="rounded-md border border-orange px-3 py-2 text-xs font-semibold whitespace-nowrap text-orange transition-colors hover:bg-orange hover:text-orange-foreground"
+          {upcomingSlots.length > 0 ? (
+            <Link
+              href={`/booking?trip=${slug}&slot=${upcomingSlots[0].id}`}
+              className="shrink-0 rounded-lg bg-orange px-6 py-3 text-sm font-bold text-orange-foreground hover:opacity-90"
             >
-              View Dates
-            </a>
-            {upcomingSlots.length > 0 && (
-              <Link
-                href={`/booking?trip=${slug}&slot=${upcomingSlots[0].id}`}
-                className="rounded-md bg-orange px-3 py-2 text-xs font-semibold whitespace-nowrap text-orange-foreground hover:opacity-90"
-              >
-                Book Now
-              </Link>
-            )}
-          </div>
+              Book Now
+            </Link>
+          ) : (
+            <Link
+              href={`/inquiry?trip=${slug}`}
+              className="shrink-0 rounded-lg bg-orange px-6 py-3 text-sm font-bold text-orange-foreground hover:opacity-90"
+            >
+              Book Now
+            </Link>
+          )}
         </div>
       </div>
     </div>
