@@ -327,9 +327,6 @@ export default async function PackagePage({
             {/* ── Map ── */}
             {pkg.map && (
               <div id="map" className="mt-12 scroll-mt-40">
-                <h2 className="text-2xl font-bold text-navy md:text-3xl">
-                  Route Map
-                </h2>
                 <div
                   className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy"
                   dangerouslySetInnerHTML={{
@@ -555,10 +552,7 @@ export default async function PackagePage({
             {/* ── Useful Info ── */}
             {(pkg.additionalInfo ?? []).length > 0 && (
               <div id="useful-info" className="mt-12 scroll-mt-40">
-                <h2 className="text-2xl font-bold text-navy md:text-3xl">
-                  Useful Information
-                </h2>
-                <div className="mt-4 space-y-6">
+                <div className="space-y-6">
                   {pkg.additionalInfo.map((info, i) => (
                     <div key={i}>
                       <h2 className="text-lg font-bold text-navy prose-lg">{info.title}</h2>
