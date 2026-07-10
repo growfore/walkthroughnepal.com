@@ -64,7 +64,6 @@ const tabs = [
   { label: "Itinerary", icon: Route },
   { label: "Cost Breakdown", icon: DollarSign },
   { label: "Map", icon: Map },
-  { label: "Altitude Profile", icon: Mountain },
   { label: "Includes", icon: Check },
   { label: "Excludes", icon: X },
   { label: "Departures", icon: Calendar },
