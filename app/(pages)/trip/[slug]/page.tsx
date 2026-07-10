@@ -332,7 +332,7 @@ export default async function PackagePage({
                 What&apos;s Included
               </h2>
               <div className="mt-4 rounded-lg border border-border bg-card p-6">
-                <div className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-li:text-navy prose-li:marker:text-green-600">
+                <div className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.35em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full prose-li:before:bg-green-100 prose-li:before:text-[10px] prose-li:before:font-black prose-li:before:text-green-600 prose-li:before:content-['✓']">
                   {(pkg.inclusions ?? []).map((section, i) => (
                     <div
                       key={i}
@@ -351,7 +351,7 @@ export default async function PackagePage({
                 What&apos;s Excluded
               </h2>
               <div className="mt-4 rounded-lg border border-border bg-card p-6">
-                <div className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-li:text-navy prose-li:marker:text-red-500">
+                <div className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.35em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full prose-li:before:bg-red-100 prose-li:before:text-[10px] prose-li:before:font-black prose-li:before:text-red-600 prose-li:before:content-['×']">
                   {(pkg.exclusions ?? []).map((section, i) => (
                     <div
                       key={i}
