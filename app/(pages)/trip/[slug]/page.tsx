@@ -600,12 +600,6 @@ export default async function PackagePage({
                 </div>
                 <div className="text-sm text-muted-foreground">per person</div>
 
-                <a
-                  href={`mailto:info@walkthroughnepal.com?subject=Inquiry%20about%20${encodeURIComponent(pkg.title)}`}
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-navy px-4 py-3 text-sm font-semibold text-navy-foreground hover:opacity-90"
-                >
-                  <Mail className="h-4 w-4" /> Send Inquiry
-                </a>
                 {upcomingSlots.length > 0 ? (
                   <a
                     href="#departures"
