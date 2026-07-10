@@ -271,7 +271,7 @@ export default async function PackagePage({
                         key={i}
                         className="flex items-start gap-3 text-lg text-navy"
                       >
-                        <ArrowRight className="mt-1.5 h-4 w-4 shrink-0 text-ink" />
+                        <ArrowRight className="mt-1.5 h-4 w-4 shrink-0 text-orange" />
                         <span
                           className="wrap-break-word"
                           dangerouslySetInnerHTML={{
@@ -353,10 +353,10 @@ export default async function PackagePage({
             {/* ── Includes ── */}
             <style dangerouslySetInnerHTML={{ __html: `
               #includes .prose li::before {
-                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23162B38' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2316a34a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
               }
               #excludes .prose li::before {
-                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23162B38' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E");
+                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E");
               }
             ` }} />
             <div id="includes" className="mt-12 scroll-mt-40">
