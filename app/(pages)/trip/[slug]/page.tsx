@@ -246,7 +246,7 @@ export default async function PackagePage({
             {/* ── Overview ── */}
             <div id="overview" className="mt-8 scroll-mt-40">
               <div
-                className="prose prose-lg mt-3 w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy"
+                className="prose prose-lg mt-3 w-full max-w-none wrap-break-word **:wrap-break-word text-foreground"
                 dangerouslySetInnerHTML={{
                   __html: resolveContentImages(decodeHtmlEntities(pkg.shortDescription)),
                 }}
@@ -300,7 +300,7 @@ export default async function PackagePage({
             {pkg.fullDescription && (
               <div className="mt-12 scroll-mt-40">
                 <div
-                  className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy"
+                  className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word text-foreground"
                   dangerouslySetInnerHTML={{
                     __html: resolveContentImages(decodeHtmlEntities(pkg.fullDescription)),
                   }}
@@ -317,7 +317,7 @@ export default async function PackagePage({
             {pkg.priceBreakdown && (
               <div id="cost-breakdown" className="mt-12 scroll-mt-40">
                 <div
-                  className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy prose-th:text-navy prose-td:text-muted-foreground"
+                  className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word text-foreground"
                   dangerouslySetInnerHTML={{
                     __html: resolveContentImages(decodeHtmlEntities(pkg.priceBreakdown)),
                   }}
@@ -329,7 +329,7 @@ export default async function PackagePage({
             {pkg.map && (
               <div id="map" className="mt-12 scroll-mt-40">
                 <div
-                  className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy"
+                  className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word text-foreground"
                   dangerouslySetInnerHTML={{
                     __html: resolveContentImages(decodeHtmlEntities(pkg.map)),
                   }}
@@ -362,7 +362,7 @@ export default async function PackagePage({
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
                 What&apos;s Included
               </h2>
-              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
+              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-foreground prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
                 {(pkg.inclusions ?? []).map((section, i) => (
                   <div
                     key={i}
@@ -379,7 +379,7 @@ export default async function PackagePage({
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
                 What&apos;s Excluded
               </h2>
-              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
+              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-foreground prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
                 {(pkg.exclusions ?? []).map((section, i) => (
                   <div
                     key={i}
@@ -556,9 +556,9 @@ export default async function PackagePage({
                 <div className="space-y-6">
                   {pkg.additionalInfo.map((info, i) => (
                     <div key={i}>
-                      <h2 className="font-bold text-navy prose-lg">{info.title}</h2>
+                      <h2 className="font-bold text-foreground prose-lg">{info.title}</h2>
                       <div
-                        className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word prose-p:leading-relaxed prose-p:text-muted-foreground"
+                        className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word text-foreground"
                         dangerouslySetInnerHTML={{
                           __html: resolveContentImages(decodeHtmlEntities(info.description)),
                         }}
