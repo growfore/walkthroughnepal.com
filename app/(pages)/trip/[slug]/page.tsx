@@ -54,6 +54,7 @@ import { DownloadItineraryButton } from "@/components/download-itinerary-button"
 import { HorizontalGallery } from "@/components/horizontal-gallery"
 import { ReviewsCarousel } from "@/components/reviews-carousel"
 import { AltitudeChart } from "@/components/altitude-chart"
+import { CustomizeTripCTA } from "@/components/customize-trip-cta"
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
@@ -586,6 +587,11 @@ export default async function PackagePage({
                 </div>
               </div>
             )}
+
+            {/* ── Customize CTA ── */}
+            <div className="mt-12">
+              <CustomizeTripCTA slug={slug} />
+            </div>
 
             {/* ── FAQs ── */}
             <FAQSection
