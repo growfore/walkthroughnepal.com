@@ -84,8 +84,8 @@ export function ItineraryList({ variants }: { variants: ItineraryVariant[] }) {
 
           <Accordion type="multiple" value={open} onValueChange={setOpen} className="space-y-0">
             {days.map((d, i) => (
-              <AccordionItem key={`${prefix}-${i}`} value={dayValue(i)} className="relative pl-8 border-b border-border not-last:border-b">
-                <div className={`absolute left-0 top-3 z-10 h-3.5 w-3.5 rounded-full border-2 transition-colors ${open.includes(dayValue(i)) ? "border-navy bg-navy" : "border-navy/30 bg-card"}`} />
+              <AccordionItem key={`${prefix}-${i}`} value={dayValue(i)} className="relative pl-8">
+                <div className={`absolute -left-0.5 top-4 z-10 h-5 w-5 rounded-full border-[3px] transition-colors ${open.includes(dayValue(i)) ? "border-navy bg-navy" : "border-navy/30 bg-card"}`} />
 
                 <AccordionTrigger className="flex w-full items-center gap-2 py-3 text-left hover:no-underline focus-visible:ring-0 [&[data-open]>svg]:rotate-180">
                   <div className="min-w-0 flex-1">
