@@ -269,7 +269,7 @@ export default async function PackagePage({
                         key={i}
                         className="flex items-start gap-3 text-lg text-navy"
                       >
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
+                        <ArrowRight className="mt-1.5 h-4 w-4 shrink-0 text-orange" />
                         <span
                           className="wrap-break-word"
                           dangerouslySetInnerHTML={{
