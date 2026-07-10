@@ -60,7 +60,6 @@ const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
 const tabs = [
   { label: "Overview", icon: Info },
-  { label: "Highlights", icon: Sparkles },
   { label: "Reviews", icon: Star },
   { label: "Itinerary", icon: Route },
   { label: "Cost Breakdown", icon: DollarSign },
@@ -419,7 +418,7 @@ export default async function PackagePage({
                 <p className="mt-2 text-muted-foreground">
                   Choose your preferred departure date
                 </p>
-                <div className="mt-6 rounded-xl border border-border shadow-sm">
+                <div className="mt-6 overflow-x-auto rounded-xl border border-border shadow-sm">
                   {/* Desktop table */}
                   <table className="hidden w-full border-collapse sm:table">
                     <thead>
