@@ -43,7 +43,7 @@ export function AltitudeChart({ data }: { data: Point[] }) {
           ))}
         </div>
       </div>
-      <div className="h-80 w-full">
+      <div className="h-80 min-w-[720px]">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 40 }}>
             <defs>

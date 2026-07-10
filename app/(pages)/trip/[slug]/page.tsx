@@ -344,7 +344,7 @@ export default async function PackagePage({
                 <h2 className="text-2xl font-bold text-navy md:text-3xl">
                   Altitude Profile
                 </h2>
-                <div className="mt-4 rounded-lg border border-border bg-card p-4">
+                <div className="mt-4 overflow-x-auto rounded-lg border border-border bg-card p-4">
                   <AltitudeChart data={pkg.altitudeChart} />
                 </div>
               </div>
