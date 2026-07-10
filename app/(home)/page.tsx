@@ -7,6 +7,11 @@ import {
   ClipboardList,
   Heart,
   PhoneCall,
+  Mountain,
+  MapPin,
+  Compass,
+  ArrowUpRight,
+  MessageCircle,
 } from "lucide-react"
 import Link from "next/link"
 import type { FeaturedTag } from "@/lib/types"
@@ -77,6 +82,8 @@ export default async function HomePage() {
     } = await getFeaturedTags()
     featuredSections = featuredTags
   } catch {}
+
+  const popularTrips = featuredSections[0]?.activity?.slice(0, 4) ?? []
 
   try {
     const testimonials = await getTestimonials()
@@ -168,6 +175,60 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── Popular Trips ── */}
+      {popularTrips.length > 0 && (
+        <section className="pb-16">
+          <div className="mx-auto max-w-7xl px-4">
+            <SectionHeader
+              title="Popular Trips"
+              description="Here you have the upcoming dates for your dream adventure. Join the trips today before they get sold out."
+            />
+            <div className="grid gap-6 md:grid-cols-2">
+              {popularTrips.map((t) => (
+                <Link
+                  key={t.id}
+                  href={`/trip/${t.slug}`}
+                  className="group flex items-start gap-4 rounded-xl border border-border bg-card p-5 transition hover:shadow-md"
+                >
+                  <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg">
+                    <img
+                      src={img(t.images?.[0])}
+                      alt={t.title}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-extrabold text-navy group-hover:text-orange transition">
+                      {t.title}
+                    </h3>
+                    <p
+                      className="mt-1 text-xs text-muted-foreground line-clamp-2"
+                      dangerouslySetInnerHTML={{
+                        __html: t.shortDescription?.replace(/<[^>]*>/g, "") ?? "",
+                      }}
+                    />
+                    <div className="mt-2 flex items-center gap-3 text-sm">
+                      {t.duration && (
+                        <span className="text-xs text-muted-foreground">{t.duration}</span>
+                      )}
+                      <span className="font-bold text-navy">
+                        {t.price ? `US$${t.price}` : ""}
+                        {t.maxPrice && (
+                          <span className="ml-1 text-xs text-muted-foreground">
+                            - US${t.maxPrice}
+                          </span>
+                        )}
+                        <span className="text-xs font-normal text-muted-foreground"> /person</span>
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── Featured Trips ── */}
       {featuredSections.filter((t) => t.activity?.length).map((tag) => (
         <section key={tag.slug} className="pb-16">
@@ -191,6 +252,63 @@ export default async function HomePage() {
           </div>
         </section>
       ))}
+
+      {/* ── Ways to Travel ── */}
+      <section className="pb-20">
+        <div className="mx-auto grid max-w-7xl gap-12 px-4 lg:grid-cols-2">
+          <div>
+            <h2 className="text-3xl font-extrabold text-navy md:text-4xl">
+              Ways to Travel
+            </h2>
+            <p className="mt-6 max-w-md leading-relaxed text-muted-foreground">
+              Everyone is an explorer at heart. You just need to get out there to realize it.
+              Our treks are designed for anyone who is a mountain enthusiast, despite prior
+              experience. Likewise, the tours we provide are accessible to everyone, requiring
+              minimal effort.
+            </p>
+            <Link
+              href="/explore"
+              className="mt-8 inline-block rounded-full border-2 border-navy px-8 py-3 text-sm font-bold tracking-wider text-navy hover:bg-navy hover:text-white transition-colors"
+            >
+              SEE ALL ACTIVITIES
+            </Link>
+          </div>
+          <div className="grid gap-8 sm:grid-cols-2">
+            {[
+              {
+                icon: Mountain,
+                title: "Trekking in Nepal",
+                desc: "Trekking and Hiking Adventures in Remote Nepalese Terrain",
+              },
+              {
+                icon: MapPin,
+                title: "Tour in Nepal",
+                desc: "Guided Private and Group Tours in Tourist Centers of Nepal",
+              },
+              {
+                icon: Compass,
+                title: "Day Activities",
+                desc: "1 Day Sightseeing or Cultural Tours & Adventure Activities",
+              },
+              {
+                icon: Mountain,
+                title: "Peak Climbing",
+                desc: "6000+ Meters Peak Climbing Expeditions in The Himalayas",
+              },
+            ].map((w) => (
+              <div key={w.title} className="flex gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-navy/5">
+                  <w.icon className="h-7 w-7 text-navy" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-navy">{w.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{w.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── Plan Your Trip CTA ── */}
       <section className="pb-20">
@@ -271,6 +389,69 @@ export default async function HomePage() {
             >
               Visit Our Blog <ArrowRight className="h-4 w-4" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Travel Consultant CTA ── */}
+      <section className="py-20">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 lg:grid-cols-2">
+          <div className="relative flex justify-center">
+            <div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background:
+                  "repeating-linear-gradient(-45deg, transparent 0 12px, oklch(0.24 0.08 262 / 0.06) 12px 14px)",
+              }}
+              aria-hidden
+            />
+            <div className="relative">
+              <div className="h-80 w-80 overflow-hidden rounded-full border-8 border-white shadow-xl">
+                <img
+                  src="/consultant.jpg"
+                  alt="Travel Consultant"
+                  width={700}
+                  height={700}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-lg bg-orange px-8 py-3 text-center shadow-lg">
+                <p className="font-extrabold text-white">Walk Through Nepal</p>
+                <p className="text-xs text-white/90">Travel Consultant</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p className="flex items-center gap-2 text-sm font-semibold text-orange">
+              <Mountain className="h-5 w-5" /> Looking for a Private Trip?
+            </p>
+            <h2 className="mt-3 text-3xl font-black tracking-tight text-navy md:text-4xl">
+              SAY HELLO TO YOUR TRAVEL CONSULTANT
+            </h2>
+            <p className="mt-5 max-w-xl leading-relaxed text-muted-foreground">
+              Planning your holiday? Our travel experts are here to craft the perfect
+              personalized package just for you! Whether you have questions or need guidance,
+              don&apos;t hesitate to reach out &mdash; we&apos;re ready to assist you every step
+              of the way.
+            </p>
+            <p className="mt-6 font-bold text-navy">Need Assistance? Call Us.</p>
+            <div className="mt-4 flex flex-wrap gap-4">
+              <a
+                href="tel:+9779841234567"
+                className="flex items-center gap-3 rounded-lg border border-border bg-card px-6 py-3 font-bold text-navy hover:border-[#25D366]"
+              >
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#25D366]">
+                  <MessageCircle className="h-4 w-4 text-white" />
+                </span>
+                +977 984 123 4567
+              </a>
+              <Link
+                href="/design-your-trip"
+                className="flex items-center gap-2 rounded-lg border border-navy bg-card px-6 py-3 font-bold text-navy hover:bg-navy hover:text-white transition-colors"
+              >
+                Plan Your Trip <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>

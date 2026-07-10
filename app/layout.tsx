@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { BackToTop } from "@/components/back-to-top"
+import { FloatingWhatsApp } from "@/components/floating-whatsapp"
 import { ToastContainer } from "react-toastify"
 
 const mulish = Mulish({
@@ -94,6 +95,7 @@ export default function RootLayout({
             {children}
           </main>
           <BackToTop />
+          <FloatingWhatsApp />
           <Footer />
           <ToastContainer position="bottom-right" />
         </ThemeProvider>
