@@ -14,11 +14,12 @@ import {
   Info,
   Route,
   HelpCircle,
-  MessageCircle,
+  MessageSquare,
   Utensils,
   Bus,
   Sparkles,
   DollarSign,
+  Map,
 } from "lucide-react"
 import { FAQSection } from "@/components/faq-section"
 import Link from "next/link"
@@ -60,13 +61,13 @@ const tabs = [
   { label: "Reviews", icon: Star },
   { label: "Itinerary", icon: Route },
   { label: "Cost Breakdown", icon: DollarSign },
-  { label: "Map", icon: Route },
+  { label: "Map", icon: Map },
   { label: "Altitude Profile", icon: Mountain },
   { label: "Includes", icon: Check },
   { label: "Excludes", icon: X },
   { label: "Departures", icon: Calendar },
   { label: "Useful Info", icon: HelpCircle },
-  { label: "FAQs", icon: MessageCircle },
+  { label: "FAQs", icon: MessageSquare },
 ]
 
 export default async function PackagePage({
@@ -552,7 +553,7 @@ export default async function PackagePage({
                 <div className="mt-4 space-y-6">
                   {pkg.additionalInfo.map((info, i) => (
                     <div key={i}>
-                      <h2 className="text-lg font-bold text-navy">{info.title}</h2>
+                      <h2 className="text-lg font-bold text-navy prose-lg">{info.title}</h2>
                       <div
                         className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word prose-p:leading-relaxed prose-p:text-muted-foreground"
                         dangerouslySetInnerHTML={{
