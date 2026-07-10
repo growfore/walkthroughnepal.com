@@ -23,7 +23,7 @@ import {
 import { FAQSection } from "@/components/faq-section"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getActivityBySlug, getTestimonials, getSlots, img } from "@/lib/api"
+import { getActivityBySlug, getTestimonials, getSlots } from "@/lib/api"
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -44,24 +44,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 import { decodeHtmlEntities } from "@/lib/html-decoder"
+import { resolveContentImages } from "@/lib/api"
 import { StickyWrapper } from "@/components/sticky-wrapper"
 import { ItineraryList } from "@/components/itinerary-list"
 import { DownloadItineraryButton } from "@/components/download-itinerary-button"
 import { HorizontalGallery } from "@/components/horizontal-gallery"
 import { ReviewsCarousel } from "@/components/reviews-carousel"
+import { AltitudeChart } from "@/components/altitude-chart"
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
 const tabs = [
   { label: "Overview", icon: Info },
   { label: "Highlights", icon: Sparkles },
+  { label: "Reviews", icon: Star },
   { label: "Itinerary", icon: Route },
   { label: "Cost Breakdown", icon: DollarSign },
+  { label: "Map", icon: Route },
+  { label: "Altitude Profile", icon: Mountain },
   { label: "Includes", icon: Check },
   { label: "Excludes", icon: X },
   { label: "Departures", icon: Calendar },
   { label: "Useful Info", icon: HelpCircle },
-  { label: "Reviews", icon: Star },
   { label: "FAQs", icon: MessageCircle },
 ]
 
@@ -242,28 +246,9 @@ export default async function PackagePage({
               <div
                 className="prose prose-lg mt-3 w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy"
                 dangerouslySetInnerHTML={{
-                  __html: decodeHtmlEntities(pkg.shortDescription),
+                  __html: resolveContentImages(decodeHtmlEntities(pkg.shortDescription)),
                 }}
               />
-
-              {pkg.fullDescription && (
-                <div
-                  className="prose prose-lg mt-6 w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy"
-                  dangerouslySetInnerHTML={{
-                    __html: decodeHtmlEntities(pkg.fullDescription),
-                  }}
-                />
-              )}
-
-              {pkg.map && (
-                <div className="mt-8 overflow-hidden rounded-lg border border-border bg-card">
-                  <img
-                    src={img(pkg.map, API)}
-                    alt="Route map"
-                    className="h-72 w-full object-cover"
-                  />
-                </div>
-              )}
             </div>
 
             {/* ── Highlights ── */}
@@ -309,6 +294,18 @@ export default async function PackagePage({
               <ReviewsCarousel items={testimonials} />
             </div>
 
+            {/* ── Full Description ── */}
+            {pkg.fullDescription && (
+              <div className="mt-12 scroll-mt-40">
+                <div
+                  className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy"
+                  dangerouslySetInnerHTML={{
+                    __html: resolveContentImages(decodeHtmlEntities(pkg.fullDescription)),
+                  }}
+                />
+              </div>
+            )}
+
             {/* ── Itinerary ── */}
             <div id="itinerary" className="mt-12 scroll-mt-40">
               <ItineraryList variants={itineraryVariants ?? []} />
@@ -320,9 +317,36 @@ export default async function PackagePage({
                 <div
                   className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy prose-th:text-navy prose-td:text-muted-foreground"
                   dangerouslySetInnerHTML={{
-                    __html: decodeHtmlEntities(pkg.priceBreakdown),
+                    __html: resolveContentImages(decodeHtmlEntities(pkg.priceBreakdown)),
                   }}
                 />
+              </div>
+            )}
+
+            {/* ── Map ── */}
+            {pkg.map && (
+              <div id="map" className="mt-12 scroll-mt-40">
+                <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                  Route Map
+                </h2>
+                <div
+                  className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-headings:text-navy prose-p:leading-relaxed prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-navy"
+                  dangerouslySetInnerHTML={{
+                    __html: resolveContentImages(decodeHtmlEntities(pkg.map)),
+                  }}
+                />
+              </div>
+            )}
+
+            {/* ── Altitude Profile ── */}
+            {pkg.altitudeChart?.length > 0 && (
+              <div className="mt-12 scroll-mt-40">
+                <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                  Altitude Profile
+                </h2>
+                <div className="mt-4 rounded-lg border border-border bg-card p-4">
+                  <AltitudeChart data={pkg.altitudeChart} />
+                </div>
               </div>
             )}
 
@@ -331,17 +355,15 @@ export default async function PackagePage({
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
                 What&apos;s Included
               </h2>
-              <div className="mt-4 rounded-lg border border-border bg-card p-6">
-                <div className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.35em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full prose-li:before:bg-green-100 prose-li:before:text-[10px] prose-li:before:font-black prose-li:before:text-green-600 prose-li:before:content-['✓']">
-                  {(pkg.inclusions ?? []).map((section, i) => (
-                    <div
-                      key={i}
-                      dangerouslySetInnerHTML={{
-                        __html: decodeHtmlEntities(section),
-                      }}
-                    />
-                  ))}
-                </div>
+              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.35em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full prose-li:before:bg-green-100 prose-li:before:text-[10px] prose-li:before:font-black prose-li:before:text-green-600 prose-li:before:content-['✓']">
+                {(pkg.inclusions ?? []).map((section, i) => (
+                  <div
+                    key={i}
+                    dangerouslySetInnerHTML={{
+                      __html: resolveContentImages(decodeHtmlEntities(section)),
+                    }}
+                  />
+                ))}
               </div>
             </div>
 
@@ -350,17 +372,15 @@ export default async function PackagePage({
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
                 What&apos;s Excluded
               </h2>
-              <div className="mt-4 rounded-lg border border-border bg-card p-6">
-                <div className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.35em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full prose-li:before:bg-red-100 prose-li:before:text-[10px] prose-li:before:font-black prose-li:before:text-red-600 prose-li:before:content-['×']">
-                  {(pkg.exclusions ?? []).map((section, i) => (
-                    <div
-                      key={i}
-                      dangerouslySetInnerHTML={{
-                        __html: decodeHtmlEntities(section),
-                      }}
-                    />
-                  ))}
-                </div>
+              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.35em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full prose-li:before:bg-red-100 prose-li:before:text-[10px] prose-li:before:font-black prose-li:before:text-red-600 prose-li:before:content-['×']">
+                {(pkg.exclusions ?? []).map((section, i) => (
+                  <div
+                    key={i}
+                    dangerouslySetInnerHTML={{
+                      __html: resolveContentImages(decodeHtmlEntities(section)),
+                    }}
+                  />
+                ))}
               </div>
             </div>
 
@@ -532,11 +552,11 @@ export default async function PackagePage({
                 <div className="mt-4 space-y-6">
                   {pkg.additionalInfo.map((info, i) => (
                     <div key={i}>
-                      <h3 className="font-bold text-navy">{info.title}</h3>
+                      <h2 className="text-lg font-bold text-navy">{info.title}</h2>
                       <div
                         className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word prose-p:leading-relaxed prose-p:text-muted-foreground"
                         dangerouslySetInnerHTML={{
-                          __html: decodeHtmlEntities(info.description),
+                          __html: resolveContentImages(decodeHtmlEntities(info.description)),
                         }}
                       />
                     </div>
@@ -587,7 +607,7 @@ export default async function PackagePage({
                     Save ${pkg.maxPrice - pkg.price}
                   </span>
                 )}
-                <div className="text-sm text-muted-foreground">From</div>
+                <div className="text-sm text-muted-foreground">Starts from</div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-bold text-navy">
                     ${pkg.price}

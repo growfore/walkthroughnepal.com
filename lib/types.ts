@@ -48,6 +48,7 @@ export interface Activity {
   priceBreakdown: string
   videoUrl: string
   map: string
+  altitudeChart: { id: string; altitude: number; location: string }[]
   createdAt: string
   updatedAt: string
 }

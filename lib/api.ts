@@ -15,8 +15,13 @@ export function img(path: string | null | undefined, _base?: string): string {
 }
 
 export function resolveContentImages(html: string, _base?: string): string {
-  // ponytail: images served via rewrite at /uploads/* — no URL resolution needed
-  return html
+  return html.replace(
+    /src="((?:https?:\/\/[^/]+)?\/uploads\/[^"]+)"/g,
+    (_match, url: string) => {
+      const path = url.replace(/^https?:\/\/[^/]+/, "")
+      return `src="${path}"`
+    },
+  )
 }
 
 async function fetchJSON<T>(base: string, path: string, options?: RequestInit): Promise<T> {
