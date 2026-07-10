@@ -361,7 +361,7 @@ export default async function PackagePage({
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
                 What&apos;s Included
               </h2>
-              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.35em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
+              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
                 {(pkg.inclusions ?? []).map((section, i) => (
                   <div
                     key={i}
@@ -378,7 +378,7 @@ export default async function PackagePage({
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
                 What&apos;s Excluded
               </h2>
-              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.35em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
+              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
                 {(pkg.exclusions ?? []).map((section, i) => (
                   <div
                     key={i}
