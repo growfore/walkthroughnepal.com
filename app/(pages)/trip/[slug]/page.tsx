@@ -271,7 +271,7 @@ export default async function PackagePage({
                         key={i}
                         className="flex items-start gap-3 text-lg text-navy"
                       >
-                        <Pointer className="mt-1.5 h-4 w-4 shrink-0 rotate-90 text-ink" />
+                        <ArrowRight className="mt-1.5 h-4 w-4 shrink-0 text-ink" />
                         <span
                           className="wrap-break-word"
                           dangerouslySetInnerHTML={{
@@ -352,9 +352,11 @@ export default async function PackagePage({
 
             {/* ── Includes ── */}
             <style dangerouslySetInnerHTML={{ __html: `
-              #includes .prose li::before, #excludes .prose li::before {
-                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23162B38' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 4 7.07 17 2.51-7.39L21 11.07z'/%3E%3C/svg%3E");
-                transform: rotate(90deg);
+              #includes .prose li::before {
+                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23162B38' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+              }
+              #excludes .prose li::before {
+                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23162B38' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E");
               }
             ` }} />
             <div id="includes" className="mt-12 scroll-mt-40">
