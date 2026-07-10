@@ -352,11 +352,29 @@ export default async function PackagePage({
 
             {/* ── Includes ── */}
             <style dangerouslySetInnerHTML={{ __html: `
+              .prose li {
+                position: relative;
+                list-style: none;
+                padding-left: 2rem;
+              }
+              .prose li::before {
+                position: absolute;
+                top: 0.15em;
+                left: 0;
+                display: grid;
+                height: 1.25rem;
+                width: 1.25rem;
+                place-items: center;
+                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23162B38' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 4 7.07 17 2.51-7.39L21 11.07z'/%3E%3C/svg%3E");
+                transform: rotate(90deg);
+              }
               #includes .prose li::before {
                 content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2316a34a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+                transform: none;
               }
               #excludes .prose li::before {
                 content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E");
+                transform: none;
               }
             ` }} />
             <div id="includes" className="mt-12 scroll-mt-40">
