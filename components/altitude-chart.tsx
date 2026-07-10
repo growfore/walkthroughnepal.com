@@ -54,9 +54,11 @@ export function AltitudeChart({ data }: { data: Point[] }) {
             </defs>
             <XAxis
               dataKey="location"
-              tick={{ fontSize: 12, fill: "var(--color-muted-foreground)" }}
+              tick={{ fontSize: 12, fill: "var(--color-muted-foreground)", angle: -35, textAnchor: "end" }}
               tickLine={false}
               axisLine={false}
+              interval={0}
+              height={60}
             />
             <YAxis
               tick={{ fontSize: 12, fill: "var(--color-muted-foreground)" }}

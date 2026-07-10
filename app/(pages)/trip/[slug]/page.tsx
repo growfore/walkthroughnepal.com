@@ -352,11 +352,19 @@ export default async function PackagePage({
             )}
 
             {/* ── Includes ── */}
+            <style dangerouslySetInnerHTML={{ __html: `
+              #includes .prose li::before {
+                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2316a34a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+              }
+              #excludes .prose li::before {
+                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E");
+              }
+            ` }} />
             <div id="includes" className="mt-12 scroll-mt-40">
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
                 What&apos;s Included
               </h2>
-              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.35em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full prose-li:before:bg-green-100 prose-li:before:text-[10px] prose-li:before:font-black prose-li:before:text-green-600 prose-li:before:content-['✓']">
+              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.35em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full prose-li:before:bg-green-100">
                 {(pkg.inclusions ?? []).map((section, i) => (
                   <div
                     key={i}
@@ -373,7 +381,7 @@ export default async function PackagePage({
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
                 What&apos;s Excluded
               </h2>
-              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.35em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full prose-li:before:bg-red-100 prose-li:before:text-[10px] prose-li:before:font-black prose-li:before:text-red-600 prose-li:before:content-['×']">
+              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-navy prose-li:before:absolute prose-li:before:top-[0.35em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full prose-li:before:bg-red-100">
                 {(pkg.exclusions ?? []).map((section, i) => (
                   <div
                     key={i}
