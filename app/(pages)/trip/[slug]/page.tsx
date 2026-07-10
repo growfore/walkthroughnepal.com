@@ -60,7 +60,6 @@ const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
 const tabs = [
   { label: "Overview", icon: Info },
-  { label: "Reviews", icon: Star },
   { label: "Itinerary", icon: Route },
   { label: "Cost Breakdown", icon: DollarSign },
   { label: "Map", icon: Map },
