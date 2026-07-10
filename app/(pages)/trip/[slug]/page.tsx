@@ -556,7 +556,7 @@ export default async function PackagePage({
                 <div className="space-y-6">
                   {pkg.additionalInfo.map((info, i) => (
                     <div key={i}>
-                      <h2 className="font-bold text-ink prose-lg  sm:text-2xl md:text-3xl">{info.title}</h2>
+                      <h2 className="font-bold text-ink text-2xl md:text-3xl">{info.title}</h2>
                       <div
                         className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word **:text-ink"
                         dangerouslySetInnerHTML={{
