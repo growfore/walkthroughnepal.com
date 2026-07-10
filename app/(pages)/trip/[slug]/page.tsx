@@ -355,7 +355,7 @@ export default async function PackagePage({
               .prose li {
                 position: relative;
                 list-style: none;
-                padding-left: 0.5rem;
+                padding-left: 1.75rem;
               }
               .prose li::before {
                 position: absolute;
