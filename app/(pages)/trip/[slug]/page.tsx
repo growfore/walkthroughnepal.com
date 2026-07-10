@@ -154,7 +154,11 @@ export default async function PackagePage({
               )
             })}
           </div>
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-background to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-1">
+            <div className="h-6 w-6 animate-pulse rounded-full bg-muted text-muted-foreground grid place-items-center">
+              <ChevronRight className="h-4 w-4" />
+            </div>
+          </div>
         </div>
       </div>
 
