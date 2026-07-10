@@ -20,6 +20,7 @@ import {
   Sparkles,
   DollarSign,
   Map,
+  ArrowRight,
 } from "lucide-react"
 import { FAQSection } from "@/components/faq-section"
 import Link from "next/link"
