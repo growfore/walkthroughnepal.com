@@ -176,7 +176,7 @@ export default async function PackagePage({
                 {pkg.isFeatured ? "FEATURED" : "BEST SELLER"}
               </span>
 
-              <h1 className="mt-3 text-3xl leading-tight font-bold text-navy md:text-5xl">
+              <h1 className="mt-3 text-2xl leading-tight font-bold text-navy md:text-4xl">
                 {pkg.title}
               </h1>
             </div>
@@ -402,19 +402,19 @@ export default async function PackagePage({
                 </p>
                 <div className="mt-6 rounded-xl border border-border shadow-sm">
                   {/* Desktop table */}
-                  <table className="hidden w-full sm:table">
+                  <table className="hidden w-full border border-border sm:table">
                     <thead>
                       <tr className="border-b border-border bg-muted/50">
-                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">
+                        <th className="border border-border px-5 py-3.5 text-left text-sm font-semibold text-navy">
                           Date
                         </th>
-                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">
+                        <th className="border border-border px-5 py-3.5 text-left text-sm font-semibold text-navy">
                           Price
                         </th>
-                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">
+                        <th className="border border-border px-5 py-3.5 text-left text-sm font-semibold text-navy">
                           Availability
                         </th>
-                        <th className="px-5 py-3.5 text-left text-sm font-semibold text-navy">
+                        <th className="border border-border px-5 py-3.5 text-left text-sm font-semibold text-navy">
                           Action
                         </th>
                       </tr>
@@ -425,7 +425,7 @@ export default async function PackagePage({
                           key={s.id}
                           className="transition-colors hover:bg-muted/30"
                         >
-                          <td className="px-5 py-4">
+                          <td className="border border-border px-5 py-4">
                             <div className="flex items-center gap-2">
                               <Calendar className="h-4 w-4 shrink-0 text-orange" />
                               <span className="font-medium text-navy">
@@ -441,7 +441,7 @@ export default async function PackagePage({
                               </span>
                             </div>
                           </td>
-                          <td className="px-5 py-4">
+                          <td className="border border-border px-5 py-4">
                             <span className="text-lg font-bold text-navy">
                               ${Number(s.price).toLocaleString()}
                             </span>
@@ -453,7 +453,7 @@ export default async function PackagePage({
                               {s.days} {s.days === 1 ? "day" : "days"}
                             </span>
                           </td>
-                          <td className="px-5 py-4">
+                          <td className="border border-border px-5 py-4">
                             <span
                               className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${s.remainingSeats > 5 ? "bg-success-soft text-success" : s.remainingSeats > 0 ? "bg-warning-soft text-warning" : "bg-red-50 text-red-600"}`}
                             >
@@ -467,7 +467,7 @@ export default async function PackagePage({
                                   : "Full"}
                             </span>
                           </td>
-                          <td className="px-5 py-4 text-left">
+                          <td className="border border-border px-5 py-4 text-left">
                             {s.remainingSeats < 1 ? (
                               <span className="inline-block cursor-not-allowed rounded-lg bg-muted px-4 py-2 text-sm font-semibold text-muted-foreground">
                                 Full
@@ -556,7 +556,7 @@ export default async function PackagePage({
                 <div className="space-y-6">
                   {pkg.additionalInfo.map((info, i) => (
                     <div key={i}>
-                      <h2 className="font-bold text-ink prose-lg">{info.title}</h2>
+                      <h2 className="font-bold text-ink prose-lg  sm:text-2xl md:text-3xl">{info.title}</h2>
                       <div
                         className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word **:text-ink"
                         dangerouslySetInnerHTML={{
