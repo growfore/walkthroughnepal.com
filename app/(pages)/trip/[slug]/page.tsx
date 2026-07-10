@@ -379,6 +379,8 @@ export default async function PackagePage({
                 content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E");
                 transform: none;
               }
+              .prose table { display: block; overflow-x: auto; max-width: 100%; }
+              .prose table th, .prose table td { white-space: nowrap; }
             ` }} />
             <div id="includes" className="mt-12 scroll-mt-40">
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
