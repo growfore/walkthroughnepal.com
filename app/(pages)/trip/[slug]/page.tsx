@@ -22,6 +22,7 @@ import {
   Map,
   ArrowRight,
   Pointer,
+  Backpack,
 } from "lucide-react"
 import { FAQSection } from "@/components/faq-section"
 import Link from "next/link"
@@ -66,6 +67,7 @@ const tabs = [
   { label: "Includes", icon: Check },
   { label: "Excludes", icon: X },
   { label: "Departures", icon: Calendar },
+  { label: "Packing List", icon: Backpack },
   { label: "Useful Info", icon: HelpCircle },
   { label: "FAQs", icon: MessageSquare },
 ]
@@ -379,6 +381,10 @@ export default async function PackagePage({
                 content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E");
                 transform: none;
               }
+              #packing-list .prose li::before {
+                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23162B38' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 6h4l2 4-2 4h-4'/%3E%3Cpath d='M14 6h4l2 4-2 4h-4'/%3E%3C/svg%3E");
+                transform: none;
+              }
               .prose table { display: block; overflow-x: auto; max-width: 100%; }
               .prose table th, .prose table td { white-space: nowrap; }
             ` }} />
@@ -570,6 +576,21 @@ export default async function PackagePage({
                       </div>
                     ))}
                   </div>
+                </div>
+              </div>
+            )}
+
+            {(pkg.whatToBring ?? []).length > 0 && (
+              <div id="packing-list" className="mt-12 scroll-mt-40">
+                <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-ink prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
+                  {(pkg.whatToBring ?? []).map((section, i) => (
+                    <div
+                      key={i}
+                      dangerouslySetInnerHTML={{
+                        __html: resolveContentImages(decodeHtmlEntities(section)),
+                      }}
+                    />
+                  ))}
                 </div>
               </div>
             )}
