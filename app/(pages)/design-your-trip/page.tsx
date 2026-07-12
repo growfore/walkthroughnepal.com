@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useForm, useFieldArray } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -187,28 +187,41 @@ const categories = [
   "Yoga and Meditation Retreat",
 ]
 
+const STORAGE_KEY = "design-your-trip"
+
+function loadSaved(): Partial<ItineraryFormValues> & { step?: number } | null {
+  if (typeof window === "undefined") return null
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
 export default function DesignYourTrip() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
-  const [step, setStep] = useState(0)
+  const saved = useRef(loadSaved())
+  const [step, setStep] = useState(saved.current?.step ?? 0)
 
   const form = useForm<ItineraryFormValues>({
     resolver: zodResolver(itineraryFormSchema) as never,
     defaultValues: {
-      fullName: "",
-      email: "",
-      phone: "",
-      duration: undefined,
-      experienceType: [],
-      startDate: "",
-      letUsChooseLocations: false,
-      locations: [{ name: "", days: "" }],
-      groupType: undefined,
-      numberOfTravellers: "",
-      inclusions: [],
-      accommodationPreferences: [],
-      foodPreferences: [],
-      otherMentions: "",
+      fullName: saved.current?.fullName ?? "",
+      email: saved.current?.email ?? "",
+      phone: saved.current?.phone ?? "",
+      duration: saved.current?.duration ?? undefined,
+      experienceType: saved.current?.experienceType ?? [],
+      startDate: saved.current?.startDate ?? "",
+      letUsChooseLocations: saved.current?.letUsChooseLocations ?? false,
+      locations: saved.current?.locations ?? [{ name: "", days: "" }],
+      groupType: saved.current?.groupType ?? undefined,
+      numberOfTravellers: saved.current?.numberOfTravellers ?? "",
+      inclusions: saved.current?.inclusions ?? [],
+      accommodationPreferences: saved.current?.accommodationPreferences ?? [],
+      foodPreferences: saved.current?.foodPreferences ?? [],
+      otherMentions: saved.current?.otherMentions ?? "",
     },
     mode: "onChange",
   })
@@ -221,6 +234,12 @@ export default function DesignYourTrip() {
   const letUsChoose = form.watch("letUsChooseLocations")
   const groupType = form.watch("groupType")
   const today = new Date().toISOString().split("T")[0]
+
+  // Save form state to localStorage on every change
+  const allValues = form.watch()
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...allValues, step }))
+  }, [allValues, step])
 
   const onSubmit = async (data: ItineraryFormValues) => {
     setIsSubmitting(true)
@@ -277,6 +296,7 @@ export default function DesignYourTrip() {
       if (!res.ok) throw new Error(`API returned ${res.status}`)
 
       setSubmitSuccess(true)
+      localStorage.removeItem(STORAGE_KEY)
       form.reset()
       setStep(0)
       setTimeout(() => setSubmitSuccess(false), 6000)
