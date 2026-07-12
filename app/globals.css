@@ -177,3 +177,19 @@
 .prose table td:first-child {
   padding-left: 0.5rem;
 }
+.prose pre {
+  background: transparent;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+.prose pre code {
+  background: transparent;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  font-size: inherit;
+  color: inherit;
+  white-space: pre;
+}
