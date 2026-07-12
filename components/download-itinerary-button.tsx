@@ -1,6 +1,7 @@
 "use client"
 
-import { Download } from "lucide-react"
+import { useState } from "react"
+import { Download, Loader2 } from "lucide-react"
 
 export function DownloadItineraryButton({
   title,
@@ -9,7 +10,10 @@ export function DownloadItineraryButton({
   title: string
   slug: string
 }) {
+  const [loading, setLoading] = useState(false)
+
   const handleDownload = async () => {
+    setLoading(true)
     try {
       const res = await fetch(`/api/pdf?slug=${slug}`)
       if (!res.ok) return
@@ -24,15 +28,19 @@ export function DownloadItineraryButton({
       URL.revokeObjectURL(url)
     } catch {
       // silent
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
     <button
       onClick={handleDownload}
-      className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-border py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-navy transition-colors"
+      disabled={loading}
+      className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-border py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-navy transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      <Download className="h-4 w-4" /> Download Itinerary
+      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+      {loading ? "Downloading…" : "Download Itinerary"}
     </button>
   )
 }

@@ -14,15 +14,19 @@ export async function GET(req: NextRequest) {
     ])
     const pkg = activityRes.data
 
-    const apiBase = process.env.API_URL ?? "https://api.walkthroughnepal.com"
+    const feBase =
+      process.env.NODE_ENV === "development"
+        ? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
+        : process.env.NEXT_PUBLIC_API_URL ?? "https://walkthroughnepal.com"
 
-    const logoUrl = `${apiBase}/logo-july-6.png`
+    const logoUrl = `${feBase}/logo-july-6.png`
+    const apiBase = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
     const address = site?.fullAddress ?? "Thamel, Kathmandu, Nepal"
     const phone = site?.phoneNumbers?.[0]?.phone ?? "+977-9841234567"
 
     const stream = await renderToStream(
-      <TripPDFDocument pkg={pkg} logoUrl={logoUrl} address={address} phone={phone} />
+      <TripPDFDocument pkg={pkg} logoUrl={logoUrl} address={address} phone={phone} apiBase={apiBase} />
     )
 
     return new NextResponse(stream as unknown as ReadableStream, {
