@@ -15,9 +15,11 @@ export function decodeHtmlEntities(html: string): string {
 }
 
 export function renderRichText(html: string): string {
-  return decodeHtmlEntities(html)
+  let out = decodeHtmlEntities(html)
     .replace(/<pre><code>/gi, '<div class="not-prose">')
     .replace(/<\/code><\/pre>/gi, "</div>")
-    .replace(/<th([^>]*)>/gi, '<th$1 style="background:var(--primary);color:#fff;padding:6px 8px">')
+    .replace(/<th([^>]*)>/gi, '<th$1 style="background:#374151;color:#fff;padding:6px 8px">')
     .replace(/<td([^>]*)>/gi, '<td$1 style="padding:6px 8px;border:1px solid var(--border)">')
+    .replace(/<table/gi, '<table class="cms-table"')
+  return out
 }

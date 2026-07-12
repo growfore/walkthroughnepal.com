@@ -147,6 +147,10 @@
   }
 }
 
+.cms-table tr:first-child td {
+  background: #f3f4f6;
+}
+
 .prose pre {
   background: transparent;
   padding: 0;
