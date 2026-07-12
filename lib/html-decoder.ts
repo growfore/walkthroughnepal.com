@@ -14,24 +14,17 @@ export function decodeHtmlEntities(html: string): string {
   }
 }
 
-const TH_STYLE = 'style="background:#374151;color:#fff;padding:6px 8px;font-weight:700"'
-
 export function renderRichText(html: string): string {
   let out = decodeHtmlEntities(html)
     .replace(/<pre><code>/gi, '<div class="not-prose">')
     .replace(/<\/code><\/pre>/gi, "</div>")
-    .replace(/<th([^>]*)>/gi, `<th$1 ${TH_STYLE}>`)
     .replace(/<table/gi, '<table class="cms-table"')
-  // First <tr> with only <td> (no <th>) gets th-style
-  out = out.replace(/(<table[^>]*>[\s\S]*?(?:<tbody>)?\s*<tr[^>]*>)([\s\S]*?)(<\/tr>)/i, (m, open, cells, close) => {
+    .replace(/<th([^>]*)>/gi, '<th$1 style="background:#f3f4f6;padding:6px 8px;font-weight:700">')
+    .replace(/<td([^>]*)>/gi, '<td$1 style="padding:6px 8px;border:1px solid var(--border)">')
+  // Style first-row td like th when no <th> in first row
+  out = out.replace(/(<table[^>]*>)([\s\S]*?<tr[^>]*>)([\s\S]*?)(<\/tr>)/i, (m, tbl, openTr, cells, closeTr) => {
     if (/<th[\s>]/i.test(cells)) return m
-    return open + cells.replace(/<td([^>]*)>/gi, `<td$1 ${TH_STYLE}>`) + close
-  })
-  // Wrap tables with >3 columns in a scrollable container
-  out = out.replace(/(<table[\s\S]*?<\/table>)/gi, (table) => {
-    const firstRow = table.match(/<tr[^>]*>[\s\S]*?<\/tr>/i)?.[0] ?? ""
-    const cols = (firstRow.match(/<t[hd][\s>]/gi) ?? []).length
-    return cols > 3 ? `<div style="overflow-x:auto">${table}</div>` : table
+    return tbl + openTr + cells.replace(/<td([^>]*)>/gi, '<td$1 style="background:#f3f4f6;padding:6px 8px;font-weight:700">') + closeTr
   })
   return out
 }
