@@ -1,5 +1,5 @@
 export function stripCodeBlock(html: string): string {
-  return html.replace(/<\/?pre>/gi, "").replace(/<\/?code>/gi, "")
+  return html.replace(/<pre><code>/gi, '<div class="not-prose">').replace(/<\/code><\/pre>/gi, "</div>")
 }
 
 export function decodeHtmlEntities(html: string): string {

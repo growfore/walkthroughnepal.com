@@ -146,7 +146,9 @@
     border-collapse: collapse;
   }
   th,
-  tr:first-child td {
+  tr:first-child td,
+  th p,
+  tr:first-child td p {
     background: var(--primary);
     color: var(--primary-foreground) !important;
   }
@@ -163,7 +165,9 @@
 }
 
 .prose table th,
-.prose table tr:first-child td {
+.prose table tr:first-child td,
+.prose table th p,
+.prose table tr:first-child td p {
   background: var(--primary);
   color: var(--primary-foreground) !important;
 }
@@ -185,6 +189,22 @@
   overflow: visible;
 }
 .prose pre code {
+  background: transparent;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  font-size: inherit;
+  color: inherit;
+  white-space: pre;
+}
+.not-prose pre {
+  background: transparent;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+.not-prose pre code {
   background: transparent;
   padding: 0;
   border: none;
