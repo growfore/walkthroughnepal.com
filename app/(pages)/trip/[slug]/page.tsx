@@ -314,6 +314,13 @@ export default async function PackagePage({
               </div>
             )}
 
+            {/* ── Tier Pricing Cards ── */}
+            {pkg.tier?.length > 0 && (
+              <div className="mt-12 scroll-mt-40">
+                <TierPricingCards tiers={pkg.tier} />
+              </div>
+            )}
+
             {/* ── Itinerary ── */}
             <div id="itinerary" className="mt-12 scroll-mt-40">
               <ItineraryList variants={itineraryVariants ?? []} />
@@ -328,13 +335,6 @@ export default async function PackagePage({
                     __html: resolveContentImages(renderRichText(pkg.priceBreakdown)),
                   }}
                 />
-              </div>
-            )}
-
-            {/* ── Tier Pricing Cards ── */}
-            {pkg.tier?.length > 0 && (
-              <div className="mt-12 scroll-mt-40">
-                <TierPricingCards tiers={pkg.tier} />
               </div>
             )}
 
