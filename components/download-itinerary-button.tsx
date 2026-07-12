@@ -15,8 +15,8 @@ export function DownloadItineraryButton({
   const handleDownload = async () => {
     setLoading(true)
     try {
-      const res = await fetch(`/api/pdf?slug=${slug}`)
-      if (!res.ok) return
+      const res = await fetch(`/api/proxy/pdf/${slug}`)
+      if (!res.ok) throw new Error("PDF not available")
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
