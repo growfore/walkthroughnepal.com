@@ -153,6 +153,7 @@
   .cms-table td {
     overflow: hidden;
     word-wrap: break-word;
+    border: 1px solid var(--primary);
   }
 }
 
