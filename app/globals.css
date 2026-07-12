@@ -145,6 +145,15 @@
   table {
     border-collapse: collapse;
   }
+  .cms-table {
+    table-layout: fixed;
+    width: 100%;
+  }
+  .cms-table th,
+  .cms-table td {
+    overflow: hidden;
+    word-wrap: break-word;
+  }
 }
 
 .prose pre {
