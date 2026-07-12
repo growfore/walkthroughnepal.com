@@ -181,9 +181,17 @@
 }
 .cms-table tr:first-child th,
 .cms-table tr:first-child td {
-  background: var(--orange);
-  color: var(--ink);
+  background: var(--navy);
+  color: white;
   font-weight: 600;
+}
+.prose .cms-table tr:first-child th,
+.prose .cms-table tr:first-child td,
+.prose :where(.cms-table) tr:first-child th,
+.prose :where(.cms-table) tr:first-child td {
+  background: var(--navy) !important;
+  color: white !important;
+  font-weight: 600 !important;
 }
 .cms-table tbody tr:nth-child(even) {
   background: var(--muted);
