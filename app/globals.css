@@ -164,12 +164,14 @@
   }
 }
 
-.prose table th,
-.prose table tr:first-child td,
-.prose table th p,
-.prose table tr:first-child td p {
-  background: var(--primary);
-  color: var(--primary-foreground) !important;
+@layer utilities {
+  .prose table th,
+  .prose table tr:first-child td,
+  .prose table th p,
+  .prose table tr:first-child td p {
+    background: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+  }
 }
 .prose table th,
 .prose table td {
