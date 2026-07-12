@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Clock, Home, Route } from "lucide-react"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
-import { decodeHtmlEntities } from "@/lib/html-decoder"
+import { renderRichText } from "@/lib/html-decoder"
 import { cn } from "@/lib/utils"
 import type { ItineraryVariant } from "@/lib/types"
 
@@ -120,7 +120,7 @@ export function ItineraryList({ variants }: { variants: ItineraryVariant[] }) {
                       )}
                     </div>
 
-                    <div className="prose prose-lg max-w-none w-full wrap-break-word **:wrap-break-word prose-p:m-0 prose-p:text-muted-foreground" dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(d.description) }} />
+                    <div className="prose prose-lg max-w-none w-full wrap-break-word **:wrap-break-word prose-p:m-0 prose-p:text-muted-foreground" dangerouslySetInnerHTML={{ __html: renderRichText(d.description) }} />
 
                     {d.dayFeaturedImages?.length > 0 && (
                       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">

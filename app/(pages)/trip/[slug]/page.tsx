@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {}
   }
 }
-import { decodeHtmlEntities, stripCodeBlock } from "@/lib/html-decoder"
+import { renderRichText } from "@/lib/html-decoder"
 import { resolveContentImages } from "@/lib/api"
 import { StickyWrapper } from "@/components/sticky-wrapper"
 import { ItineraryList } from "@/components/itinerary-list"
@@ -253,7 +253,7 @@ export default async function PackagePage({
               <div
                 className="prose prose-lg mt-3 w-full max-w-none wrap-break-word **:wrap-break-word **:text-ink"
                 dangerouslySetInnerHTML={{
-                  __html: resolveContentImages(decodeHtmlEntities(stripCodeBlock(pkg.shortDescription))),
+                  __html: resolveContentImages(renderRichText(pkg.shortDescription)),
                 }}
               />
             </div>
@@ -267,7 +267,7 @@ export default async function PackagePage({
                 <div className="mt-6 space-y-3">
                   {pkg.highlights
                     .flatMap((h) => {
-                      const m = decodeHtmlEntities(h).match(/<li>(.*?)<\/li>/gi)
+                      const m = renderRichText(h).match(/<li>(.*?)<\/li>/gi)
                       return m ? m.map((s) => s.replace(/<\/?li>/gi, "")) : [h]
                     })
                     .map((item, i) => (
@@ -307,7 +307,7 @@ export default async function PackagePage({
                 <div
                   className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word **:text-ink"
                   dangerouslySetInnerHTML={{
-                    __html: resolveContentImages(decodeHtmlEntities(pkg.fullDescription)),
+                    __html: resolveContentImages(renderRichText(pkg.fullDescription)),
                   }}
                 />
               </div>
@@ -324,7 +324,7 @@ export default async function PackagePage({
                 <div
                   className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word **:text-ink"
                   dangerouslySetInnerHTML={{
-                    __html: resolveContentImages(decodeHtmlEntities(pkg.priceBreakdown)),
+                    __html: resolveContentImages(renderRichText(pkg.priceBreakdown)),
                   }}
                 />
               </div>
@@ -336,7 +336,7 @@ export default async function PackagePage({
                 <div
                   className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word **:text-ink"
                   dangerouslySetInnerHTML={{
-                    __html: resolveContentImages(decodeHtmlEntities(pkg.map)),
+                    __html: resolveContentImages(renderRichText(pkg.map)),
                   }}
                 />
               </div>
@@ -396,7 +396,7 @@ export default async function PackagePage({
                   <div
                     key={i}
                     dangerouslySetInnerHTML={{
-                      __html: resolveContentImages(decodeHtmlEntities(section)),
+                      __html: resolveContentImages(renderRichText(section)),
                     }}
                   />
                 ))}
@@ -413,7 +413,7 @@ export default async function PackagePage({
                   <div
                     key={i}
                     dangerouslySetInnerHTML={{
-                      __html: resolveContentImages(decodeHtmlEntities(section)),
+                      __html: resolveContentImages(renderRichText(section)),
                     }}
                   />
                 ))}
@@ -586,7 +586,7 @@ export default async function PackagePage({
                     <div
                       key={i}
                       dangerouslySetInnerHTML={{
-                        __html: resolveContentImages(decodeHtmlEntities(section)),
+                        __html: resolveContentImages(renderRichText(section)),
                       }}
                     />
                   ))}
@@ -604,7 +604,7 @@ export default async function PackagePage({
                       <div
                         className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word **:text-ink"
                         dangerouslySetInnerHTML={{
-                          __html: resolveContentImages(decodeHtmlEntities(info.description)),
+                          __html: resolveContentImages(renderRichText(info.description)),
                         }}
                       />
                     </div>
