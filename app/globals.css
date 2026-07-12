@@ -142,4 +142,11 @@
   .bg-card {
     @apply border-0 shadow-sm;
   }
+  table {
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 0.75rem;
+  }
 }
