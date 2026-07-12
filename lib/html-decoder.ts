@@ -14,12 +14,18 @@ export function decodeHtmlEntities(html: string): string {
   }
 }
 
+const TH_STYLE = 'style="background:#374151;color:#fff;padding:6px 8px;font-weight:700"'
+
 export function renderRichText(html: string): string {
   let out = decodeHtmlEntities(html)
     .replace(/<pre><code>/gi, '<div class="not-prose">')
     .replace(/<\/code><\/pre>/gi, "</div>")
-    .replace(/<th([^>]*)>/gi, '<th$1 style="background:#374151;color:#fff;padding:6px 8px;font-weight:700">')
-    .replace(/<td([^>]*)>/gi, '<td$1 style="padding:6px 8px;border:1px solid var(--border)">')
+    .replace(/<th([^>]*)>/gi, `<th$1 ${TH_STYLE}>`)
     .replace(/<table/gi, '<table class="cms-table"')
+  // First <tr> with only <td> (no <th>) gets th-style
+  out = out.replace(/(<table[^>]*>[\s\S]*?(?:<tbody>)?\s*<tr[^>]*>)([\s\S]*?)(<\/tr>)/i, (m, open, cells, close) => {
+    if (/<th[\s>]/i.test(cells)) return m
+    return open + cells.replace(/<td([^>]*)>/gi, `<td$1 ${TH_STYLE}>`) + close
+  })
   return out
 }
