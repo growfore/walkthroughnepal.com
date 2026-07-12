@@ -60,7 +60,7 @@ const INCLUSIONS = [
   { id: "transport", label: "Airport Transfers" },
   { id: "firstaid", label: "First Aid / Medical Kit" },
   { id: "sleeping-bag", label: "Sleeping Bag & Equipment" },
-  { id: "helicopter", label: "Helicopter Rescue Cover" },
+  { id: "helicopter", label: "Helicopter Return" },
 ] as const
 
 const ACCOMMODATION = [
@@ -99,7 +99,7 @@ const itineraryFormSchema = z
     email: z.string().email("Invalid email address"),
     phone: z.string().optional(),
     duration: z.enum(DURATION_VALUES, { message: "Please select a duration" }),
-    experienceType: z.string().min(1, "Please select an experience type"),
+    experienceType: z.array(z.string()).min(1, "Please select an experience type"),
     startDate: z.string().min(1, "Please select a start date"),
     letUsChooseLocations: z.boolean(),
     locations: z.array(locationSchema),
@@ -107,7 +107,7 @@ const itineraryFormSchema = z
       GROUP_OPTIONS.map((o) => o.value) as [string, ...string[]],
       { message: "Please select a group type" },
     ),
-    numberOfTravellers: z.string().min(1, "Please select number of travellers"),
+    numberOfTravellers: z.string().optional(),
     inclusions: z.array(z.string()).default([]),
     accommodationPreferences: z
       .array(z.string())
@@ -136,6 +136,15 @@ const itineraryFormSchema = z
           })
         }
       })
+    }
+    if (data.groupType === "family" || data.groupType === "friends") {
+      if (!data.numberOfTravellers || data.numberOfTravellers.trim() === "") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Please select number of travellers",
+          path: ["numberOfTravellers"],
+        })
+      }
     }
   })
 
@@ -190,7 +199,7 @@ export default function DesignYourTrip() {
       email: "",
       phone: "",
       duration: undefined,
-      experienceType: "",
+      experienceType: [],
       startDate: "",
       letUsChooseLocations: false,
       locations: [{ name: "", days: "" }],
@@ -210,6 +219,7 @@ export default function DesignYourTrip() {
   })
 
   const letUsChoose = form.watch("letUsChooseLocations")
+  const groupType = form.watch("groupType")
   const today = new Date().toISOString().split("T")[0]
 
   const onSubmit = async (data: ItineraryFormValues) => {
@@ -234,7 +244,7 @@ export default function DesignYourTrip() {
         body: JSON.stringify({
           from: data.email,
           to: siteConfig.email,
-          subject: `Custom Itinerary Request from ${data.fullName} — ${data.experienceType}`,
+          subject: `Custom Itinerary Request from ${data.fullName} — ${data.experienceType.join(", ")}`,
           text: [
             `── Personal Info ──`,
             `Name:                  ${data.fullName}`,
@@ -243,7 +253,7 @@ export default function DesignYourTrip() {
             ``,
             `── Trip Details ──`,
             `Duration:              ${data.duration}`,
-            `Experience Type:       ${data.experienceType}`,
+            `Experience Type:       ${data.experienceType.join(", ")}`,
             `Start Date:            ${data.startDate}`,
             ``,
             `── Locations ──`,
@@ -396,20 +406,31 @@ export default function DesignYourTrip() {
                         <FormLabel className="text-ink font-semibold text-sm">
                           Experience / Trek Type *
                         </FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select an experience type" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {categories.map((cat) => (
-                              <SelectItem key={cat} value={cat}>
-                                {cat}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">
+                          {categories.map((cat) => {
+                            const checked = (field.value as string[]).includes(cat)
+                            return (
+                              <label
+                                key={cat}
+                                className={`flex items-center gap-2 rounded-lg border px-3 py-2 cursor-pointer transition-colors text-sm ${
+                                  checked
+                                    ? "border-primary/40 bg-primary/5 text-primary font-medium"
+                                    : "border-hairline text-body hover:bg-canvas-soft"
+                                }`}
+                              >
+                                <Checkbox
+                                  checked={checked}
+                                  onCheckedChange={() =>
+                                    field.onChange(
+                                      toggleArrayItem(field.value as string[], cat),
+                                    )
+                                  }
+                                />
+                                <span>{cat}</span>
+                              </label>
+                            )
+                          })}
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -427,6 +448,7 @@ export default function DesignYourTrip() {
                           <Input
                             type="date"
                             min={today}
+                            className="max-w-[220px]"
                             {...field}
                           />
                         </FormControl>
@@ -595,35 +617,37 @@ export default function DesignYourTrip() {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="numberOfTravellers"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-ink font-semibold text-sm">
-                          Number of Travellers *
-                        </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="How many people?" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {["1", "2", "3", "4", "5–7", "8–10", "11–15", "16+"].map((n) => (
-                              <SelectItem key={n} value={n}>
-                                {n} {n === "1" ? "person" : "people"}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  {groupType !== "solo" && groupType !== "couple" && (
+                    <FormField
+                      control={form.control}
+                      name="numberOfTravellers"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-ink font-semibold text-sm">
+                            Number of Travellers *
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="How many people?" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {["1", "2", "3", "4", "5–7", "8–10", "11–15", "16+"].map((n) => (
+                                <SelectItem key={n} value={n}>
+                                  {n} {n === "1" ? "person" : "people"}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
                 </div>
               )}
 
@@ -857,7 +881,7 @@ export default function DesignYourTrip() {
                     {(
                       [
                         ["Duration", form.watch("duration")],
-                        ["Experience", form.watch("experienceType")],
+                        ["Experience", form.watch("experienceType").join(", ")],
                         ["Start Date", form.watch("startDate")],
                         [
                           "Locations",

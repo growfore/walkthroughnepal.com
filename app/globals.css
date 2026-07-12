@@ -155,6 +155,10 @@
     word-wrap: break-word;
     border: 1px solid var(--primary);
   }
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(30%) sepia(50%) saturate(500%) hue-rotate(350deg);
+    cursor: pointer;
+  }
 }
 
 .prose pre {
