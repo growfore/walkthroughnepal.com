@@ -145,8 +145,29 @@
   table {
     border-collapse: collapse;
   }
-  th, td {
-    border: 1px solid var(--border);
-    padding: 0.75rem;
+  th {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    padding: 0.375rem 0.5rem;
   }
+  td {
+    border: 1px solid var(--border);
+    padding: 0.375rem 0.5rem;
+  }
+  td:first-child {
+    padding-left: 0.5rem;
+  }
+}
+
+.prose table th {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.375rem 0.5rem;
+}
+.prose table td {
+  border: 1px solid var(--border);
+  padding: 0.375rem 0.5rem;
+}
+.prose table td:first-child {
+  padding-left: 0.5rem;
 }
