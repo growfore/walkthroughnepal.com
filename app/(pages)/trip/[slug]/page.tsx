@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {}
   }
 }
-import { decodeHtmlEntities } from "@/lib/html-decoder"
+import { decodeHtmlEntities, stripCodeBlock } from "@/lib/html-decoder"
 import { resolveContentImages } from "@/lib/api"
 import { StickyWrapper } from "@/components/sticky-wrapper"
 import { ItineraryList } from "@/components/itinerary-list"
@@ -254,7 +254,7 @@ export default async function PackagePage({
               <div
                 className="prose prose-lg mt-3 w-full max-w-none wrap-break-word **:wrap-break-word **:text-ink"
                 dangerouslySetInnerHTML={{
-                  __html: resolveContentImages(decodeHtmlEntities(pkg.shortDescription)),
+                  __html: resolveContentImages(decodeHtmlEntities(stripCodeBlock(pkg.shortDescription))),
                 }}
               />
             </div>

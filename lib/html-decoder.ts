@@ -1,3 +1,7 @@
+export function stripCodeBlock(html: string): string {
+  return html.replace(/<\/?pre>/gi, "").replace(/<\/?code>/gi, "")
+}
+
 export function decodeHtmlEntities(html: string): string {
   if (typeof window === "undefined") {
     return html
