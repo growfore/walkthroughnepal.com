@@ -148,12 +148,19 @@
   .cms-table {
     table-layout: fixed;
     width: 100%;
+    border-collapse: collapse;
   }
   .cms-table th,
   .cms-table td {
+    padding: 6px 8px;
     overflow: hidden;
     word-wrap: break-word;
     border: 1px solid var(--primary);
+  }
+  .cms-table tr:first-child th,
+  .cms-table tr:first-child td {
+    background: #f3f4f6;
+    font-weight: 700;
   }
   input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(30%) sepia(50%) saturate(500%) hue-rotate(350deg);

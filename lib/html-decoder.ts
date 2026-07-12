@@ -15,16 +15,8 @@ export function decodeHtmlEntities(html: string): string {
 }
 
 export function renderRichText(html: string): string {
-  let out = decodeHtmlEntities(html)
+  return decodeHtmlEntities(html)
     .replace(/<pre><code>/gi, '<div class="not-prose">')
     .replace(/<\/code><\/pre>/gi, "</div>")
     .replace(/<table/gi, '<table class="cms-table"')
-    .replace(/<th([^>]*)>/gi, '<th$1 style="background:#f3f4f6;padding:6px 8px;font-weight:700">')
-    .replace(/<td([^>]*)>/gi, '<td$1 style="padding:6px 8px;border:1px solid var(--primary)">')
-  // Style first-row td like th when no <th> in first row
-  out = out.replace(/(<table[^>]*>)([\s\S]*?<tr[^>]*>)([\s\S]*?)(<\/tr>)/i, (m, tbl, openTr, cells, closeTr) => {
-    if (/<th[\s>]/i.test(cells)) return m
-    return tbl + openTr + cells.replace(/<td([^>]*)>/gi, '<td$1 style="background:#f3f4f6;padding:6px 8px;font-weight:700">') + closeTr
-  })
-  return out
 }
