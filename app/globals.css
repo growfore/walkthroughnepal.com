@@ -145,28 +145,34 @@
   table {
     border-collapse: collapse;
   }
-  th {
+  th,
+  tr:first-child td {
     background: var(--primary);
     color: var(--primary-foreground);
+  }
+  th,
+  td {
     padding: 0.375rem 0.5rem;
   }
   td {
     border: 1px solid var(--border);
-    padding: 0.375rem 0.5rem;
   }
   td:first-child {
     padding-left: 0.5rem;
   }
 }
 
-.prose table th {
+.prose table th,
+.prose table tr:first-child td {
   background: var(--primary);
   color: var(--primary-foreground);
+}
+.prose table th,
+.prose table td {
   padding: 0.375rem 0.5rem;
 }
 .prose table td {
   border: 1px solid var(--border);
-  padding: 0.375rem 0.5rem;
 }
 .prose table td:first-child {
   padding-left: 0.5rem;
