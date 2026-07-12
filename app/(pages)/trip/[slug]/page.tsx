@@ -55,6 +55,7 @@ import { HorizontalGallery } from "@/components/horizontal-gallery"
 import { ReviewsCarousel } from "@/components/reviews-carousel"
 import { AltitudeChart } from "@/components/altitude-chart"
 import { CustomizeTripCTA } from "@/components/customize-trip-cta"
+import { TierPricingCards } from "@/components/tier-pricing-cards"
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
@@ -327,6 +328,13 @@ export default async function PackagePage({
                     __html: resolveContentImages(renderRichText(pkg.priceBreakdown)),
                   }}
                 />
+              </div>
+            )}
+
+            {/* ── Tier Pricing Cards ── */}
+            {pkg.tier?.length > 0 && (
+              <div className="mt-12 scroll-mt-40">
+                <TierPricingCards tiers={pkg.tier} />
               </div>
             )}
 

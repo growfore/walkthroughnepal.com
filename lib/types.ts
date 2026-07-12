@@ -12,6 +12,14 @@ export interface TripType {
   tripTypeImage: string | null
 }
 
+export interface Tier {
+  id: string
+  name: string
+  price: string
+  features: string[]
+  bestValue: boolean
+}
+
 export interface Activity {
   id: number
   title: string
@@ -49,6 +57,7 @@ export interface Activity {
   videoUrl: string
   map: string
   altitudeChart: { id: string; altitude: number; location: string }[]
+  tier: Tier[]
   createdAt: string
   updatedAt: string
 }
