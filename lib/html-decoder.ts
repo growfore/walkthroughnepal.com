@@ -27,5 +27,11 @@ export function renderRichText(html: string): string {
     if (/<th[\s>]/i.test(cells)) return m
     return open + cells.replace(/<td([^>]*)>/gi, `<td$1 ${TH_STYLE}>`) + close
   })
+  // Wrap tables with >3 columns in a scrollable container
+  out = out.replace(/(<table[\s\S]*?<\/table>)/gi, (table) => {
+    const firstRow = table.match(/<tr[^>]*>[\s\S]*?<\/tr>/i)?.[0] ?? ""
+    const cols = (firstRow.match(/<t[hd][\s>]/gi) ?? []).length
+    return cols > 3 ? `<div style="overflow-x:auto">${table}</div>` : table
+  })
   return out
 }
