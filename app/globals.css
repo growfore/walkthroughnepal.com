@@ -157,6 +157,7 @@
 
 .cms-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
   border: 1px solid var(--hairline);
@@ -184,14 +185,6 @@
   background: var(--navy);
   color: white;
   font-weight: 600;
-}
-.prose .cms-table tr:first-child th,
-.prose .cms-table tr:first-child td,
-.prose :where(.cms-table) tr:first-child th,
-.prose :where(.cms-table) tr:first-child td {
-  background: var(--navy) !important;
-  color: white !important;
-  font-weight: 600 !important;
 }
 .cms-table tbody tr:nth-child(even) {
   background: var(--muted);

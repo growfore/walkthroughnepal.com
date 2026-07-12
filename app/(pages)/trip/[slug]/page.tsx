@@ -252,7 +252,7 @@ export default async function PackagePage({
             {/* ── Overview ── */}
             <div id="overview" className="mt-8 scroll-mt-40">
               <div
-                className="prose prose-lg mt-3 w-full max-w-none wrap-break-word **:wrap-break-word **:text-ink"
+                className="prose prose-lg mt-3 w-full max-w-none wrap-break-word **:wrap-break-word"
                 dangerouslySetInnerHTML={{
                   __html: resolveContentImages(renderRichText(pkg.shortDescription)),
                 }}
@@ -306,7 +306,7 @@ export default async function PackagePage({
             {pkg.fullDescription && (
               <div className="mt-12 scroll-mt-40">
                 <div
-                  className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word **:text-ink"
+                  className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word"
                   dangerouslySetInnerHTML={{
                     __html: resolveContentImages(renderRichText(pkg.fullDescription)),
                   }}
@@ -330,7 +330,7 @@ export default async function PackagePage({
             {pkg.priceBreakdown && (
               <div id="cost-breakdown" className="mt-12 scroll-mt-40">
                 <div
-                  className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word **:text-ink"
+                  className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word"
                   dangerouslySetInnerHTML={{
                     __html: resolveContentImages(renderRichText(pkg.priceBreakdown)),
                   }}
@@ -342,7 +342,7 @@ export default async function PackagePage({
             {pkg.map && (
               <div id="map" className="mt-12 scroll-mt-40">
                 <div
-                  className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word **:text-ink"
+                  className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word"
                   dangerouslySetInnerHTML={{
                     __html: resolveContentImages(renderRichText(pkg.map)),
                   }}
@@ -610,7 +610,7 @@ export default async function PackagePage({
                     <div key={i}>
                       <h2 className="font-bold text-ink text-2xl md:text-3xl">{info.title}</h2>
                       <div
-                        className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word **:text-ink"
+                        className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word"
                         dangerouslySetInnerHTML={{
                           __html: resolveContentImages(renderRichText(info.description)),
                         }}
