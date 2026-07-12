@@ -617,7 +617,7 @@ export default function DesignYourTrip() {
                     )}
                   />
 
-                  {groupType !== "solo" && groupType !== "couple" && (
+                  <div className={groupType === "solo" || groupType === "couple" ? "hidden" : ""}>
                     <FormField
                       control={form.control}
                       name="numberOfTravellers"
@@ -647,7 +647,7 @@ export default function DesignYourTrip() {
                         </FormItem>
                       )}
                     />
-                  )}
+                  </div>
                 </div>
               )}
 
