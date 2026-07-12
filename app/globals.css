@@ -160,7 +160,7 @@
   }
   .cms-table th,
   .cms-table td {
-    padding: 8px 12px;
+    padding: 4px 14px;
     text-align: left;
     border-bottom: 1px solid var(--hairline);
     vertical-align: top;
@@ -175,8 +175,8 @@
   }
   .cms-table tr:first-child th,
   .cms-table tr:first-child td {
-    background: var(--navy);
-    color: var(--navy-foreground);
+    background: var(--navy) !important;
+    color: white !important;
     font-weight: 600;
   }
   .cms-table tbody tr:nth-child(even) {
