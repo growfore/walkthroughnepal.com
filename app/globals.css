@@ -181,8 +181,8 @@
 }
 .cms-table tr:first-child th,
 .cms-table tr:first-child td {
-  background: var(--navy) !important;
-  color: white !important;
+  background: var(--orange);
+  color: var(--ink);
   font-weight: 600;
 }
 .cms-table tbody tr:nth-child(even) {
