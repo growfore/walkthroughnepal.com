@@ -148,7 +148,7 @@
   th,
   tr:first-child td {
     background: var(--primary);
-    color: var(--primary-foreground);
+    color: var(--primary-foreground) !important;
   }
   th,
   td {
@@ -165,7 +165,7 @@
 .prose table th,
 .prose table tr:first-child td {
   background: var(--primary);
-  color: var(--primary-foreground);
+  color: var(--primary-foreground) !important;
 }
 .prose table th,
 .prose table td {
