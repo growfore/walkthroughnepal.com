@@ -145,23 +145,6 @@
   table {
     border-collapse: collapse;
   }
-  th,
-  tr:first-child td,
-  th p,
-  tr:first-child td p {
-    background: var(--primary);
-    color: var(--primary-foreground) !important;
-  }
-  th,
-  td {
-    padding: 0.375rem 0.5rem;
-  }
-  td {
-    border: 1px solid var(--border);
-  }
-  td:first-child {
-    padding-left: 0.5rem;
-  }
 }
 
 @layer utilities {
