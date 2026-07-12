@@ -2,9 +2,8 @@
 
 import { Check } from "lucide-react"
 import type { Tier } from "@/lib/types"
-import { renderRichText } from "@/lib/html-decoder"
 
-export function TierPricingCards({ tiers }: { tiers: Tier[] }) {
+export function TierPricingCards({ tiers, hasSlots }: { tiers: Tier[]; hasSlots: boolean }) {
   if (!tiers.length) return null
 
   return (
@@ -39,14 +38,14 @@ export function TierPricingCards({ tiers }: { tiers: Tier[] }) {
               ))}
             </ul>
             <a
-              href="#contact"
+              href={hasSlots ? "#departures" : "/inquiry"}
               className={`mt-3 block text-center py-2.5 px-5 rounded-lg text-sm font-semibold transition-shadow hover:shadow-md ${
                 tier.bestValue
                   ? "bg-primary text-primary-foreground border border-primary"
                   : "bg-secondary text-secondary-foreground border border-hairline"
               }`}
             >
-              Book Now
+              {hasSlots ? "Book Now" : "Inquire Now"}
             </a>
           </div>
         ))}

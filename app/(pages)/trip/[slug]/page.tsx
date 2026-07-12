@@ -317,7 +317,7 @@ export default async function PackagePage({
             {/* ── Tier Pricing Cards ── */}
             {pkg.tier?.length > 0 && (
               <div className="mt-12 scroll-mt-40">
-                <TierPricingCards tiers={pkg.tier} />
+                <TierPricingCards tiers={pkg.tier} hasSlots={upcomingSlots.length > 0} />
               </div>
             )}
 
