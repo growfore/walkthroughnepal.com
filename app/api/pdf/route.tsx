@@ -49,7 +49,6 @@ export async function GET(req: NextRequest) {
 
   let browser
   try {
-    const title = "Trip Itinerary"
     let address = "New Road -11, Pokhara, Kaski, Nepal"
     let phone = "+977-9856085151"
     try {
@@ -62,6 +61,11 @@ export async function GET(req: NextRequest) {
     const page = await newPage(browser)
 
     await page.goto(tripUrl, { waitUntil: "networkidle2", timeout: 30_000 })
+
+    // Get trip title from page
+    const tripTitle = await page.evaluate(() => {
+      return document.title.split(":")[0]?.trim() || "Trip Itinerary"
+    })
 
     // Expand ALL accordion items
     await page.evaluate(() => {
@@ -78,13 +82,15 @@ export async function GET(req: NextRequest) {
 
     await page.addStyleTag({ content: PDF_CSS })
 
-    // Build TOC, hide junk
+    // Hide junk + mark sections for page breaks
     await page.evaluate(() => {
+      // Hide hero/CTA sections, sticky header, reviews, fixed elements
       document.querySelectorAll('section[class*="-mt-"]').forEach((e) => (e as HTMLElement).style.display = "none")
       document.querySelectorAll('.sticky.top-0, [class*="sticky"][class*="top-0"]').forEach((e) => (e as HTMLElement).style.display = "none")
       document.querySelectorAll("#reviews").forEach((e) => (e as HTMLElement).style.display = "none")
       document.querySelectorAll(".fixed").forEach((e) => (e as HTMLElement).style.display = "none")
 
+      // Hide sidebar (keep only main content column)
       const grid = document.querySelector('[class*="lg\\:grid-cols-3"]')
       if (grid) {
         ;(grid as HTMLElement).style.display = "block"
@@ -93,38 +99,32 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      const headings = document.querySelectorAll("h2")
-      const tocEntries: string[] = []
-      headings.forEach((h) => {
-        const text = h.textContent?.trim()
-        if (text && text.length > 1 && text.length < 80) tocEntries.push(text)
-      })
+      // Hide departures section
+      const h2s = document.querySelectorAll("h2")
+      const pageBreakKeywords = ["compare", "map", "altitude", "elevation", "tier", "pricing", "package"]
+      h2s.forEach((h2) => {
+        const text = h2.textContent?.trim().toLowerCase() || ""
+        const section = h2.closest("section")
+        if (!section) return
 
-      if (tocEntries.length > 0) {
-        const toc = document.createElement("div")
-        toc.id = "pdf-toc"
-        toc.innerHTML = `
-          <div style="margin-bottom:16px;padding:12px 16px;background:#FAFAF8;border:1px solid #E5E2DA;border-radius:6px;">
-            <div style="font-size:13px;font-weight:700;color:#0F2B3D;margin-bottom:8px;">Table of Contents</div>
-            <div style="columns:2;column-gap:24px;font-size:10px;line-height:1.8;color:#162B38;">
-              ${tocEntries.map((e) => `<div style="break-inside:avoid;">${e}</div>`).join("")}
-            </div>
-          </div>
-        `
-        const breadcrumb = document.querySelector("nav")
-        if (breadcrumb?.parentNode) {
-          breadcrumb.parentNode.insertBefore(toc, breadcrumb.nextSibling)
-        } else {
-          document.body.prepend(toc)
+        // Hide departures
+        if (text.includes("departure")) {
+          ;(section as HTMLElement).style.display = "none"
+          return
         }
-      }
+
+        // Mark sections that should start on a new page
+        if (pageBreakKeywords.some((kw) => text.includes(kw))) {
+          ;(section as HTMLElement).setAttribute("data-pdf-pagebreak", "before")
+        }
+      })
     })
 
     const headerTemplate = `
       <div style="width:100%;padding:8px 0 4px 0;font-family:Inter,sans-serif;">
         <div style="display:flex;justify-content:space-between;align-items:center;padding:0 14mm;padding-bottom:4px;border-bottom:2px solid #D4520C;">
-          <div style="font-size:11px;font-weight:700;color:#0F2B3D;">Walk Through Nepal</div>
-          <div style="font-size:9px;color:#5F6B72;">${title}</div>
+          <img src="https://new.walkthroughnepal.com/logo-july-6.png" style="height:24px;" />
+          <div style="font-size:9px;color:#5F6B72;">${tripTitle}</div>
         </div>
       </div>
     `
@@ -218,7 +218,7 @@ const PDF_CSS = `
     color: white !important;
     font-weight: 600 !important;
   }
-  #pdf-toc { break-after: page; }
+  [data-pdf-pagebreak="before"] { break-before: page; }
   h2 { break-after: avoid !important; }
   img { break-inside: avoid !important; max-width: 100% !important; }
   .line-clamp-4 { -webkit-line-clamp: unset !important; display: block !important; }
