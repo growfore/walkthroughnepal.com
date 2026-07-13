@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     const logoUrl = `${feBase}/logo-july-6.png`
     const apiBase = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
-    const address = site?.fullAddress ?? "Thamel, Kathmandu, Nepal"
+    const address = site?.fullAddress ?? "New Road -11, Pokhara, Kaski, Nepal"
     const phone = site?.phoneNumbers?.[0]?.phone ?? "+977-9856085151"
 
     const stream = await renderToStream(
