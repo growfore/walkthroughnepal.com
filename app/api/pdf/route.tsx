@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
 
     await page.addStyleTag({ content: PDF_CSS })
 
-    // Hide junk + hide departures
+    // Hide junk + hide departures + page breaks
     await page.evaluate(() => {
       document.querySelectorAll('section[class*="-mt-"]').forEach((e) => (e as HTMLElement).style.display = "none")
       document.querySelectorAll('.sticky.top-0, [class*="sticky"][class*="top-0"]').forEach((e) => (e as HTMLElement).style.display = "none")
@@ -97,12 +97,22 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      // Hide departures
+      // Find content blocks by h2 and target their parent div, not the section wrapper
+      const breakOn = ["compare", "map", "altitude", "elevation", "pricing"]
       document.querySelectorAll("h2").forEach((h2) => {
         const text = h2.textContent?.trim().toLowerCase() || ""
+        const block = h2.closest(".scroll-mt-40") || h2.parentElement
+        if (!block) return
+
         if (text.includes("departure")) {
-          const section = h2.closest("section")
-          if (section) (section as HTMLElement).style.display = "none"
+          ;(block as HTMLElement).style.display = "none"
+          return
+        }
+
+        if (breakOn.some((kw) => text.includes(kw))) {
+          const brk = document.createElement("div")
+          brk.setAttribute("data-pdf-brk", "1")
+          block.parentNode?.insertBefore(brk, block)
         }
       })
     })
@@ -205,6 +215,7 @@ const PDF_CSS = `
     color: white !important;
     font-weight: 600 !important;
   }
+  [data-pdf-brk] { page-break-before: always; }
   h2 { page-break-after: avoid !important; }
   img { break-inside: avoid !important; max-width: 100% !important; }
   .line-clamp-4 { -webkit-line-clamp: unset !important; display: block !important; }
