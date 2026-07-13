@@ -105,7 +105,7 @@ export function MenuController({ items }: MenuControllerProps) {
           </div>
           <div className="flex items-center gap-6">
             <a
-              href="tel:+9779841234567"
+              href="tel:+9779856085151"
               className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-orange"
             >
               <Phone className="h-4 w-4" /> +977 984 123 4567

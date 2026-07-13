@@ -346,7 +346,7 @@ export default async function HomePage() {
             <p className="mt-6 font-bold text-navy">Need Assistance? Call Us.</p>
             <div className="mt-4 flex flex-wrap gap-4">
               <a
-                href="tel:+9779841234567"
+                href="tel:+9779856085151"
                 className="flex items-center gap-3 rounded-lg border border-border bg-card px-6 py-3 font-bold text-navy hover:border-[#25D366]"
               >
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#25D366]">

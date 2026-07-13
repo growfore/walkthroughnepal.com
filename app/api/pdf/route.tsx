@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     const apiBase = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
     const address = site?.fullAddress ?? "Thamel, Kathmandu, Nepal"
-    const phone = site?.phoneNumbers?.[0]?.phone ?? "+977-9841234567"
+    const phone = site?.phoneNumbers?.[0]?.phone ?? "+977-9856085151"
 
     const stream = await renderToStream(
       <TripPDFDocument pkg={pkg} logoUrl={logoUrl} address={address} phone={phone} apiBase={apiBase} />
