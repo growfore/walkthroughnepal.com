@@ -97,22 +97,12 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      // Hide departures + add page breaks for large sections
-      const breakOn = ["compare", "map", "altitude", "elevation", "pricing"]
+      // Hide departures
       document.querySelectorAll("h2").forEach((h2) => {
         const text = h2.textContent?.trim().toLowerCase() || ""
-        const section = h2.closest("section")
-        if (!section) return
-
         if (text.includes("departure")) {
-          ;(section as HTMLElement).style.display = "none"
-          return
-        }
-
-        if (breakOn.some((kw) => text.includes(kw))) {
-          const brk = document.createElement("div")
-          brk.setAttribute("data-pdf-brk", "1")
-          section.parentNode?.insertBefore(brk, section)
+          const section = h2.closest("section")
+          if (section) (section as HTMLElement).style.display = "none"
         }
       })
     })
@@ -215,8 +205,7 @@ const PDF_CSS = `
     color: white !important;
     font-weight: 600 !important;
   }
-  [data-pdf-brk] { break-before: page; page-break-before: always; }
-  h2 { break-after: avoid !important; }
+  h2 { page-break-after: avoid !important; }
   img { break-inside: avoid !important; max-width: 100% !important; }
   .line-clamp-4 { -webkit-line-clamp: unset !important; display: block !important; }
 `
