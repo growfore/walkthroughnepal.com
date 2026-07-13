@@ -1,26 +1,15 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getSiteConfig } from "@/lib/api"
-import { createRequire } from "node:module"
-import { dirname, join } from "node:path"
 
 export const maxDuration = 30
-
-async function getChromiumBinPath(): Promise<string> {
-  // Resolve the actual installed location via node_modules instead of import.meta.url
-  // (which gets rewritten by webpack and breaks on Vercel)
-  const require = createRequire(import.meta.url)
-  const pkgJson = require.resolve("@sparticuz/chromium/package.json")
-  return join(dirname(pkgJson), "bin")
-}
 
 async function launchBrowser() {
   if (process.platform === "linux") {
     const puppeteer = await import("puppeteer-core")
     const chromium = (await import("@sparticuz/chromium")).default
-    const binPath = await getChromiumBinPath()
     return puppeteer.default.launch({
       args: chromium.args,
-      executablePath: await chromium.executablePath(binPath),
+      executablePath: await chromium.executablePath(),
       headless: "shell" as any,
     })
   }
