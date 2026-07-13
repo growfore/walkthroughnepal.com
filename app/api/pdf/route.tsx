@@ -115,7 +115,10 @@ export async function GET(req: NextRequest) {
 
         // Mark sections that should start on a new page
         if (pageBreakKeywords.some((kw) => text.includes(kw))) {
-          ;(section as HTMLElement).setAttribute("data-pdf-pagebreak", "before")
+          const brk = document.createElement("div")
+          brk.style.breakBefore = "page"
+          brk.style.pageBreakBefore = "always"
+          section.parentNode?.insertBefore(brk, section)
         }
       })
     })
@@ -218,7 +221,6 @@ const PDF_CSS = `
     color: white !important;
     font-weight: 600 !important;
   }
-  [data-pdf-pagebreak="before"] { break-before: page; }
   h2 { break-after: avoid !important; }
   img { break-inside: avoid !important; max-width: 100% !important; }
   .line-clamp-4 { -webkit-line-clamp: unset !important; display: block !important; }
