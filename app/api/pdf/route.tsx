@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
-import { chromium } from "playwright"
+import puppeteerCore from "puppeteer-core"
+import chromium from "@sparticuz/chromium"
 import { getSiteConfig } from "@/lib/api"
+
+export const maxDuration = 30
 
 export async function GET(req: NextRequest) {
   const slug = req.nextUrl.searchParams.get("slug")
@@ -20,9 +23,15 @@ export async function GET(req: NextRequest) {
       if (site?.phoneNumbers?.[0]?.phone) phone = site.phoneNumbers[0].phone
     } catch {}
 
-    browser = await chromium.launch({ headless: true })
+    const execPath = process.env.CHROMIUM_PATH ?? await chromium.executablePath()
+    browser = await puppeteerCore.launch({
+      args: chromium.args,
+      executablePath: execPath,
+      headless: true,
+    })
+
     const page = await browser.newPage()
-    await page.goto(tripUrl, { waitUntil: "networkidle", timeout: 30_000 })
+    await page.goto(tripUrl, { waitUntil: "networkidle2", timeout: 30_000 })
 
     // 1) Expand ALL accordion items
     await page.evaluate(() => {
@@ -44,16 +53,11 @@ export async function GET(req: NextRequest) {
     await page.evaluate(({ addr, ph }) => {
       const title = document.title.split(":")[0]?.trim() || "Trip Itinerary"
 
-      // ── Hide unwanted sections ──
-      // Hero gallery
       document.querySelectorAll('section[class*="-mt-"]').forEach((e) => (e as HTMLElement).style.display = "none")
-      // Sticky tab bar
       document.querySelectorAll('.sticky.top-0, [class*="sticky"][class*="top-0"]').forEach((e) => (e as HTMLElement).style.display = "none")
-      // Reviews section
       document.querySelectorAll("#reviews").forEach((e) => (e as HTMLElement).style.display = "none")
-      // Mobile bottom bar
       document.querySelectorAll(".fixed").forEach((e) => (e as HTMLElement).style.display = "none")
-      // Sidebar — hide entirely, we'll build a TOC instead
+
       const grid = document.querySelector('[class*="lg\\:grid-cols-3"]')
       if (grid) {
         ;(grid as HTMLElement).style.display = "block"
@@ -61,17 +65,12 @@ export async function GET(req: NextRequest) {
           ;(grid.children[i] as HTMLElement).style.display = "none"
         }
       }
-      // Price card & contact in sidebar
-      document.querySelectorAll('[id="price-card"]').forEach((e) => (e as HTMLElement).style.display = "none")
 
-      // ── Build TOC from h2 headings in the content ──
       const headings = document.querySelectorAll("h2")
-      const tocEntries: { text: string }[] = []
+      const tocEntries: string[] = []
       headings.forEach((h) => {
         const text = h.textContent?.trim()
-        if (text && text.length > 1 && text.length < 80) {
-          tocEntries.push({ text })
-        }
+        if (text && text.length > 1 && text.length < 80) tocEntries.push(text)
       })
 
       if (tocEntries.length > 0) {
@@ -81,11 +80,10 @@ export async function GET(req: NextRequest) {
           <div style="margin-bottom:16px;padding:12px 16px;background:#FAFAF8;border:1px solid #E5E2DA;border-radius:6px;">
             <div style="font-size:13px;font-weight:700;color:#0F2B3D;margin-bottom:8px;">Table of Contents</div>
             <div style="columns:2;column-gap:24px;font-size:10px;line-height:1.8;color:#162B38;">
-              ${tocEntries.map((e) => `<div style="break-inside:avoid;">${e.text}</div>`).join("")}
+              ${tocEntries.map((e) => `<div style="break-inside:avoid;">${e}</div>`).join("")}
             </div>
           </div>
         `
-        // Insert TOC right after breadcrumb (the nav element)
         const breadcrumb = document.querySelector("nav")
         if (breadcrumb?.parentNode) {
           breadcrumb.parentNode.insertBefore(toc, breadcrumb.nextSibling)
@@ -94,7 +92,6 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      // ── Letterhead header ──
       const hdr = document.createElement("div")
       hdr.id = "pdf-header"
       hdr.innerHTML = `
@@ -104,7 +101,6 @@ export async function GET(req: NextRequest) {
       `
       document.body.prepend(hdr)
 
-      // ── Letterhead footer ──
       const ftr = document.createElement("div")
       ftr.id = "pdf-footer"
       ftr.innerHTML = `
@@ -136,22 +132,14 @@ export async function GET(req: NextRequest) {
 }
 
 const PDF_CSS = `
-  /* ── Hide chrome ── */
   nav, header, footer { display: none !important; }
   .fixed { display: none !important; }
-
-  /* ── Single column layout ── */
-  [class*="lg:grid-cols-3"], [class*="lg\\\\:grid-cols-3"] { display: block !important; }
+  [class*="lg:grid-cols-3"] { display: block !important; }
   [class*="lg:col-span-2"] { width: 100% !important; }
   aside, [class*="sticky"][class*="self-start"] { display: none !important; }
-
-  /* ── Hero: hide ── */
   section[class*="-mt-"] { display: none !important; }
-
-  /* ── Reviews: hide entirely ── */
   #reviews { display: none !important; }
-
-  /* ── Gallery images: smaller, wrap ── */
+  #price-card { display: none !important; }
   [class*="overflow-x-auto"][class*="snap-x"] {
     display: flex !important;
     flex-wrap: wrap !important;
@@ -171,8 +159,6 @@ const PDF_CSS = `
     border-radius: 4px !important;
   }
   [class*="pointer-events-none"][class*="backdrop-blur"] { display: none !important; }
-
-  /* ── Accordion: all open ── */
   [data-slot="accordion-content"] {
     height: auto !important;
     overflow: visible !important;
@@ -180,8 +166,6 @@ const PDF_CSS = `
     display: block !important;
   }
   [data-slot="accordion-trigger-icon"] { display: none !important; }
-
-  /* ── Content ── */
   body {
     font-size: 11px !important;
     line-height: 1.5 !important;
@@ -189,8 +173,6 @@ const PDF_CSS = `
     print-color-adjust: exact !important;
   }
   .prose { font-size: 11px !important; }
-
-  /* ── Tables ── */
   .cms-table, table {
     display: table !important;
     width: 100% !important;
@@ -207,11 +189,7 @@ const PDF_CSS = `
     color: white !important;
     font-weight: 600 !important;
   }
-
-  /* ── TOC ── */
   #pdf-toc { break-after: page; }
-
-  /* ── Letterhead ── */
   #pdf-header {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -222,8 +200,6 @@ const PDF_CSS = `
     bottom: 0; left: 0; right: 0;
     padding: 4mm 14mm 8mm 14mm;
   }
-
-  /* ── Print helpers ── */
   h2 { break-after: avoid !important; }
   img { break-inside: avoid !important; max-width: 100% !important; }
   .line-clamp-4 { -webkit-line-clamp: unset !important; display: block !important; }
