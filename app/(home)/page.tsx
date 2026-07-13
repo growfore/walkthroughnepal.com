@@ -336,7 +336,7 @@ export default async function HomePage() {
             <div className="relative">
               <div className="h-80 w-80 overflow-hidden rounded-full border-8 border-white shadow-xl">
                 <img
-                  src="/consultant.jpg"
+                  src="/images/hero-trekker.jpg"
                   alt="Travel Consultant"
                   width={700}
                   height={700}
