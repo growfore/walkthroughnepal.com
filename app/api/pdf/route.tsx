@@ -82,15 +82,13 @@ export async function GET(req: NextRequest) {
 
     await page.addStyleTag({ content: PDF_CSS })
 
-    // Hide junk + mark sections for page breaks
+    // Hide junk
     await page.evaluate(() => {
-      // Hide hero/CTA sections, sticky header, reviews, fixed elements
       document.querySelectorAll('section[class*="-mt-"]').forEach((e) => (e as HTMLElement).style.display = "none")
       document.querySelectorAll('.sticky.top-0, [class*="sticky"][class*="top-0"]').forEach((e) => (e as HTMLElement).style.display = "none")
       document.querySelectorAll("#reviews").forEach((e) => (e as HTMLElement).style.display = "none")
       document.querySelectorAll(".fixed").forEach((e) => (e as HTMLElement).style.display = "none")
 
-      // Hide sidebar (keep only main content column)
       const grid = document.querySelector('[class*="lg\\:grid-cols-3"]')
       if (grid) {
         ;(grid as HTMLElement).style.display = "block"
@@ -98,29 +96,6 @@ export async function GET(req: NextRequest) {
           ;(grid.children[i] as HTMLElement).style.display = "none"
         }
       }
-
-      // Hide departures section
-      const h2s = document.querySelectorAll("h2")
-      const pageBreakKeywords = ["compare", "map", "altitude", "elevation", "tier", "pricing", "package"]
-      h2s.forEach((h2) => {
-        const text = h2.textContent?.trim().toLowerCase() || ""
-        const section = h2.closest("section")
-        if (!section) return
-
-        // Hide departures
-        if (text.includes("departure")) {
-          ;(section as HTMLElement).style.display = "none"
-          return
-        }
-
-        // Mark sections that should start on a new page
-        if (pageBreakKeywords.some((kw) => text.includes(kw))) {
-          const brk = document.createElement("div")
-          brk.style.breakBefore = "page"
-          brk.style.pageBreakBefore = "always"
-          section.parentNode?.insertBefore(brk, section)
-        }
-      })
     })
 
     const headerTemplate = `
