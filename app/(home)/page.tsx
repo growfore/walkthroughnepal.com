@@ -12,6 +12,7 @@ import {
   Compass,
   ArrowUpRight,
   MessageCircle,
+  Sparkles,
 } from "lucide-react"
 import Link from "next/link"
 import type { FeaturedTag } from "@/lib/types"
@@ -165,6 +166,13 @@ export default async function HomePage() {
         <div className="relative z-10 mx-auto -mt-10 max-w-2xl px-4">
           <SearchBox />
         </div>
+
+        {/* Recommendation CTA */}
+        <div className="mx-auto mt-8 max-w-2xl px-4 text-center">
+          <Link href="/recommend" className="inline-flex items-center gap-2 rounded-full border-2 border-orange bg-orange/5 px-8 py-3 text-sm font-bold text-orange transition hover:bg-orange hover:text-white">
+            Find Your Perfect Nepal Adventure <Sparkles className="h-4 w-4" />
+          </Link>
+        </div>
       </section>
 
       {/* ── Explore by Category ── */}
@@ -174,60 +182,6 @@ export default async function HomePage() {
           <CategoryScroll categories={categories} />
         </div>
       </section>
-
-      {/* ── Popular Trips ── */}
-      {popularTrips.length > 0 && (
-        <section className="pb-16">
-          <div className="mx-auto max-w-7xl px-4">
-            <SectionHeader
-              title="Popular Trips"
-              description="Here you have the upcoming dates for your dream adventure. Join the trips today before they get sold out."
-            />
-            <div className="grid gap-6 md:grid-cols-2">
-              {popularTrips.map((t) => (
-                <Link
-                  key={t.id}
-                  href={`/trip/${t.slug}`}
-                  className="group flex items-start gap-4 rounded-xl border border-border bg-card p-5 transition hover:shadow-md"
-                >
-                  <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg">
-                    <img
-                      src={img(t.images?.[0])}
-                      alt={t.title}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-extrabold text-navy group-hover:text-orange transition">
-                      {t.title}
-                    </h3>
-                    <p
-                      className="mt-1 text-xs text-muted-foreground line-clamp-2"
-                      dangerouslySetInnerHTML={{
-                        __html: t.shortDescription?.replace(/<[^>]*>/g, "") ?? "",
-                      }}
-                    />
-                    <div className="mt-2 flex items-center gap-3 text-sm">
-                      {t.duration && (
-                        <span className="text-xs text-muted-foreground">{t.duration}</span>
-                      )}
-                      <span className="font-bold text-navy">
-                        {t.price ? `US$${t.price}` : ""}
-                        {t.maxPrice && (
-                          <span className="ml-1 text-xs text-muted-foreground">
-                            - US${t.maxPrice}
-                          </span>
-                        )}
-                        <span className="text-xs font-normal text-muted-foreground"> /person</span>
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ── Featured Trips ── */}
       {featuredSections.filter((t) => t.activity?.length).map((tag) => (

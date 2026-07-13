@@ -1,0 +1,48 @@
+{
+  "weights": {
+    "duration": 10,
+    "interest": 10,
+    "activityLevel": 10,
+    "season": 10,
+    "budget": 5,
+    "travelerType": 5,
+    "featured": 3,
+    "rating": 2
+  },
+  "durationBuckets": {
+    "short": [5, 7],
+    "medium": [8, 12],
+    "long": [13, 18],
+    "extended": [19, 999]
+  },
+  "budgetRanges": {
+    "budget": [0, 1500],
+    "comfort": [1500, 3000],
+    "premium": [3000, 5000],
+    "luxury": [5000, 999999]
+  },
+  "difficultyMap": {
+    "EASY": "easy",
+    "MODERATE": "moderate",
+    "STRENUOUS": "challenging",
+    "HARD": "challenging"
+  },
+  "locationInterests": {
+    "chitwan": ["wildlife"],
+    "bardia": ["wildlife"],
+    "kathmandu": ["culture", "photography"],
+    "bhaktapur": ["culture", "photography"],
+    "patan": ["culture", "photography"],
+    "pokhara": ["photography", "wellness"],
+    "lumbini": ["culture"],
+    "mustang": ["trekking", "culture", "photography"],
+    "everest": ["trekking"],
+    "annapurna": ["trekking"],
+    "langtang": ["trekking"],
+    "manaslu": ["trekking"],
+    "rolwaling": ["trekking"],
+    "makalu": ["trekking"],
+    "kanchenjunga": ["trekking"]
+  },
+  "tripOverrides": {}
+}

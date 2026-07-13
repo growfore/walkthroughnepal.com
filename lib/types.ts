@@ -169,3 +169,25 @@ export interface Pagination {
   total: number
   totalPages: number
 }
+
+export type TravelerType = "solo" | "couple" | "family" | "friends"
+export type Interest = "trekking" | "culture" | "wildlife" | "luxury" | "photography" | "wellness"
+export type DurationBucket = "short" | "medium" | "long" | "extended"
+export type ActivityLevel = "easy" | "moderate" | "challenging"
+export type BudgetStyle = "budget" | "comfort" | "premium" | "luxury"
+export type Season = "spring" | "summer" | "autumn" | "winter"
+
+export interface QuizAnswers {
+  travelerType: TravelerType
+  interests: Interest[]
+  duration: DurationBucket
+  activityLevel: ActivityLevel
+  budget: BudgetStyle
+  season: Season
+}
+
+export interface RecommendationResult {
+  activity: Activity
+  score: number
+  reasons: string[]
+}
