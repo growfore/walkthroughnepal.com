@@ -218,12 +218,147 @@ const styles = StyleSheet.create({
   },
 })
 
-function toText(html: string): string {
-  return decodeHtmlEntities(html).replace(/<[^>]*>/g, "").trim()
+function cellText(s: string): string {
+  return decodeHtmlEntities(s).replace(/<[^>]*>/g, "").trim()
 }
 
-function cellText(s: string): string {
-  return s.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim()
+function parseInlineSegments(html: string): { text: string; bold?: boolean; italic?: boolean }[] {
+  const segments: { text: string; bold?: boolean; italic?: boolean }[] = []
+  const regex = /<(strong|b|em|i)>([\s\S]*?)<\/\1>/gi
+  let lastIndex = 0
+  let match
+  while ((match = regex.exec(html)) !== null) {
+    if (match.index > lastIndex) segments.push({ text: html.slice(lastIndex, match.index) })
+    const tag = match[1].toLowerCase()
+    segments.push({
+      text: match[2],
+      bold: tag === "strong" || tag === "b",
+      italic: tag === "em" || tag === "i",
+    })
+    lastIndex = regex.lastIndex
+  }
+  if (lastIndex < html.length) segments.push({ text: html.slice(lastIndex) })
+  if (segments.length === 0) segments.push({ text: html })
+  return segments
+}
+
+function InlineText({ html, style }: { html: string; style?: any }) {
+  const clean = html.replace(/<[^>]*>/g, "").trim()
+  if (!clean) return null
+  const segments = parseInlineSegments(html)
+  if (segments.length === 1 && !segments[0].bold && !segments[0].italic) {
+    return <Text style={style}>{clean}</Text>
+  }
+  return (
+    <Text style={style}>
+      {segments.map((seg, i) => {
+        const text = seg.text.replace(/<[^>]*>/g, "")
+        if (!text.trim()) return null
+        if (seg.bold || seg.italic) {
+          return (
+            <Text
+              key={i}
+              style={{
+                fontWeight: seg.bold ? 700 : undefined,
+                fontStyle: seg.italic ? "italic" : undefined,
+              }}
+            >
+              {text}
+            </Text>
+          )
+        }
+        return text
+      })}
+    </Text>
+  )
+}
+
+function extractLiItems(html: string): string[] {
+  const decoded = decodeHtmlEntities(html)
+  const items: string[] = []
+  const liRegex = /<li[^>]*>([\s\S]*?)<\/li>/gi
+  let match
+  while ((match = liRegex.exec(decoded)) !== null) {
+    items.push(match[1].trim())
+  }
+  if (items.length === 0) {
+    const text = decoded.replace(/<[^>]*>/g, "").trim()
+    if (text) items.push(text)
+  }
+  return items
+}
+
+function renderTextContent(html: string): React.ReactNode[] {
+  const elements: React.ReactNode[] = []
+  let content = decodeHtmlEntities(html)
+
+  // Extract headings
+  const headings: { level: number; text: string }[] = []
+  let match
+  const headingRegex = /<h([23])[^>]*>([\s\S]*?)<\/h\1>/gi
+  while ((match = headingRegex.exec(content)) !== null) {
+    headings.push({ level: parseInt(match[1]), text: match[2].replace(/<[^>]*>/g, "").trim() })
+  }
+  content = content.replace(/<h[23][^>]*>[\s\S]*?<\/h[23]>/gi, "\n")
+
+  // Extract list items
+  const listItems: string[] = []
+  const liRegex = /<li[^>]*>([\s\S]*?)<\/li>/gi
+  while ((match = liRegex.exec(content)) !== null) {
+    listItems.push(match[1].trim())
+  }
+  content = content.replace(/<li[^>]*>[\s\S]*?<\/li>/gi, "\n")
+  content = content.replace(/<\/?[uo]l[^>]*>/gi, "\n")
+
+  // Clean block tags
+  content = content.replace(/<\/?p[^>]*>/gi, "\n")
+  content = content.replace(/<br\s*\/?>/gi, "\n")
+
+  // Render headings
+  for (const h of headings) {
+    elements.push(
+      <Text
+        key={`h${h.level}_${elements.length}`}
+        style={{
+          fontSize: h.level === 2 ? 18 : 16,
+          fontWeight: 700,
+          color: navy,
+          marginBottom: 6,
+          marginTop: h.level === 2 ? 12 : 8,
+        }}
+      >
+        {h.text}
+      </Text>,
+    )
+  }
+
+  // Render list items
+  for (const item of listItems) {
+    const clean = item.replace(/<[^>]*>/g, "").trim()
+    if (!clean) continue
+    elements.push(
+      <View key={`li_${elements.length}`} style={{ flexDirection: "row", gap: 6, marginBottom: 3 }}>
+        <Text style={{ width: 12, color: ink, flexShrink: 0, fontSize: 14 }}>•</Text>
+        <InlineText html={item} style={{ flex: 1, fontSize: 14, color: ink, lineHeight: 1.5 }} />
+      </View>,
+    )
+  }
+
+  // Render text lines
+  const lines = content.split("\n")
+  for (const line of lines) {
+    const stripped = line.replace(/<[^>]*>/g, "").trim()
+    if (!stripped) continue
+    elements.push(
+      <InlineText
+        key={`t_${elements.length}`}
+        html={line}
+        style={{ fontSize: 14, color: ink, lineHeight: 1.5, marginBottom: 4 }}
+      />,
+    )
+  }
+
+  return elements
 }
 
 // ponytail: regex block extraction, breaks if tables nest or have >
@@ -336,13 +471,9 @@ function RenderHtml({ html, imgBase = "" }: { html: string; imgBase?: string }) 
             </View>
           )
         }
-        const stripped = b.text.replace(/<[^>]*>/g, "").trim()
-        if (!stripped) return null
-        return (
-          <Text key={i} style={{ fontSize: 14, color: ink, lineHeight: 1.5, marginBottom: 4 }}>
-            {stripped}
-          </Text>
-        )
+        const content = renderTextContent(b.text)
+        if (content.length === 0) return null
+        return <View key={i}>{content}</View>
       })}
     </>
   )
@@ -412,12 +543,14 @@ function TripContent({
           <Text style={styles.sectionTitle}>Highlights</Text>
           <View style={styles.sectionDivider} />
           <View style={{ marginBottom: 20 }}>
-            {pkg.highlights.map((h, i) => (
-              <View key={i} style={styles.highlightRow}>
-                <View style={styles.highlightBullet} />
-                <Text style={styles.highlightText}>{toText(h)}</Text>
-              </View>
-            ))}
+            {pkg.highlights.flatMap((h, i) =>
+              extractLiItems(h).map((item, j) => (
+                <View key={`${i}-${j}`} style={styles.highlightRow}>
+                  <View style={styles.highlightBullet} />
+                  <InlineText html={item} style={styles.highlightText} />
+                </View>
+              )),
+            )}
           </View>
         </>
       )}
@@ -536,12 +669,14 @@ function TripContent({
       {pkg.inclusions?.length > 0 && (
         <View style={styles.listSection}>
           <Text style={styles.listTitle}>What&apos;s Included</Text>
-          {pkg.inclusions.map((item, i) => (
-            <View key={i} style={styles.listItem}>
-              <Text style={styles.listDash}>-</Text>
-              <Text style={styles.listItemText}>{toText(item)}</Text>
-            </View>
-          ))}
+          {pkg.inclusions.flatMap((item, i) =>
+            extractLiItems(item).map((liContent, j) => (
+              <View key={`${i}-${j}`} style={styles.listItem}>
+                <Text style={styles.listDash}>-</Text>
+                <InlineText html={liContent} style={styles.listItemText} />
+              </View>
+            )),
+          )}
         </View>
       )}
 
@@ -549,12 +684,14 @@ function TripContent({
       {pkg.exclusions?.length > 0 && (
         <View style={styles.listSection}>
           <Text style={styles.listTitle}>What&apos;s Excluded</Text>
-          {pkg.exclusions.map((item, i) => (
-            <View key={i} style={styles.listItem}>
-              <Text style={styles.listDash}>-</Text>
-              <Text style={styles.listItemText}>{toText(item)}</Text>
-            </View>
-          ))}
+          {pkg.exclusions.flatMap((item, i) =>
+            extractLiItems(item).map((liContent, j) => (
+              <View key={`${i}-${j}`} style={styles.listItem}>
+                <Text style={styles.listDash}>-</Text>
+                <InlineText html={liContent} style={styles.listItemText} />
+              </View>
+            )),
+          )}
         </View>
       )}
 
@@ -562,12 +699,14 @@ function TripContent({
       {pkg.whatToBring?.length > 0 && (
         <View style={styles.listSection}>
           <Text style={styles.listTitle}>Packing List</Text>
-          {pkg.whatToBring.map((item, i) => (
-            <View key={i} style={styles.listItem}>
-              <Text style={styles.listDash}>-</Text>
-              <Text style={styles.listItemText}>{toText(item)}</Text>
-            </View>
-          ))}
+          {pkg.whatToBring.flatMap((item, i) =>
+            extractLiItems(item).map((liContent, j) => (
+              <View key={`${i}-${j}`} style={styles.listItem}>
+                <Text style={styles.listDash}>-</Text>
+                <InlineText html={liContent} style={styles.listItemText} />
+              </View>
+            )),
+          )}
         </View>
       )}
 
@@ -591,9 +730,7 @@ function TripContent({
               <Text style={{ fontSize: 10, fontWeight: 700, color: navy, marginBottom: 2 }}>
                 Q: {faq.question}
               </Text>
-              <Text style={{ fontSize: 9, color: ink, lineHeight: 1.6 }}>
-                {toText(faq.answer)}
-              </Text>
+              <RenderHtml html={faq.answer} imgBase={apiBase} />
             </View>
           ))}
         </View>
