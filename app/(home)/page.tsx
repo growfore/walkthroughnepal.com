@@ -8,8 +8,6 @@ import {
   Heart,
   PhoneCall,
   Mountain,
-  MapPin,
-  Compass,
   ArrowUpRight,
   MessageCircle,
   Sparkles,
@@ -42,7 +40,6 @@ import { SearchBox } from "@/components/search-box"
 import { BlogCard } from "@/components/blog-card"
 import { StatBar } from "@/components/stat-bar"
 import { TestimonialCard } from "@/components/testimonial-card"
-import { TravelTypeCard } from "@/components/travel-type-card"
 
 export const dynamic = "force-dynamic"
 
@@ -184,56 +181,6 @@ export default async function HomePage() {
           </div>
         </section>
       ))}
-
-      {/* ── Ways to Travel ── */}
-      <section className="py-16">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-8 flex items-end justify-between">
-            <div>
-              <h2 className="text-3xl font-extrabold text-navy md:text-4xl">
-                Ways to Travel
-              </h2>
-              <span className="mt-2 block h-1 w-16 rounded-full bg-orange" />
-            </div>
-            <Link
-              href="/explore"
-              className="flex items-center gap-1 text-sm font-medium text-orange shrink-0"
-            >
-              See All <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            <TravelTypeCard
-              icon={Mountain}
-              title="Trekking"
-              description="Himalayan trails from short hikes to multi-week expeditions"
-              href="/category/trekking"
-              image="/images/cat-trekking.jpg"
-            />
-            <TravelTypeCard
-              icon={MapPin}
-              title="Tours"
-              description="Guided private and group tours across Nepal's cultural heartland"
-              href="/category/cultural"
-              image="/images/cat-cultural.jpg"
-            />
-            <TravelTypeCard
-              icon={Compass}
-              title="Day Activities"
-              description="Sightseeing, cultural tours and adventure activities in a single day"
-              href="/category/adventure"
-              image="/images/cat-adventure.jpg"
-            />
-            <TravelTypeCard
-              icon={Mountain}
-              title="Peak Climbing"
-              description="6000m+ peak climbing expeditions in the Himalayas"
-              href="/category/adventure"
-              image="/images/trek-everest.jpg"
-            />
-          </div>
-        </div>
-      </section>
 
       {/* ── Plan Your Trip CTA ── */}
       <section className="py-16">
