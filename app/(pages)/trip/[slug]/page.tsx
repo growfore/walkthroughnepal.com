@@ -393,7 +393,7 @@ export default async function PackagePage({
                 transform: none;
               }
               .prose table { display: block; overflow-x: auto; max-width: 100%; }
-              .prose table th, .prose table td { white-space: nowrap; }
+              .prose table:not(.cms-table) th, .prose table:not(.cms-table) td { white-space: nowrap; }
             ` }} />
             <div id="includes" className="mt-12 scroll-mt-40">
               <h2 className="text-2xl font-bold text-navy md:text-3xl">

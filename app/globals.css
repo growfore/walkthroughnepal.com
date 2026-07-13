@@ -155,14 +155,16 @@
   }
 }
 
+.prose .cms-table {
+  display: table;
+  width: auto;
+  max-width: 100%;
+}
 .cms-table {
-  width: 100%;
-  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
   border: 1px solid var(--hairline);
   border-radius: 8px;
-  overflow: hidden;
   font-size: 0.9rem;
 }
 .cms-table th,
@@ -171,6 +173,14 @@
   text-align: left;
   border-bottom: 1px solid var(--hairline);
   vertical-align: top;
+  white-space: normal;
+}
+@media (max-width: 640px) {
+  .prose .cms-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 .cms-table th:not(:last-child),
 .cms-table td:not(:last-child) {
