@@ -1,36 +1,42 @@
 import { NextRequest, NextResponse } from "next/server"
-import puppeteerCore from "puppeteer-core"
 import { getSiteConfig } from "@/lib/api"
 
 export const maxDuration = 30
 
 async function launchBrowser() {
-  const isLinux = process.platform === "linux"
-
-  if (isLinux) {
-    // Vercel / serverless — use @sparticuz/chromium
+  if (process.platform === "linux") {
+    const puppeteer = await import("puppeteer-core")
     const chromium = (await import("@sparticuz/chromium")).default
-    return puppeteerCore.launch({
+    return puppeteer.default.launch({
       args: chromium.args,
       executablePath: await chromium.executablePath(),
       headless: "shell" as any,
     })
   }
+  const { chromium } = await import("playwright")
+  return chromium.launch({ headless: true })
+}
 
-  // Local macOS — use system Chrome
-  const localPaths = [
-    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    "/Applications/Chromium.app/Contents/MacOS/Chromium",
-  ]
-  for (const p of localPaths) {
-    try {
-      const fs = await import("fs")
-      if (fs.existsSync(p)) {
-        return puppeteerCore.launch({ executablePath: p, headless: true, args: ["--no-sandbox"] })
-      }
-    } catch {}
+async function newPage(browser: any) {
+  if (browser.newPage) {
+    const p = await browser.newPage()
+    return {
+      goto: (url: string, opts: any) => p.goto(url, opts),
+      evaluate: (fn: any, arg?: any) => p.evaluate(fn, arg),
+      addStyleTag: (opts: any) => p.addStyleTag(opts),
+      pdf: (opts: any) => p.pdf(opts),
+      close: () => p.close?.(),
+    }
   }
-  throw new Error("No browser found")
+  // puppeteer
+  const p = await browser.newPage()
+  return {
+    goto: (url: string, opts: any) => p.goto(url, opts),
+    evaluate: (fn: any, arg?: any) => p.evaluate(fn, arg),
+    addStyleTag: (opts: any) => p.addStyleTag(opts),
+    pdf: (opts: any) => p.pdf(opts),
+    close: () => p.close?.(),
+  }
 }
 
 export async function GET(req: NextRequest) {
@@ -52,7 +58,8 @@ export async function GET(req: NextRequest) {
     } catch {}
 
     browser = await launchBrowser()
-    const page = await browser.newPage()
+    const page = await newPage(browser)
+
     await page.goto(tripUrl, { waitUntil: "networkidle2", timeout: 30_000 })
 
     // Expand ALL accordion items
@@ -71,7 +78,7 @@ export async function GET(req: NextRequest) {
     await page.addStyleTag({ content: PDF_CSS })
 
     // Build TOC + letterhead, hide junk
-    await page.evaluate(({ addr, ph }) => {
+    await page.evaluate(({ addr, ph }: { addr: string; ph: string }) => {
       const title = document.title.split(":")[0]?.trim() || "Trip Itinerary"
 
       document.querySelectorAll('section[class*="-mt-"]').forEach((e) => (e as HTMLElement).style.display = "none")
