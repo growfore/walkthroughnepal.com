@@ -6,7 +6,7 @@ import { QuizStep } from "@/components/recommend/quiz-step"
 import { TripResultCard } from "@/components/recommend/trip-result-card"
 import { LeadForm } from "@/components/recommend/lead-form"
 import { scoreTrips } from "@/lib/recommendation-engine"
-import type { Activity, QuizAnswers, RecommendationResult, TravelerType, Interest, DurationBucket, ActivityLevel, BudgetStyle, Season } from "@/lib/types"
+import type { Activity, QuizAnswers, RecommendationResult, TravelerType, DurationBucket, ActivityLevel, BudgetStyle, Season } from "@/lib/types"
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.walkthroughnepal.com"
 const STORAGE_KEY = "wn-recommend-quiz"

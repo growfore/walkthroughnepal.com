@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Walkthrough Nepal — Recommendation Engine</title>
+  <style>
+    :root {
+      --navy: #0F2B3D;
+      --orange: #D4520C;
+      --canvas: #FAFAF8;
+      --hairline: #E5E2DA;
+      --muted: #6B7280;
+      --green: #059669;
+      --red: #DC2626;
+      --blue: #2563EB;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--canvas);
+      color: var(--navy);
+      line-height: 1.6;
+      padding: 0;
+    }
+    .hero {
+      background: var(--navy);
+      color: white;
+      padding: 64px 24px 48px;
+      text-align: center;
+    }
+    .hero h1 { font-size: 2.25rem; font-weight: 700; letter-spacing: -0.02em; }
+    .hero p { margin-top: 12px; color: #94A3B8; font-size: 1.1rem; max-width: 600px; margin-inline: auto; }
+    .container { max-width: 960px; margin: 0 auto; padding: 48px 24px; }
+
+    /* Flow diagram */
+    .flow-section { margin-bottom: 56px; }
+    .flow-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 24px; }
+    .flow-svg-wrap { overflow-x: auto; }
+
+    /* Signal table */
+    .signals { margin-bottom: 56px; }
+    .signals h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 16px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th { text-align: left; padding: 10px 14px; background: var(--navy); color: white; font-weight: 600; }
+    td { padding: 10px 14px; border-bottom: 1px solid var(--hairline); }
+    tr:last-child td { border-bottom: none; }
+    .weight-bar { display: inline-block; height: 14px; border-radius: 3px; vertical-align: middle; }
+
+    /* Sections */
+    .section { margin-bottom: 48px; }
+    .section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; border-bottom: 2px solid var(--orange); padding-bottom: 6px; display: inline-block; }
+    .section h3 { font-size: 1.1rem; font-weight: 600; margin: 20px 0 8px; }
+    .section p { margin-bottom: 12px; }
+    .section ul { padding-left: 20px; margin-bottom: 12px; }
+    .section li { margin-bottom: 6px; }
+    code { background: #E8E8E4; padding: 2px 6px; border-radius: 4px; font-size: 0.88rem; }
+
+    /* Config table */
+    .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 16px; }
+    @media (max-width: 640px) { .config-grid { grid-template-columns: 1fr; } }
+    .config-card { border: 1px solid var(--hairline); border-radius: 8px; padding: 16px; background: white; }
+    .config-card h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: var(--orange); }
+    .config-card table { font-size: 0.85rem; }
+    .config-card th { background: #F3F4F6; color: var(--navy); padding: 6px 10px; }
+    .config-card td { padding: 6px 10px; }
+
+    /* Example */
+    .example { background: white; border: 1px solid var(--hairline); border-radius: 8px; padding: 24px; margin-top: 16px; }
+    .example-header { font-weight: 700; font-size: 1rem; margin-bottom: 12px; }
+    .example-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.9rem; }
+    .example-signal { width: 140px; font-weight: 500; }
+    .example-result { width: 50px; text-align: right; font-weight: 700; }
+    .example-bar { height: 18px; border-radius: 4px; transition: width 0.3s; }
+    .match { color: var(--green); }
+    .no-match { color: var(--red); }
+    .total { font-size: 1.2rem; font-weight: 700; margin-top: 12px; padding-top: 12px; border-top: 2px solid var(--hairline); }
+    .footer { text-align: center; padding: 32px 24px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--hairline); }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Trip Recommendation Engine</h1>
+  <p>How the Walkthrough Nepal quiz matcher works — a client-side weighted scoring system that ranks trips by user preferences.</p>
+</div>
+
+<div class="container">
+
+  <!-- ==================== FLOW DIAGRAM ==================== -->
+  <div class="flow-section">
+    <h2>System Flow</h2>
+    <div class="flow-svg-wrap">
+      <svg viewBox="0 0 880 520" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, sans-serif" style="width:100%;max-width:880px;display:block;margin:0 auto;">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#94A3B8"/>
+          </marker>
+          <marker id="arrow-orange" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="7" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#D4520C"/>
+          </marker>
+        </defs>
+
+        <!-- Quiz steps -->
+        <rect x="20" y="20" width="130" height="50" rx="8" fill="#0F2B3D" opacity="0.08"/>
+        <text x="85" y="42" text-anchor="middle" font-size="11" font-weight="600" fill="#0F2B3D">Step 1</text>
+        <text x="85" y="57" text-anchor="middle" font-size="10" fill="#6B7280">Traveler</text>
+
+        <line x1="150" y1="45" x2="170" y2="45" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <rect x="170" y="20" width="130" height="50" rx="8" fill="#0F2B3D" opacity="0.08"/>
+        <text x="235" y="42" text-anchor="middle" font-size="11" font-weight="600" fill="#0F2B3D">Step 2</text>
+        <text x="235" y="57" text-anchor="middle" font-size="10" fill="#6B7280">Interests</text>
+
+        <line x1="300" y1="45" x2="320" y2="45" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <rect x="320" y="20" width="130" height="50" rx="8" fill="#0F2B3D" opacity="0.08"/>
+        <text x="385" y="42" text-anchor="middle" font-size="11" font-weight="600" fill="#0F2B3D">Step 3</text>
+        <text x="385" y="57" text-anchor="middle" font-size="10" fill="#6B7280">Duration</text>
+
+        <line x1="450" y1="45" x2="470" y2="45" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <rect x="470" y="20" width="130" height="50" rx="8" fill="#0F2B3D" opacity="0.08"/>
+        <text x="535" y="42" text-anchor="middle" font-size="11" font-weight="600" fill="#0F2B3D">Step 4</text>
+        <text x="535" y="57" text-anchor="middle" font-size="10" fill="#6B7280">Activity Level</text>
+
+        <line x1="600" y1="45" x2="620" y2="45" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <rect x="620" y="20" width="130" height="50" rx="8" fill="#0F2B3D" opacity="0.08"/>
+        <text x="685" y="42" text-anchor="middle" font-size="11" font-weight="600" fill="#0F2B3D">Step 5</text>
+        <text x="685" y="57" text-anchor="middle" font-size="10" fill="#6B7280">Budget</text>
+
+        <line x1="750" y1="45" x2="770" y2="45" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <rect x="770" y="20" width="90" height="50" rx="8" fill="#0F2B3D" opacity="0.08"/>
+        <text x="815" y="42" text-anchor="middle" font-size="11" font-weight="600" fill="#0F2B3D">Step 6</text>
+        <text x="815" y="57" text-anchor="middle" font-size="10" fill="#6B7280">Season</text>
+
+        <!-- Down arrow from quiz to fetch -->
+        <line x1="440" y1="70" x2="440" y2="110" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <!-- Fetch box -->
+        <rect x="330" y="110" width="220" height="50" rx="8" fill="white" stroke="#E5E2DA" stroke-width="1.5"/>
+        <text x="440" y="132" text-anchor="middle" font-size="12" font-weight="600" fill="#0F2B3D">Fetch Trips from API</text>
+        <text x="440" y="148" text-anchor="middle" font-size="10" fill="#6B7280">NEXT_PUBLIC_API_URL / 200 trips</text>
+
+        <!-- Down arrow to scoring -->
+        <line x1="440" y1="160" x2="440" y2="200" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <!-- Scoring engine box -->
+        <rect x="240" y="200" width="400" height="230" rx="10" fill="white" stroke="#D4520C" stroke-width="2"/>
+        <text x="440" y="225" text-anchor="middle" font-size="14" font-weight="700" fill="#D4520C">SCORING ENGINE</text>
+        <text x="440" y="242" text-anchor="middle" font-size="10" fill="#6B7280">runs per trip, instant client-side</text>
+
+        <!-- Signal bars inside scoring box -->
+        <!-- Duration -->
+        <rect x="270" y="258" width="180" height="16" rx="4" fill="#E5E2DA"/>
+        <rect x="270" y="258" width="180" height="16" rx="4" fill="#D4520C"/>
+        <text x="278" y="270" font-size="10" font-weight="600" fill="white" dominant-baseline="middle">Duration</text>
+        <text x="462" y="270" font-size="11" font-weight="700" fill="#0F2B3D" dominant-baseline="middle">10 pts</text>
+
+        <!-- Interests -->
+        <rect x="270" y="280" width="180" height="16" rx="4" fill="#E5E2DA"/>
+        <rect x="270" y="280" width="180" height="16" rx="4" fill="#D4520C"/>
+        <text x="278" y="292" font-size="10" font-weight="600" fill="white" dominant-baseline="middle">Interests</text>
+        <text x="462" y="292" font-size="11" font-weight="700" fill="#0F2B3D" dominant-baseline="middle">10 pts</text>
+
+        <!-- Activity Level -->
+        <rect x="270" y="302" width="180" height="16" rx="4" fill="#E5E2DA"/>
+        <rect x="270" y="302" width="180" height="16" rx="4" fill="#D4520C"/>
+        <text x="278" y="314" font-size="10" font-weight="600" fill="white" dominant-baseline="middle">Activity Level</text>
+        <text x="462" y="314" font-size="11" font-weight="700" fill="#0F2B3D" dominant-baseline="middle">10 pts</text>
+
+        <!-- Season -->
+        <rect x="270" y="324" width="180" height="16" rx="4" fill="#E5E2DA"/>
+        <rect x="270" y="324" width="180" height="16" rx="4" fill="#D4520C"/>
+        <text x="278" y="336" font-size="10" font-weight="600" fill="white" dominant-baseline="middle">Season</text>
+        <text x="462" y="336" font-size="11" font-weight="700" fill="#0F2B3D" dominant-baseline="middle">10 pts</text>
+
+        <!-- Budget -->
+        <rect x="270" y="346" width="100" height="16" rx="4" fill="#E5E2DA"/>
+        <rect x="270" y="346" width="100" height="16" rx="4" fill="#0F2B3D"/>
+        <text x="278" y="358" font-size="10" font-weight="600" fill="white" dominant-baseline="middle">Budget</text>
+        <text x="462" y="358" font-size="11" font-weight="700" fill="#0F2B3D" dominant-baseline="middle">5 pts</text>
+
+        <!-- Traveler -->
+        <rect x="270" y="368" width="100" height="16" rx="4" fill="#E5E2DA"/>
+        <rect x="270" y="368" width="100" height="16" rx="4" fill="#0F2B3D"/>
+        <text x="278" y="380" font-size="10" font-weight="600" fill="white" dominant-baseline="middle">Traveler</text>
+        <text x="462" y="380" font-size="11" font-weight="700" fill="#0F2B3D" dominant-baseline="middle">5 pts</text>
+
+        <!-- Featured -->
+        <rect x="270" y="390" width="60" height="16" rx="4" fill="#E5E2DA"/>
+        <rect x="270" y="390" width="60" height="16" rx="4" fill="#059669"/>
+        <text x="278" y="402" font-size="10" font-weight="600" fill="white" dominant-baseline="middle">Featured</text>
+        <text x="462" y="402" font-size="11" font-weight="700" fill="#0F2B3D" dominant-baseline="middle">3 pts</text>
+
+        <!-- Rating -->
+        <rect x="270" y="412" width="40" height="16" rx="4" fill="#E5E2DA"/>
+        <rect x="270" y="412" width="40" height="16" rx="4" fill="#2563EB"/>
+        <text x="278" y="424" font-size="10" font-weight="600" fill="white" dominant-baseline="middle">Rating</text>
+        <text x="462" y="424" font-size="11" font-weight="700" fill="#0F2B3D" dominant-baseline="middle">2 pts</text>
+
+        <!-- Down arrow to sort -->
+        <line x1="440" y1="430" x2="440" y2="460" stroke="#D4520C" stroke-width="1.5" marker-end="url(#arrow-orange)"/>
+
+        <!-- Sort + results -->
+        <rect x="280" y="460" width="320" height="50" rx="8" fill="#0F2B3D"/>
+        <text x="440" y="482" text-anchor="middle" font-size="12" font-weight="700" fill="white">Sort by Score (descending)</text>
+        <text x="440" y="498" text-anchor="middle" font-size="10" fill="#94A3B8">Top 3 = primary picks  |  Next 3 = alternatives</text>
+
+        <!-- Max score label -->
+        <rect x="660" y="330" width="100" height="36" rx="18" fill="#D4520C" opacity="0.12"/>
+        <text x="710" y="353" text-anchor="middle" font-size="11" font-weight="700" fill="#D4520C">MAX: 55</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ==================== SIGNAL WEIGHTS TABLE ==================== -->
+  <div class="signals">
+    <h2>Scoring Signals</h2>
+    <p style="margin-bottom:16px;color:#6B7280;">Each trip is scored against 8 signals. A match adds the weight to the trip's total score. No match adds nothing.</p>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:22%">Signal</th>
+          <th style="width:10%">Points</th>
+          <th style="width:15%">Weight Bar</th>
+          <th>How It Matches</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Duration</strong></td>
+          <td>10</td>
+          <td><span class="weight-bar" style="width:100%;background:#D4520C;"></span></td>
+          <td>Trip's parsed day count falls in same bucket as user's pick (short: 5–7d, medium: 8–12d, long: 13–18d, extended: 19+d)</td>
+        </tr>
+        <tr>
+          <td><strong>Interests</strong></td>
+          <td>10</td>
+          <td><span class="weight-bar" style="width:100%;background:#D4520C;"></span></td>
+          <td>Trip's inferred interests (from title keywords + location mapping) overlap with user's picks</td>
+        </tr>
+        <tr>
+          <td><strong>Activity Level</strong></td>
+          <td>10</td>
+          <td><span class="weight-bar" style="width:100%;background:#D4520C;"></span></td>
+          <td>Trip's difficulty (EASY→easy, MODERATE→moderate, STRENUOUS→challenging) matches user's pick</td>
+        </tr>
+        <tr>
+          <td><strong>Season</strong></td>
+          <td>10</td>
+          <td><span class="weight-bar" style="width:100%;background:#D4520C;"></span></td>
+          <td>Trip's <code>bestSeason</code> string contains user's selected season</td>
+        </tr>
+        <tr>
+          <td><strong>Budget</strong></td>
+          <td>5</td>
+          <td><span class="weight-bar" style="width:50%;background:#0F2B3D;"></span></td>
+          <td>Trip's price falls in same range as user's pick ($0–1500, $1500–3000, $3000–5000, $5000+)</td>
+        </tr>
+        <tr>
+          <td><strong>Traveler Type</strong></td>
+          <td>5</td>
+          <td><span class="weight-bar" style="width:50%;background:#0F2B3D;"></span></td>
+          <td>Always awards points (solo checks <code>groupSize</code> text; couple/family/friends always match)</td>
+        </tr>
+        <tr>
+          <td><strong>Featured</strong></td>
+          <td>3</td>
+          <td><span class="weight-bar" style="width:30%;background:#059669;"></span></td>
+          <td>Trip has <code>isFeatured: true</code> in CMS</td>
+        </tr>
+        <tr>
+          <td><strong>Rating</strong></td>
+          <td>2</td>
+          <td><span class="weight-bar" style="width:20%;background:#2563EB;"></span></td>
+          <td>Trip's <code>averageRating >= 4.5</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ==================== WORKED EXAMPLE ==================== -->
+  <div class="section">
+    <h2>Worked Example</h2>
+    <p>A user picks: <strong>Couple</strong>, <strong>Trekking + Photography</strong>, <strong>8–12 days</strong>, <strong>Moderate</strong>, <strong>Comfort budget ($1,500–3,000)</strong>, <strong>Autumn</strong>.</p>
+    <p>Two trips are scored:</p>
+
+    <!-- Trip A: Everest Base Camp -->
+    <div class="example">
+      <div class="example-header">Trip A: Everest Base Camp Trek <span style="font-weight:400;color:#6B7280;">— 12 days, $2,200, STRENUOUS, rating 4.2, featured</span></div>
+      <div class="example-row">
+        <span class="example-signal">Duration</span>
+        <span class="example-result match">+10</span>
+        <span class="example-bar" style="width:180px;background:#059669;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">12 days → medium bucket, matches user's medium ✓</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Interests</span>
+        <span class="example-result match">+10</span>
+        <span class="example-bar" style="width:180px;background:#059669;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">"everest"→trekking, title has "trek"→trekking. Overlaps with user's trekking pick ✓</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Activity Level</span>
+        <span class="example-result no-match">+0</span>
+        <span class="example-bar" style="width:0px;background:#DC2626;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">STRENUOUS→challenging, user picked moderate ✗</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Season</span>
+        <span class="example-result match">+10</span>
+        <span class="example-bar" style="width:180px;background:#059669;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">"Autumn, Spring" contains "autumn" ✓</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Budget</span>
+        <span class="example-result match">+5</span>
+        <span class="example-bar" style="width:90px;background:#059669;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">$2,200 → comfort range ✓</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Traveler</span>
+        <span class="example-result match">+5</span>
+        <span class="example-bar" style="width:90px;background:#059669;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">couple always matches ✓</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Featured</span>
+        <span class="example-result match">+3</span>
+        <span class="example-bar" style="width:54px;background:#059669;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">isFeatured: true ✓</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Rating</span>
+        <span class="example-result no-match">+0</span>
+        <span class="example-bar" style="width:0px;background:#DC2626;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">rating 4.2 < 4.5 ✗</span>
+      </div>
+      <div class="total">Total: <span style="color:#D4520C;">43 / 55</span></div>
+    </div>
+
+    <!-- Trip B: Chitwan Safari -->
+    <div class="example" style="margin-top:20px;">
+      <div class="example-header">Trip B: Chitwan Jungle Safari <span style="font-weight:400;color:#6B7280;">— 4 days, $800, EASY, rating 4.7, not featured</span></div>
+      <div class="example-row">
+        <span class="example-signal">Duration</span>
+        <span class="example-result no-match">+0</span>
+        <span class="example-bar" style="width:0px;background:#DC2626;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">4 days → short bucket, user picked medium ✗</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Interests</span>
+        <span class="example-result no-match">+0</span>
+        <span class="example-bar" style="width:0px;background:#DC2626;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">"chitwan"→wildlife, "safari"→wildlife. No overlap with trekking/photography ✗</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Activity Level</span>
+        <span class="example-result no-match">+0</span>
+        <span class="example-bar" style="width:0px;background:#DC2626;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">EASY→easy, user picked moderate ✗</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Season</span>
+        <span class="example-result match">+10</span>
+        <span class="example-bar" style="width:180px;background:#059669;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">"Autumn, Winter, Spring" contains "autumn" ✓</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Budget</span>
+        <span class="example-result no-match">+0</span>
+        <span class="example-bar" style="width:0px;background:#DC2626;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">$800 → budget range, user picked comfort ✗</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Traveler</span>
+        <span class="example-result match">+5</span>
+        <span class="example-bar" style="width:90px;background:#059669;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">couple always matches ✓</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Featured</span>
+        <span class="example-result no-match">+0</span>
+        <span class="example-bar" style="width:0px;background:#DC2626;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">isFeatured: false ✗</span>
+      </div>
+      <div class="example-row">
+        <span class="example-signal">Rating</span>
+        <span class="example-result match">+2</span>
+        <span class="example-bar" style="width:36px;background:#2563EB;"></span>
+        <span style="font-size:0.82rem;color:#6B7280;">rating 4.7 ≥ 4.5 ✓</span>
+      </div>
+      <div class="total">Total: <span style="color:#D4520C;">17 / 55</span></div>
+    </div>
+
+    <p style="margin-top:16px;color:#6B7280;font-size:0.9rem;"><strong>Result:</strong> Everest Base Camp (43 pts) ranks as a primary pick — it matches on duration, interests, season, budget, and is featured. Chitwan Safari (17 pts) only matches on season and traveler type, so it falls to alternatives or is excluded.</p>
+  </div>
+
+  <!-- ==================== HOW RANKING WORKS ==================== -->
+  <div class="section">
+    <h2>Ranking Logic</h2>
+    <ul>
+      <li>Every trip with <code>score > 0</code> is included in results</li>
+      <li>Results are sorted by score descending (highest first)</li>
+      <li><strong>Top 3</strong> are shown as "Primary Recommendations"</li>
+      <li><strong>Next 3</strong> are shown as "More Great Options"</li>
+      <li>Trips with <code>score = 0</code> are excluded entirely</li>
+    </ul>
+    <p>Scoring is deterministic — same inputs always produce the same ranking. No randomness, no API calls, no server round-trips.</p>
+  </div>
+
+  <!-- ==================== QUIZ FLOW ==================== -->
+  <div class="section">
+    <h2>Quiz Flow</h2>
+    <ul>
+      <li><strong>6 steps</strong>, each a card-selection UI</li>
+      <li>Step 2 (Interests) supports <strong>multi-select</strong> — user can pick multiple</li>
+      <li>All other steps are <strong>single-select</strong></li>
+      <li>Answers are saved to <code>localStorage</code> on every change — refreshing the page resumes where you left off</li>
+      <li>Answers are cleared after results are shown</li>
+      <li>All state is client-side — no server calls during the quiz</li>
+    </ul>
+  </div>
+
+  <!-- ==================== INTEREST INFERENCE ==================== -->
+  <div class="section">
+    <h2>How Interests Are Inferred</h2>
+    <p>The engine infers a trip's interests from two sources:</p>
+    <h3>1. Location Mapping</h3>
+    <p>If a trip's <code>locations[]</code> array or <code>title</code> contains a known location keyword, the associated interests are added:</p>
+    <table style="max-width:500px;">
+      <thead><tr><th>Location Keyword</th><th>Inferred Interests</th></tr></thead>
+      <tbody>
+        <tr><td>chitwan, bardia</td><td>wildlife</td></tr>
+        <tr><td>kathmandu, bhaktapur, patan</td><td>culture, photography</td></tr>
+        <tr><td>mustang</td><td>trekking, culture, photography</td></tr>
+        <tr><td>everest, annapurna, langtang, manaslu</td><td>trekking</td></tr>
+        <tr><td>lumbini</td><td>culture</td></tr>
+        <tr><td> pokhara</td><td>photography, wellness</td></tr>
+      </tbody>
+    </table>
+    <h3>2. Title Keywords</h3>
+    <table style="max-width:500px;">
+      <thead><tr><th>Title Contains</th><th>Inferred Interest</th></tr></thead>
+      <tbody>
+        <tr><td>trek, hike, base camp</td><td>trekking</td></tr>
+        <tr><td>cultural, heritage, temple</td><td>culture</td></tr>
+        <tr><td>safari, wildlife, jungle</td><td>wildlife</td></tr>
+        <tr><td>luxury, premium</td><td>luxury</td></tr>
+        <tr><td>photo</td><td>photography</td></tr>
+        <tr><td>wellness, yoga, meditation</td><td>wellness</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:12px;">If no interests are inferred, <strong>trekking</strong> is the default.</p>
+  </div>
+
+  <!-- ==================== CONFIGURATION ==================== -->
+  <div class="section">
+    <h2>Configuration</h2>
+    <p>All scoring parameters live in a single JSON file: <code>lib/recommendation-rules.json</code>. Edit it to tune the engine without touching code.</p>
+    <div class="config-grid">
+      <div class="config-card">
+        <h4>Duration Buckets</h4>
+        <table>
+          <thead><tr><th>Bucket</th><th>Days</th></tr></thead>
+          <tbody>
+            <tr><td>short</td><td>5–7</td></tr>
+            <tr><td>medium</td><td>8–12</td></tr>
+            <tr><td>long</td><td>13–18</td></tr>
+            <tr><td>extended</td><td>19+</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="config-card">
+        <h4>Budget Ranges (USD)</h4>
+        <table>
+          <thead><tr><th>Style</th><th>Range</th></tr></thead>
+          <tbody>
+            <tr><td>budget</td><td>$0–$1,500</td></tr>
+            <tr><td>comfort</td><td>$1,500–$3,000</td></tr>
+            <tr><td>premium</td><td>$3,000–$5,000</td></tr>
+            <tr><td>luxury</td><td>$5,000+</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="config-card">
+        <h4>Difficulty Map</h4>
+        <table>
+          <thead><tr><th>CMS Value</th><th>Quiz Value</th></tr></thead>
+          <tbody>
+            <tr><td>EASY</td><td>easy</td></tr>
+            <tr><td>MODERATE</td><td>moderate</td></tr>
+            <tr><td>STRENUOUS</td><td>challenging</td></tr>
+            <tr><td>HARD</td><td>challenging</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="config-card">
+        <h4>Weights</h4>
+        <table>
+          <thead><tr><th>Signal</th><th>Points</th></tr></thead>
+          <tbody>
+            <tr><td>duration</td><td>10</td></tr>
+            <tr><td>interest</td><td>10</td></tr>
+            <tr><td>activityLevel</td><td>10</td></tr>
+            <tr><td>season</td><td>10</td></tr>
+            <tr><td>budget</td><td>5</td></tr>
+            <tr><td>travelerType</td><td>5</td></tr>
+            <tr><td>featured</td><td>3</td></tr>
+            <tr><td>rating</td><td>2</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== EDGE CASES ==================== -->
+  <div class="section">
+    <h2>Defaults &amp; Edge Cases</h2>
+    <table>
+      <thead><tr><th>Scenario</th><th>Behavior</th></tr></thead>
+      <tbody>
+        <tr><td><code>bestSeason</code> is missing</td><td>Season check skipped (0 pts), no crash</td></tr>
+        <tr><td><code>difficultyLevel</code> is unknown</td><td>Defaults to "moderate"</td></tr>
+        <tr><td><code>duration</code> can't be parsed</td><td>Defaults to 0 days → no bucket match</td></tr>
+        <tr><td><code>locations[]</code> is empty</td><td>Location inference skipped, title keywords still run</td></tr>
+        <tr><td>No interests inferred from trip</td><td>Defaults to ["trekking"]</td></tr>
+        <tr><td>Price doesn't match any budget</td><td>Defaults to "comfort"</td></tr>
+        <tr><td>API is unreachable</td><td>Error screen with retry button</td></tr>
+        <tr><td>All trips score 0</td><td>Empty results (no crash)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  Walkthrough Nepal — Trip Recommendation Engine · Client-side weighted scoring · Zero API dependency for ranking
+</div>
+
+</body>
+</html>
