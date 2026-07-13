@@ -1,9 +1,37 @@
 import { NextRequest, NextResponse } from "next/server"
 import puppeteerCore from "puppeteer-core"
-import chromium from "@sparticuz/chromium"
 import { getSiteConfig } from "@/lib/api"
 
 export const maxDuration = 30
+
+async function launchBrowser() {
+  const isLinux = process.platform === "linux"
+
+  if (isLinux) {
+    // Vercel / serverless — use @sparticuz/chromium
+    const chromium = (await import("@sparticuz/chromium")).default
+    return puppeteerCore.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: "shell" as any,
+    })
+  }
+
+  // Local macOS — use system Chrome
+  const localPaths = [
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium",
+  ]
+  for (const p of localPaths) {
+    try {
+      const fs = await import("fs")
+      if (fs.existsSync(p)) {
+        return puppeteerCore.launch({ executablePath: p, headless: true, args: ["--no-sandbox"] })
+      }
+    } catch {}
+  }
+  throw new Error("No browser found")
+}
 
 export async function GET(req: NextRequest) {
   const slug = req.nextUrl.searchParams.get("slug")
@@ -23,17 +51,11 @@ export async function GET(req: NextRequest) {
       if (site?.phoneNumbers?.[0]?.phone) phone = site.phoneNumbers[0].phone
     } catch {}
 
-    const execPath = process.env.CHROMIUM_PATH ?? await chromium.executablePath()
-    browser = await puppeteerCore.launch({
-      args: chromium.args,
-      executablePath: execPath,
-      headless: true,
-    })
-
+    browser = await launchBrowser()
     const page = await browser.newPage()
     await page.goto(tripUrl, { waitUntil: "networkidle2", timeout: 30_000 })
 
-    // 1) Expand ALL accordion items
+    // Expand ALL accordion items
     await page.evaluate(() => {
       document.querySelectorAll("[data-state=closed]").forEach((el) => {
         el.setAttribute("data-state", "open")
@@ -46,10 +68,9 @@ export async function GET(req: NextRequest) {
       })
     })
 
-    // 2) Inject styles
     await page.addStyleTag({ content: PDF_CSS })
 
-    // 3) Build TOC + letterhead, hide junk
+    // Build TOC + letterhead, hide junk
     await page.evaluate(({ addr, ph }) => {
       const title = document.title.split(":")[0]?.trim() || "Trip Itinerary"
 
