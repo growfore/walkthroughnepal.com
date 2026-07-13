@@ -3,6 +3,7 @@ import type { NextConfig } from "next"
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["@sparticuz/chromium"],
   async rewrites() {
     return [
       {
