@@ -49,7 +49,8 @@ function getActivityLevel(difficulty: string): ActivityLevel {
   return (map[difficulty] ?? "moderate") as ActivityLevel
 }
 
-function getSeasons(seasonStr: string): Season[] {
+function getSeasons(seasonStr?: string): Season[] {
+  if (!seasonStr) return []
   return seasonStr.split(",").map(s => s.trim().toLowerCase()) as Season[]
 }
 
