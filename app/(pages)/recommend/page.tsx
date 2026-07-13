@@ -1,13 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { ArrowLeft, ArrowRight, Sparkles, RotateCcw } from "lucide-react"
+import { ArrowLeft, ArrowRight, Sparkles, RotateCcw, RefreshCw } from "lucide-react"
 import { QuizStep } from "@/components/recommend/quiz-step"
 import { TripResultCard } from "@/components/recommend/trip-result-card"
 import { LeadForm } from "@/components/recommend/lead-form"
-import type { QuizAnswers, RecommendationResult, TravelerType, Interest, DurationBucket, ActivityLevel, BudgetStyle, Season } from "@/lib/types"
+import { scoreTrips } from "@/lib/recommendation-engine"
+import type { Activity, QuizAnswers, RecommendationResult, TravelerType, Interest, DurationBucket, ActivityLevel, BudgetStyle, Season } from "@/lib/types"
 
+const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.walkthroughnepal.com"
 const STORAGE_KEY = "wn-recommend-quiz"
 
 const STEPS = [
@@ -90,8 +91,17 @@ function Progress({ current, total }: { current: number; total: number }) {
   )
 }
 
+async function fetchTrips(): Promise<Activity[]> {
+  const res = await fetch(`${API}/api/v1/activity?limit=200`)
+  if (!res.ok) throw new Error(`API ${res.status}`)
+  const json = await res.json()
+  return json.data ?? []
+}
+
 export default function RecommendPage() {
-  const router = useRouter()
+  const [trips, setTrips] = useState<Activity[]>([])
+  const [tripsLoading, setTripsLoading] = useState(true)
+  const [tripsError, setTripsError] = useState<string | null>(null)
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<QuizAnswers>(() => {
     if (typeof window !== "undefined") {
@@ -103,32 +113,45 @@ export default function RecommendPage() {
     return DEFAULT_ANSWERS
   })
   const [results, setResults] = useState<{ top: RecommendationResult[]; alternatives: RecommendationResult[] } | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [scoring, setScoring] = useState(false)
+
+  useEffect(() => {
+    loadTrips()
+  }, [])
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(answers))
   }, [answers])
 
+  async function loadTrips() {
+    setTripsLoading(true)
+    setTripsError(null)
+    try {
+      const data = await fetchTrips()
+      setTrips(data)
+    } catch {
+      setTripsError("Could not load trips. Please check your connection and try again.")
+    } finally {
+      setTripsLoading(false)
+    }
+  }
+
   function updateAnswer(key: string, value: unknown) {
     setAnswers(prev => ({ ...prev, [key]: value }))
   }
 
-  async function getRecommendations() {
-    setLoading(true)
-    try {
-      const res = await fetch("/api/recommend", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(answers),
+  function getRecommendations() {
+    setScoring(true)
+    // Small delay so user sees the "analyzing" spinner
+    setTimeout(() => {
+      const scored = scoreTrips(trips, answers)
+      setResults({
+        top: scored.slice(0, 3),
+        alternatives: scored.slice(3, 6),
       })
-      const data = await res.json()
-      setResults(data)
       localStorage.removeItem(STORAGE_KEY)
-    } catch {
-      // silent
-    } finally {
-      setLoading(false)
-    }
+      setScoring(false)
+    }, 600)
   }
 
   function handleNext() {
@@ -151,16 +174,40 @@ export default function RecommendPage() {
     updateAnswer(STEPS[idx].key, val)
   }
 
-  if (loading) {
+  // Loading trips from API
+  if (tripsLoading) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-4">
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-orange border-t-transparent" />
-        <p className="text-lg font-semibold text-navy">Finding your perfect trip...</p>
-        <p className="text-sm text-muted-foreground">Analyzing {">"}200 trips to match your preferences</p>
+        <p className="text-lg font-semibold text-navy">Loading trips...</p>
       </div>
     )
   }
 
+  // Error loading trips
+  if (tripsError) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-4 text-center">
+        <p className="text-lg font-semibold text-navy">{tripsError}</p>
+        <button onClick={loadTrips} className="inline-flex items-center gap-2 rounded-full bg-orange px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90">
+          <RefreshCw className="h-4 w-4" /> Retry
+        </button>
+      </div>
+    )
+  }
+
+  // Scoring in progress
+  if (scoring) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-4">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-orange border-t-transparent" />
+        <p className="text-lg font-semibold text-navy">Finding your perfect trip...</p>
+        <p className="text-sm text-muted-foreground">Analyzing {trips.length} trips to match your preferences</p>
+      </div>
+    )
+  }
+
+  // Results
   if (results) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-12">
@@ -204,6 +251,7 @@ export default function RecommendPage() {
     )
   }
 
+  // Quiz wizard
   const currentKey = STEPS[step].key
   const currentVal = answers[currentKey]
   const isMultiple = "multiple" in STEPS[step] && STEPS[step].multiple
