@@ -3,9 +3,9 @@ import type { NextConfig } from "next"
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["@sparticuz/chromium"],
   outputFileTracingIncludes: {
     "/api/pdf": ["node_modules/@sparticuz/chromium/bin/**"],
+    "/api/pdf/route": ["node_modules/@sparticuz/chromium/bin/**"],
   },
   async rewrites() {
     return [
