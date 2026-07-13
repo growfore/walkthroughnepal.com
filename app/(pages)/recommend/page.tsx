@@ -50,10 +50,10 @@ const ACTIVITY_OPTIONS = [
 ]
 
 const BUDGET_OPTIONS = [
-  { value: "budget", label: "Budget", icon: "🎒", description: "Under $1,500" },
-  { value: "comfort", label: "Comfort", icon: "🏨", description: "$1,500–$3,000" },
-  { value: "premium", label: "Premium", icon: "⭐", description: "$3,000–$5,000" },
-  { value: "luxury", label: "Luxury", icon: "👑", description: "$5,000+" },
+  { value: "budget", label: "Budget", icon: "🎒" },
+  { value: "comfort", label: "Comfort", icon: "🏨" },
+  { value: "premium", label: "Premium", icon: "⭐" },
+  { value: "luxury", label: "Luxury", icon: "👑" },
 ]
 
 const SEASON_OPTIONS = [
