@@ -49,6 +49,7 @@ export async function GET(req: NextRequest) {
 
   let browser
   try {
+    const title = "Trip Itinerary"
     let address = "New Road -11, Pokhara, Kaski, Nepal"
     let phone = "+977-9856085151"
     try {
@@ -77,10 +78,8 @@ export async function GET(req: NextRequest) {
 
     await page.addStyleTag({ content: PDF_CSS })
 
-    // Build TOC + letterhead, hide junk
-    await page.evaluate(({ addr, ph }: { addr: string; ph: string }) => {
-      const title = document.title.split(":")[0]?.trim() || "Trip Itinerary"
-
+    // Build TOC, hide junk
+    await page.evaluate(() => {
       document.querySelectorAll('section[class*="-mt-"]').forEach((e) => (e as HTMLElement).style.display = "none")
       document.querySelectorAll('.sticky.top-0, [class*="sticky"][class*="top-0"]').forEach((e) => (e as HTMLElement).style.display = "none")
       document.querySelectorAll("#reviews").forEach((e) => (e as HTMLElement).style.display = "none")
@@ -119,30 +118,32 @@ export async function GET(req: NextRequest) {
           document.body.prepend(toc)
         }
       }
+    })
 
-      const hdr = document.createElement("div")
-      hdr.id = "pdf-header"
-      hdr.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #D4520C;">
-          <div style="font-size:13px;font-weight:700;color:#0F2B3D;">${title}</div>
+    const headerTemplate = `
+      <div style="width:100%;padding:8px 0 4px 0;font-family:Inter,sans-serif;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:0 14mm;padding-bottom:4px;border-bottom:2px solid #D4520C;">
+          <div style="font-size:11px;font-weight:700;color:#0F2B3D;">Walk Through Nepal</div>
+          <div style="font-size:9px;color:#5F6B72;">${title}</div>
         </div>
-      `
-      document.body.prepend(hdr)
-
-      const ftr = document.createElement("div")
-      ftr.id = "pdf-footer"
-      ftr.innerHTML = `
-        <div style="border-top:1px solid #E5E2DA;padding-top:6px;font-size:9px;color:#5F6B72;">
-          ${addr} &nbsp;|&nbsp; ${ph}
+      </div>
+    `
+    const footerTemplate = `
+      <div style="width:100%;padding:4px 0 0 0;font-family:Inter,sans-serif;">
+        <div style="border-top:1px solid #E5E2DA;margin:0 14mm;padding-top:4px;display:flex;justify-content:space-between;font-size:8px;color:#5F6B72;">
+          <span>${address}  |  ${phone}</span>
+          <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
         </div>
-      `
-      document.body.appendChild(ftr)
-    }, { addr: address, ph: phone })
+      </div>
+    `
 
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
-      margin: { top: "18mm", bottom: "18mm", left: "14mm", right: "14mm" },
+      margin: { top: "20mm", bottom: "18mm", left: "14mm", right: "14mm" },
+      displayHeaderFooter: true,
+      headerTemplate,
+      footerTemplate,
     })
 
     return new NextResponse(new Uint8Array(pdfBuffer), {
@@ -218,16 +219,6 @@ const PDF_CSS = `
     font-weight: 600 !important;
   }
   #pdf-toc { break-after: page; }
-  #pdf-header {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    padding: 8mm 14mm 4mm 14mm;
-  }
-  #pdf-footer {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    padding: 4mm 14mm 8mm 14mm;
-  }
   h2 { break-after: avoid !important; }
   img { break-inside: avoid !important; max-width: 100% !important; }
   .line-clamp-4 { -webkit-line-clamp: unset !important; display: block !important; }
