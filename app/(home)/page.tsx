@@ -248,7 +248,7 @@ export default async function HomePage() {
               title="Peak Climbing"
               description="6000m+ peak climbing expeditions in the Himalayas"
               href="/category/adventure"
-              image="/images/cat-peak.jpg"
+              image="/images/trek-everest.jpg"
             />
           </div>
         </div>
