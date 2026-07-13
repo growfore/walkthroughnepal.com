@@ -1,7 +1,7 @@
 "use client"
 
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
-import { decodeHtmlEntities } from "@/lib/html-decoder"
+import { renderRichText } from "@/lib/html-decoder"
 
 type FAQ = { question: string; answer: string }
 
@@ -38,7 +38,7 @@ export function FAQSection({
                 <div
                   className="prose prose-lg w-full max-w-none border-t border-border px-4 py-3 wrap-break-word **:wrap-break-word prose-p:leading-relaxed prose-p:text-muted-foreground"
                   dangerouslySetInnerHTML={{
-                    __html: decodeHtmlEntities(faq.answer),
+                    __html: renderRichText(faq.answer),
                   }}
                 />
               ) : (

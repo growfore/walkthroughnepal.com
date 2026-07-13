@@ -183,8 +183,12 @@
 .cms-table tr:first-child th,
 .cms-table tr:first-child td {
   background: var(--navy);
-  color: white;
+  color: white !important;
   font-weight: 600;
+}
+.cms-table tr:first-child th *,
+.cms-table tr:first-child td * {
+  color: inherit !important;
 }
 .cms-table tbody tr:nth-child(even) {
   background: var(--muted);
