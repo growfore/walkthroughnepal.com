@@ -385,9 +385,12 @@ export default async function HomePage() {
       {/* ── Floating Recommend Button ── */}
       <Link
         href="/recommend"
-        className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-orange px-6 py-3.5 text-sm font-bold text-white shadow-xl shadow-orange/30 transition hover:bg-orange/90 hover:scale-105"
+        className="group fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-orange text-white shadow-xl shadow-orange/30 transition hover:bg-orange/90 hover:scale-110"
       >
-        <Sparkles className="h-4 w-4" /> Find Your Perfect Adventure
+        <Sparkles className="h-6 w-6" />
+        <span className="pointer-events-none absolute bottom-full right-0 mb-2 whitespace-nowrap rounded-lg bg-navy px-3 py-1.5 text-xs font-semibold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+          Find Your Perfect Adventure
+        </span>
       </Link>
     </div>
   )
