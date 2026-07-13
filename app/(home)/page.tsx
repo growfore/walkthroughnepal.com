@@ -140,25 +140,6 @@ export default async function HomePage() {
                 Discover authentic treks, cultural journeys, wildlife adventures
                 and local experiences across the Himalayas.
               </p>
-              <div className="mt-6 flex flex-wrap items-center gap-3 text-sm font-semibold text-white/70">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
-                  <Sparkles className="h-3.5 w-3.5 text-orange" /> Since 2008
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
-                  <Mountain className="h-3.5 w-3.5 text-orange" /> 500+ Trips
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
-                  <Star className="h-3.5 w-3.5 fill-orange text-orange" /> 4.9 Rating
-                </span>
-              </div>
-              <div className="mt-8">
-                <Link
-                  href="/recommend"
-                  className="inline-flex items-center gap-2 rounded-full bg-orange px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-orange/25 transition hover:bg-orange/90"
-                >
-                  Find Your Perfect Adventure <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
             </div>
           </div>
         </div>
@@ -400,6 +381,14 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Floating Recommend Button ── */}
+      <Link
+        href="/recommend"
+        className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-orange px-6 py-3.5 text-sm font-bold text-white shadow-xl shadow-orange/30 transition hover:bg-orange/90 hover:scale-105"
+      >
+        <Sparkles className="h-4 w-4" /> Find Your Perfect Adventure
+      </Link>
     </div>
   )
 }
