@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   highlightText: {
-    fontSize: 9,
+    fontSize: 10,
     color: ink,
     flex: 1,
     lineHeight: 1.6,
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   addInfoDesc: {
-    fontSize: 9,
+    fontSize: 10,
     color: ink,
     lineHeight: 1.65,
     marginBottom: 6,
@@ -432,26 +432,26 @@ function RenderHtml({ html, imgBase = "" }: { html: string; imgBase?: string }) 
                   {Array.from({ length: colCount }).map((_, ci) => {
                     const cell = row[ci] ?? ""
                     return (
-                      <View
-                        key={ci}
-                        style={{
-                          flex: 1,
-                          paddingHorizontal: 6,
-                          paddingVertical: 5,
-                          borderRightWidth: ci < colCount - 1 ? 1 : 0,
-                          borderRightColor: hairline,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 8,
-                            color: ri === 0 ? "#fff" : ink,
-                            fontWeight: ri === 0 ? 700 : 400,
-                          }}
-                        >
-                          {cell}
-                        </Text>
-                      </View>
+                <View
+                  key={ci}
+                  style={{
+                    flex: 1,
+                    paddingHorizontal: 6,
+                    paddingVertical: 5,
+                    borderRightWidth: ci < colCount - 1 ? 1 : 0,
+                    borderRightColor: hairline,
+                  }}
+                >
+                  <InlineText
+                    html={cell}
+                    style={{
+                      fontSize: 9,
+                      color: ri === 0 ? "#fff" : ink,
+                      fontWeight: ri === 0 ? 700 : 400,
+                      lineHeight: 1.4,
+                    }}
+                  />
+                </View>
                     )
                   })}
                 </View>
