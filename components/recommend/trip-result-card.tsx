@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Clock, Mountain, Star, CheckCircle2, ArrowRight } from "lucide-react"
 import { img } from "@/lib/api"
+import { decodeHtmlEntities } from "@/lib/html-decoder"
 import type { Activity } from "@/lib/types"
 
 interface TripResultCardProps {
@@ -41,7 +42,7 @@ export function TripResultCard({ activity, reasons, rank }: TripResultCardProps)
             <span className="flex items-center gap-1"><Star className="h-3.5 w-3.5 fill-orange text-orange" />{activity.averageRating.toFixed(1)}</span>
           )}
         </div>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-2">{activity.shortDescription?.replace(/<[^>]+>/g, "")}</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-2">{decodeHtmlEntities(activity.shortDescription?.replace(/<[^>]+>/g, "") ?? "")}</p>
 
         <div className="mt-4 space-y-1.5">
           {reasons.slice(0, 4).map((r, i) => (
