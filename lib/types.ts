@@ -36,7 +36,10 @@ export interface Activity {
   itinerary: ItineraryVariant[]
   inclusions: string[]
   exclusions: string[]
-  whatToBring: string[]
+  whatToBring: {
+    description: string
+    categories: { icon: string; name: string; content: string[] }[]
+  } | null
   accommodations: string[]
   meetingPoint: string
   dropOffPoint: string

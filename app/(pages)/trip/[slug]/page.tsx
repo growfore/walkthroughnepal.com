@@ -327,6 +327,13 @@ export default async function PackagePage({
               <ItineraryList variants={itineraryVariants ?? []} />
             </div>
 
+            {/* ── Upcoming Departures ── */}
+            <DeparturesSection
+              slots={upcomingSlots}
+              slug={slug}
+              tripTitle={pkg.title}
+            />
+
             {/* ── Price Breakdown ── */}
             {pkg.priceBreakdown && (
               <div id="cost-breakdown" className="mt-12 scroll-mt-40">
@@ -429,23 +436,35 @@ export default async function PackagePage({
               </div>
             </div>
 
-            {/* ── Upcoming Departures ── */}
-            <DeparturesSection
-              slots={upcomingSlots}
-              slug={slug}
-              tripTitle={pkg.title}
-            />
-
-            {(pkg.whatToBring ?? []).length > 0 && (
+            {/* ── Packing List ── */}
+            {pkg.whatToBring && pkg.whatToBring.categories.length > 0 && (
               <div id="packing-list" className="mt-12 scroll-mt-40">
-                <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-ink prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
-                  {(pkg.whatToBring ?? []).map((section, i) => (
-                    <div
-                      key={i}
-                      dangerouslySetInnerHTML={{
-                        __html: resolveContentImages(renderRichText(section)),
-                      }}
-                    />
+                <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                  Packing List
+                </h2>
+                {pkg.whatToBring.description && (
+                  <div
+                    className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word"
+                    dangerouslySetInnerHTML={{
+                      __html: resolveContentImages(renderRichText(pkg.whatToBring.description)),
+                    }}
+                  />
+                )}
+                <div className="mt-6 space-y-6">
+                  {pkg.whatToBring.categories.map((cat, i) => (
+                    <div key={i}>
+                      <h3 className="text-lg font-bold text-navy">{cat.name}</h3>
+                      <div className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-ink prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
+                        {cat.content.map((html, j) => (
+                          <div
+                            key={j}
+                            dangerouslySetInnerHTML={{
+                              __html: resolveContentImages(renderRichText(html)),
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -475,29 +494,6 @@ export default async function PackagePage({
               <CustomizeTripCTA slug={slug} />
             </div>
 
-            {/* ── FAQs ── */}
-            <FAQSection
-              id="faqs"
-              groups={pkg.faqs ?? []}
-              className="mt-12 scroll-mt-40"
-            />
-
-            {/* Video */}
-            {pkg.videoUrl && (
-              <div className="mt-12">
-                <h2 className="text-2xl font-bold text-navy md:text-3xl">
-                  Video
-                </h2>
-                <div className="mt-4 aspect-video overflow-hidden rounded-lg">
-                  <iframe
-                    src={pkg.videoUrl}
-                    className="h-full w-full"
-                    allowFullScreen
-                    title="Trip video"
-                  />
-                </div>
-              </div>
-            )}
           </div>
 
           {/* ── Sidebar ── */}
@@ -529,21 +525,24 @@ export default async function PackagePage({
                 </div>
                 <div className="text-sm text-muted-foreground">per person</div>
 
-                {upcomingSlots.length > 0 ? (
-                  <a
-                    href="#departures"
-                    className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-4 py-3 text-sm font-semibold text-orange-foreground hover:opacity-90"
-                  >
-                    Book Now
-                  </a>
-                ) : (
-                  <Link
-                    href={`/inquiry?trip=${slug}`}
-                    className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-4 py-3 text-sm font-semibold text-orange-foreground hover:opacity-90"
-                  >
-                    Send Inquiry
-                  </Link>
-                )}
+                <Link
+                  href={`/booking?trip=${slug}`}
+                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-4 py-3 text-sm font-semibold text-orange-foreground hover:opacity-90"
+                >
+                  Book Now
+                </Link>
+                <a
+                  href="#departures"
+                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg border border-navy bg-transparent px-4 py-3 text-sm font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
+                >
+                  Check Availability
+                </a>
+                <Link
+                  href={`/inquiry?trip=${slug}`}
+                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg border border-navy bg-transparent px-4 py-3 text-sm font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
+                >
+                  Inquire Now
+                </Link>
               </div>
 
               <div className="border-t border-border px-4 py-3 sm:px-5">
@@ -579,6 +578,31 @@ export default async function PackagePage({
           </StickyWrapper>
         </div>
       </section>
+
+      {/* ── FAQs (full width) ── */}
+      <section className="mx-auto max-w-7xl px-4 py-12">
+        <FAQSection
+          id="faqs"
+          groups={pkg.faqs ?? []}
+        />
+      </section>
+
+      {/* Video (full width) */}
+      {pkg.videoUrl && (
+        <section className="mx-auto max-w-7xl px-4 pb-12">
+          <h2 className="text-2xl font-bold text-navy md:text-3xl">
+            Video
+          </h2>
+          <div className="mt-4 aspect-video overflow-hidden rounded-lg">
+            <iframe
+              src={pkg.videoUrl}
+              className="h-full w-full"
+              allowFullScreen
+              title="Trip video"
+            />
+          </div>
+        </section>
+      )}
 
       {/* Mobile sticky booking bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background px-4 py-3 shadow-lg lg:hidden">

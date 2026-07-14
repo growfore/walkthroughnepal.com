@@ -697,17 +697,22 @@ function TripContent({
       )}
 
       {/* ── What to Bring ── */}
-      {pkg.whatToBring?.length > 0 && (
+      {pkg.whatToBring && pkg.whatToBring.categories.length > 0 && (
         <View style={styles.listSection}>
           <Text style={styles.listTitle}>Packing List</Text>
-          {pkg.whatToBring.flatMap((item, i) =>
-            extractLiItems(item).map((liContent, j) => (
-              <View key={`${i}-${j}`} style={styles.listItem}>
-                <Text style={styles.listDash}>-</Text>
-                <InlineText html={liContent} style={styles.listItemText} />
-              </View>
-            )),
-          )}
+          {pkg.whatToBring.categories.flatMap((cat, i) => [
+            <Text key={`cat-${i}`} style={{ fontSize: 10, fontWeight: 700, color: navy, marginTop: 8, marginBottom: 4 }}>
+              {cat.name}
+            </Text>,
+            ...cat.content.flatMap((html, j) =>
+              extractLiItems(html).map((liContent, k) => (
+                <View key={`${i}-${j}-${k}`} style={styles.listItem}>
+                  <Text style={styles.listDash}>-</Text>
+                  <InlineText html={liContent} style={styles.listItemText} />
+                </View>
+              )),
+            ),
+          ])}
         </View>
       )}
 
