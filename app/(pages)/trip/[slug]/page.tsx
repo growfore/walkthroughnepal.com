@@ -418,6 +418,7 @@ export default async function PackagePage({
               }
               .prose table { display: block; overflow-x: auto; max-width: 100%; }
               .prose table:not(.cms-table) th, .prose table:not(.cms-table) td { white-space: nowrap; }
+              .prose table:not(.cms-table) tr:first-child td { background-color: #162B38; color: white; font-weight: 600; }
             ` }} />
             <div id="includes" className="mt-12 scroll-mt-40">
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
@@ -495,9 +496,9 @@ export default async function PackagePage({
             {/* ── Useful Info ── */}
             {(pkg.additionalInfo ?? []).length > 0 && (
               <div id="useful-info" className="mt-12 scroll-mt-40">
-                <Accordion type="multiple" defaultValue={pkg.additionalInfo.map((_, i) => `info-${i}`)}>
+                <Accordion type="multiple" className="space-y-3">
                   {pkg.additionalInfo.map((info, i) => (
-                    <AccordionItem key={i} value={`info-${i}`} className="rounded-lg border border-border not-last:border-b">
+                    <AccordionItem key={i} value={`info-${i}`} className="rounded-lg border border-border">
                       <AccordionTrigger className="px-4 py-4 text-base font-semibold text-navy hover:no-underline focus-visible:ring-0 [&[data-open]>svg]:rotate-0">
                         {info.title}
                       </AccordionTrigger>
