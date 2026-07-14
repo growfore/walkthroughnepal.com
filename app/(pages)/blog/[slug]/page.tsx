@@ -4,7 +4,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { BlogRenderer } from "@/components/blog-renderer"
 import { PageHero } from "@/components/page-hero"
-import { decodeHtmlEntities } from "@/lib/html-decoder"
+
 import { Calendar } from "lucide-react"
 
 type Props = { params: Promise<{ slug: string }> }
@@ -53,7 +53,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound()
   }
 
-  const contentHtml = resolveContentImages(decodeHtmlEntities(post.content))
+  const contentHtml = resolveContentImages(post.content)
   const contentWithIds = addIdsToHeadings(contentHtml)
   const toc = extractToc(contentHtml)
   const date = new Date(post.publishedAt || post.createdAt).toLocaleDateString("en-US", {

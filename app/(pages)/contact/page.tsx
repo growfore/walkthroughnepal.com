@@ -186,7 +186,7 @@ export default function ContactPage() {
 
       {/* FAQ */}
       <FAQSection
-        items={faqs.map((f) => ({ question: f.q, answer: f.a }))}
+        groups={[{ category: "Booking & Payment", icon: "HelpCircle", faqs: faqs.map((f) => ({ question: f.q, answer: f.a })) }]}
         className="pb-20 max-w-3xl mx-auto px-4"
       />
     </main>

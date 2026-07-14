@@ -726,7 +726,7 @@ function TripContent({
         <View style={{ marginTop: 10 }}>
           <Text style={styles.sectionTitle}>Frequently Asked Questions</Text>
           <View style={styles.sectionDivider} />
-          {pkg.faqs.map((faq, i) => (
+          {pkg.faqs?.flatMap((g) => g.faqs).map((faq, i) => (
             <View key={i} style={{ marginBottom: 8 }}>
               <Text style={{ fontSize: 10, fontWeight: 700, color: navy, marginBottom: 2 }}>
                 Q: {faq.question}

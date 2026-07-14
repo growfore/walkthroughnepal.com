@@ -44,7 +44,7 @@ export interface Activity {
   isFeatured: boolean
   averageRating: number
   bookingsCount: number
-  faqs: FAQ[]
+  faqs: FAQGroup[]
   additionalInfo: AdditionalInfo[]
   canonicalPath: string
   locations: string[]
@@ -86,6 +86,12 @@ export interface ItineraryVariant {
 export interface FAQ {
   question: string
   answer: string
+}
+
+export interface FAQGroup {
+  category: string
+  icon: string
+  faqs: FAQ[]
 }
 
 export interface AdditionalInfo {

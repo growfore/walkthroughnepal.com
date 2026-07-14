@@ -15,7 +15,7 @@ export function decodeHtmlEntities(html: string): string {
 }
 
 export function renderRichText(html: string): string {
-  let out = decodeHtmlEntities(html)
+  let out = html ?? ""
     .replace(/<pre><code>/gi, '<div class="not-prose">')
     .replace(/<\/code><\/pre>/gi, "</div>")
     .replace(/<table/gi, '<table class="cms-table"')

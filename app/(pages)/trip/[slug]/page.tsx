@@ -280,7 +280,7 @@ export default async function PackagePage({
                         <span
                           className="wrap-break-word"
                           dangerouslySetInnerHTML={{
-                            __html: item.replace(/&nbsp;/g, " "),
+                            __html: item,
                           }}
                         />
                       </div>
@@ -629,8 +629,7 @@ export default async function PackagePage({
             {/* ── FAQs ── */}
             <FAQSection
               id="faqs"
-              items={pkg.faqs ?? []}
-              prose
+              groups={pkg.faqs ?? []}
               className="mt-12 scroll-mt-40"
             />
 

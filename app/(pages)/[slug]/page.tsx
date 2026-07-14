@@ -2,7 +2,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import type { Metadata } from "next"
 import { getInfoPageBySlug, resolveContentImages } from "@/lib/api"
-import { decodeHtmlEntities } from "@/lib/html-decoder"
+
 import { BlogRenderer } from "@/components/blog-renderer"
 import { PageHero } from "@/components/page-hero"
 
@@ -35,7 +35,7 @@ export default async function InfoPage({ params }: Props) {
     return notFound()
   }
 
-  const contentHtml = resolveContentImages(decodeHtmlEntities(infoPage.content))
+  const contentHtml = resolveContentImages(infoPage.content)
 
   return (
     <div className="min-h-screen bg-background">
