@@ -22,8 +22,13 @@ import {
   Map,
   Pointer,
   Backpack,
+  Footprints,
+  Scissors,
+  Shield,
+  type LucideIcon,
 } from "lucide-react"
 import { FAQSection } from "@/components/faq-section"
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { DeparturesSection } from "@/components/departures-section"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -59,6 +64,17 @@ import { CustomizeTripCTA } from "@/components/customize-trip-cta"
 import { TierPricingCards } from "@/components/tier-pricing-cards"
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
+
+const packingIconMap: Record<string, LucideIcon> = {
+  HelpCircle,
+  Footprints,
+  Scissors,
+  Shield,
+}
+
+function getPackingIcon(name: string): LucideIcon {
+  return packingIconMap[name] ?? HelpCircle
+}
 
 const tabs = [
   { label: "Overview", icon: Info },
@@ -451,21 +467,27 @@ export default async function PackagePage({
                   />
                 )}
                 <div className="mt-6 space-y-6">
-                  {pkg.whatToBring.categories.map((cat, i) => (
-                    <div key={i}>
-                      <h3 className="text-lg font-bold text-navy">{cat.name}</h3>
-                      <div className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-ink prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
-                        {cat.content.map((html, j) => (
-                          <div
-                            key={j}
-                            dangerouslySetInnerHTML={{
-                              __html: resolveContentImages(renderRichText(html)),
-                            }}
-                          />
-                        ))}
+                  {pkg.whatToBring.categories.map((cat, i) => {
+                    const Icon = getPackingIcon(cat.icon)
+                    return (
+                      <div key={i}>
+                        <h3 className="flex items-center gap-2 text-lg font-bold text-navy">
+                          <Icon className="h-5 w-5" />
+                          {cat.name}
+                        </h3>
+                        <div className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-ink prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
+                          {cat.content.map((html, j) => (
+                            <div
+                              key={j}
+                              dangerouslySetInnerHTML={{
+                                __html: resolveContentImages(renderRichText(html)),
+                              }}
+                            />
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -473,19 +495,23 @@ export default async function PackagePage({
             {/* ── Useful Info ── */}
             {(pkg.additionalInfo ?? []).length > 0 && (
               <div id="useful-info" className="mt-12 scroll-mt-40">
-                <div className="space-y-6">
+                <Accordion type="multiple" defaultValue={pkg.additionalInfo.map((_, i) => `info-${i}`)}>
                   {pkg.additionalInfo.map((info, i) => (
-                    <div key={i}>
-                      <h2 className="font-bold text-ink text-2xl md:text-3xl">{info.title}</h2>
-                      <div
-                        className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word"
-                        dangerouslySetInnerHTML={{
-                          __html: resolveContentImages(renderRichText(info.description)),
-                        }}
-                      />
-                    </div>
+                    <AccordionItem key={i} value={`info-${i}`} className="rounded-lg border border-border not-last:border-b">
+                      <AccordionTrigger className="px-4 py-4 text-base font-semibold text-navy hover:no-underline focus-visible:ring-0 [&[data-open]>svg]:rotate-0">
+                        {info.title}
+                      </AccordionTrigger>
+                      <AccordionContent forceMount className="data-[state=closed]:hidden">
+                        <div
+                          className="prose prose-lg w-full max-w-none border-t border-border px-4 py-3 wrap-break-word **:wrap-break-word prose-p:leading-relaxed prose-p:text-muted-foreground"
+                          dangerouslySetInnerHTML={{
+                            __html: resolveContentImages(renderRichText(info.description)),
+                          }}
+                        />
+                      </AccordionContent>
+                    </AccordionItem>
                   ))}
-                </div>
+                </Accordion>
               </div>
             )}
 
