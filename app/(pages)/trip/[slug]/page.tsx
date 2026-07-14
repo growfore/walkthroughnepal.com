@@ -419,6 +419,7 @@ export default async function PackagePage({
               .prose table { display: block; overflow-x: auto; max-width: 100%; }
               .prose table:not(.cms-table) th, .prose table:not(.cms-table) td { white-space: nowrap; }
               .prose table:not(.cms-table) tr:first-child td { background-color: #162B38; color: white; font-weight: 600; }
+              .prose table:not(.cms-table) tr:first-child td * { color: white; }
             ` }} />
             <div id="includes" className="mt-12 scroll-mt-40">
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
