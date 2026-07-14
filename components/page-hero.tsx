@@ -37,11 +37,11 @@ export function PageHero({ title, description, image, breadcrumbs }: PageHeroPro
               <span key={i} className="flex items-center gap-1.5">
                 {i > 0 && <ChevronRight className="h-3.5 w-3.5" />}
                 {cr.href ? (
-                  <Link href={cr.href} className="hover:text-white transition-colors">
+                  <Link href={cr.href} className="max-w-[200px] truncate hover:text-white transition-colors">
                     {cr.label}
                   </Link>
                 ) : (
-                  <span className="text-white/90">{cr.label}</span>
+                  <span className="max-w-[200px] truncate text-white/90">{cr.label}</span>
                 )}
               </span>
             ))}
