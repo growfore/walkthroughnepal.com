@@ -24,6 +24,7 @@ import {
   Backpack,
 } from "lucide-react"
 import { FAQSection } from "@/components/faq-section"
+import { DeparturesSection } from "@/components/departures-section"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getActivityBySlug, getTestimonials, getSlots } from "@/lib/api"
@@ -429,163 +430,11 @@ export default async function PackagePage({
             </div>
 
             {/* ── Upcoming Departures ── */}
-            {upcomingSlots.length > 0 && (
-              <div id="departures" className="mt-16 scroll-mt-40">
-                <h2 className="text-2xl font-bold text-navy md:text-3xl">
-                  Upcoming Departures
-                </h2>
-                <p className="mt-2 text-muted-foreground">
-                  Choose your preferred departure date
-                </p>
-                <div className="mt-6 overflow-x-auto rounded-xl border border-border shadow-sm">
-                  {/* Desktop table */}
-                  <table className="hidden w-full border-collapse sm:table">
-                    <thead>
-                      <tr className="bg-muted/50">
-                        <th className="border border-border px-5 py-3.5 text-left text-sm font-semibold text-ink">
-                          Date
-                        </th>
-                        <th className="border border-border px-5 py-3.5 text-left text-sm font-semibold text-ink">
-                          Price
-                        </th>
-                        <th className="border border-border px-5 py-3.5 text-left text-sm font-semibold text-ink">
-                          Availability
-                        </th>
-                        <th className="border border-border px-5 py-3.5 text-left text-sm font-semibold text-ink">
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {upcomingSlots.map((s) => (
-                        <tr
-                          key={s.id}
-                          className="transition-colors hover:bg-muted/30"
-                        >
-                          <td className="border border-border px-5 py-4">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="h-4 w-4 shrink-0 text-orange" />
-                              <span className="font-medium text-ink">
-                                {new Date(s.departureDate).toLocaleDateString(
-                                  "en-US",
-                                  {
-                                    weekday: "short",
-                                    month: "long",
-                                    day: "numeric",
-                                    year: "numeric",
-                                  }
-                                )}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="border border-border px-5 py-4">
-                            <span className="text-lg font-bold text-ink">
-                              ${Number(s.price).toLocaleString()}
-                            </span>
-                            <span className="text-sm text-muted-foreground">
-                              {" "}
-                              / person
-                            </span>
-                            <span className="ml-2 rounded-md bg-orange/10 px-1.5 py-0.5 text-xs font-semibold text-orange">
-                              {s.days} {s.days === 1 ? "day" : "days"}
-                            </span>
-                          </td>
-                          <td className="border border-border px-5 py-4">
-                            <span
-                              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${s.remainingSeats > 5 ? "bg-success-soft text-success" : s.remainingSeats > 0 ? "bg-warning-soft text-warning" : "bg-red-50 text-red-600"}`}
-                            >
-                              <span
-                                className={`h-1.5 w-1.5 rounded-full ${s.remainingSeats > 5 ? "bg-success" : s.remainingSeats > 0 ? "bg-warning" : "bg-red-600"}`}
-                              />
-                              {s.remainingSeats > 5
-                                ? `${s.remainingSeats} seats`
-                                : s.remainingSeats > 0
-                                  ? `Only ${s.remainingSeats} left`
-                                  : "Full"}
-                            </span>
-                          </td>
-                          <td className="border border-border px-5 py-4 text-left">
-                            {s.remainingSeats < 1 ? (
-                              <span className="inline-block cursor-not-allowed rounded-lg bg-muted px-4 py-2 text-sm font-semibold text-muted-foreground">
-                                Full
-                              </span>
-                            ) : (
-                              <Link
-                                href={`/booking?trip=${slug}&slot=${s.id}`}
-                                className="inline-block rounded-lg bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground transition-all hover:opacity-90 hover:shadow-md"
-                              >
-                                Book Now
-                              </Link>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-
-                  {/* Mobile cards */}
-                  <div className="divide-y divide-border sm:hidden">
-                    {upcomingSlots.map((s) => (
-                      <div key={s.id} className="space-y-2 p-4">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex min-w-0 items-center gap-2">
-                            <Calendar className="h-4 w-4 shrink-0 text-orange" />
-                            <span className="text-sm font-medium text-navy">
-                              {new Date(s.departureDate).toLocaleDateString(
-                                "en-US",
-                                {
-                                  weekday: "short",
-                                  month: "long",
-                                  day: "numeric",
-                                  year: "numeric",
-                                }
-                              )}
-                            </span>
-                          </div>
-                          {s.remainingSeats < 1 ? (
-                            <span className="inline-block cursor-not-allowed rounded-lg bg-muted px-4 py-2 text-sm font-semibold text-muted-foreground">
-                              Full
-                            </span>
-                          ) : (
-                            <Link
-                              href={`/booking?trip=${slug}&slot=${s.id}`}
-                              className="inline-block rounded-lg bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground transition-all hover:opacity-90 hover:shadow-md"
-                            >
-                              Book Now
-                            </Link>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg font-bold text-navy">
-                            ${Number(s.price).toLocaleString()}
-                          </span>
-                          <span className="text-sm text-muted-foreground">
-                            / person
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="rounded-md bg-orange/10 px-1.5 py-0.5 text-xs font-semibold text-orange">
-                            {s.days} {s.days === 1 ? "day" : "days"}
-                          </span>
-                          <span
-                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${s.remainingSeats > 5 ? "bg-success-soft text-success" : s.remainingSeats > 0 ? "bg-warning-soft text-warning" : "bg-red-50 text-red-600"}`}
-                          >
-                            <span
-                              className={`h-1.5 w-1.5 rounded-full ${s.remainingSeats > 5 ? "bg-success" : s.remainingSeats > 0 ? "bg-warning" : "bg-red-600"}`}
-                            />
-                            {s.remainingSeats > 5
-                              ? `${s.remainingSeats} seats`
-                              : s.remainingSeats > 0
-                                ? `Only ${s.remainingSeats} left`
-                                : "Full"}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
+            <DeparturesSection
+              slots={upcomingSlots}
+              slug={slug}
+              tripTitle={pkg.title}
+            />
 
             {(pkg.whatToBring ?? []).length > 0 && (
               <div id="packing-list" className="mt-12 scroll-mt-40">
