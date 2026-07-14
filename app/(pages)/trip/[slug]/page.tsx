@@ -175,7 +175,7 @@ export default async function PackagePage({
                   Home
                 </Link>
                 <ChevronRight className="h-3.5 w-3.5" />
-                <span className="text-navy">{pkg.title}</span>
+                <span className="max-w-[200px] truncate text-navy">{pkg.title}</span>
               </nav>
 
               <span className="mt-4 inline-block rounded-full bg-orange px-3 py-1 text-[11px] font-bold tracking-wider text-orange-foreground">
