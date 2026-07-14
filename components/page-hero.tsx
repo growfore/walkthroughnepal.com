@@ -34,14 +34,14 @@ export function PageHero({ title, description, image, breadcrumbs }: PageHeroPro
         {breadcrumbs && breadcrumbs.length > 0 && (
           <nav className="mb-4 flex items-center justify-center gap-1.5 text-sm text-white/60">
             {breadcrumbs.map((cr, i) => (
-              <span key={i} className="flex items-center gap-1.5">
+              <span key={i} className="flex min-w-0 items-center gap-1.5">
                 {i > 0 && <ChevronRight className="h-3.5 w-3.5" />}
                 {cr.href ? (
-                  <Link href={cr.href} className="max-w-[200px] truncate hover:text-white transition-colors">
+                  <Link href={cr.href} className="truncate hover:text-white transition-colors">
                     {cr.label}
                   </Link>
                 ) : (
-                  <span className="max-w-[200px] truncate text-white/90">{cr.label}</span>
+                  <span className="truncate text-white/90">{cr.label}</span>
                 )}
               </span>
             ))}
