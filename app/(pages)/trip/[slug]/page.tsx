@@ -497,7 +497,10 @@ export default async function PackagePage({
             {/* ── Useful Info ── */}
             {(pkg.additionalInfo ?? []).length > 0 && (
               <div id="useful-info" className="mt-12 scroll-mt-40">
-                <Accordion type="multiple" className="space-y-3">
+                <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                  Useful Info
+                </h2>
+                <Accordion type="multiple" className="mt-4 space-y-3">
                   {pkg.additionalInfo.map((info, i) => (
                     <AccordionItem key={i} value={`info-${i}`} className="rounded-lg border border-border">
                       <AccordionTrigger className="px-4 py-4 text-base font-semibold text-navy hover:no-underline focus-visible:ring-0 [&[data-open]>svg]:rotate-0">
