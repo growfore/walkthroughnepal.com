@@ -29,7 +29,6 @@ import {
 } from "lucide-react"
 import { FAQSection } from "@/components/faq-section"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
-import { DeparturesSection } from "@/components/departures-section"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getActivityBySlug, getTestimonials, getSlots } from "@/lib/api"
@@ -61,7 +60,7 @@ import { HorizontalGallery } from "@/components/horizontal-gallery"
 import { ReviewsCarousel } from "@/components/reviews-carousel"
 import { AltitudeChart } from "@/components/altitude-chart"
 import { CustomizeTripCTA } from "@/components/customize-trip-cta"
-import { TierPricingCards } from "@/components/tier-pricing-cards"
+import { TripPageClient } from "@/components/trip-page-client"
 
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
@@ -331,24 +330,19 @@ export default async function PackagePage({
               </div>
             )}
 
-            {/* ── Tier Pricing Cards ── */}
-            {pkg.tier?.length > 0 && (
-              <div className="mt-12 scroll-mt-40">
-                <TierPricingCards tiers={pkg.tier} hasSlots={upcomingSlots.length > 0} />
-              </div>
-            )}
+            {/* ── Tier Pricing Cards + Departures ── */}
+            <TripPageClient
+              tiers={pkg.tier}
+              hasSlots={upcomingSlots.length > 0}
+              slots={upcomingSlots}
+              slug={slug}
+              tripTitle={pkg.title}
+            />
 
             {/* ── Itinerary ── */}
             <div id="itinerary" className="mt-12 scroll-mt-40">
               <ItineraryList variants={itineraryVariants ?? []} />
             </div>
-
-            {/* ── Upcoming Departures ── */}
-            <DeparturesSection
-              slots={upcomingSlots}
-              slug={slug}
-              tripTitle={pkg.title}
-            />
 
             {/* ── Price Breakdown ── */}
             {pkg.priceBreakdown && (

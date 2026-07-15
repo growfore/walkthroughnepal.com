@@ -48,8 +48,10 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
-export function DeparturesSection({ slots, slug, tripTitle }: { slots: Slot[]; slug: string; tripTitle: string }) {
-  const [tab, setTab] = useState<"departures" | "private">("departures")
+export function DeparturesSection({ slots, slug, tripTitle, tab: tabProp, onTabChange }: { slots: Slot[]; slug: string; tripTitle: string; tab?: "departures" | "private"; onTabChange?: (tab: "departures" | "private") => void }) {
+  const [internalTab, setInternalTab] = useState<"departures" | "private">("departures")
+  const tab = tabProp ?? internalTab
+  const setTab = onTabChange ?? setInternalTab
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
