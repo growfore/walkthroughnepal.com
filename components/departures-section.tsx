@@ -2,14 +2,13 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useFieldArray, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Calendar, Users, Plus, Trash2, MapPin, Utensils, Bed, Compass, CheckCircle2 } from "lucide-react"
+import { Calendar, Users, Compass, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
   Select,
   SelectContent,
@@ -31,46 +30,23 @@ import type { Slot } from "@/lib/types"
 
 const DURATION_VALUES = ["1–3 days", "4–7 days", "8–10 days", "11–14 days", "15–20 days", "21+ days"] as const
 const GROUP_OPTIONS = [{ value: "solo", label: "Solo" }, { value: "couple", label: "Couple" }, { value: "family", label: "Family" }, { value: "friends", label: "Friends" }] as const
-const CATEGORIES = ["Treks in Nepal", "Tours in Nepal", "Classic Trek", "High Altitude Expedition", "Cultural and Heritage Tour", "Wildlife and Nature Safari", "Luxury Trek", "Adventure and Extreme Sports", "Pilgrimage Tour", "Photography Tour", "Family Friendly Trek", "Off-the-beaten Path", "Honeymoon Package", "Yoga and Meditation Retreat"]
-const INCLUSIONS = [{ id: "guide", label: "Licensed Guide" }, { id: "porter", label: "Porter Service" }, { id: "permits", label: "Trekking Permits & TIMS" }, { id: "transport", label: "Airport Transfers" }, { id: "firstaid", label: "First Aid / Medical Kit" }, { id: "sleeping-bag", label: "Sleeping Bag & Equipment" }, { id: "helicopter", label: "Helicopter Return" }]
-const ACCOMMODATION = [{ value: "teahouse", label: "Teahouse / Guesthouse" }, { value: "lodge", label: "Comfortable Lodge" }, { value: "luxury-lodge", label: "Luxury Lodge" }, { value: "camping", label: "Camping" }, { value: "hotel", label: "Hotel (city nights)" }, { value: "mix", label: "Mix (flexible)" }]
-const FOOD_PREFS = [{ value: "local", label: "Local Nepali Cuisine" }, { value: "continental", label: "Continental" }, { value: "vegetarian", label: "Vegetarian" }, { value: "vegan", label: "Vegan" }, { value: "halal", label: "Halal" }, { value: "flexible", label: "Flexible / No Preference" }]
-
-const locationSchema = z.object({ name: z.string().optional(), days: z.string().optional() })
 
 const formSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email"),
   phone: z.string().optional(),
   duration: z.enum(DURATION_VALUES, { message: "Please select a duration" }),
-  experienceType: z.array(z.string()).min(1, "Select at least one experience type"),
   startDate: z.string().min(1, "Please select a start date"),
-  letUsChooseLocations: z.boolean(),
-  locations: z.array(locationSchema),
   groupType: z.enum(GROUP_OPTIONS.map((o) => o.value) as [string, ...string[]], { message: "Please select a group type" }),
   numberOfTravellers: z.string().optional(),
-  inclusions: z.array(z.string()).default([]),
-  accommodationPreferences: z.array(z.string()).min(1, "Select at least one"),
-  foodPreferences: z.array(z.string()).min(1, "Select at least one"),
   otherMentions: z.string().optional(),
 }).superRefine((data, ctx) => {
-  if (!data.letUsChooseLocations) {
-    data.locations.forEach((loc, i) => {
-      if (!loc.name || loc.name.trim() === "") ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Location name required", path: ["locations", i, "name"] })
-      const d = Number(loc.days)
-      if (!loc.days || isNaN(d) || d <= 0) ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Must be at least 1 day", path: ["locations", i, "days"] })
-    })
-  }
   if ((data.groupType === "family" || data.groupType === "friends") && (!data.numberOfTravellers || data.numberOfTravellers.trim() === "")) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please select number of travellers", path: ["numberOfTravellers"] })
   }
 })
 
 type FormValues = z.infer<typeof formSchema>
-
-function toggle<T>(arr: T[], item: T): T[] {
-  return arr.includes(item) ? arr.filter((v) => v !== item) : [...arr, item]
-}
 
 export function DeparturesSection({ slots, slug, tripTitle }: { slots: Slot[]; slug: string; tripTitle: string }) {
   const [tab, setTab] = useState<"departures" | "private">("departures")
@@ -80,22 +56,16 @@ export function DeparturesSection({ slots, slug, tripTitle }: { slots: Slot[]; s
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema) as never,
     defaultValues: {
-      fullName: "", email: "", phone: "", duration: undefined, experienceType: [], startDate: "",
-      letUsChooseLocations: false, locations: [{ name: "", days: "" }],
-      groupType: undefined, numberOfTravellers: "", inclusions: [],
-      accommodationPreferences: [], foodPreferences: [], otherMentions: "",
+      fullName: "", email: "", phone: "", duration: undefined, startDate: "",
+      groupType: undefined, numberOfTravellers: "", otherMentions: "",
     },
   })
 
-  const { fields, append, remove } = useFieldArray({ control: form.control, name: "locations" })
-  const letUsChoose = form.watch("letUsChooseLocations")
   const groupType = form.watch("groupType")
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true)
     try {
-      const locs = data.letUsChooseLocations ? "Let the team choose" : data.locations.map((l) => `${l.name} (${l.days}d)`).join(", ")
-      const inclusions = data.inclusions.map((id) => INCLUSIONS.find((i) => i.id === id)?.label ?? id).join(", ")
       const res = await fetch("https://api.walkthroughnepal.com/api/v1/email/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -105,10 +75,7 @@ export function DeparturesSection({ slots, slug, tripTitle }: { slots: Slot[]; s
           text: [
             `── Personal Info ──`, `Name: ${data.fullName}`, `Email: ${data.email}`, `Phone: ${data.phone || "N/A"}`, ``,
             `── Trip Details ──`, `Trip: ${tripTitle}`, `Duration: ${data.duration}`, `Start: ${data.startDate}`,
-            `Experience: ${data.experienceType.join(", ")}`, `Group: ${data.groupType}`, `Travellers: ${data.numberOfTravellers || "N/A"}`, ``,
-            `── Locations ──`, locs, ``,
-            `── Preferences ──`, `Inclusions: ${inclusions || "None"}`,
-            `Accommodation: ${data.accommodationPreferences.join(", ")}`, `Food: ${data.foodPreferences.join(", ")}`, ``,
+            `Group: ${data.groupType}`, `Travellers: ${data.numberOfTravellers || "N/A"}`, ``,
             `── Other ──`, data.otherMentions || "None",
           ].join("\n"),
         }),
@@ -189,7 +156,7 @@ export function DeparturesSection({ slots, slug, tripTitle }: { slots: Slot[]; s
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 {/* Contact */}
                 <Section icon={<Compass className="h-4 w-4" />} title="Contact Details" desc="How can we reach you?">
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid gap-4">
                     <FormField control={form.control} name="fullName" render={({ field }) => (
                       <FormItem><FormLabel className="text-sm font-semibold text-ink">Full Name *</FormLabel><FormControl><Input placeholder="Your name" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
@@ -203,39 +170,20 @@ export function DeparturesSection({ slots, slug, tripTitle }: { slots: Slot[]; s
                 </Section>
 
                 {/* Trip Basics */}
-                <Section icon={<MapPin className="h-4 w-4" />} title="Trip Basics" desc="When and how long?">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <FormField control={form.control} name="duration" render={({ field }) => (
-                      <FormItem><FormLabel className="text-sm font-semibold text-ink">Duration *</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="How many days?" /></SelectTrigger></FormControl><SelectContent>{DURATION_VALUES.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={form.control} name="startDate" render={({ field }) => (
-                      <FormItem><FormLabel className="text-sm font-semibold text-ink">Preferred Start Date *</FormLabel><FormControl><Input type="date" min={new Date().toISOString().split("T")[0]} {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
+                <Section icon={<Calendar className="h-4 w-4" />} title="Trip Basics" desc="When and how long?">
+                  <div>
+                    <label className="text-sm font-semibold text-ink">Trip</label>
+                    <Select disabled value={tripTitle}>
+                      <FormControl><SelectTrigger className="w-full"><SelectValue /></SelectTrigger></FormControl>
+                      <SelectContent><SelectItem value={tripTitle}>{tripTitle}</SelectItem></SelectContent>
+                    </Select>
                   </div>
-                  <FormField control={form.control} name="experienceType" render={({ field }) => (
-                    <FormItem><FormLabel className="text-sm font-semibold text-ink">Experience / Trek Type *</FormLabel><div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">{CATEGORIES.map((cat) => { const checked = (field.value as string[]).includes(cat); return (<label key={cat} className={`flex items-center gap-2 rounded-lg border px-3 py-2 cursor-pointer transition-colors text-sm ${checked ? "border-orange/40 bg-orange/5 text-orange font-medium" : "border-border text-muted-foreground hover:bg-muted"}`}><Checkbox checked={checked} onCheckedChange={() => field.onChange(toggle(field.value as string[], cat))} /><span>{cat}</span></label>) })}</div><FormMessage /></FormItem>
+                  <FormField control={form.control} name="duration" render={({ field }) => (
+                    <FormItem><FormLabel className="text-sm font-semibold text-ink">Duration *</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className="w-full"><SelectValue placeholder="How many days?" /></SelectTrigger></FormControl><SelectContent>{DURATION_VALUES.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                   )} />
-                </Section>
-
-                {/* Locations */}
-                <Section icon={<MapPin className="h-4 w-4" />} title="Locations" desc="Where do you want to go?">
-                  <FormField control={form.control} name="letUsChooseLocations" render={({ field }) => (
-                    <FormItem className="flex items-start gap-3 rounded-lg border border-orange/20 bg-orange/5 p-4"><FormControl><Checkbox checked={field.value} onCheckedChange={(c) => { field.onChange(c); if (c) form.clearErrors("locations") }} /></FormControl><div><FormLabel className="text-sm font-semibold text-ink cursor-pointer">Let us choose the best locations for you</FormLabel><p className="text-xs text-muted-foreground mt-0.5">Our experts will design the optimal route.</p></div></FormItem>
+                  <FormField control={form.control} name="startDate" render={({ field }) => (
+                    <FormItem><FormLabel className="text-sm font-semibold text-ink">Preferred Start Date *</FormLabel><FormControl><Input type="date" min={new Date().toISOString().split("T")[0]} {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
-                  {!letUsChoose && (
-                    <div className="space-y-3">
-                      {fields.map((fieldItem, index) => (
-                        <div key={fieldItem.id} className="flex items-start gap-3 p-4 border border-border rounded-lg bg-muted/30">
-                          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <div className="sm:col-span-2"><FormField control={form.control} name={`locations.${index}.name`} render={({ field }) => (<FormItem><FormLabel className="text-xs text-muted-foreground font-medium">Location</FormLabel><FormControl><Input placeholder="e.g. Pokhara" {...field} /></FormControl><FormMessage /></FormItem>)} /></div>
-                            <div><FormField control={form.control} name={`locations.${index}.days`} render={({ field }) => (<FormItem><FormLabel className="text-xs text-muted-foreground font-medium">Days</FormLabel><FormControl><Input type="number" min="1" placeholder="3" {...field} /></FormControl><FormMessage /></FormItem>)} /></div>
-                          </div>
-                          {fields.length > 1 && <button type="button" onClick={() => remove(index)} className="mt-6 p-1.5 rounded-md text-muted-foreground hover:text-red-500 hover:bg-red-50 transition-colors"><Trash2 className="h-4 w-4" /></button>}
-                        </div>
-                      ))}
-                      <Button type="button" variant="outline" size="sm" onClick={() => append({ name: "", days: "" })}><Plus className="h-4 w-4 mr-1" /> Add Location</Button>
-                    </div>
-                  )}
                 </Section>
 
                 {/* Group */}
@@ -245,24 +193,15 @@ export function DeparturesSection({ slots, slug, tripTitle }: { slots: Slot[]; s
                   )} />
                   {(groupType === "family" || groupType === "friends") && (
                     <FormField control={form.control} name="numberOfTravellers" render={({ field }) => (
-                      <FormItem><FormLabel className="text-sm font-semibold text-ink">Number of Travellers *</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="How many people?" /></SelectTrigger></FormControl><SelectContent>{["1", "2", "3", "4", "5–7", "8–10", "11–15", "16+"].map((n) => <SelectItem key={n} value={n}>{n} {n === "1" ? "person" : "people"}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+                      <FormItem><FormLabel className="text-sm font-semibold text-ink">Number of Travellers *</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className="w-full"><SelectValue placeholder="How many people?" /></SelectTrigger></FormControl><SelectContent>{["1", "2", "3", "4", "5–7", "8–10", "11–15", "16+"].map((n) => <SelectItem key={n} value={n}>{n} {n === "1" ? "person" : "people"}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                     )} />
                   )}
                 </Section>
 
-                {/* Preferences */}
-                <Section icon={<Bed className="h-4 w-4" />} title="Preferences" desc="Customize your experience.">
-                  <FormField control={form.control} name="inclusions" render={({ field }) => (
-                    <FormItem><FormLabel className="text-sm font-semibold text-ink mb-2 block">Pick Your Inclusions</FormLabel><div className="grid grid-cols-1 sm:grid-cols-2 gap-2">{INCLUSIONS.map((item) => { const checked = field.value.includes(item.id); return (<label key={item.id} className={`flex items-center gap-3 rounded-lg border px-3 py-2.5 cursor-pointer transition-colors ${checked ? "border-orange/40 bg-orange/5" : "border-border hover:bg-muted"}`}><Checkbox checked={checked} onCheckedChange={() => field.onChange(toggle(field.value, item.id))} /><span className="text-sm text-muted-foreground">{item.label}</span></label>) })}</div><FormMessage /></FormItem>
-                  )} />
-                  <FormField control={form.control} name="accommodationPreferences" render={({ field }) => (
-                    <FormItem><FormLabel className="text-sm font-semibold text-ink flex items-center gap-2 mb-2"><Bed className="h-4 w-4 text-orange" /> Accommodation *</FormLabel><div className="grid grid-cols-2 sm:grid-cols-3 gap-2">{ACCOMMODATION.map((opt) => { const checked = field.value.includes(opt.value); return (<button type="button" key={opt.value} onClick={() => field.onChange(toggle(field.value, opt.value))} className={`text-left px-3 py-2.5 rounded-lg border-2 text-sm transition-all ${checked ? "border-orange bg-orange/5 text-orange font-medium" : "border-border text-muted-foreground hover:border-border"}`}>{opt.label}</button>) })}</div><FormMessage /></FormItem>
-                  )} />
-                  <FormField control={form.control} name="foodPreferences" render={({ field }) => (
-                    <FormItem><FormLabel className="text-sm font-semibold text-ink flex items-center gap-2 mb-2"><Utensils className="h-4 w-4 text-orange" /> Food Preferences *</FormLabel><div className="grid grid-cols-2 sm:grid-cols-3 gap-2">{FOOD_PREFS.map((opt) => { const checked = field.value.includes(opt.value); return (<button type="button" key={opt.value} onClick={() => field.onChange(toggle(field.value, opt.value))} className={`text-left px-3 py-2.5 rounded-lg border-2 text-sm transition-all ${checked ? "border-orange bg-orange/5 text-orange font-medium" : "border-border text-muted-foreground hover:border-border"}`}>{opt.label}</button>) })}</div><FormMessage /></FormItem>
-                  )} />
+                {/* Special Requests */}
+                <Section icon={<Compass className="h-4 w-4" />} title="Special Requests" desc="Anything else we should know?">
                   <FormField control={form.control} name="otherMentions" render={({ field }) => (
-                    <FormItem><FormLabel className="text-sm font-semibold text-ink">Special Requests</FormLabel><FormControl><Textarea rows={4} placeholder="Dietary restrictions, health conditions, celebrations..." {...field} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormControl><Textarea rows={4} placeholder="Dietary restrictions, health conditions, celebrations..." {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
                 </Section>
 
