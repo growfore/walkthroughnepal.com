@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { Clock, Home, Route } from "lucide-react"
+import { Clock, HandPlatter, Home, LucideArrowDown, LucideArrowUp, Route } from "lucide-react"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { renderRichText } from "@/lib/html-decoder"
 import { cn } from "@/lib/utils"
@@ -96,24 +96,26 @@ export function ItineraryList({ variants }: { variants: ItineraryVariant[] }) {
 
                 <AccordionContent forceMount className="data-[state=closed]:hidden">
                   <div className="p-1.5 pt-0 space-y-3">
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">
                       {d.ascent && (
-                        <span className="inline-flex items-center gap-1">↑ {d.ascent}</span>
+                        <span className="inline-flex items-center gap-1"><LucideArrowUp className="size-3.5"/> <span className="font-bold hidden md:block">Ascent:</span>  {d.ascent}</span>
                       )}
                       {d.descent && (
-                        <span className="inline-flex items-center gap-1">↓ {d.descent}</span>
+                        <span className="inline-flex items-center gap-1"><LucideArrowDown className="size-3.5"/> <span className="font-bold hidden md:block">Descent:</span> {d.descent}</span>
                       )}
                       {d.distance && (
-                        <span className="inline-flex items-center gap-1"><Route className="h-3.5 w-3.5" /> {d.distance}</span>
+                        <span className="inline-flex items-center gap-1"><Route className="h-3.5 w-3.5" /><span className="font-bold hidden md:block">Distance:</span> {d.distance}</span>
                       )}
                       {d.duration && (
-                        <span className="inline-flex items-center gap-1 w-full"><Clock className="h-3.5 w-3.5 shrink-0" /> {d.duration}</span>
+                        <span className="inline-flex items-center gap-1 w-full"><Clock className="h-3.5 w-3.5 shrink-0" /><span className="font-bold hidden md:block">Duration:</span> {d.duration}</span>
                       )}
                       {d.accommodations?.length > 0 && (
-                        <span className="inline-flex items-center gap-1"><Home className="h-3.5 w-3.5" /> {d.accommodations.join(", ")}</span>
+                        <span className="inline-flex items-center gap-1"><Home className="h-3.5 w-3.5" /><span className="font-bold hidden md:block">Accomodations:</span> {d.accommodations.join(", ")}</span>
                       )}
                       {d.meals?.length > 0 && (
-                        <span className="flex items-center gap-1">
+                        <span className="inline-flex items-center gap-1">
+                          <HandPlatter className="size-3.5"/>
+                          <span className="font-bold hidden md:block">Meals: </span>
                           {d.meals.map((m, i) => (
                             <span key={i} className="rounded-full bg-orange/10 px-2.5 py-0.5 text-xs font-medium text-orange">{m}</span>
                           ))}
