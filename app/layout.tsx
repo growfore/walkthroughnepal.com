@@ -1,5 +1,6 @@
 import { Mulish, Geist_Mono, Sora } from "next/font/google"
 import type { Metadata, Viewport } from "next"
+import Script from "next/script"
 
 import "./globals.css"
 import "react-toastify/dist/ReactToastify.css"
@@ -97,6 +98,10 @@ export default function RootLayout({
           <Footer />
           <ToastContainer position="bottom-right" />
         </ThemeProvider>
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   )

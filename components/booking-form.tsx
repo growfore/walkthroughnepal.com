@@ -24,6 +24,16 @@ export function BookingForm({ slot, activityId, activityTitle }: { slot: Slot; a
     setLoading(true)
     setError("")
     try {
+      const form = e.currentTarget as HTMLFormElement
+      const token = (form.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
+      if (!token) throw new Error("Please complete the verification")
+      const verify = await fetch("/api/turnstile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      })
+      const verifyData = await verify.json()
+      if (!verifyData.success) throw new Error("Verification failed. Please try again.")
       const res = await fetch(`${API}/api/v1/stripe/create-checkout-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -94,6 +104,7 @@ export function BookingForm({ slot, activityId, activityTitle }: { slot: Slot; a
               <button type="submit" disabled={loading} style={{ backgroundColor: "#635bff" }} className="flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50">
                 {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Processing...</> : <><CreditCard className="h-4 w-4" /> Proceed to Checkout <ArrowRight className="h-4 w-4" /></>}
               </button>
+              <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
             </form>
           </div>
           <div className="border-t border-border bg-navy/[0.02] px-6 py-6 sm:w-72 sm:shrink-0 sm:border-l sm:border-t-0">

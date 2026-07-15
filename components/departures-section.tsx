@@ -66,6 +66,15 @@ export function DeparturesSection({ slots, slug, tripTitle }: { slots: Slot[]; s
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true)
     try {
+      const token = document.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]')?.value
+      if (!token) throw new Error("Verification required")
+      const verify = await fetch("/api/turnstile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      })
+      const verifyData = await verify.json()
+      if (!verifyData.success) throw new Error("Verification failed")
       const res = await fetch("https://api.walkthroughnepal.com/api/v1/email/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -209,6 +218,7 @@ export function DeparturesSection({ slots, slug, tripTitle }: { slots: Slot[]; s
                   <Button type="submit" disabled={isSubmitting} className="w-full bg-orange text-orange-foreground hover:bg-orange/90 py-6 text-base font-semibold">
                     {isSubmitting ? "Sending..." : "Send Private Tour Request"}
                   </Button>
+                  <div className="cf-turnstile mt-4" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
                 </div>
               </form>
             </Form>

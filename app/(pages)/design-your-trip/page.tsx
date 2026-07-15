@@ -244,6 +244,15 @@ export default function DesignYourTrip() {
   const onSubmit = async (data: ItineraryFormValues) => {
     setIsSubmitting(true)
     try {
+      const token = document.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]')?.value
+      if (!token) throw new Error("Verification required")
+      const verify = await fetch("/api/turnstile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      })
+      const verifyData = await verify.json()
+      if (!verifyData.success) throw new Error("Verification failed")
       const locationsSummary = data.letUsChooseLocations
         ? "Let the team choose"
         : data.locations
@@ -956,14 +965,17 @@ export default function DesignYourTrip() {
                     Continue
                   </Button>
                 ) : (
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="gap-2"
-                  >
-                    <LucideSend className="size-4" />
-                    {isSubmitting ? "Sending…" : "Send My Request"}
-                  </Button>
+                  <>
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="gap-2"
+                    >
+                      <LucideSend className="size-4" />
+                      {isSubmitting ? "Sending…" : "Send My Request"}
+                    </Button>
+                    <div className="cf-turnstile mt-4" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
+                  </>
                 )}
               </div>
 

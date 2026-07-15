@@ -32,10 +32,13 @@ export default function ContactPage() {
     e.preventDefault()
     setSending(true)
     try {
+      const formEl = e.currentTarget as HTMLFormElement
+      const token = (formEl.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
+      if (!token) throw new Error("Verification required")
       await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, "cf-turnstile-response": token }),
       })
     } catch {
       // ponytail: silent catch, user still sees success
@@ -143,6 +146,7 @@ export default function ContactPage() {
                   >
                     {sending ? "Sending..." : "Send Message"}
                   </button>
+                  <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
                 </form>
               )}
             </div>

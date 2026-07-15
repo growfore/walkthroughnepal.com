@@ -48,10 +48,13 @@ function InquiryForm() {
     setLoading(true)
     setError("")
     try {
+      const formEl = e.currentTarget as HTMLFormElement
+      const token = (formEl.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
+      if (!token) throw new Error("Verification required")
       const res = await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullName, email, phone, destination: selectedTrip, groupSize, message }),
+        body: JSON.stringify({ fullName, email, phone, destination: selectedTrip, groupSize, message, "cf-turnstile-response": token }),
       })
       if (!res.ok) throw new Error("Failed to send inquiry")
       setSent(true)
@@ -135,6 +138,7 @@ function InquiryForm() {
               <button type="submit" disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-6 py-3 text-sm font-semibold text-orange-foreground transition-all hover:opacity-90 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50">
                 {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Sending...</> : <><Send className="h-4 w-4" /> Send Inquiry</>}
               </button>
+              <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
             </form>
           </div>
         </div>
