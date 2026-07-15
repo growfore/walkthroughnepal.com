@@ -6,6 +6,7 @@ import { Clock, Home, Route } from "lucide-react"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { renderRichText } from "@/lib/html-decoder"
 import { cn } from "@/lib/utils"
+import { PlaceCard } from "@/components/place-card"
 import type { ItineraryVariant } from "@/lib/types"
 
 export function ItineraryList({ variants }: { variants: ItineraryVariant[] }) {
@@ -122,18 +123,22 @@ export function ItineraryList({ variants }: { variants: ItineraryVariant[] }) {
 
                     <div className="prose prose-lg max-w-none w-full wrap-break-word **:wrap-break-word prose-p:m-0 prose-p:text-muted-foreground" dangerouslySetInnerHTML={{ __html: renderRichText(d.description) }} />
 
-                    {d.dayFeaturedImages?.length > 0 && (
-                      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {d.dayFeaturedImages?.length === 1 ? (
+                      <PlaceCard
+                        image={d.dayFeaturedImages[0].image}
+                        alt={d.dayFeaturedImages[0].alt}
+                      />
+                    ) : d.dayFeaturedImages?.length > 1 ? (
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         {d.dayFeaturedImages.map((img, i) => (
-                          <div key={i} className="overflow-hidden rounded-md">
+                          <div key={i} className="overflow-hidden rounded-xl">
                             <div className="relative aspect-video">
-                              <Image src={img.image} alt={img.alt} fill className="object-cover" sizes="(max-width: 640px) 50vw, 33vw" />
+                              <Image src={img.image} alt={img.alt} fill className="object-cover" sizes="(max-width: 640px) 100vw, 50vw" />
                             </div>
-                            {img.alt && <p className="mt-1 text-xs text-muted-foreground truncate">{img.alt}</p>}
                           </div>
                         ))}
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 </AccordionContent>
               </AccordionItem>
