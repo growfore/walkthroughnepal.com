@@ -155,54 +155,73 @@
   }
 }
 
-.prose .cms-table {
-  display: table;
-  width: auto;
+.prose {
+  overflow-x: auto;
+}
+.prose p {
+  line-height: 1.375;
+  letter-spacing: normal;
+}
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  letter-spacing: normal;
+}
+.prose ul,
+.prose ol {
+  padding-left: 1rem;
+}
+.prose li {
+  letter-spacing: normal;
+}
+.prose table {
+  table-layout: auto;
+  width: 100%;
   max-width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
 }
-.cms-table {
-  border-collapse: separate;
-  border-spacing: 0;
-  border: 1px solid var(--hairline);
-  border-radius: 8px;
-  font-size: 0.9rem;
-}
-.cms-table th,
-.cms-table td {
-  padding: 4px 14px;
+.prose th,
+.prose td {
+  padding: 2px 6px;
   text-align: left;
   border-bottom: 1px solid var(--hairline);
   vertical-align: top;
-  white-space: normal;
+  white-space: nowrap;
 }
-@media (max-width: 640px) {
-  .prose .cms-table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+.prose th {
+  white-space: nowrap;
 }
-.cms-table th:not(:last-child),
-.cms-table td:not(:last-child) {
+.prose th:not(:last-child),
+.prose td:not(:last-child) {
   border-right: 1px solid var(--hairline);
 }
-.cms-table tr:last-child th,
-.cms-table tr:last-child td {
+.prose tr:last-child th,
+.prose tr:last-child td {
   border-bottom: none;
 }
-.cms-table tr:first-child th,
-.cms-table tr:first-child td {
+.prose tr:first-child th,
+.prose tr:first-child td {
   background: var(--navy);
   color: white !important;
   font-weight: 700;
 }
-.cms-table tr:first-child th *,
-.cms-table tr:first-child td * {
+.prose tr:first-child th *,
+.prose tr:first-child td * {
   color: inherit !important;
   font-weight: inherit !important;
 }
-.cms-table tbody tr:nth-child(even) {
+.prose tbody tr:nth-child(even) {
   background: var(--muted);
+}
+.prose table.cms-table {
+  table-layout: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+}
+.prose .cms-table th,
+.prose .cms-table td {
+  padding: 4px 14px;
 }
 
 html::-webkit-scrollbar {

@@ -134,7 +134,7 @@ export function FAQSection({
                       </AccordionTrigger>
                       <AccordionContent forceMount className="data-[state=closed]:hidden">
                         <div
-                          className="prose prose-lg w-full max-w-none border-t border-border px-4 py-3 wrap-break-word **:wrap-break-word prose-p:leading-relaxed prose-p:text-muted-foreground"
+                          className="prose prose-lg w-full max-w-none border-t border-border px-4 py-3 wrap-break-word **:wrap-break-word prose-p:text-muted-foreground"
                           dangerouslySetInnerHTML={{
                             __html: renderRichText(faq.answer),
                           }}

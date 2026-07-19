@@ -8,7 +8,7 @@ export function BlogRenderer({ html }: { html: string }) {
         prose-h1:text-2xl md:prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-8
         prose-h2:text-xl md:prose-h2:text-3xl prose-h2:mt-6 prose-h2:mb-2
         prose-h3:text-base md:prose-h3:text-xl prose-h3:mt-4 prose-h3:mb-1
-        prose-p:text-foreground prose-p:leading-relaxed prose-p:mb-4 prose-p:mt-0
+        prose-p:text-foreground prose-p:mb-4 prose-p:mt-0
         prose-a:text-primary prose-a:underline
         prose-strong:text-foreground prose-strong:font-bold
         prose-ul:my-2 prose-ol:my-2

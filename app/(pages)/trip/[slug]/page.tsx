@@ -20,7 +20,6 @@ import {
   Sparkles,
   DollarSign,
   Map,
-  Pointer,
   Backpack,
   Footprints,
   Scissors,
@@ -381,53 +380,22 @@ export default async function PackagePage({
             )}
 
             {/* ── Includes ── */}
-            <style dangerouslySetInnerHTML={{ __html: `
-              .prose li {
-                position: relative;
-                list-style: none;
-                padding-left: 1.75rem;
-              }
-              .prose li::before {
-                position: absolute;
-                top: 0.15em;
-                left: 0;
-                display: grid;
-                height: 1.25rem;
-                width: 1.25rem;
-                place-items: center;
-                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23162B38' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 14a8 8 0 0 1-8 8'/%3E%3Cpath d='M18 11v-1a2 2 0 0 0-2-2a2 2 0 0 0-2 2'/%3E%3Cpath d='M14 10V9a2 2 0 0 0-2-2a2 2 0 0 0-2 2v1'/%3E%3Cpath d='M10 9.5V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v10'/%3E%3Cpath d='M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15'/%3E%3C/svg%3E");
-                transform: rotate(90deg);
-              }
-              #includes .prose li::before {
-                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2316a34a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
-                transform: none;
-              }
-              #excludes .prose li::before {
-                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E");
-                transform: none;
-              }
-              #packing-list .prose li::before {
-                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23162B38' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 6h4l2 4-2 4h-4'/%3E%3Cpath d='M14 6h4l2 4-2 4h-4'/%3E%3C/svg%3E");
-                transform: none;
-              }
-              .prose table { display: block; overflow-x: auto; max-width: 100%; }
-              .prose table:not(.cms-table) th, .prose table:not(.cms-table) td { white-space: nowrap; }
-              .prose table:not(.cms-table) tr:first-child td { background-color: #162B38; color: white; font-weight: 600; }
-              .prose table:not(.cms-table) tr:first-child td * { color: white; }
-            ` }} />
             <div id="includes" className="mt-12 scroll-mt-40">
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
                 What&apos;s Included
               </h2>
-              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-ink prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
-                {(pkg.inclusions ?? []).map((section, i) => (
-                  <div
-                    key={i}
-                    dangerouslySetInnerHTML={{
-                      __html: resolveContentImages(renderRichText(section)),
-                    }}
-                  />
-                ))}
+              <div className="mt-6 space-y-3">
+                {(pkg.inclusions ?? [])
+                  .flatMap((h) => {
+                    const m = renderRichText(h).match(/<li>(.*?)<\/li>/gi)
+                    return m ? m.map((s) => s.replace(/<\/?li>/gi, "")) : [h]
+                  })
+                  .map((item, i) => (
+                    <div key={i} className="flex items-start gap-3 text-lg text-navy">
+                      <Check className="mt-1.5 h-4 w-4 shrink-0 text-success" />
+                      <span className="wrap-break-word" dangerouslySetInnerHTML={{ __html: resolveContentImages(item) }} />
+                    </div>
+                  ))}
               </div>
             </div>
 
@@ -436,15 +404,18 @@ export default async function PackagePage({
               <h2 className="text-2xl font-bold text-navy md:text-3xl">
                 What&apos;s Excluded
               </h2>
-              <div className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-ink prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
-                {(pkg.exclusions ?? []).map((section, i) => (
-                  <div
-                    key={i}
-                    dangerouslySetInnerHTML={{
-                      __html: resolveContentImages(renderRichText(section)),
-                    }}
-                  />
-                ))}
+              <div className="mt-6 space-y-3">
+                {(pkg.exclusions ?? [])
+                  .flatMap((h) => {
+                    const m = renderRichText(h).match(/<li>(.*?)<\/li>/gi)
+                    return m ? m.map((s) => s.replace(/<\/?li>/gi, "")) : [h]
+                  })
+                  .map((item, i) => (
+                    <div key={i} className="flex items-start gap-3 text-lg text-navy">
+                      <X className="mt-1.5 h-4 w-4 shrink-0 text-error" />
+                      <span className="wrap-break-word" dangerouslySetInnerHTML={{ __html: resolveContentImages(item) }} />
+                    </div>
+                  ))}
               </div>
             </div>
 
@@ -471,15 +442,18 @@ export default async function PackagePage({
                           <Icon className="h-5 w-5" />
                           {cat.name}
                         </h3>
-                        <div className="prose prose-lg mt-2 w-full max-w-none wrap-break-word **:wrap-break-word prose-li:relative prose-li:list-none prose-li:pl-8 prose-li:text-ink prose-li:before:absolute prose-li:before:top-[0.15em] prose-li:before:left-0 prose-li:before:grid prose-li:before:h-5 prose-li:before:w-5 prose-li:before:place-items-center prose-li:before:rounded-full">
-                          {cat.content.map((html, j) => (
-                            <div
-                              key={j}
-                              dangerouslySetInnerHTML={{
-                                __html: resolveContentImages(renderRichText(html)),
-                              }}
-                            />
-                          ))}
+                        <div className="mt-2 space-y-2">
+                          {cat.content
+                            .flatMap((h) => {
+                              const m = renderRichText(h).match(/<li>(.*?)<\/li>/gi)
+                              return m ? m.map((s) => s.replace(/<\/?li>/gi, "")) : [h]
+                            })
+                            .map((item, j) => (
+                              <div key={j} className="flex items-start gap-3 text-lg text-ink">
+                                <Check className="mt-1.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                                <span className="wrap-break-word" dangerouslySetInnerHTML={{ __html: resolveContentImages(item) }} />
+                              </div>
+                            ))}
                         </div>
                       </div>
                     )
@@ -502,7 +476,7 @@ export default async function PackagePage({
                       </AccordionTrigger>
                       <AccordionContent forceMount className="data-[state=closed]:hidden">
                         <div
-                          className="prose prose-lg w-full max-w-none border-t border-border px-4 py-3 wrap-break-word **:wrap-break-word prose-p:leading-relaxed prose-p:text-muted-foreground"
+                          className="prose prose-lg w-full max-w-none border-t border-border px-4 py-3 wrap-break-word **:wrap-break-word prose-p:text-muted-foreground"
                           dangerouslySetInnerHTML={{
                             __html: resolveContentImages(renderRichText(info.description)),
                           }}
