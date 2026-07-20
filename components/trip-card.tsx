@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Clock } from "lucide-react"
 import { img } from "@/lib/api"
 
@@ -42,10 +43,12 @@ export function TripCard({
       } transition-shadow duration-500`}
     >
       <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-110">
-        <img
+        <Image
           src={imageUrl}
-          alt=""
-          className="h-full w-full object-cover"
+          alt={a.title}
+          fill
+          sizes={compact ? "(max-width: 768px) 100vw, 288px" : "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"}
+          className="object-cover"
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent" />

@@ -43,15 +43,7 @@ import {
 
 import { toast } from "react-toastify"
 import { siteConfig } from "@/lib/siteConfig"
-
-const DURATION_VALUES = [
-  "1–3 days",
-  "4–7 days",
-  "8–10 days",
-  "11–14 days",
-  "15–20 days",
-  "21+ days",
-] as const
+import { DURATION_VALUES, GROUP_OPTIONS } from "@/lib/forms"
 
 const INCLUSIONS = [
   { id: "guide", label: "Licensed Guide" },
@@ -79,13 +71,6 @@ const FOOD_PREFS = [
   { value: "vegan", label: "Vegan" },
   { value: "halal", label: "Halal" },
   { value: "flexible", label: "Flexible / No Preference" },
-] as const
-
-const GROUP_OPTIONS = [
-  { value: "solo", label: "Solo" },
-  { value: "couple", label: "Couple" },
-  { value: "family", label: "Family" },
-  { value: "friends", label: "Friends" },
 ] as const
 
 const locationSchema = z.object({
@@ -203,6 +188,7 @@ export default function DesignYourTrip() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const saved = useRef(loadSaved())
+  const formRef = useRef<HTMLFormElement>(null)
   const [step, setStep] = useState(saved.current?.step ?? 0)
 
   const form = useForm<ItineraryFormValues>({
@@ -244,63 +230,31 @@ export default function DesignYourTrip() {
   const onSubmit = async (data: ItineraryFormValues) => {
     setIsSubmitting(true)
     try {
-      const token = document.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]')?.value
+      const tokenEl = formRef.current?.elements.namedItem("cf-turnstile-response")
+      const token = tokenEl instanceof HTMLInputElement ? tokenEl.value : undefined
       if (!token) throw new Error("Verification required")
-      const verify = await fetch("/api/turnstile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
-      })
-      const verifyData = await verify.json()
-      if (!verifyData.success) throw new Error("Verification failed")
-      const locationsSummary = data.letUsChooseLocations
-        ? "Let the team choose"
-        : data.locations
-            .map(
-              (l) =>
-                `${l.name} (${l.days} day${Number(l.days) > 1 ? "s" : ""})`,
-            )
-            .join(", ")
 
-      const inclusionLabels = data.inclusions
-        .map((id) => INCLUSIONS.find((i) => i.id === id)?.label ?? id)
-        .join(", ")
-
-      const res = await fetch(`https://api.walkthroughnepal.com/api/v1/email/send`, {
+      const res = await fetch("/api/design-trip", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          from: data.email,
-          to: siteConfig.email,
-          subject: `Custom Itinerary Request from ${data.fullName} — ${data.experienceType.join(", ")}`,
-          text: [
-            `── Personal Info ──`,
-            `Name:                  ${data.fullName}`,
-            `Email:                 ${data.email}`,
-            `Phone:                 ${data.phone || "Not provided"}`,
-            ``,
-            `── Trip Details ──`,
-            `Duration:              ${data.duration}`,
-            `Experience Type:       ${data.experienceType.join(", ")}`,
-            `Start Date:            ${data.startDate}`,
-            ``,
-            `── Locations ──`,
-            `Locations:             ${locationsSummary}`,
-            ``,
-            `── Group ──`,
-            `Group Type:            ${data.groupType}`,
-            `No. of Travellers:     ${data.numberOfTravellers}`,
-            ``,
-            `── Preferences ──`,
-            `Inclusions:            ${inclusionLabels || "None selected"}`,
-            `Accommodation:         ${data.accommodationPreferences.join(", ")}`,
-            `Food Preference:       ${data.foodPreferences.join(", ")}`,
-            ``,
-            `── Other Mentions ──`,
-            data.otherMentions || "None",
-          ].join("\n"),
+          fullName: data.fullName,
+          email: data.email,
+          phone: data.phone,
+          duration: data.duration,
+          experienceType: data.experienceType,
+          startDate: data.startDate,
+          locations: data.letUsChooseLocations
+            ? [{ name: "Let the team choose", days: "" }]
+            : data.locations,
+          groupType: data.groupType,
+          numberOfTravellers: data.numberOfTravellers,
+          inclusions: data.inclusions,
+          accommodationPreferences: data.accommodationPreferences,
+          foodPreferences: data.foodPreferences,
+          otherMentions: data.otherMentions,
+          "cf-turnstile-response": token,
         }),
-        cache: "no-store",
       })
       if (!res.ok) throw new Error(`API returned ${res.status}`)
 
@@ -385,7 +339,7 @@ export default function DesignYourTrip() {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)}>
               {step === 0 && (
                 <div className="space-y-5">
                   <div>

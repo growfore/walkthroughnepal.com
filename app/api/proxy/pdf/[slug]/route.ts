@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
+import { API_BASE } from "@/lib/api"
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params
-  const apiBase = process.env.API_URL ?? "https://api.walkthroughnepal.com"
-  const url = `${apiBase}/api/v1/pdf/trip/${slug}`
+  const url = `${API_BASE}/api/v1/pdf/trip/${slug}`
 
   try {
     const res = await fetch(url)

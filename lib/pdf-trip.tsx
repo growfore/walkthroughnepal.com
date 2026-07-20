@@ -243,6 +243,7 @@ function parseInlineSegments(html: string): { text: string; bold?: boolean; ital
   return segments
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function InlineText({ html, style }: { html: string; style?: any }) {
   const clean = html.replace(/<[^>]*>/g, "").trim()
   if (!clean) return null

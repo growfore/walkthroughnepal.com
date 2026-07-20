@@ -97,7 +97,7 @@ export function FAQSection({
           {groups.map((group, i) => {
             const allOpen = (openValues[i] ?? []).length === group.faqs.length
             return (
-              <div key={i} id={`faq-group-${i}`}>
+              <div key={i} id={`faq-group-${i}`} className="scroll-mt-32">
                 <div className="mb-3 flex items-center justify-between">
                   <h3 className="text-lg font-bold text-navy">{group.category}</h3>
                   <button

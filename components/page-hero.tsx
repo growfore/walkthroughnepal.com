@@ -27,7 +27,7 @@ export function PageHero({ title, description, image, breadcrumbs }: PageHeroPro
   return (
     <section className="relative overflow-hidden bg-navy">
       <div className="absolute inset-0">
-        <Lightbox src={src} alt={title} />
+        <Lightbox src={src} alt={title} priority />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40" />
       </div>
       <div className="relative mx-auto max-w-3xl px-4 pb-16 pt-12 text-center text-white md:pb-28 md:pt-16">

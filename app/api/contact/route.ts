@@ -1,17 +1,7 @@
 import { NextResponse } from "next/server"
-
-const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
-const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET_KEY!
-
-async function verifyTurnstile(token: string): Promise<boolean> {
-  const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({ secret: TURNSTILE_SECRET, response: token }),
-  })
-  const data = await res.json()
-  return data.success === true
-}
+import { verifyTurnstile } from "@/lib/turnstile"
+import { API_BASE } from "@/lib/api"
+import { escapeHtml } from "@/lib/escape-html"
 
 export async function POST(req: Request) {
   const body = await req.json()
@@ -23,30 +13,41 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Turnstile verification failed" }, { status: 403 })
   }
 
+  const text = [
+    `Name:    ${name}`,
+    `Email:   ${email}`,
+    `Phone:   ${phone || "Not provided"}`,
+    ``,
+    `Message:`,
+    message,
+  ].join("\n")
+
+  const html = `
+    <h2>Contact Inquiry from ${escapeHtml(name)}</h2>
+    <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+    <p><strong>Phone:</strong> ${escapeHtml(phone || "Not provided")}</p>
+    <hr/>
+    <p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>
+  `
+
   const payload = {
-    from: email,
+    from: "noreply@walkthroughnepal.com",
     to: "info@walkthroughnepal.com",
     subject: subject || `Contact Inquiry from ${name}`,
-    text: [
-      `Name:    ${name}`,
-      `Email:   ${email}`,
-      `Phone:   ${phone || "Not provided"}`,
-      ``,
-      `Message:`,
-      message,
-    ].join("\n"),
+    text,
+    html,
   }
 
   try {
-    const res = await fetch(`${API}/api/v1/email/send`, {
+    const res = await fetch(`${API_BASE}/api/v1/email/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     })
     const data = await res.json()
-    return NextResponse.json(data, { status: res.status })
+    if (!res.ok) return NextResponse.json(data, { status: res.status })
+    return NextResponse.json(data)
   } catch {
-    console.log("Contact payload:", payload)
-    return NextResponse.json({ message: "Message received (fallback)" })
+    return NextResponse.json({ error: "Failed to send message. Please try again." }, { status: 502 })
   }
 }

@@ -4,8 +4,7 @@ import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { CheckCircle, Loader2, XCircle, Calendar, Users } from "lucide-react"
-
-const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.walkthroughnepal.com"
+import { PUBLIC_API_BASE } from "@/lib/api"
 
 type BookingData = {
   id: number
@@ -35,7 +34,7 @@ export default function BookingSuccess() {
   useEffect(() => {
     if (!sessionId) return
 
-    fetch(`${API}/api/v1/stripe/verify-session`, {
+    fetch(`${PUBLIC_API_BASE}/api/v1/stripe/verify-session`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sessionId }),

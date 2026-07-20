@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { getActivitiesByCategory } from "@/lib/api"
+import type { Activity } from "@/lib/types"
 import Link from "next/link"
 import { Mountain } from "lucide-react"
 import { TripCard } from "@/components/trip-card"
@@ -25,7 +26,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   const { slug } = await params
   const label = slug.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase())
 
-  let activities: any[] = []
+  let activities: Activity[] = []
 
   try {
     const res = await getActivitiesByCategory(slug)

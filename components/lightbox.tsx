@@ -1,9 +1,10 @@
 "use client"
 
 import { X } from "lucide-react"
+import Image from "next/image"
 import { useCallback, useEffect, useRef, useState } from "react"
 
-export function Lightbox({ src, alt }: { src: string; alt: string }) {
+export function Lightbox({ src, alt, priority }: { src: string; alt: string; priority?: boolean }) {
   const [open, setOpen] = useState(false)
   const closeRef = useRef<HTMLButtonElement>(null)
   const prevFocus = useRef<HTMLElement | null>(null)
@@ -35,10 +36,11 @@ export function Lightbox({ src, alt }: { src: string; alt: string }) {
 
   return (
     <>
-      <img src={src} alt={alt} className="absolute inset-0 h-full w-full object-cover cursor-pointer" onClick={() => setOpen(true)} />
+      <Image src={src} alt={alt} fill priority={priority} sizes="100vw" className="object-cover cursor-pointer" onClick={() => setOpen(true)} />
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={close} role="dialog" aria-modal="true" aria-label={alt}>
           <button ref={closeRef} onClick={close} className="absolute right-4 top-4 text-white/80 hover:text-white transition-colors" aria-label="Close"><X className="h-8 w-8" /></button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={src} alt={alt} className="max-h-full max-w-full object-contain p-4" onClick={(e) => e.stopPropagation()} />
         </div>
       )}

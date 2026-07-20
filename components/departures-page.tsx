@@ -4,8 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
 import { Calendar, Users, Loader2 } from "lucide-react"
 import type { Slot } from "@/lib/types"
-
-const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.walkthroughnepal.com"
+import { PUBLIC_API_BASE } from "@/lib/api"
 
 type Activity = { id: string; slug: string; title: string }
 type SlotRaw = {
@@ -44,7 +43,7 @@ export function DeparturesPage({
       params.set("page", String(pageNum))
       params.set("limit", "12")
 
-      const res = await fetch(`${API}/api/v1/slot?${params}`)
+      const res = await fetch(`${PUBLIC_API_BASE}/api/v1/slot?${params}`)
       const json = await res.json()
       const newSlots: SlotRaw[] = (json.data?.slots ?? []).filter((s: SlotRaw) => s.visible)
       setSlots(prev => append ? [...prev, ...newSlots] : newSlots)

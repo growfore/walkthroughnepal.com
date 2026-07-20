@@ -1,67 +1,139 @@
 "use client"
 
-import { Suspense, useState, useEffect } from "react"
+import { Suspense, useState, useEffect, useCallback } from "react"
 import { useSearchParams } from "next/navigation"
-import { Mail, Phone, MapPin, Send, CheckCircle2, Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { Mail, Phone, MapPin, Send, CheckCircle2, Loader2, Search } from "lucide-react"
 import { PageHero } from "@/components/page-hero"
 import { siteConfig } from "@/lib/siteConfig"
-
-const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.walkthroughnepal.com"
+import { API_BASE } from "@/lib/api"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 
 type Activity = { id: number; slug: string; title: string }
+
+const formSchema = z.object({
+  fullName: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().optional(),
+  destination: z.string().optional(),
+  groupSize: z.string().optional(),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+})
+
+type FormValues = z.infer<typeof formSchema>
+
+function TripCombobox({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [query, setQuery] = useState("")
+  const [options, setOptions] = useState<Activity[]>([])
+  const [loading, setLoading] = useState(false)
+  const [open, setOpen] = useState(false)
+
+  const search = useCallback(async (q: string) => {
+    if (q.length < 2) { setOptions([]); return }
+    setLoading(true)
+    try {
+      const res = await fetch(`${API_BASE}/api/v1/activity?search=${encodeURIComponent(q)}&limit=10`)
+      const json = await res.json()
+      setOptions((json.data ?? []).map((a: Activity) => ({ id: a.id, slug: a.slug, title: a.title })).sort((a: Activity, b: Activity) => a.title.localeCompare(b.title)))
+    } catch { setOptions([]) }
+    setLoading(false)
+  }, [])
+
+  useEffect(() => {
+    const t = setTimeout(() => search(query), 300)
+    return () => clearTimeout(t)
+  }, [query, search])
+
+  return (
+    <div className="relative">
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <input
+          type="text"
+          value={value || query}
+          onChange={(e) => { setQuery(e.target.value); if (value) onChange(""); setOpen(true) }}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setTimeout(() => setOpen(false), 200)}
+          placeholder="Search for a trip..."
+          className="w-full rounded-lg border border-border bg-background px-4 py-2.5 pl-9 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20"
+        />
+        {loading && <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />}
+      </div>
+      {open && options.length > 0 && (
+        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+          {options.map((a) => (
+            <button
+              key={a.id}
+              type="button"
+              onMouseDown={(e) => { e.preventDefault(); onChange(a.title); setQuery(""); setOpen(false) }}
+              className={`w-full px-4 py-2.5 text-left text-sm transition hover:bg-accent/20 ${value === a.title ? "bg-accent/30 font-semibold text-navy" : "text-foreground"}`}
+            >
+              {a.title}
+            </button>
+          ))}
+        </div>
+      )}
+      {open && query.length >= 2 && !loading && options.length === 0 && (
+        <div className="absolute z-50 mt-1 w-full rounded-lg border border-border bg-card p-4 text-center text-sm text-muted-foreground shadow-lg">
+          No trips found. Try a different search.
+        </div>
+      )}
+      {value && (
+        <button type="button" onClick={() => { onChange(""); setQuery("") }} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-orange">
+          Clear
+        </button>
+      )}
+    </div>
+  )
+}
 
 function InquiryForm() {
   const searchParams = useSearchParams()
   const tripSlug = searchParams.get("trip")
 
-  const [activities, setActivities] = useState<Activity[]>([])
-  const [activitiesLoading, setActivitiesLoading] = useState(true)
-  const [fullName, setFullName] = useState("")
-  const [email, setEmail] = useState("")
-  const [phone, setPhone] = useState("")
-  const [selectedTrip, setSelectedTrip] = useState("")
-  const [groupSize, setGroupSize] = useState("")
-  const [message, setMessage] = useState("")
-  const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState("")
 
-  useEffect(() => {
-    fetch(`${API}/api/v1/activity?page=1&limit=100`)
-      .then((r) => r.json())
-      .then((json) => {
-        const items: Activity[] = (json.data ?? []).map((a: Activity) => ({
-          id: a.id, slug: a.slug, title: a.title,
-        })).sort((a: Activity, b: Activity) => a.title.localeCompare(b.title))
-        setActivities(items)
-        if (tripSlug) {
-          const match = items.find((a) => a.slug === tripSlug)
-          if (match) setSelectedTrip(match.title)
-        }
-      })
-      .catch(() => {})
-      .finally(() => setActivitiesLoading(false))
-  }, [tripSlug])
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { fullName: "", email: "", phone: "", destination: "", groupSize: "", message: "" },
+  })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+  useEffect(() => {
+    if (tripSlug) {
+      fetch(`${API_BASE}/api/v1/activity?search=${encodeURIComponent(tripSlug)}&limit=1`)
+        .then((r) => r.json())
+        .then((json) => {
+          const match = (json.data ?? []).find((a: Activity) => a.slug === tripSlug)
+          if (match) form.setValue("destination", match.title)
+        })
+        .catch(() => {})
+    }
+  }, [tripSlug, form])
+
+  async function onSubmit(data: FormValues) {
     setError("")
     try {
-      const formEl = e.currentTarget as HTMLFormElement
-      const token = (formEl.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
+      const formEl = document.querySelector("form")
+      const token = (formEl?.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
       if (!token) throw new Error("Verification required")
       const res = await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullName, email, phone, destination: selectedTrip, groupSize, message, "cf-turnstile-response": token }),
+        body: JSON.stringify({ ...data, "cf-turnstile-response": token }),
       })
-      if (!res.ok) throw new Error("Failed to send inquiry")
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.error || "Failed to send inquiry")
+      }
       setSent(true)
-    } catch {
-      setError("Something went wrong. Please try again or email us directly.")
-    } finally {
-      setLoading(false)
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Something went wrong. Please try again or email us directly.")
     }
   }
 
@@ -84,62 +156,74 @@ function InquiryForm() {
       <div className="mx-auto grid max-w-5xl gap-12 px-4 lg:grid-cols-5">
         <div className="lg:col-span-3">
           <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
-            {error && (
-              <div className="mb-6 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
-            )}
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-navy">Full Name <span className="text-orange">*</span></label>
-                  <input required value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20" placeholder="Your name" />
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                {error && (
+                  <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</div>
+                )}
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <FormField control={form.control} name="fullName" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold text-navy">Full Name <span className="text-orange">*</span></FormLabel>
+                      <FormControl><Input placeholder="Your name" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField control={form.control} name="email" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold text-navy">Email <span className="text-orange">*</span></FormLabel>
+                      <FormControl><Input type="email" placeholder="your@email.com" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
                 </div>
-                <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-navy">Email <span className="text-orange">*</span></label>
-                  <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20" placeholder="your@email.com" />
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <FormField control={form.control} name="phone" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold text-navy">Phone</FormLabel>
+                      <FormControl><Input type="tel" placeholder="+977 ..." {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField control={form.control} name="destination" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold text-navy">Trip</FormLabel>
+                      <FormControl>
+                        <TripCombobox value={field.value ?? ""} onChange={field.onChange} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
                 </div>
-              </div>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-navy">Phone</label>
-                  <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20" placeholder="+977 ..." />
-                </div>
-                <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-navy">Trip</label>
-                  <select
-                    value={selectedTrip}
-                    onChange={(e) => setSelectedTrip(e.target.value)}
-                    className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20"
-                  >
-                    <option value="">{activitiesLoading ? "Loading..." : "Select a trip..."}</option>
-                    {activities.map((a) => (
-                      <option key={a.id} value={a.title}>{a.title}</option>
-                    ))}
-                    <option value="__other">Other (not listed)</option>
-                  </select>
-                </div>
-              </div>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-navy">Group Size</label>
-                  <select value={groupSize} onChange={(e) => setGroupSize(e.target.value)} className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20">
-                    <option value="">Select...</option>
-                    <option value="1">1 (Solo)</option>
-                    <option value="2">2</option>
-                    <option value="3-5">3–5</option>
-                    <option value="6-10">6–10</option>
-                    <option value="11+">11+</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="mb-1.5 block text-sm font-semibold text-navy">Message <span className="text-orange">*</span></label>
-                <textarea required value={message} onChange={(e) => setMessage(e.target.value)} rows={4} className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20" placeholder="Tell us about your trip ideas..." />
-              </div>
-              <button type="submit" disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-6 py-3 text-sm font-semibold text-orange-foreground transition-all hover:opacity-90 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50">
-                {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Sending...</> : <><Send className="h-4 w-4" /> Send Inquiry</>}
-              </button>
-              <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
-            </form>
+                <FormField control={form.control} name="groupSize" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-semibold text-navy">Group Size</FormLabel>
+                    <FormControl>
+                      <select value={field.value ?? ""} onChange={field.onChange} className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20">
+                        <option value="">Select...</option>
+                        <option value="1">1 (Solo)</option>
+                        <option value="2">2</option>
+                        <option value="3-5">3–5</option>
+                        <option value="6-10">6–10</option>
+                        <option value="11+">11+</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="message" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-semibold text-navy">Message <span className="text-orange">*</span></FormLabel>
+                    <FormControl><Textarea rows={4} placeholder="Tell us about your trip ideas..." className="resize-y" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <Button type="submit" disabled={form.formState.isSubmitting} className="w-full bg-orange text-orange-foreground hover:bg-orange/90">
+                  {form.formState.isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Sending...</> : <><Send className="h-4 w-4" /> Send Inquiry</>}
+                </Button>
+                <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
+              </form>
+            </Form>
           </div>
         </div>
 
@@ -174,22 +258,10 @@ function InquiryForm() {
           <div className="rounded-lg border border-border bg-card p-6">
             <h4 className="text-sm font-bold text-navy">Why Book With Us?</h4>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
-                Authentic local expertise
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
-                Handcrafted itineraries
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
-                Best price guarantee
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
-                24/7 support during your trip
-              </li>
+              <li className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" /> Authentic local expertise</li>
+              <li className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" /> Handcrafted itineraries</li>
+              <li className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" /> Best price guarantee</li>
+              <li className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" /> 24/7 support during your trip</li>
             </ul>
           </div>
         </div>

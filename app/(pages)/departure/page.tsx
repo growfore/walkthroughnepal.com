@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
 import { PageHero } from "@/components/page-hero"
 import { DeparturesPage } from "@/components/departures-page"
-
-const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
+import { API_BASE } from "@/lib/api"
 
 export const revalidate = 3600
 
@@ -33,8 +32,8 @@ export default async function BookingPage() {
 
   try {
     const [actRes, slotRes] = await Promise.all([
-      fetch(`${API}/api/v1/activity?page=1&limit=100`, { next: { revalidate: 3600 } }),
-      fetch(`${API}/api/v1/slot?limit=500`, { next: { revalidate: 3600 } }),
+      fetch(`${API_BASE}/api/v1/activity?page=1&limit=100`, { next: { revalidate: 3600 } }),
+      fetch(`${API_BASE}/api/v1/slot?limit=500`, { next: { revalidate: 3600 } }),
     ])
     const [actJson, slotJson] = await Promise.all([actRes.json(), slotRes.json()])
 

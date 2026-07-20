@@ -1,8 +1,10 @@
 "use client"
 
 import { Menu, X, Mail, Phone } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { useState, useEffect } from "react"
+import { siteConfig } from "@/lib/siteConfig"
 
 const navLinks = [
   { label: "Treks", href: "#" },
@@ -57,16 +59,16 @@ export function Nav() {
           </div>
           <div className="flex items-center gap-6">
             <a
-              href="tel:+9779856085151"
+              href={`tel:${siteConfig.phoneNumbers[0].tel ?? siteConfig.whatsAppNumber}`}
               className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-orange"
             >
-              <Phone className="h-4 w-4" /> +977 984 123 4567
+              <Phone className="h-4 w-4" /> {siteConfig.phoneNumbers[0].phone}
             </a>
             <a
-              href="mailto:info@walkthroughnepal.com"
+              href={`mailto:${siteConfig.email}`}
               className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-orange"
             >
-              <Mail className="h-4 w-4" /> info@walkthroughnepal.com
+              <Mail className="h-4 w-4" /> {siteConfig.email}
             </a>
           </div>
         </div>
@@ -76,9 +78,12 @@ export function Nav() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 md:px-8">
         <div className="flex flex-1">
           <Link href="/">
-            <img
+            <Image
               src="/logo-july-6.png"
               alt="Walk Through Nepal"
+              width={56}
+              height={56}
+              priority
               className="h-14 w-auto p-2"
             />
           </Link>

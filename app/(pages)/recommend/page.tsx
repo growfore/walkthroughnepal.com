@@ -7,8 +7,7 @@ import { TripResultCard } from "@/components/recommend/trip-result-card"
 import { LeadForm } from "@/components/recommend/lead-form"
 import { scoreTrips } from "@/lib/recommendation-engine"
 import type { Activity, QuizAnswers, RecommendationResult, TravelerType, DurationBucket, ActivityLevel, BudgetStyle, Season } from "@/lib/types"
-
-const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.walkthroughnepal.com"
+import { PUBLIC_API_BASE } from "@/lib/api"
 const STORAGE_KEY = "wn-recommend-quiz"
 
 const STEPS = [
@@ -92,7 +91,7 @@ function Progress({ current, total }: { current: number; total: number }) {
 }
 
 async function fetchTrips(): Promise<Activity[]> {
-  const res = await fetch(`${API}/api/v1/activity?limit=200`)
+  const res = await fetch(`${PUBLIC_API_BASE}/api/v1/activity?limit=200`)
   if (!res.ok) throw new Error(`API ${res.status}`)
   const json = await res.json()
   return json.data ?? []

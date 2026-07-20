@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { PageHero } from "@/components/page-hero"
 import { SectionHeader } from "@/components/section-header"
 import { Users, MapPin, Shield, HeartHandshake } from "lucide-react"
@@ -110,18 +111,18 @@ export default async function AboutPage() {
               Let our experts craft the perfect itinerary for your Himalayan adventure.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <a
+              <Link
                 href="/explore"
                 className="rounded-full bg-orange px-6 py-3 font-semibold text-orange-foreground hover:opacity-90 transition"
               >
                 Browse Trips
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/design-your-trip"
                 className="rounded-full border border-white/50 px-6 py-3 font-semibold text-white hover:bg-white/10 transition"
               >
                 Plan Your Trip
-              </a>
+              </Link>
             </div>
           </div>
         </div>

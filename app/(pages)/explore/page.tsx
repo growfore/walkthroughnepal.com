@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { getActivities, getTripCategories } from "@/lib/api"
+import type { Activity } from "@/lib/types"
 import Link from "next/link"
 import { Mountain } from "lucide-react"
 import { TripCard } from "@/components/trip-card"
@@ -19,7 +20,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
   const categoryFilter = params.category || ""
 
   let categories: { handle: string; name: string }[] = []
-  let activities: any[] = []
+  let activities: Activity[] = []
   let totalCount = 0
   let totalPages = 1
 

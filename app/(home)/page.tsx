@@ -27,7 +27,6 @@ export const metadata: Metadata = {
 }
 import {
   getFeaturedTags,
-  getTestimonials,
   getTripCategories,
   getPublishedPosts,
   img,
@@ -40,6 +39,7 @@ import { SearchBox } from "@/components/search-box"
 import { BlogCard } from "@/components/blog-card"
 import { StatBar } from "@/components/stat-bar"
 import { TestimonialCard } from "@/components/testimonial-card"
+import { siteConfig } from "@/lib/siteConfig"
 
 export const dynamic = "force-dynamic"
 
@@ -293,13 +293,13 @@ export default async function HomePage() {
             <p className="mt-6 font-bold text-navy">Need Assistance? Call Us.</p>
             <div className="mt-4 flex flex-wrap gap-4">
               <a
-                href="tel:+9779856085151"
+                href={`tel:${siteConfig.phoneNumbers[0].tel ?? siteConfig.whatsAppNumber}`}
                 className="flex items-center gap-3 rounded-lg border border-border bg-card px-6 py-3 font-bold text-navy hover:border-[#25D366]"
               >
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#25D366]">
                   <MessageCircle className="h-4 w-4 text-white" />
                 </span>
-                +977 984 123 4567
+                {siteConfig.phoneNumbers[0].phone}
               </a>
               <Link
                 href="/design-your-trip"

@@ -15,7 +15,7 @@ export function decodeHtmlEntities(html: string): string {
 }
 
 export function renderRichText(html: string): string {
-  let out = html ?? ""
+  let out = (html ?? "")
     .replace(/<pre><code>/gi, '<div class="not-prose">')
     .replace(/<\/code><\/pre>/gi, "</div>")
     .replace(/<table/gi, '<table class="cms-table"')
@@ -24,8 +24,8 @@ export function renderRichText(html: string): string {
     /(<table[^>]*>)([\s\S]*?<tr[^>]*>)([\s\S]*?)(<\/tr>)/i,
     (m, tbl, openTr, cells, closeTr) => {
       const styled = cells
-        .replace(/<th([^>]*)>/gi, '<th$1 style="background:#0F2B3D;color:white;font-weight:600;padding:4px 14px">')
-        .replace(/<td([^>]*)>/gi, '<td$1 style="background:#0F2B3D;color:white;font-weight:600;padding:4px 14px">')
+        .replace(/<th([^>]*)>/gi, '<th$1 style="background:#0F2B3D;color:white;font-weight:600">')
+        .replace(/<td([^>]*)>/gi, '<td$1 style="background:#0F2B3D;color:white;font-weight:600">')
       return tbl + openTr + styled + closeTr
     },
   )

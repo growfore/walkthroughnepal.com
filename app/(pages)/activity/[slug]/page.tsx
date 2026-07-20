@@ -1,4 +1,5 @@
 import { getActivitiesByType, getTripTypes } from "@/lib/api"
+import type { Activity } from "@/lib/types"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
@@ -36,7 +37,7 @@ export default async function ActivitiesByTypePage({ params }: { params: Promise
     notFound()
   }
 
-  let activities: any[] = []
+  let activities: Activity[] = []
   try {
     const res = await getActivitiesByType(slug)
     activities = res.data ?? []

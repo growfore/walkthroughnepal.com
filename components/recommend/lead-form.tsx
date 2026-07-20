@@ -16,14 +16,14 @@ export function LeadForm({ tripTitle }: LeadFormProps) {
     e.preventDefault()
     setLoading(true)
     try {
-      const form = e.currentTarget as HTMLFormElement
-      const token = (form.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
+      const el = e.currentTarget as HTMLFormElement
+      const token = (el.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
       if (!token) throw new Error("Verification required")
       await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: form.name,
+          fullName: form.name,
           email: form.email,
           phone: form.whatsapp,
           country: form.country,

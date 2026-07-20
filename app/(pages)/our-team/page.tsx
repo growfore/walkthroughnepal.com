@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { getTeamMembers, img } from "@/lib/api"
+import { getTeamMembers } from "@/lib/api"
 import type { TeamMember } from "@/lib/types"
 import { PageHero } from "@/components/page-hero"
 
@@ -16,9 +16,19 @@ export default async function OurTeamPage() {
 
   try {
     const res = await getTeamMembers()
-    const grouped = res.data
-    if (grouped && typeof grouped === "object") {
-      departments = Object.values(grouped as Record<string, TeamMember[]>).map(
+    const raw = res.data
+    if (Array.isArray(raw)) {
+      const grouped = raw.reduce<Record<string, TeamMember[]>>((acc, m) => {
+        const key = m.department?.name ?? "Other"
+        ;(acc[key] ??= []).push(m)
+        return acc
+      }, {})
+      departments = Object.values(grouped).map((members) => ({
+        name: members[0]?.department?.name ?? "Other",
+        members: members.map((m) => ({ ...m, department: null })),
+      }))
+    } else if (raw && typeof raw === "object") {
+      departments = Object.values(raw as Record<string, TeamMember[]>).map(
         (members) => ({
           name: members[0]?.department?.name ?? "Other",
           members: members.map((m) => ({ ...m, department: null })),

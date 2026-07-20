@@ -1,5 +1,6 @@
 import { cache } from "react"
 import { MenuController } from "./menu-controller"
+import { API_BASE } from "@/lib/api"
 
 type MenuItem = {
   id: string
@@ -15,11 +16,9 @@ type MenuData = {
   }
 }
 
-const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
-
 const fetchMenu = cache(async () => {
   try {
-    const res = await fetch(`${API}/api/v1/menu`, { next: { revalidate: 60 } })
+    const res = await fetch(`${API_BASE}/api/v1/menu`, { next: { revalidate: 60 } })
     if (!res.ok) return []
     const data: MenuData = await res.json()
     return data?.data?.items ?? []

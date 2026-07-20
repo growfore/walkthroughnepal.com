@@ -3,6 +3,7 @@ import { getSiteConfig } from "@/lib/api"
 
 export const maxDuration = 30
 
+// ponytail: browser wrapper — both playwright & puppeteer have the same page API
 async function launchBrowser() {
   if (process.platform === "linux") {
     const puppeteer = await import("puppeteer-core")
@@ -10,31 +11,24 @@ async function launchBrowser() {
     return puppeteer.default.launch({
       args: chromium.args,
       executablePath: await chromium.executablePath(),
-      headless: "shell" as any,
+      headless: "shell",
     })
   }
   const { chromium } = await import("playwright")
   return chromium.launch({ headless: true })
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function newPage(browser: any) {
-  if (browser.newPage) {
-    const p = await browser.newPage()
-    return {
-      goto: (url: string, opts: any) => p.goto(url, opts),
-      evaluate: (fn: any, arg?: any) => p.evaluate(fn, arg),
-      addStyleTag: (opts: any) => p.addStyleTag(opts),
-      pdf: (opts: any) => p.pdf(opts),
-      close: () => p.close?.(),
-    }
-  }
-  // puppeteer
-  const p = await browser.newPage()
+  const p = browser.newPage
+    ? await browser.newPage()
+    : await browser.newPage()
   return {
-    goto: (url: string, opts: any) => p.goto(url, opts),
-    evaluate: (fn: any, arg?: any) => p.evaluate(fn, arg),
-    addStyleTag: (opts: any) => p.addStyleTag(opts),
-    pdf: (opts: any) => p.pdf(opts),
+    goto: (url: string, opts?: Record<string, unknown>) => p.goto(url, opts),
+    evaluate: <T,>(fn: (...args: unknown[]) => T, arg?: unknown) => p.evaluate(fn, arg),
+    addStyleTag: (opts: { content: string }) => p.addStyleTag(opts),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    pdf: (opts?: Record<string, unknown>): Promise<any> => p.pdf(opts),
     close: () => p.close?.(),
   }
 }
@@ -151,7 +145,7 @@ export async function GET(req: NextRequest) {
     })
   } catch (e) {
     console.error("PDF error:", e)
-    return NextResponse.json({ error: "failed to generate PDF", detail: String(e) }, { status: 500 })
+    return NextResponse.json({ error: "Failed to generate PDF" }, { status: 500 })
   } finally {
     await browser?.close()
   }

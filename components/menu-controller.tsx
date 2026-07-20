@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu, X, Mail, Phone, ChevronDown, LucidePlus } from "lucide-react"
 import { MobileMenuOverlay } from "./mobile-menu-overlay"
+import { siteConfig } from "@/lib/siteConfig"
 
 type MenuItem = {
   id: string
@@ -105,16 +106,16 @@ export function MenuController({ items }: MenuControllerProps) {
           </div>
           <div className="flex items-center gap-6">
             <a
-              href="tel:+9779856085151"
+              href={`tel:${siteConfig.phoneNumbers[0].tel ?? siteConfig.whatsAppNumber}`}
               className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-orange"
             >
-              <Phone className="h-4 w-4" /> +977 984 123 4567
+              <Phone className="h-4 w-4" /> {siteConfig.phoneNumbers[0].phone}
             </a>
             <a
-              href="mailto:info@walkthroughnepal.com"
+              href={`mailto:${siteConfig.email}`}
               className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-orange"
             >
-              <Mail className="h-4 w-4" /> info@walkthroughnepal.com
+              <Mail className="h-4 w-4" /> {siteConfig.email}
             </a>
           </div>
         </div>

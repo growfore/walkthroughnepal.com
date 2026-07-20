@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Calendar, Users, Compass, CheckCircle2 } from "lucide-react"
+import { Calendar, Users, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -25,11 +25,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { toast } from "react-toastify"
-import { siteConfig } from "@/lib/siteConfig"
+import { DURATION_VALUES, GROUP_OPTIONS } from "@/lib/forms"
 import type { Slot } from "@/lib/types"
-
-const DURATION_VALUES = ["1–3 days", "4–7 days", "8–10 days", "11–14 days", "15–20 days", "21+ days"] as const
-const GROUP_OPTIONS = [{ value: "solo", label: "Solo" }, { value: "couple", label: "Couple" }, { value: "family", label: "Family" }, { value: "friends", label: "Friends" }] as const
 
 const formSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
@@ -54,6 +51,7 @@ export function DeparturesSection({ slots, slug, tripTitle, tab: tabProp, onTabC
   const setTab = onTabChange ?? setInternalTab
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const formRef = useRef<HTMLFormElement>(null)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema) as never,
@@ -68,29 +66,24 @@ export function DeparturesSection({ slots, slug, tripTitle, tab: tabProp, onTabC
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true)
     try {
-      const token = document.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]')?.value
-      if (!token) throw new Error("Verification required")
-      const verify = await fetch("/api/turnstile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
-      })
-      const verifyData = await verify.json()
-      if (!verifyData.success) throw new Error("Verification failed")
-      const res = await fetch("https://api.walkthroughnepal.com/api/v1/email/send", {
+      const token = formRef.current?.elements.namedItem("cf-turnstile-response")
+      const tokenValue = token instanceof HTMLInputElement ? token.value : undefined
+      if (!tokenValue) throw new Error("Verification required")
+      const res = await fetch("/api/private-tour", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          from: data.email, to: siteConfig.email,
-          subject: `Private Tour Request: ${tripTitle} — ${data.fullName}`,
-          text: [
-            `── Personal Info ──`, `Name: ${data.fullName}`, `Email: ${data.email}`, `Phone: ${data.phone || "N/A"}`, ``,
-            `── Trip Details ──`, `Trip: ${tripTitle}`, `Duration: ${data.duration}`, `Start: ${data.startDate}`,
-            `Group: ${data.groupType}`, `Travellers: ${data.numberOfTravellers || "N/A"}`, ``,
-            `── Other ──`, data.otherMentions || "None",
-          ].join("\n"),
+          fullName: data.fullName,
+          email: data.email,
+          phone: data.phone,
+          tripTitle,
+          duration: data.duration,
+          startDate: data.startDate,
+          groupType: data.groupType,
+          numberOfTravellers: data.numberOfTravellers,
+          otherMentions: data.otherMentions,
+          "cf-turnstile-response": tokenValue,
         }),
-        cache: "no-store",
       })
       if (!res.ok) throw new Error(`API ${res.status}`)
       setSubmitted(true)
@@ -164,64 +157,45 @@ export function DeparturesSection({ slots, slug, tripTitle, tab: tabProp, onTabC
             </div>
           ) : (
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
-                {/* Contact */}
-                <Section icon={<Compass className="h-4 w-4" />} title="Contact Details" desc="How can we reach you?">
-                  <div className="grid gap-4">
+              <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 p-4">
+                <div className="grid sm:grid-cols-3 gap-3">
+                  <div className="space-y-3">
                     <FormField control={form.control} name="fullName" render={({ field }) => (
-                      <FormItem><FormLabel className="text-sm font-semibold text-ink">Full Name *</FormLabel><FormControl><Input placeholder="Your name" {...field} /></FormControl><FormMessage /></FormItem>
+                      <FormItem><FormLabel className="text-xs font-semibold text-ink">Name *</FormLabel><FormControl><Input className="h-9 text-sm w-full" placeholder="Your name" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
+                    <FormField control={form.control} name="duration" render={({ field }) => (
+                      <FormItem><FormLabel className="text-xs font-semibold text-ink">Duration *</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger size="sm" className="text-sm w-full"><SelectValue placeholder="Days" /></SelectTrigger></FormControl><SelectContent>{DURATION_VALUES.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+                    )} />
+                  </div>
+                  <div className="space-y-3">
                     <FormField control={form.control} name="email" render={({ field }) => (
-                      <FormItem><FormLabel className="text-sm font-semibold text-ink">Email *</FormLabel><FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl><FormMessage /></FormItem>
+                      <FormItem><FormLabel className="text-xs font-semibold text-ink">Email *</FormLabel><FormControl><Input className="h-9 text-sm w-full" type="email" placeholder="you@example.com" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
+                    <FormField control={form.control} name="startDate" render={({ field }) => (
+                      <FormItem><FormLabel className="text-xs font-semibold text-ink">Start Date *</FormLabel><FormControl><Input className="h-9 text-sm w-full [&::-webkit-calendar-picker-indicator]:py-1" type="date" min={new Date().toISOString().split("T")[0]} {...field} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                  </div>
+                  <div className="space-y-3">
                     <FormField control={form.control} name="phone" render={({ field }) => (
-                      <FormItem><FormLabel className="text-sm font-semibold text-ink">Phone</FormLabel><FormControl><Input placeholder="+1 234 567 890" {...field} /></FormControl><FormMessage /></FormItem>
+                      <FormItem><FormLabel className="text-xs font-semibold text-ink">Phone</FormLabel><FormControl><Input className="h-9 text-sm w-full" placeholder="+1 234 567 890" {...field} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="groupType" render={({ field }) => (
+                      <FormItem><FormLabel className="text-xs font-semibold text-ink">Group *</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger size="sm" className="text-sm w-full"><SelectValue placeholder="Who?" /></SelectTrigger></FormControl><SelectContent>{GROUP_OPTIONS.map((opt) => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                     )} />
                   </div>
-                </Section>
-
-                {/* Trip Basics */}
-                <Section icon={<Calendar className="h-4 w-4" />} title="Trip Basics" desc="When and how long?">
-                  <div>
-                    <label className="text-sm font-semibold text-ink">Trip</label>
-                    <Select disabled value={tripTitle}>
-                      <FormControl><SelectTrigger className="w-full"><SelectValue /></SelectTrigger></FormControl>
-                      <SelectContent><SelectItem value={tripTitle}>{tripTitle}</SelectItem></SelectContent>
-                    </Select>
-                  </div>
-                  <FormField control={form.control} name="duration" render={({ field }) => (
-                    <FormItem><FormLabel className="text-sm font-semibold text-ink">Duration *</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className="w-full"><SelectValue placeholder="How many days?" /></SelectTrigger></FormControl><SelectContent>{DURATION_VALUES.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
-                  )} />
-                  <FormField control={form.control} name="startDate" render={({ field }) => (
-                    <FormItem><FormLabel className="text-sm font-semibold text-ink">Preferred Start Date *</FormLabel><FormControl><Input type="date" min={new Date().toISOString().split("T")[0]} {...field} /></FormControl><FormMessage /></FormItem>
-                  )} />
-                </Section>
-
-                {/* Group */}
-                <Section icon={<Users className="h-4 w-4" />} title="Your Group" desc="Who's going?">
-                  <FormField control={form.control} name="groupType" render={({ field }) => (
-                    <FormItem><FormLabel className="text-sm font-semibold text-ink">Group Type *</FormLabel><div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-1">{GROUP_OPTIONS.map((opt) => (<button type="button" key={opt.value} onClick={() => field.onChange(opt.value)} className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all text-sm font-medium ${field.value === opt.value ? "border-orange bg-orange/5 text-orange" : "border-border text-muted-foreground hover:border-border"}`}>{opt.label}</button>))}</div><FormMessage /></FormItem>
-                  )} />
-                  {(groupType === "family" || groupType === "friends") && (
-                    <FormField control={form.control} name="numberOfTravellers" render={({ field }) => (
-                      <FormItem><FormLabel className="text-sm font-semibold text-ink">Number of Travellers *</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className="w-full"><SelectValue placeholder="How many people?" /></SelectTrigger></FormControl><SelectContent>{["1", "2", "3", "4", "5–7", "8–10", "11–15", "16+"].map((n) => <SelectItem key={n} value={n}>{n} {n === "1" ? "person" : "people"}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
-                    )} />
-                  )}
-                </Section>
-
-                {/* Special Requests */}
-                <Section icon={<Compass className="h-4 w-4" />} title="Special Requests" desc="Anything else we should know?">
-                  <FormField control={form.control} name="otherMentions" render={({ field }) => (
-                    <FormItem><FormControl><Textarea rows={4} placeholder="Dietary restrictions, health conditions, celebrations..." {...field} /></FormControl><FormMessage /></FormItem>
-                  )} />
-                </Section>
-
-                <div className="px-6 pb-6 pt-2">
-                  <Button type="submit" disabled={isSubmitting} className="w-full bg-orange text-orange-foreground hover:bg-orange/90 py-6 text-base font-semibold">
-                    {isSubmitting ? "Sending..." : "Send Private Tour Request"}
-                  </Button>
-                  <div className="cf-turnstile mt-4" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
                 </div>
+                {(groupType === "family" || groupType === "friends") && (
+                  <FormField control={form.control} name="numberOfTravellers" render={({ field }) => (
+                    <FormItem><FormLabel className="text-xs font-semibold text-ink">Travellers *</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger size="sm" className="text-sm w-full"><SelectValue placeholder="How many?" /></SelectTrigger></FormControl><SelectContent>{["1", "2", "3", "4", "5–7", "8–10", "11–15", "16+"].map((n) => <SelectItem key={n} value={n}>{n} {n === "1" ? "person" : "people"}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+                  )} />
+                )}
+                <FormField control={form.control} name="otherMentions" render={({ field }) => (
+                  <FormItem><FormLabel className="text-xs font-semibold text-ink">Notes</FormLabel><FormControl><Textarea className="text-sm w-full" rows={2} placeholder="Dietary restrictions, health conditions, celebrations..." {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
+                <Button type="submit" disabled={isSubmitting} className="w-full bg-orange text-orange-foreground hover:bg-orange/90 h-9 text-sm font-semibold">
+                  {isSubmitting ? "Sending..." : "Send Request"}
+                </Button>
+                <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
               </form>
             </Form>
           )}
@@ -231,15 +205,4 @@ export function DeparturesSection({ slots, slug, tripTitle, tab: tabProp, onTabC
   )
 }
 
-function Section({ icon, title, desc, children }: { icon: React.ReactNode; title: string; desc: string; children: React.ReactNode }) {
-  return (
-    <div className="border-b border-border px-6 py-6 last:border-b-0">
-      <div className="flex items-center gap-2 mb-1">
-        <span className="text-orange">{icon}</span>
-        <h3 className="text-base font-bold text-navy">{title}</h3>
-      </div>
-      <p className="text-xs text-muted-foreground mb-4">{desc}</p>
-      <div className="space-y-4">{children}</div>
-    </div>
-  )
-}
+

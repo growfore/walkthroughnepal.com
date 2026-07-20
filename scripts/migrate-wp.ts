@@ -64,6 +64,7 @@ async function uploadImage(url: string, label: string): Promise<string | null> {
 async function main() {
   // 1. Fetch WP posts
   console.log("Fetching WP posts...")
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let posts: any[] = await fetch(`${WP_API}/posts?per_page=100&_embed=1`).then((r) => r.json())
 
   // Optional: filter by slug argument

@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { Clock, Mountain, Star, CheckCircle2, ArrowRight } from "lucide-react"
 import { img } from "@/lib/api"
@@ -24,10 +25,12 @@ export function TripResultCard({ activity, reasons, rank }: TripResultCardProps)
         </div>
       )}
       <div className="relative h-48 overflow-hidden">
-        <img
+        <Image
           src={img(activity.images?.[0])}
           alt={activity.title}
-          className="h-full w-full object-cover"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover"
         />
         <div className="absolute bottom-2 right-2 rounded-full bg-navy/90 px-3 py-1 text-xs font-bold text-white">
           #{rank}

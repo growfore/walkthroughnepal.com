@@ -3,7 +3,6 @@ import {
   Mountain,
   Clock,
   ChevronRight,
-  Star,
   Calendar,
   Users,
   Home as HomeIcon,
@@ -17,7 +16,6 @@ import {
   MessageSquare,
   Utensils,
   Bus,
-  Sparkles,
   DollarSign,
   Map,
   Backpack,
@@ -31,6 +29,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getActivityBySlug, getTestimonials, getSlots } from "@/lib/api"
+import { siteConfig } from "@/lib/siteConfig"
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -51,7 +50,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 import { renderRichText } from "@/lib/html-decoder"
-import { resolveContentImages } from "@/lib/api"
+import { resolveContentImages, API_BASE } from "@/lib/api"
+import { parseListItems } from "@/lib/forms"
 import { StickyWrapper } from "@/components/sticky-wrapper"
 import { ItineraryList } from "@/components/itinerary-list"
 import { DownloadItineraryButton } from "@/components/download-itinerary-button"
@@ -61,7 +61,7 @@ import { AltitudeChart } from "@/components/altitude-chart"
 import { CustomizeTripCTA } from "@/components/customize-trip-cta"
 import { TripPageClient } from "@/components/trip-page-client"
 
-const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
+const API = API_BASE
 
 const packingIconMap: Record<string, LucideIcon> = {
   HelpCircle,
@@ -102,21 +102,21 @@ export default async function PackagePage({
     notFound()
   }
 
-  const rawItinerary = pkg.itinerary as any
+  const rawItinerary = pkg.itinerary as unknown
   const itineraryVariants: import("@/lib/types").ItineraryVariant[] =
     Array.isArray(rawItinerary) &&
     rawItinerary.length > 0 &&
-    !("days" in rawItinerary[0])
+    !("days" in (rawItinerary as Record<string, unknown>[])[0])
       ? [
           {
             id: "default",
             name: "Standard",
             description: "",
             isDefault: true,
-            days: rawItinerary,
+            days: rawItinerary as import("@/lib/types").ItineraryDay[],
           },
         ]
-      : rawItinerary
+      : rawItinerary as import("@/lib/types").ItineraryVariant[]
 
   const difficulty =
     pkg.difficultyLevel
@@ -282,26 +282,23 @@ export default async function PackagePage({
                 </h2>
                 <div className="mt-6 space-y-3">
                   {pkg.highlights
-                    .flatMap((h) => {
-                      const m = renderRichText(h).match(/<li>(.*?)<\/li>/gi)
-                      return m ? m.map((s) => s.replace(/<\/?li>/gi, "")) : [h]
-                    })
-                    .map((item, i) => (
-                      <div
-                        key={i}
-                        className="flex items-start gap-3 text-lg text-navy"
-                      >
-                        <Check className="mt-1.5 h-4 w-4 shrink-0 text-success" />
-                        <span
-                          className="wrap-break-word"
-                          dangerouslySetInnerHTML={{
-                            __html: item,
-                          }}
-                        />
-                      </div>
-                    ))}
-                </div>
+                  .flatMap((h) => parseListItems(renderRichText(h)))
+                  .map((item, i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-3 text-lg text-navy"
+                    >
+                      <Check className="mt-1.5 h-4 w-4 shrink-0 text-success" />
+                      <span
+                        className="wrap-break-word"
+                        dangerouslySetInnerHTML={{
+                          __html: item,
+                        }}
+                      />
+                    </div>
+                  ))}
               </div>
+            </div>
             )}
 
             {/* ── Reviews ── */}
@@ -386,10 +383,7 @@ export default async function PackagePage({
               </h2>
               <div className="mt-6 space-y-3">
                 {(pkg.inclusions ?? [])
-                  .flatMap((h) => {
-                    const m = renderRichText(h).match(/<li>(.*?)<\/li>/gi)
-                    return m ? m.map((s) => s.replace(/<\/?li>/gi, "")) : [h]
-                  })
+                  .flatMap((h) => parseListItems(renderRichText(h)))
                   .map((item, i) => (
                     <div key={i} className="flex items-start gap-3 text-lg text-navy">
                       <Check className="mt-1.5 h-4 w-4 shrink-0 text-success" />
@@ -406,10 +400,7 @@ export default async function PackagePage({
               </h2>
               <div className="mt-6 space-y-3">
                 {(pkg.exclusions ?? [])
-                  .flatMap((h) => {
-                    const m = renderRichText(h).match(/<li>(.*?)<\/li>/gi)
-                    return m ? m.map((s) => s.replace(/<\/?li>/gi, "")) : [h]
-                  })
+                  .flatMap((h) => parseListItems(renderRichText(h)))
                   .map((item, i) => (
                     <div key={i} className="flex items-start gap-3 text-lg text-navy">
                       <X className="mt-1.5 h-4 w-4 shrink-0 text-error" />
@@ -444,10 +435,7 @@ export default async function PackagePage({
                         </h3>
                         <div className="mt-2 space-y-2">
                           {cat.content
-                            .flatMap((h) => {
-                              const m = renderRichText(h).match(/<li>(.*?)<\/li>/gi)
-                              return m ? m.map((s) => s.replace(/<\/?li>/gi, "")) : [h]
-                            })
+                            .flatMap((h) => parseListItems(renderRichText(h)))
                             .map((item, j) => (
                               <div key={j} className="flex items-start gap-3 text-lg text-ink">
                                 <Check className="mt-1.5 h-4 w-4 shrink-0 text-muted-foreground" />
@@ -559,11 +547,11 @@ export default async function PackagePage({
                 </p>
                 <div className="mt-3 space-y-1 text-lg">
                   <div className="flex items-center gap-2 text-navy">
-                    <Phone className="h-4 w-4 text-orange" /> +977 984 123 4567
+                    <Phone className="h-4 w-4 text-orange" /> {siteConfig.phoneNumbers[0].phone}
                   </div>
                   <div className="flex items-center gap-2 text-navy">
                     <Mail className="h-4 w-4 text-orange" />{" "}
-                    info@walkthroughnepal.com
+                    {siteConfig.email}
                   </div>
                 </div>
                 <Link
