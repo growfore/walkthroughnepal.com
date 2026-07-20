@@ -156,7 +156,7 @@
 }
 
 .prose {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 .prose p {
   line-height: 1.375;
@@ -210,8 +210,10 @@
   vertical-align: middle;
 }
 @media (max-width: 768px) {
-  .prose {
+  .prose table {
+    display: block;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .prose th,
   .prose td {
