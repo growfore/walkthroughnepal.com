@@ -49,28 +49,30 @@ export function FooterNewsletter() {
           </div>
           <form
             onSubmit={handleSubmit}
-            className="flex w-full max-w-md gap-2"
+            className="flex w-full max-w-md flex-col gap-3"
           >
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              required
-              aria-label="Email address for newsletter"
-              className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white placeholder-white/40 outline-none focus:border-orange focus:ring-1 focus:ring-orange disabled:opacity-50"
-              disabled={status === "loading"}
-            />
-            <button
-              type="submit"
-              disabled={status === "loading"}
-              className="shrink-0 rounded-lg bg-orange px-5 py-2.5 text-sm font-semibold text-orange-foreground transition-colors hover:bg-orange/90 disabled:opacity-50"
-            >
-              {status === "loading" ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                "Subscribe"
-              )}
-            </button>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+                aria-label="Email address for newsletter"
+                className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white placeholder-white/40 outline-none focus:border-orange focus:ring-1 focus:ring-orange disabled:opacity-50"
+                disabled={status === "loading"}
+              />
+              <button
+                type="submit"
+                disabled={status === "loading"}
+                className="shrink-0 rounded-lg bg-orange px-5 py-2.5 text-sm font-semibold text-orange-foreground transition-colors hover:bg-orange/90 disabled:opacity-50"
+              >
+                {status === "loading" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Subscribe"
+                )}
+              </button>
+            </div>
             <div
               className="cf-turnstile"
               data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY}
