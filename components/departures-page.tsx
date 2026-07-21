@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Calendar, Users, Loader2 } from "lucide-react"
 import type { Slot } from "@/lib/types"
 import { PUBLIC_API_BASE } from "@/lib/api"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 type Activity = { id: string; slug: string; title: string }
 type SlotRaw = {
@@ -74,47 +75,56 @@ export function DeparturesPage({
         {/* Year */}
         <div className="min-w-[140px]">
           <label className="mb-1.5 block text-sm font-semibold text-navy">Year</label>
-          <select
+          <Select
             value={selectedYear}
-            onChange={(e) => { setSelectedYear(e.target.value); setSelectedMonth("") }}
-            className="w-full rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-navy/30 focus:outline-none focus:ring-2 focus:ring-navy/20"
+            onValueChange={(value) => { setSelectedYear(value); setSelectedMonth("") }}
           >
-            <option value="">All Years</option>
-            {filterMeta.years.map(y => (
-              <option key={y} value={y}>{y}</option>
-            ))}
-          </select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="All Years" />
+            </SelectTrigger>
+            <SelectContent>
+              {filterMeta.years.map(y => (
+                <SelectItem key={y} value={y}>{y}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Month */}
         <div className="min-w-[160px]">
           <label className="mb-1.5 block text-sm font-semibold text-navy">Month</label>
-          <select
+          <Select
             value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="w-full rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-navy/30 focus:outline-none focus:ring-2 focus:ring-navy/20"
+            onValueChange={setSelectedMonth}
           >
-            <option value="">All Months</option>
-            {filterMeta.months.map(m => (
-              <option key={m} value={m.toString()}>{monthName(m)}</option>
-            ))}
-          </select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="All Months" />
+            </SelectTrigger>
+            <SelectContent>
+              {filterMeta.months.map(m => (
+                <SelectItem key={m} value={m.toString()}>{monthName(m)}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Duration */}
         {filterMeta.days.length > 0 && (
           <div className="min-w-[160px]">
             <label className="mb-1.5 block text-sm font-semibold text-navy">Duration</label>
-            <select
+            <Select
               value={selectedDays ?? ""}
-              onChange={(e) => setSelectedDays(e.target.value || null)}
-              className="w-full rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-navy/30 focus:outline-none focus:ring-2 focus:ring-navy/20"
+              onValueChange={(value) => setSelectedDays(value || null)}
             >
-              <option value="">Any Duration</option>
-              {filterMeta.days.map(d => (
-                <option key={d} value={d}>{d} days</option>
-              ))}
-            </select>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Any Duration" />
+              </SelectTrigger>
+              <SelectContent>
+                {filterMeta.days.map(d => (
+                  <SelectItem key={d} value={String(d)}>{d} days</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         )}
       </div>
@@ -140,36 +150,41 @@ export function DeparturesPage({
             return (
               <div
                 key={slot.id}
-                className="flex items-center justify-between rounded-xl border border-border bg-card p-4 transition-all hover:border-navy/30 hover:shadow-sm"
+                className="rounded-xl border border-border bg-card p-4 transition-all hover:border-navy/30 hover:shadow-sm"
               >
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-navy/5">
-                    <Calendar className="h-5 w-5 text-navy" />
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-navy/5">
+                      <Calendar className="h-5 w-5 text-navy" />
+                    </div>
+                    <div className="min-w-0 break-words">
+                      <div className="font-semibold text-navy">
+                        {d.toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric", year: "numeric" })}
+                      </div>
+                      <div className="mt-0.5 text-sm text-muted-foreground">
+                        {slot.activity.title}
+                      </div>
+                      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+                        <span className="font-semibold text-orange">${slot.price}</span>
+                        <span>/ person</span>
+                        <span>{slot.days} days</span>
+                        <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> {slot.remainingSeats} {slot.remainingSeats === 1 ? "seat" : "seats"}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="font-semibold text-navy">
-                      {d.toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric", year: "numeric" })}
-                    </div>
-                    <div className="mt-0.5 text-sm text-muted-foreground">
-                      {slot.activity.title}
-                    </div>
-                    <div className="mt-0.5 flex items-center gap-3 text-sm text-muted-foreground">
-                      <span>${slot.price} / person</span>
-                      <span>{slot.days} days</span>
-                      <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> {slot.remainingSeats} {slot.remainingSeats === 1 ? "seat" : "seats"}</span>
-                    </div>
+                  <div className="shrink-0 sm:w-auto">
+                    {slot.remainingSeats < 1 ? (
+                      <span className="inline-flex w-full items-center justify-center rounded-lg bg-muted px-4 py-2.5 text-sm font-semibold text-muted-foreground cursor-not-allowed sm:w-auto">Full</span>
+                    ) : (
+                      <Link
+                        href={`/booking?trip=${slot.activity.slug}&slot=${slot.id}`}
+                        className="inline-flex w-full items-center justify-center rounded-lg bg-orange px-4 py-2.5 text-sm font-semibold text-orange-foreground transition-all hover:opacity-90 hover:shadow-md sm:w-auto"
+                      >
+                        Book Now
+                      </Link>
+                    )}
                   </div>
                 </div>
-                {slot.remainingSeats < 1 ? (
-                  <span className="inline-flex items-center rounded-lg bg-muted px-4 py-2 text-sm font-semibold text-muted-foreground cursor-not-allowed">Full</span>
-                ) : (
-                  <Link
-                    href={`/booking?trip=${slot.activity.slug}&slot=${slot.id}`}
-                    className="inline-flex items-center rounded-lg bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground transition-all hover:opacity-90 hover:shadow-md"
-                  >
-                    Book Now
-                  </Link>
-                )}
               </div>
             )
           })}

@@ -94,6 +94,11 @@ export default async function HomePage() {
     featuredSections = featuredTags
   } catch {}
 
+  const heroTag = featuredSections.find((t) => t.activity?.length)
+  const heroActivity = heroTag
+    ? { ...heroTag.activity[0], tag: heroTag.name.split("::")[0] || heroTag.name }
+    : null
+
   try {
     const { blogs } = await getPublishedPosts(1, 4)
     blogList = blogs.map((b) => ({
@@ -161,48 +166,83 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* ── Hero ── */}
-      <section className="relative h-screen w-full overflow-hidden">
+      <section className="relative h-[80vh] w-full overflow-hidden">
         <img
-          src="/manaslu-view.webp"
-          alt="Trekker in Himalayas"
+          src={heroActivity ? img(heroActivity.images?.[0]) ?? "/manaslu-view.webp" : "/manaslu-view.webp"}
+          alt={heroActivity?.title ?? "Nepal Adventures"}
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" />
-        <div className="relative mx-auto flex h-full max-w-7xl items-center px-4">
-          <div className="max-w-2xl text-white">
-            <h1 className="text-6xl leading-[1.05] font-bold md:text-7xl uppercase">
-              Explore Nepal
-            </h1>
-            <h2 className="mt-1 text-5xl leading-[1.05] font-bold text-orange md:text-6xl uppercase">
-              Beyond The Guidebook
-            </h2>
-            <p className="mt-6 max-w-xl text-lg text-white/85">
-              Discover authentic treks, cultural journeys, wildlife adventures
-              and local experiences across the Himalayas.
-            </p>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30" />
+
+        {/* Content */}
+        {heroActivity && (
+          <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-4 pb-24">
+            <div className="max-w-3xl">
+              <span className="inline-block rounded-full bg-orange px-4 py-1.5 text-xs font-bold tracking-widest uppercase text-white">
+                {heroActivity.tag}
+              </span>
+              <h1 className="mt-5 text-5xl leading-[1.05] font-bold text-white md:text-7xl lg:text-8xl">
+                {(() => {
+                  const firstPart = heroActivity.title.split(":")[0].trim()
+                  const words = firstPart.split(" ")
+                  const lastWord = words.pop() ?? ""
+                  return (
+                    <>
+                      {words.join(" ")}{" "}
+                      <span className="text-orange">{lastWord}</span>
+                    </>
+                  )
+                })()}
+              </h1>
+              <p className="mt-5 max-w-xl text-lg text-white/80">
+                {(heroActivity.shortDescription?.length > 250
+                  ? heroActivity.shortDescription.slice(0, 250).trim() + "..."
+                  : heroActivity.shortDescription) || "An unforgettable journey through the heart of Nepal. Expert-led, handcrafted itineraries designed for the curious traveler."}
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-4">
+                <Link
+                  href={`/trip/${heroActivity.slug}`}
+                  className="inline-flex items-center gap-2 rounded-full bg-orange px-8 py-3.5 text-sm font-bold text-white transition hover:bg-orange/90 hover:shadow-lg hover:shadow-orange/20"
+                >
+                  Explore This Trek <ChevronRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/explore"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/30 px-8 py-3.5 text-sm font-bold text-white transition hover:bg-white/10"
+                >
+                  View All Trips
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Stats - bottom right */}
+        <div className="absolute bottom-8 right-8 z-10 hidden md:block">
+          <div className="flex items-center gap-6 rounded-xl border border-white/10 bg-white/5 px-6 py-3 backdrop-blur-md">
+            {[
+              { icon: Clock, value: "15+", label: "Years" },
+              { icon: MapPin, value: "500+", label: "Trips" },
+              { icon: Users, value: "2,000+", label: "Travelers" },
+              { icon: Star, value: "4.9", label: "Rating" },
+            ].map((s) => (
+              <div key={s.label} className="flex items-center gap-2">
+                <s.icon className="h-4 w-4 text-orange" />
+                <div>
+                  <span className="font-bold text-white">{s.value}</span>
+                  <span className="ml-1 text-xs text-white/50">{s.label}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Stats overlay */}
-        <div className="absolute bottom-0 inset-x-0 z-10">
-          <div className="mx-auto max-w-4xl px-4 pb-8">
-            <div className="flex flex-wrap items-center justify-center gap-6 rounded-xl border border-white/15 bg-black/40 px-6 py-4 backdrop-blur-md md:gap-10 md:px-10">
-              {[
-                { icon: Clock, value: "15+", label: "Years Experience" },
-                { icon: MapPin, value: "500+", label: "Trips Completed" },
-                { icon: Users, value: "2,000+", label: "Happy Travelers" },
-                { icon: Star, value: "4.9", label: "Average Rating" },
-              ].map((s) => (
-                <div key={s.label} className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange/20">
-                    <s.icon className="h-5 w-5 text-orange" />
-                  </div>
-                  <div>
-                    <div className="text-xl font-extrabold text-white">{s.value}</div>
-                    <div className="text-xs text-white/60">{s.label}</div>
-                  </div>
-                </div>
-              ))}
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 md:hidden">
+          <div className="flex flex-col items-center gap-2 text-white/50">
+            <span className="text-xs tracking-widest uppercase">Scroll</span>
+            <div className="h-10 w-6 rounded-full border-2 border-white/30 pt-2">
+              <div className="mx-auto h-2 w-1 animate-bounce rounded-full bg-white/50" />
             </div>
           </div>
         </div>

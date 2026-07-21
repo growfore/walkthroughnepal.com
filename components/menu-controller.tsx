@@ -238,7 +238,7 @@ export function MenuController({ items }: MenuControllerProps) {
                               onMouseEnter={() => setActiveSidebar(child.id)}
                               className={`w-full rounded-lg px-4 py-3 text-left text-sm font-medium transition-colors ${
                                 isActiveSidebar
-                                  ? "border-l-2 border-orange bg-muted text-orange"
+                                  ? "border-l-2 border-orange bg-muted text-orange rounded-none"
                                   : "border-l-2 border-transparent text-muted-foreground hover:bg-muted hover:text-navy"
                               }`}
                             >

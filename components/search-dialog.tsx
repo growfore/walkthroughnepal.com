@@ -128,7 +128,6 @@ export function SearchDialog() {
         className="flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-navy"
         aria-label="Search"
       >
-        <Search className="h-4 w-4" />
         <span className="hidden lg:inline">Search</span>
         <kbd className="hidden lg:inline-flex h-5 items-center gap-0.5 rounded border border-border bg-muted px-1.5 text-[10px] font-medium text-muted-foreground">
           <Command className="h-2.5 w-2.5" />K

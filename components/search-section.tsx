@@ -66,11 +66,11 @@ function Combobox({
   }, [open])
 
   return (
-    <div ref={ref} className="relative z-50">
+    <div ref={ref} className="relative w-full sm:w-auto z-50">
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className={`flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition ${
+        className={`flex w-full items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition sm:w-auto ${
           open
             ? "border-orange bg-white/15 text-white"
             : "border-white/20 bg-white/10 text-white/80 hover:border-white/40"
@@ -174,30 +174,32 @@ export function SearchSection({ categories }: { categories: Category[] }) {
 
         {/* Search bar */}
         <div className="mt-10 rounded-2xl border border-white/20 bg-white/10 p-3 backdrop-blur-sm">
-          <div className="flex items-center gap-2">
-            <Search className="ml-2 h-5 w-5 shrink-0 text-white/50" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search treks, tours, destinations..."
-              className="flex-1 bg-transparent px-2 py-3 text-base text-white placeholder:text-white/40 focus:outline-none"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  window.location.href = buildExploreUrl()
-                }
-              }}
-            />
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <div className="flex flex-1 items-center gap-2">
+              <Search className="ml-2 h-5 w-5 shrink-0 text-white/50" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search treks, tours, destinations..."
+                className="flex-1 bg-transparent px-2 py-3 text-base text-white placeholder:text-white/40 focus:outline-none"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    window.location.href = buildExploreUrl()
+                  }
+                }}
+              />
+            </div>
             <Link
               href={buildExploreUrl()}
-              className="flex items-center justify-center gap-2 rounded-full bg-orange px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange/90"
+              className="flex items-center justify-center gap-2 rounded-full bg-orange px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange/90 sm:w-auto"
             >
               Search <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
 
           {/* Combobox filters */}
-          <div className="relative mt-3 flex flex-wrap items-center gap-2 border-t border-white/10 pt-3">
+          <div className="relative mt-3 flex flex-col gap-2 border-t border-white/10 pt-3 sm:flex-row sm:items-center">
             <Combobox
               icon={Tag}
               placeholder="Category"
