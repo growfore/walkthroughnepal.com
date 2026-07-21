@@ -224,7 +224,7 @@ export function MenuController({ items }: MenuControllerProps) {
             className="pointer-events-none absolute inset-x-0 top-0 z-[100] max-lg:hidden"
           >
             <div className="h-16" aria-hidden="true" />
-            <div className="pointer-events-auto rounded-xl border border-border bg-white shadow-lg">
+            <div className="pointer-events-auto rounded-none border border-border bg-white shadow-lg">
               <div className="mx-auto max-w-7xl px-4 md:px-8">
                 <div className="flex">
                   <div className="w-[240px] shrink-0 border-r border-border py-6 pr-6">
@@ -236,7 +236,7 @@ export function MenuController({ items }: MenuControllerProps) {
                           <li key={child.id}>
                             <button
                               onMouseEnter={() => setActiveSidebar(child.id)}
-                              className={`w-full rounded-lg px-4 py-3 text-left text-sm font-medium transition-colors ${
+                              className={`w-full rounded-none px-4 py-3 text-left text-sm font-medium transition-colors ${
                                 isActiveSidebar
                                   ? "border-l-2 border-orange bg-muted text-orange rounded-none"
                                   : "border-l-2 border-transparent text-muted-foreground hover:bg-muted hover:text-navy"
@@ -257,7 +257,7 @@ export function MenuController({ items }: MenuControllerProps) {
                           <Link
                             key={subChild.id}
                             href={subChild.url || "#"}
-                            className="block py-2 text-sm text-muted-foreground transition-colors hover:text-navy"
+                            className="block py-2 text-sm text-muted-foreground transition-colors border-l border-l-transparent w-fit hover:bg-muted hover:border-orange p-4 hover:text-navy"
                           >
                             {subChild.label}
                           </Link>

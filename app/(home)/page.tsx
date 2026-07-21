@@ -178,10 +178,7 @@ export default async function HomePage() {
         {heroActivity && (
           <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-4 pb-24">
             <div className="max-w-3xl">
-              <span className="inline-block rounded-full bg-orange px-4 py-1.5 text-xs font-bold tracking-widest uppercase text-white">
-                {heroActivity.tag}
-              </span>
-              <h1 className="mt-5 text-5xl leading-[1.05] font-bold text-white md:text-7xl lg:text-8xl">
+              <h1 className="text-5xl leading-[1.05] font-bold text-white md:text-7xl lg:text-8xl">
                 {(() => {
                   const firstPart = heroActivity.title.split(":")[0].trim()
                   const words = firstPart.split(" ")

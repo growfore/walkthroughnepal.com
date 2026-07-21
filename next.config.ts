@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://api.walkthroughnepal.com https://picsum.photos https://new.walkthroughnepal.com",
+              "img-src 'self' data: blob: https://api.walkthroughnepal.com https://picsum.photos https://fastly.picsum.photos https://new.walkthroughnepal.com",
               "connect-src 'self' https://api.walkthroughnepal.com",
               "frame-src https://challenges.cloudflare.com",
               "font-src 'self'",
