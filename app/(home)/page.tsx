@@ -166,7 +166,7 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* ── Hero ── */}
-      <section className="relative h-[80vh] w-full overflow-hidden">
+      <section className="relative h-[90vh] w-full overflow-hidden">
         <img
           src={heroActivity ? img(heroActivity.images?.[0]) ?? "/manaslu-view.webp" : "/manaslu-view.webp"}
           alt={heroActivity?.title ?? "Nepal Adventures"}
@@ -215,7 +215,7 @@ export default async function HomePage() {
         )}
 
         {/* Stats - bottom right */}
-        <div className="absolute bottom-8 right-8 z-10 hidden md:block">
+        {/*<div className="absolute bottom-8 right-8 z-10 hidden md:block">
           <div className="flex items-center gap-6 rounded-xl border border-white/10 bg-white/5 px-6 py-3 backdrop-blur-md">
             {[
               { icon: Clock, value: "15+", label: "Years" },
@@ -232,17 +232,7 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 md:hidden">
-          <div className="flex flex-col items-center gap-2 text-white/50">
-            <span className="text-xs tracking-widest uppercase">Scroll</span>
-            <div className="h-10 w-6 rounded-full border-2 border-white/30 pt-2">
-              <div className="mx-auto h-2 w-1 animate-bounce rounded-full bg-white/50" />
-            </div>
-          </div>
-        </div>
+        </div>*/}
       </section>
 
 

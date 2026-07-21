@@ -125,7 +125,7 @@ export function SearchDialog() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 rounded-full sm:border sm:border-border px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-navy"
+        className="flex items-center gap-2 rounded-full lg:border lg:border-border px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-navy"
         aria-label="Search"
       >
         <Search className="h-5 w-5" />

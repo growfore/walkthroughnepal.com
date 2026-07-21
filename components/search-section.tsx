@@ -222,6 +222,15 @@ export function SearchSection({ categories }: { categories: Category[] }) {
               onChange={setSelectedDifficulty}
             />
           </div>
+
+          <div className="mt-3 flex justify-center border-t border-white/10 pt-3">
+            <Link
+              href="/design-your-trip"
+              className="flex items-center gap-2 text-sm text-white/60 transition hover:text-white"
+            >
+              Not sure where to go? <span className="font-semibold text-orange">Let us plan it for you</span> <ChevronRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </div>
     </section>
