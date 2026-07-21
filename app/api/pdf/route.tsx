@@ -54,35 +54,83 @@ export async function GET(req: NextRequest) {
     browser = await launchBrowser()
     const page = await newPage(browser)
 
-    await page.goto(tripUrl, { waitUntil: "networkidle2", timeout: 30_000 })
+    await page.goto(tripUrl, { waitUntil: "networkidle", timeout: 30_000 })
 
     // Get trip title from page
     const tripTitle = await page.evaluate(() => {
       return document.title.split(":")[0]?.trim() || "Trip Itinerary"
     })
 
-    // Expand ALL accordion items
-    await page.evaluate(() => {
-      document.querySelectorAll("[data-state=closed]").forEach((el) => {
-        el.setAttribute("data-state", "open")
-      })
-      document.querySelectorAll("[data-slot=accordion-content]").forEach((el) => {
-        const h = el as HTMLElement
-        h.style.height = "auto"
-        h.style.overflow = "visible"
-        h.style.maxHeight = "none"
-      })
+    // Expand ALL accordion items + click through all itinerary variant tabs
+    await page.evaluate(async () => {
+      const expandAll = () => {
+        document.querySelectorAll("[data-state=closed]").forEach((el) => {
+          el.setAttribute("data-state", "open")
+        })
+        document.querySelectorAll("[data-slot=accordion-content]").forEach((el) => {
+          const h = el as HTMLElement
+          h.style.height = "auto"
+          h.style.overflow = "visible"
+          h.style.maxHeight = "none"
+          h.style.display = "block"
+        })
+      }
+
+      expandAll()
+
+      // Click through each variant tab to accumulate all days
+      const itineraryEl = document.getElementById("itinerary")
+      if (!itineraryEl) return
+
+      // Variant buttons have text-sm + font-semibold; accordion triggers and Expand All do not
+      const variantButtons = Array.from(itineraryEl.querySelectorAll("button")).filter(
+        (btn) => btn.classList.contains("text-sm") && btn.classList.contains("font-semibold"),
+      )
+      if (variantButtons.length <= 1) return
+
+      const allItems: Element[] = []
+      for (let i = 0; i < variantButtons.length; i++) {
+        ;(variantButtons[i] as HTMLElement).click()
+        await new Promise((r) => setTimeout(r, 600))
+
+        // Add variant heading
+        const variantName = variantButtons[i]?.textContent?.trim()
+        if (variantName) {
+          const heading = document.createElement("h3")
+          heading.textContent = variantName
+          heading.className = "mt-8 mb-3 text-lg font-bold text-navy"
+          allItems.push(heading)
+        }
+
+        // Clone all accordion items
+        const accordion = itineraryEl.querySelector('[data-slot="accordion"]')
+        if (accordion) {
+          accordion.querySelectorAll('[data-slot="accordion-item"]').forEach((item) => {
+            allItems.push(item.cloneNode(true) as Element)
+          })
+        }
+      }
+
+      // Replace the itinerary content with headings + all days
+      const accordion = itineraryEl.querySelector('[data-slot="accordion"]')
+      const container = accordion?.parentElement
+      if (container) {
+        container.innerHTML = ""
+        allItems.forEach((item) => container.appendChild(item))
+        expandAll()
+      }
     })
 
     await page.addStyleTag({ content: PDF_CSS })
 
-    // Hide junk + hide departures + page breaks
+    // Whitelist: only show itinerary essentials, hide everything else
     await page.evaluate(() => {
+      // Hide hero, sticky nav, fixed elements, mobile bar
       document.querySelectorAll('section[class*="-mt-"]').forEach((e) => (e as HTMLElement).style.display = "none")
       document.querySelectorAll('.sticky.top-0, [class*="sticky"][class*="top-0"]').forEach((e) => (e as HTMLElement).style.display = "none")
-      document.querySelectorAll("#reviews").forEach((e) => (e as HTMLElement).style.display = "none")
       document.querySelectorAll(".fixed").forEach((e) => (e as HTMLElement).style.display = "none")
 
+      // Hide sidebar
       const grid = document.querySelector('[class*="lg\\:grid-cols-3"]')
       if (grid) {
         ;(grid as HTMLElement).style.display = "block"
@@ -91,22 +139,37 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      // Find content blocks by h2 and target their parent div, not the section wrapper
-      const breakOn = ["compare", "map", "altitude", "elevation", "pricing"]
+      // Hide all scroll-mt-40 sections except the ones we want
+      const keepIds = new Set(["overview", "highlights", "itinerary", "map", "includes", "excludes", "packing-list"])
+      document.querySelectorAll(".scroll-mt-40").forEach((el) => {
+        if (!el.id || !keepIds.has(el.id)) {
+          ;(el as HTMLElement).style.display = "none"
+        }
+      })
+
+      // Hide sections found by h2 text — avoid .closest("section") since that can match the main page wrapper
+      const hideKeywords = ["altitude", "compare", "elevation", "pricing", "departure", "useful info", "video"]
       document.querySelectorAll("h2").forEach((h2) => {
         const text = h2.textContent?.trim().toLowerCase() || ""
-        const block = h2.closest(".scroll-mt-40") || h2.parentElement
-        if (!block) return
-
-        if (text.includes("departure")) {
-          ;(block as HTMLElement).style.display = "none"
-          return
+        if (hideKeywords.some((kw) => text.includes(kw))) {
+          const block = h2.closest(".scroll-mt-40") || h2.closest(".mt-12") || h2.parentElement
+          if (block) (block as HTMLElement).style.display = "none"
         }
+      })
 
-        if (breakOn.some((kw) => text.includes(kw))) {
+      // Hide Customize CTA (last child of left column)
+      const leftCol = document.querySelector('[class*="lg\\:col-span-2"]')
+      if (leftCol && leftCol.lastElementChild) {
+        ;(leftCol.lastElementChild as HTMLElement).style.display = "none"
+      }
+
+      // Page breaks before itinerary and map
+      ;["itinerary", "map"].forEach((id) => {
+        const el = document.getElementById(id)
+        if (el?.parentNode) {
           const brk = document.createElement("div")
           brk.setAttribute("data-pdf-brk", "1")
-          block.parentNode?.insertBefore(brk, block)
+          el.parentNode.insertBefore(brk, el)
         }
       })
     })
@@ -192,7 +255,17 @@ const PDF_CSS = `
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
+  .text-sm, .text-xs, [class*="text-sm"], [class*="text-xs"] { font-size: 11px !important; }
+  .text-base, [class*="text-base"] { font-size: 11px !important; }
+  .text-lg, [class*="text-lg"] { font-size: 12px !important; }
+  .text-xl, [class*="text-xl"] { font-size: 13px !important; }
+  .text-2xl, [class*="text-2xl"] { font-size: 15px !important; }
+  .text-3xl, [class*="text-3xl"] { font-size: 17px !important; }
+  .text-4xl, [class*="text-4xl"] { font-size: 19px !important; }
   .prose { font-size: 11px !important; }
+  h1 { font-size: 19px !important; }
+  h2 { font-size: 15px !important; }
+  h3 { font-size: 13px !important; }
   .cms-table, table {
     display: table !important;
     width: 100% !important;
