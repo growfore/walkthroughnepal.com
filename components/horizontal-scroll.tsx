@@ -3,7 +3,15 @@
 import { useRef, useState, useEffect, useCallback, type ReactNode } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-export function HorizontalScroll({ children }: { children: ReactNode }) {
+export function HorizontalScroll({
+  children,
+  headerRight,
+  id,
+}: {
+  children: ReactNode
+  headerRight?: boolean
+  id?: string
+}) {
   const ref = useRef<HTMLDivElement>(null)
   const [canScroll, setCanScroll] = useState(false)
 
@@ -34,6 +42,40 @@ export function HorizontalScroll({ children }: { children: ReactNode }) {
     return () => el.removeEventListener("keydown", handler)
   }, [])
 
+  if (headerRight && canScroll) {
+    return (
+      <div>
+        <div className="mb-4 flex items-center justify-end gap-2">
+          <button
+            onClick={scrollLeft}
+            aria-label="Scroll left"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card shadow-sm text-navy hover:bg-border transition-colors"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            onClick={scrollRight}
+            aria-label="Scroll right"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card shadow-sm text-navy hover:bg-border transition-colors"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+        <div
+          ref={ref}
+          id={id}
+          tabIndex={0}
+          role="region"
+          aria-label="Scrollable content"
+          className="flex gap-5 overflow-x-auto [&::-webkit-scrollbar]:hidden snap-x snap-mandatory focus:outline-none focus:ring-2 focus:ring-orange/50 rounded-lg"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
+          {children}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="relative">
       {canScroll && (
@@ -56,6 +98,7 @@ export function HorizontalScroll({ children }: { children: ReactNode }) {
       )}
       <div
         ref={ref}
+        id={id}
         tabIndex={0}
         role="region"
         aria-label="Scrollable content"

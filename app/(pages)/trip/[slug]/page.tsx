@@ -207,7 +207,15 @@ export default async function PackagePage({
               {[
                 [
                   { icon: Clock, label: "Duration", value: pkg.duration },
+                  { icon: Utensils, label: "Meals", value: pkg.meals },
+                ],
+                [
                   { icon: Mountain, label: "Difficulty", value: difficulty },
+                  {
+                    icon: Users,
+                    label: "Group Size",
+                    value: pkg.groupSize || `${pkg.guestCapacity || 1} Pax`,
+                  },
                 ],
                 [
                   {
@@ -226,14 +234,6 @@ export default async function PackagePage({
                     icon: HomeIcon,
                     label: "Accommodation",
                     value: pkg.accommodations?.join(", ") || "Tea House",
-                  },
-                  { icon: Utensils, label: "Meals", value: pkg.meals },
-                ],
-                [
-                  {
-                    icon: Users,
-                    label: "Group Size",
-                    value: pkg.groupSize || `${pkg.guestCapacity || 1} Pax`,
                   },
                   {
                     icon: Bus,

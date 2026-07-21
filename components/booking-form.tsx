@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Calendar, Users, Shield, CreditCard, Loader2, ArrowRight } from "lucide-react"
+import { Calendar, Users, Shield, CreditCard, Loader2, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -130,7 +130,7 @@ export function BookingForm({ slot, activityId, activityTitle }: { slot: Slot; a
                   </FormItem>
                 )} />
                 <Button type="submit" disabled={form.formState.isSubmitting} className="w-full bg-[#635bff] text-white hover:bg-[#635bff]/90 py-6">
-                  {form.formState.isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Processing...</> : <><CreditCard className="h-4 w-4" /> Proceed to Checkout <ArrowRight className="h-4 w-4" /></>}
+                  {form.formState.isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Processing...</> : <><CreditCard className="h-4 w-4" /> Proceed to Checkout <ChevronRight className="h-4 w-4" /></>}
                 </Button>
                 <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
               </form>

@@ -64,102 +64,67 @@ export function DeparturesPage({
 
   const hasMore = slots.length < total
 
-  const activitiesWithSlots = useMemo(() => {
-    const ids = new Set(filterMeta.activityIds)
-    return activities.filter(a => ids.has(Number(a.id)))
-  }, [activities, filterMeta.activityIds])
-
   const monthName = (m: number) =>
     new Date(2000, m, 1).toLocaleDateString("en-US", { month: "long" })
 
   return (
-    <div className="space-y-8">
-      {/* Year filter */}
-      <div>
-        <label className="mb-1.5 block text-sm font-semibold text-navy">Year</label>
-        <div className="flex flex-wrap gap-2">
-          {filterMeta.years.map(y => (
-            <button
-              key={y}
-              onClick={() => { setSelectedYear(y); setSelectedMonth("") }}
-              className={`rounded-lg px-5 py-2 text-sm font-semibold transition-colors ${
-                selectedYear === y ? "bg-navy text-navy-foreground" : "border border-border text-navy hover:bg-muted"
-              }`}
+    <div className="space-y-6">
+      {/* Filters */}
+      <div className="flex flex-wrap gap-4">
+        {/* Year */}
+        <div className="min-w-[140px]">
+          <label className="mb-1.5 block text-sm font-semibold text-navy">Year</label>
+          <select
+            value={selectedYear}
+            onChange={(e) => { setSelectedYear(e.target.value); setSelectedMonth("") }}
+            className="w-full rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-navy/30 focus:outline-none focus:ring-2 focus:ring-navy/20"
+          >
+            <option value="">All Years</option>
+            {filterMeta.years.map(y => (
+              <option key={y} value={y}>{y}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Month */}
+        <div className="min-w-[160px]">
+          <label className="mb-1.5 block text-sm font-semibold text-navy">Month</label>
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="w-full rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-navy/30 focus:outline-none focus:ring-2 focus:ring-navy/20"
+          >
+            <option value="">All Months</option>
+            {filterMeta.months.map(m => (
+              <option key={m} value={m.toString()}>{monthName(m)}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Duration */}
+        {filterMeta.days.length > 0 && (
+          <div className="min-w-[160px]">
+            <label className="mb-1.5 block text-sm font-semibold text-navy">Duration</label>
+            <select
+              value={selectedDays ?? ""}
+              onChange={(e) => setSelectedDays(e.target.value || null)}
+              className="w-full rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-navy/30 focus:outline-none focus:ring-2 focus:ring-navy/20"
             >
-              {y}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Destination */}
-      <div>
-        <label className="mb-1.5 block text-sm font-semibold text-navy">Travel Destination</label>
-        <div className="flex flex-wrap gap-2">
-          {activitiesWithSlots.map(a => {
-            const active = selectedActivityId === a.id
-            return (
-              <button
-                key={a.id}
-                onClick={() => setSelectedActivityId(active ? "" : a.id)}
-                className={`rounded-lg px-5 py-2 text-sm font-semibold transition-colors ${
-                  active ? "bg-navy text-navy-foreground" : "border border-border text-navy hover:bg-muted"
-                }`}
-              >
-                {a.title}
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Month filter */}
-      <div>
-        <label className="mb-1.5 block text-sm font-semibold text-navy">Month</label>
-        <div className="flex flex-wrap gap-2">
-          {filterMeta.months.map(m => (
-            <button
-              key={m}
-              onClick={() => setSelectedMonth(selectedMonth === m.toString() ? "" : m.toString())}
-              className={`rounded-lg px-5 py-2 text-sm font-semibold transition-colors ${
-                selectedMonth === m.toString() ? "bg-navy text-navy-foreground" : "border border-border text-navy hover:bg-muted"
-              }`}
-            >
-              {monthName(m)}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Days filter */}
-      {filterMeta.days.length > 0 && (
-        <div>
-          <label className="mb-1.5 block text-sm font-semibold text-navy">Duration</label>
-          <div className="flex flex-wrap gap-2">
-            {filterMeta.days.map(d => {
-              const active = selectedDays === String(d)
-              return (
-                <button
-                  key={d}
-                  onClick={() => setSelectedDays(active ? null : String(d))}
-                  className={`rounded-lg px-5 py-2 text-sm font-semibold transition-colors ${
-                    active ? "bg-navy text-navy-foreground" : "border border-border text-navy hover:bg-muted"
-                  }`}
-                >
-                  {d} days
-                </button>
-              )
-            })}
+              <option value="">Any Duration</option>
+              {filterMeta.days.map(d => (
+                <option key={d} value={d}>{d} days</option>
+              ))}
+            </select>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Departure list */}
       <div>
         <h2 className="text-lg font-bold text-navy">
           {loading ? "Loading..." : `${total} departure${total !== 1 ? "s" : ""} found`}
         </h2>
-        <div className="mt-4 space-y-2">
+        <div className="mt-4 grid gap-4">
           {slots.map(slot => {
             const d = new Date(slot.departureDate)
             const slotTyped: Slot = {

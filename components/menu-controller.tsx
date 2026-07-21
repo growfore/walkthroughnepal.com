@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, Mail, Phone, ChevronDown, LucidePlus } from "lucide-react"
+import { Menu, X, Mail, Phone, ChevronDown } from "lucide-react"
 import { MobileMenuOverlay } from "./mobile-menu-overlay"
+import { SearchDialog } from "./search-dialog"
 import { siteConfig } from "@/lib/siteConfig"
 
 type MenuItem = {
@@ -194,14 +195,8 @@ export function MenuController({ items }: MenuControllerProps) {
         </div>
 
         <div className="flex items-center gap-2">
+          <SearchDialog />
           <div className="hidden items-center gap-2 md:flex">
-            <Link
-              href="/design-your-trip"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border px-5 py-2 text-sm font-semibold text-navy transition hover:bg-muted"
-            >
-              <LucidePlus className="size-4" />
-              Customize My Trip
-            </Link>
             <Link
               href="/departure"
               className="inline-flex items-center rounded-full bg-orange px-5 py-2 text-sm font-semibold text-orange-foreground transition hover:opacity-90"

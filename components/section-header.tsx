@@ -1,16 +1,19 @@
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ChevronRight } from "lucide-react"
+import type { ReactNode } from "react"
 
 export function SectionHeader({
   title,
   description,
   link,
   align = "left",
+  rightAction,
 }: {
   title: string
   description?: string
   link?: { href: string; label: string }
   align?: "center" | "left"
+  rightAction?: ReactNode
 }) {
   return (
     <div className={`mb-6 ${align === "center" ? "text-center" : "flex items-end justify-between"}`}>
@@ -22,10 +25,12 @@ export function SectionHeader({
         {description && <div className="mt-1 text-sm text-muted-foreground" dangerouslySetInnerHTML={{ __html: description }} />}
         {align === "left" && <span className="mt-2 block h-1 w-16 rounded-full bg-orange" />}
       </div>
-      {link && (
-        <Link href={link.href} className="flex items-center gap-1 text-sm font-medium text-orange shrink-0">
-          {link.label} <ArrowRight className="h-4 w-4" />
-        </Link>
+      {rightAction ?? (
+        link && (
+          <Link href={link.href} className="flex items-center gap-1 text-sm font-medium text-orange shrink-0">
+            {link.label} <ChevronRight className="h-4 w-4" />
+          </Link>
+        )
       )}
     </div>
   )

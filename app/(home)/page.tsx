@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
 import {
   Star,
-  ArrowRight,
-  Send,
+  ChevronRight,
   Users,
   ClipboardList,
   Heart,
@@ -11,6 +10,8 @@ import {
   ArrowUpRight,
   MessageCircle,
   Sparkles,
+  Clock,
+  MapPin,
 } from "lucide-react"
 import Link from "next/link"
 import type { FeaturedTag } from "@/lib/types"
@@ -30,14 +31,16 @@ import {
   getTripCategories,
   getPublishedPosts,
   img,
+  API_BASE,
 } from "@/lib/api"
 import { CategoryScroll } from "@/components/category-scroll"
 import { HorizontalScroll } from "@/components/horizontal-scroll"
 import { TripCard } from "@/components/trip-card"
 import { SectionHeader } from "@/components/section-header"
-import { SearchBox } from "@/components/search-box"
 import { BlogCard } from "@/components/blog-card"
-import { StatBar } from "@/components/stat-bar"
+import { SearchSection } from "@/components/search-section"
+import { DeparturesPage } from "@/components/departures-page"
+import { ScrollButtons } from "@/components/scroll-buttons"
 import { TestimonialCard } from "@/components/testimonial-card"
 import { siteConfig } from "@/lib/siteConfig"
 
@@ -107,6 +110,47 @@ export default async function HomePage() {
     }))
   } catch {}
 
+  let destinations: { img: string; title: string; handle: string }[] = []
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/city?page=1&limit=10`, { next: { revalidate: 3600 } })
+    const json = await res.json()
+    destinations = (json.data?.cities ?? []).map((c: { cityName: string; cityHandle: string; cityImage: string }) => ({
+      img: c.cityImage || "/manaslu-view.webp",
+      title: c.cityName,
+      handle: c.cityHandle,
+    }))
+  } catch {}
+
+  type SlotRaw = {
+    id: number; departureDate: string; price: string; remainingSeats: number; visible: boolean
+    days: number; maxGroupSize: number
+    activity: { id: number; title: string; slug: string }
+  }
+  type ActivityMeta = { id: string; slug: string; title: string }
+  let departuresActivities: ActivityMeta[] = []
+  let departuresFilterMeta = { years: [] as string[], activityIds: [] as number[], months: [] as number[], days: [] as number[] }
+  let initialSlots: SlotRaw[] = []
+  let departuresCount = 0
+  try {
+    const [actRes, slotRes] = await Promise.all([
+      fetch(`${API_BASE}/api/v1/activity?page=1&limit=100`, { next: { revalidate: 3600 } }),
+      fetch(`${API_BASE}/api/v1/slot?limit=500`, { next: { revalidate: 3600 } }),
+    ])
+    const [actJson, slotJson] = await Promise.all([actRes.json(), slotRes.json()])
+    departuresActivities = (actJson.data ?? []).map((a: { id: number; slug: string; title: string }) => ({
+      id: String(a.id), slug: a.slug, title: a.title,
+    })).sort((a: ActivityMeta, b: ActivityMeta) => a.title.localeCompare(b.title))
+    const allSlots: SlotRaw[] = (slotJson.data?.slots ?? []).filter((s: SlotRaw) => s.visible)
+    departuresFilterMeta = {
+      years: [...new Set(allSlots.map(s => new Date(s.departureDate).getFullYear().toString()))].sort(),
+      activityIds: [...new Set(allSlots.map(s => s.activity.id))],
+      months: [...new Set(allSlots.map(s => new Date(s.departureDate).getMonth()))].sort((a, b) => a - b),
+      days: [...new Set(allSlots.map(s => s.days))].sort((a, b) => a - b),
+    }
+    initialSlots = allSlots.slice(0, 12)
+    departuresCount = allSlots.length
+  } catch {}
+
   const reasons = [
     { icon: Users, title: "Local Experts", text: "Real Nepal based team with in-depth knowledge." },
     { icon: ClipboardList, title: "Flexible Itineraries", text: "Customize your trip to match your time and budget." },
@@ -117,94 +161,143 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* ── Hero ── */}
-      <section className="relative">
-        <div className="relative h-[560px] w-full overflow-hidden">
-          <img
-            src="/manaslu-view.webp"
-            alt="Trekker in Himalayas"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" />
-          <div className="relative mx-auto flex h-full max-w-7xl items-center px-4">
-            <div className="max-w-2xl text-white">
-              <h1 className="text-6xl leading-[1.05] font-bold md:text-7xl">
-                Explore Nepal
-              </h1>
-              <h2 className="mt-1 text-5xl leading-[1.05] font-bold text-orange md:text-6xl">
-                Beyond The Guidebook
-              </h2>
-              <p className="mt-6 max-w-xl text-lg text-white/85">
-                Discover authentic treks, cultural journeys, wildlife adventures
-                and local experiences across the Himalayas.
-              </p>
-            </div>
+      <section className="relative h-screen w-full overflow-hidden">
+        <img
+          src="/manaslu-view.webp"
+          alt="Trekker in Himalayas"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" />
+        <div className="relative mx-auto flex h-full max-w-7xl items-center px-4">
+          <div className="max-w-2xl text-white">
+            <h1 className="text-6xl leading-[1.05] font-bold md:text-7xl uppercase">
+              Explore Nepal
+            </h1>
+            <h2 className="mt-1 text-5xl leading-[1.05] font-bold text-orange md:text-6xl uppercase">
+              Beyond The Guidebook
+            </h2>
+            <p className="mt-6 max-w-xl text-lg text-white/85">
+              Discover authentic treks, cultural journeys, wildlife adventures
+              and local experiences across the Himalayas.
+            </p>
           </div>
         </div>
 
-        {/* Search */}
-        <div className="relative z-10 mx-auto -mt-10 max-w-2xl px-4">
-          <SearchBox />
+        {/* Stats overlay */}
+        <div className="absolute bottom-0 inset-x-0 z-10">
+          <div className="mx-auto max-w-4xl px-4 pb-8">
+            <div className="flex flex-wrap items-center justify-center gap-6 rounded-xl border border-white/15 bg-black/40 px-6 py-4 backdrop-blur-md md:gap-10 md:px-10">
+              {[
+                { icon: Clock, value: "15+", label: "Years Experience" },
+                { icon: MapPin, value: "500+", label: "Trips Completed" },
+                { icon: Users, value: "2,000+", label: "Happy Travelers" },
+                { icon: Star, value: "4.9", label: "Average Rating" },
+              ].map((s) => (
+                <div key={s.label} className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange/20">
+                    <s.icon className="h-5 w-5 text-orange" />
+                  </div>
+                  <div>
+                    <div className="text-xl font-extrabold text-white">{s.value}</div>
+                    <div className="text-xs text-white/60">{s.label}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ── Stats ── */}
-      <StatBar />
-
-      {/* ── Explore by Category ── */}
-      <section className="mt-12 pb-16">
-        <div className="mx-auto max-w-7xl px-4">
-          <SectionHeader title="Explore by Category" align="center" />
-          <CategoryScroll categories={categories} />
-        </div>
-      </section>
 
       {/* ── Featured Trips ── */}
       {featuredSections.filter((t) => t.activity?.length).map((tag) => (
-        <section key={tag.slug} className="pb-16">
+        <section key={tag.slug} className="py-16">
           <div className="mx-auto max-w-7xl px-4">
             <SectionHeader
               title={tag.name.split("::")[0] || tag.name}
               description={tag.description}
             />
-            <HorizontalScroll>
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {tag.activity?.map((a) => (
-                <div key={a.slug} className="w-72 shrink-0 snap-start">
-                  <TripCard activity={a} compact />
-                </div>
+                <TripCard key={a.slug} activity={a} />
               ))}
-            </HorizontalScroll>
+            </div>
             <div className="mt-8 text-center">
               <Link href="/explore" className="inline-flex items-center gap-1 rounded-full bg-orange px-6 py-3 text-sm font-semibold text-orange-foreground hover:opacity-90">
-                Explore More <ArrowRight className="h-4 w-4" />
+                Explore More <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
         </section>
       ))}
 
-      {/* ── Plan Your Trip CTA ── */}
-      <section className="py-16">
+
+      {/* ── Explore by Category ── */}
+      <section className="mt-12 pb-16">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-navy p-14 text-navy-foreground shadow-lg">
-            <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-start sm:gap-6">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-orange/20">
-                <Send className="h-8 w-8 text-orange" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold sm:text-3xl">
-                  Ready to start your adventure?
-                </h3>
-                <p className="mt-2 text-base text-white/70 max-w-lg">
-                  Tell us your preferences and we&apos;ll craft a custom
-                  itinerary for you.
-                </p>
-              </div>
-            </div>
+          <SectionHeader title="Explore by Category" rightAction={<ScrollButtons targetId="category-scroll" />} />
+          <CategoryScroll categories={categories} id="category-scroll" />
+        </div>
+      </section>
+
+      {/* ── Search Section ── */}
+      <SearchSection categories={categories} />
+
+      {/* ── Destinations ── */}
+      {destinations.length > 0 && (
+        <section className="py-16">
+          <div className="mx-auto max-w-7xl px-4">
+            <SectionHeader
+              title="Destinations"
+              description="Explore our curated destinations across Nepal"
+              rightAction={<ScrollButtons targetId="destinations-scroll" />}
+            />
+            <HorizontalScroll id="destinations-scroll" headerRight>
+              {destinations.map((d) => (
+                <Link
+                  key={d.handle}
+                  href={`/explore?city=${d.handle}`}
+                  className="group relative w-64 shrink-0 snap-start overflow-hidden rounded-xl"
+                >
+                  <img
+                    src={d.img}
+                    alt={d.title}
+                    className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute bottom-0 left-0 p-4">
+                    <h3 className="font-semibold text-white">{d.title}</h3>
+                    <p className="mt-1 flex items-center gap-1 text-sm text-white/80">View trips <ChevronRight className="h-4 w-4" /></p>
+                  </div>
+                </Link>
+              ))}
+            </HorizontalScroll>
+          </div>
+        </section>
+      )}
+
+      {/* ── Departures ── */}
+      <section className="bg-muted py-16">
+        <div className="mx-auto max-w-7xl px-4">
+          <SectionHeader
+            title="Upcoming Departures"
+            description="Join a scheduled group departure for your next adventure"
+            link={{ href: "/departure", label: "View All" }}
+          />
+          <div className="mt-10">
+            <DeparturesPage
+              activities={departuresActivities}
+              filterMeta={departuresFilterMeta}
+              initialSlots={initialSlots}
+              totalCount={departuresCount}
+            />
+          </div>
+          <div className="mt-8 text-center">
             <Link
-              href="/design-your-trip"
-              className="inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-base font-bold text-orange-foreground shadow-md hover:shadow-xl hover:scale-105 transition-all"
+              href="/departure"
+              className="inline-flex items-center gap-1 rounded-full border border-orange px-6 py-3 text-sm font-semibold text-orange hover:bg-orange hover:text-orange-foreground transition-colors"
             >
-              Plan Your Trip <ArrowRight className="h-5 w-5" />
+              View All Departures <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -251,7 +344,7 @@ export default async function HomePage() {
               href="/blog"
               className="inline-flex items-center gap-1 rounded-full border border-orange px-6 py-3 text-sm font-semibold text-orange hover:bg-orange hover:text-orange-foreground transition-colors"
             >
-              Visit Our Blog <ArrowRight className="h-4 w-4" />
+              Visit Our Blog <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 interface TravelTypeCardProps {
@@ -33,7 +33,7 @@ export function TravelTypeCard({ icon: Icon, title, description, href, image }: 
         <h3 className="text-lg font-bold text-white">{title}</h3>
         <p className="mt-1 text-sm text-white/70 line-clamp-2">{description}</p>
         <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-orange">
-          Explore <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          Explore <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </span>
       </div>
     </Link>

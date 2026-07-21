@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Clock, Mountain, Star, CheckCircle2, ArrowRight } from "lucide-react"
+import { Clock, Mountain, Star, CheckCircle2, ChevronRight } from "lucide-react"
 import { img } from "@/lib/api"
 import { decodeHtmlEntities } from "@/lib/html-decoder"
 import type { Activity } from "@/lib/types"
@@ -65,7 +65,7 @@ export function TripResultCard({ activity, reasons, rank }: TripResultCardProps)
             href={`/trip/${activity.slug}`}
             className="inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
           >
-            View Trip <ArrowRight className="h-4 w-4" />
+            View Trip <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
       </div>

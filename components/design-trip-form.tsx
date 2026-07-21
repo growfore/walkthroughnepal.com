@@ -1,0 +1,807 @@
+"use client"
+
+import { useState, useRef, useEffect } from "react"
+import { useForm, useFieldArray } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import {
+  LucideMail,
+  LucideSend,
+  LucideCheckCircle2,
+  LucidePlus,
+  LucideTrash2,
+  LucideCompass,
+  LucideUsers,
+  LucideUtensils,
+  LucideBed,
+  LucideStar,
+  LucideMap,
+} from "lucide-react"
+
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+
+import { toast } from "react-toastify"
+import { DURATION_VALUES, GROUP_OPTIONS } from "@/lib/forms"
+
+const INCLUSIONS = [
+  { id: "guide", label: "Licensed Guide" },
+  { id: "porter", label: "Porter Service" },
+  { id: "permits", label: "Trekking Permits & TIMS" },
+  { id: "transport", label: "Airport Transfers" },
+  { id: "firstaid", label: "First Aid / Medical Kit" },
+  { id: "sleeping-bag", label: "Sleeping Bag & Equipment" },
+  { id: "helicopter", label: "Helicopter Return" },
+] as const
+
+const ACCOMMODATION = [
+  { value: "teahouse", label: "Teahouse / Guesthouse" },
+  { value: "lodge", label: "Comfortable Lodge" },
+  { value: "luxury-lodge", label: "Luxury Lodge" },
+  { value: "camping", label: "Camping" },
+  { value: "hotel", label: "Hotel (city nights)" },
+  { value: "mix", label: "Mix (flexible)" },
+] as const
+
+const FOOD_PREFS = [
+  { value: "local", label: "Local Nepali Cuisine" },
+  { value: "continental", label: "Continental" },
+  { value: "vegetarian", label: "Vegetarian" },
+  { value: "vegan", label: "Vegan" },
+  { value: "halal", label: "Halal" },
+  { value: "flexible", label: "Flexible / No Preference" },
+] as const
+
+const locationSchema = z.object({
+  name: z.string().optional(),
+  days: z.string().optional(),
+})
+
+const itineraryFormSchema = z
+  .object({
+    fullName: z.string().min(2, "Full name must be at least 2 characters"),
+    email: z.string().email("Invalid email address"),
+    phone: z.string().optional(),
+    duration: z.enum(DURATION_VALUES, { message: "Please select a duration" }),
+    experienceType: z.array(z.string()).min(1, "Please select an experience type"),
+    startDate: z.string().min(1, "Please select a start date"),
+    letUsChooseLocations: z.boolean(),
+    locations: z.array(locationSchema),
+    groupType: z.enum(
+      GROUP_OPTIONS.map((o) => o.value) as [string, ...string[]],
+      { message: "Please select a group type" },
+    ),
+    numberOfTravellers: z.string().optional(),
+    inclusions: z.array(z.string()).default([]),
+    accommodationPreferences: z
+      .array(z.string())
+      .min(1, "Please select at least one accommodation preference"),
+    foodPreferences: z
+      .array(z.string())
+      .min(1, "Please select at least one food preference"),
+    otherMentions: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.letUsChooseLocations) {
+      data.locations.forEach((location, index) => {
+        if (!location.name || location.name.trim() === "") {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Location name is required",
+            path: ["locations", index, "name"],
+          })
+        }
+        const dayNum = Number(location.days)
+        if (!location.days || isNaN(dayNum) || dayNum <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Must be at least 1 day",
+            path: ["locations", index, "days"],
+          })
+        }
+      })
+    }
+    if (data.groupType === "family" || data.groupType === "friends") {
+      if (!data.numberOfTravellers || data.numberOfTravellers.trim() === "") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Please select number of travellers",
+          path: ["numberOfTravellers"],
+        })
+      }
+    }
+  })
+
+type ItineraryFormValues = z.infer<typeof itineraryFormSchema>
+
+const STEPS = [
+  { label: "Trip Basics", icon: LucideCompass },
+  { label: "Locations", icon: LucideMap },
+  { label: "Group", icon: LucideUsers },
+  { label: "Preferences", icon: LucideStar },
+  { label: "Contact", icon: LucideMail },
+] as const
+
+const STEP_FIELDS: Record<number, (keyof ItineraryFormValues)[]> = {
+  0: ["duration", "experienceType", "startDate"],
+  1: ["letUsChooseLocations", "locations"],
+  2: ["groupType", "numberOfTravellers"],
+  3: ["inclusions", "accommodationPreferences", "foodPreferences", "otherMentions"],
+  4: ["fullName", "email", "phone"],
+}
+
+function toggleArrayItem<T>(arr: T[], item: T): T[] {
+  return arr.includes(item) ? arr.filter((v) => v !== item) : [...arr, item]
+}
+
+const categories = [
+  "Treks in Nepal",
+  "Tours in Nepal",
+  "Classic Trek",
+  "High Altitude Expedition",
+  "Cultural and Heritage Tour",
+  "Wildlife and Nature Safari",
+  "Luxury Trek",
+  "Adventure and Extreme Sports",
+  "Pilgrimage Tour",
+  "Photography Tour",
+  "Family Friendly Trek",
+  "Off-the-beaten Path",
+  "Honeymoon Package",
+  "Yoga and Meditation Retreat",
+]
+
+const STORAGE_KEY = "design-your-trip"
+
+function loadSaved(): Partial<ItineraryFormValues> & { step?: number } | null {
+  if (typeof window === "undefined") return null
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
+export function DesignTripForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+  const saved = useRef(loadSaved())
+  const formRef = useRef<HTMLFormElement>(null)
+  const [step, setStep] = useState(saved.current?.step ?? 0)
+
+  const form = useForm<ItineraryFormValues>({
+    resolver: zodResolver(itineraryFormSchema) as never,
+    defaultValues: {
+      fullName: saved.current?.fullName ?? "",
+      email: saved.current?.email ?? "",
+      phone: saved.current?.phone ?? "",
+      duration: saved.current?.duration ?? undefined,
+      experienceType: saved.current?.experienceType ?? [],
+      startDate: saved.current?.startDate ?? "",
+      letUsChooseLocations: saved.current?.letUsChooseLocations ?? false,
+      locations: saved.current?.locations ?? [{ name: "", days: "" }],
+      groupType: saved.current?.groupType ?? undefined,
+      numberOfTravellers: saved.current?.numberOfTravellers ?? "",
+      inclusions: saved.current?.inclusions ?? [],
+      accommodationPreferences: saved.current?.accommodationPreferences ?? [],
+      foodPreferences: saved.current?.foodPreferences ?? [],
+      otherMentions: saved.current?.otherMentions ?? "",
+    },
+    mode: "onChange",
+  })
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "locations",
+  })
+
+  const letUsChoose = form.watch("letUsChooseLocations")
+  const groupType = form.watch("groupType")
+  const today = new Date().toISOString().split("T")[0]
+
+  const allValues = form.watch()
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...allValues, step }))
+  }, [allValues, step])
+
+  const onSubmit = async (data: ItineraryFormValues) => {
+    setIsSubmitting(true)
+    try {
+      const tokenEl = formRef.current?.elements.namedItem("cf-turnstile-response")
+      const token = tokenEl instanceof HTMLInputElement ? tokenEl.value : undefined
+      if (!token) throw new Error("Verification required")
+
+      const res = await fetch("/api/design-trip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: data.fullName,
+          email: data.email,
+          phone: data.phone,
+          duration: data.duration,
+          experienceType: data.experienceType,
+          startDate: data.startDate,
+          locations: data.letUsChooseLocations
+            ? [{ name: "Let the team choose", days: "" }]
+            : data.locations,
+          groupType: data.groupType,
+          numberOfTravellers: data.numberOfTravellers,
+          inclusions: data.inclusions,
+          accommodationPreferences: data.accommodationPreferences,
+          foodPreferences: data.foodPreferences,
+          otherMentions: data.otherMentions,
+          "cf-turnstile-response": token,
+        }),
+      })
+      if (!res.ok) throw new Error(`API returned ${res.status}`)
+
+      setSubmitSuccess(true)
+      localStorage.removeItem(STORAGE_KEY)
+      form.reset()
+      setStep(0)
+      setTimeout(() => setSubmitSuccess(false), 6000)
+    } catch {
+      toast.error("Something went wrong. Please try again or contact us directly.")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const goNext = async () => {
+    const valid = await form.trigger(
+      STEP_FIELDS[step] as (keyof ItineraryFormValues)[],
+    )
+    if (valid) setStep((s) => Math.min(s + 1, STEPS.length - 1))
+  }
+
+  const goPrev = () => setStep((s) => Math.max(s - 1, 0))
+
+  return (
+    <div className="rounded-2xl border border-border bg-white p-6 shadow-lg md:p-8">
+      <div className="flex items-center gap-0 mb-8 overflow-x-auto pb-2">
+        {STEPS.map((s, i) => {
+          const Icon = s.icon
+          const isActive = i === step
+          const isDone = i < step
+          return (
+            <div key={s.label} className="flex items-center">
+              <button
+                type="button"
+                onClick={() => isDone && setStep(i)}
+                className={`flex flex-col items-center gap-1 px-3 transition-opacity ${
+                  i > step ? "opacity-40 cursor-default" : "cursor-pointer"
+                }`}
+              >
+                <div
+                  className={`size-9 rounded-full flex items-center justify-center transition-colors border-2 ${
+                    isActive
+                      ? "bg-orange border-orange text-white"
+                      : isDone
+                        ? "bg-orange/10 border-orange text-orange"
+                        : "bg-muted border-border text-muted-foreground"
+                  }`}
+                >
+                  {isDone ? (
+                    <LucideCheckCircle2 className="size-4" />
+                  ) : (
+                    <Icon className="size-4" />
+                  )}
+                </div>
+                <span
+                  className={`text-xs font-medium whitespace-nowrap ${
+                    isActive ? "text-orange" : "text-muted-foreground"
+                  }`}
+                >
+                  {s.label}
+                </span>
+              </button>
+              {i < STEPS.length - 1 && (
+                <div
+                  className={`h-px w-8 md:w-12 mb-5 shrink-0 transition-colors ${
+                    i < step ? "bg-orange" : "bg-border"
+                  }`}
+                />
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      <Form {...form}>
+        <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)}>
+          {step === 0 && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-2xl font-bold text-navy mb-1">Trip Basics</h2>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Let&apos;s start with the fundamentals of your adventure.
+                </p>
+              </div>
+
+              <FormField
+                control={form.control}
+                name="duration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-navy font-semibold text-sm">Total Duration *</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="How many days?" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {DURATION_VALUES.map((d) => (
+                          <SelectItem key={d} value={d}>{d}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="experienceType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-navy font-semibold text-sm">Experience / Trek Type *</FormLabel>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">
+                      {categories.map((cat) => {
+                        const checked = (field.value as string[]).includes(cat)
+                        return (
+                          <label
+                            key={cat}
+                            className={`flex items-center gap-2 rounded-lg border px-3 py-2 cursor-pointer transition-colors text-sm ${
+                              checked
+                                ? "border-orange/40 bg-orange/5 text-orange font-medium"
+                                : "border-border text-muted-foreground hover:bg-muted"
+                            }`}
+                          >
+                            <Checkbox
+                              checked={checked}
+                              onCheckedChange={() =>
+                                field.onChange(toggleArrayItem(field.value as string[], cat))
+                              }
+                            />
+                            <span>{cat}</span>
+                          </label>
+                        )
+                      })}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="startDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-navy font-semibold text-sm">Preferred Start Date *</FormLabel>
+                    <FormControl>
+                      <Input type="date" min={today} className="max-w-[220px]" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+
+          {step === 1 && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-2xl font-bold text-navy mb-1">Locations</h2>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Add your desired destinations with planned days at each, or let our experts curate the perfect route.
+                </p>
+              </div>
+
+              <FormField
+                control={form.control}
+                name="letUsChooseLocations"
+                render={({ field }) => (
+                  <FormItem className="flex items-start gap-3 rounded-lg border border-orange/20 bg-orange/5 p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked)
+                          if (checked) form.clearErrors("locations")
+                        }}
+                      />
+                    </FormControl>
+                    <div>
+                      <FormLabel className="text-navy font-semibold text-sm cursor-pointer">
+                        Let us choose the best locations for you
+                      </FormLabel>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Our expert team will design the optimal route based on your duration and experience type.
+                      </p>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              {!letUsChoose && (
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-navy">Your Locations</p>
+                  {fields.map((fieldItem, index) => (
+                    <div key={fieldItem.id} className="flex items-start gap-3 p-4 border border-border rounded-lg bg-muted/50">
+                      <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="sm:col-span-2">
+                          <FormField
+                            control={form.control}
+                            name={`locations.${index}.name`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-xs text-muted-foreground font-medium">Location</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="e.g. Pokhara" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div>
+                          <FormField
+                            control={form.control}
+                            name={`locations.${index}.days`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-xs text-muted-foreground font-medium">Days</FormLabel>
+                                <FormControl>
+                                  <Input type="number" min="1" placeholder="3" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                      {fields.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => remove(index)}
+                          className="mt-6 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                        >
+                          <LucideTrash2 className="size-4" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <Button type="button" variant="outline" onClick={() => append({ name: "", days: "" })}>
+                    <LucidePlus className="size-4" />
+                    Add Another Location
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-2xl font-bold text-navy mb-1">Your Group</h2>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Help us tailor the itinerary to your group&apos;s dynamics.
+                </p>
+              </div>
+
+              <FormField
+                control={form.control}
+                name="groupType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-navy font-semibold text-sm">Group Type *</FormLabel>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-1">
+                      {GROUP_OPTIONS.map((opt) => (
+                        <button
+                          type="button"
+                          key={opt.value}
+                          onClick={() => field.onChange(opt.value)}
+                          className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all text-sm font-medium ${
+                            field.value === opt.value
+                              ? "border-orange bg-orange/5 text-orange"
+                              : "border-border text-muted-foreground hover:border-muted-foreground"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className={groupType === "solo" || groupType === "couple" ? "hidden" : ""}>
+                <FormField
+                  control={form.control}
+                  name="numberOfTravellers"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-navy font-semibold text-sm">Number of Travellers *</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="How many people?" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {["1", "2", "3", "4", "5–7", "8–10", "11–15", "16+"].map((n) => (
+                            <SelectItem key={n} value={n}>
+                              {n} {n === "1" ? "person" : "people"}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          )}
+
+          {step === 3 && (
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-2xl font-bold text-navy mb-1">Preferences</h2>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Customise every detail of your experience. You can select multiple options where applicable.
+                </p>
+              </div>
+
+              <FormField
+                control={form.control}
+                name="inclusions"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-navy font-semibold text-sm mb-3 block">Pick Your Inclusions</FormLabel>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {INCLUSIONS.map((item) => {
+                        const checked = field.value.includes(item.id)
+                        return (
+                          <label
+                            key={item.id}
+                            className={`flex items-center gap-3 rounded-lg border px-3 py-2.5 cursor-pointer transition-colors ${
+                              checked ? "border-orange/40 bg-orange/5" : "border-border hover:bg-muted"
+                            }`}
+                          >
+                            <Checkbox
+                              checked={checked}
+                              onCheckedChange={() => field.onChange(toggleArrayItem(field.value, item.id))}
+                            />
+                            <span className="text-sm text-muted-foreground">{item.label}</span>
+                          </label>
+                        )
+                      })}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="accommodationPreferences"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-navy font-semibold text-sm flex items-center gap-2 mb-2">
+                      <LucideBed className="size-4 text-orange" />
+                      Stay / Accommodation Preferences *
+                      <span className="text-xs font-normal text-muted-foreground ml-1">(select all that apply)</span>
+                    </FormLabel>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {ACCOMMODATION.map((opt) => {
+                        const checked = field.value.includes(opt.value)
+                        return (
+                          <button
+                            type="button"
+                            key={opt.value}
+                            onClick={() => field.onChange(toggleArrayItem(field.value, opt.value))}
+                            className={`text-left px-3 py-2.5 rounded-lg border-2 text-sm transition-all ${
+                              checked
+                                ? "border-orange bg-orange/5 text-orange font-medium"
+                                : "border-border text-muted-foreground hover:border-muted-foreground"
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        )
+                      })}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="foodPreferences"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-navy font-semibold text-sm flex items-center gap-2 mb-2">
+                      <LucideUtensils className="size-4 text-orange" />
+                      Food Preferences *
+                      <span className="text-xs font-normal text-muted-foreground ml-1">(select all that apply)</span>
+                    </FormLabel>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {FOOD_PREFS.map((opt) => {
+                        const checked = field.value.includes(opt.value)
+                        return (
+                          <button
+                            type="button"
+                            key={opt.value}
+                            onClick={() => field.onChange(toggleArrayItem(field.value, opt.value))}
+                            className={`text-left px-3 py-2.5 rounded-lg border-2 text-sm transition-all ${
+                              checked
+                                ? "border-orange bg-orange/5 text-orange font-medium"
+                                : "border-border text-muted-foreground hover:border-muted-foreground"
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        )
+                      })}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="otherMentions"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-navy font-semibold text-sm">Other Mentions / Special Requests</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Dietary restrictions, health conditions, birthday celebrations, special requirements…"
+                        rows={4}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+
+          {step === 4 && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-2xl font-bold text-navy mb-1">Contact Details</h2>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Almost done! We&apos;ll use this info to send you your custom itinerary proposal.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <FormField
+                  control={form.control}
+                  name="fullName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-navy font-semibold text-sm">Full Name *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Your full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-navy font-semibold text-sm">Email *</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="your@email.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-navy font-semibold text-sm">Phone (optional)</FormLabel>
+                    <FormControl>
+                      <Input type="tel" placeholder="+977 9800000000" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="rounded-lg border border-border bg-muted/50 p-4 space-y-2 text-sm">
+                <p className="font-semibold text-navy mb-3">Your Itinerary Summary</p>
+                {(
+                  [
+                    ["Duration", form.watch("duration")],
+                    ["Experience", form.watch("experienceType").join(", ")],
+                    ["Start Date", form.watch("startDate")],
+                    [
+                      "Locations",
+                      form.watch("letUsChooseLocations")
+                        ? "Team will choose"
+                        : form.watch("locations").filter((l) => l.name).map((l) => l.name).join(", ") || undefined,
+                    ],
+                    ["Group Type", form.watch("groupType")],
+                    ["Travellers", form.watch("numberOfTravellers")],
+                    ["Stay", form.watch("accommodationPreferences").join(", ") || undefined],
+                    ["Food", form.watch("foodPreferences").join(", ") || undefined],
+                  ] as [string, string | undefined][]
+                )
+                  .filter(([, v]) => Boolean(v))
+                  .map(([label, value]) => (
+                    <div key={label} className="flex gap-2 text-muted-foreground">
+                      <span className="font-medium text-navy w-28 shrink-0">{label}:</span>
+                      <span className="capitalize">{value}</span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
+            <Button type="button" variant="outline" onClick={goPrev} disabled={step === 0}>
+              Back
+            </Button>
+            {step < STEPS.length - 1 ? (
+              <Button type="button" onClick={goNext} className="bg-orange hover:bg-orange/90">
+                Continue
+              </Button>
+            ) : (
+              <>
+                <Button type="submit" disabled={isSubmitting} className="gap-2 bg-orange hover:bg-orange/90">
+                  <LucideSend className="size-4" />
+                  {isSubmitting ? "Sending…" : "Send My Request"}
+                </Button>
+                <div className="cf-turnstile mt-4" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
+              </>
+            )}
+          </div>
+
+          {submitSuccess && (
+            <div className="flex items-center gap-3 rounded-md bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700 font-medium mt-4">
+              <LucideCheckCircle2 className="size-4 text-green-600 shrink-0" />
+              Request sent! Our team will craft your custom itinerary within 24 hours.
+            </div>
+          )}
+        </form>
+      </Form>
+    </div>
+  )
+}

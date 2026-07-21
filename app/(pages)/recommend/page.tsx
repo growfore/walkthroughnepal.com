@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowLeft, ArrowRight, Sparkles, RotateCcw, RefreshCw } from "lucide-react"
+import { ArrowLeft, ChevronRight, Sparkles, RotateCcw, RefreshCw } from "lucide-react"
 import { QuizStep } from "@/components/recommend/quiz-step"
 import { TripResultCard } from "@/components/recommend/trip-result-card"
 import { LeadForm } from "@/components/recommend/lead-form"
@@ -285,7 +285,7 @@ export default function RecommendPage() {
           className="inline-flex items-center gap-2 rounded-full bg-orange px-6 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-40"
         >
           {step === STEPS.length - 1 ? "Find My Trip" : "Next"}
-          {step < STEPS.length - 1 && <ArrowRight className="h-4 w-4" />}
+          {step < STEPS.length - 1 && <ChevronRight className="h-4 w-4" />}
           {step === STEPS.length - 1 && <Sparkles className="h-4 w-4" />}
         </button>
       </div>

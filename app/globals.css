@@ -43,6 +43,8 @@
   --color-navy-foreground: var(--navy-foreground);
   --color-orange: var(--orange);
   --color-orange-foreground: var(--orange-foreground);
+  --color-mustard: var(--mustard);
+  --color-mustard-foreground: var(--mustard-foreground);
   --color-canvas: #FAFAF8;
   --color-canvas-soft: #F3F2EC;
   --color-ink: #162B38;
@@ -104,6 +106,8 @@
   --navy-foreground: #ffffff;
   --orange: #D4520C;
   --orange-foreground: #ffffff;
+  --mustard: #D4A843;
+  --mustard-foreground: #0F2B3D;
 }
 @utility scrollbar-hide {
   -ms-overflow-style: none;
