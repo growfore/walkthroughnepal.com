@@ -72,12 +72,12 @@ function Combobox({
         onClick={() => setOpen(!open)}
         className={`flex w-full items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition sm:w-auto ${
           open
-            ? "border-orange bg-white/15 text-white"
-            : "border-white/20 bg-white/10 text-white/80 hover:border-white/40"
+            ? "border-orange bg-orange/5 text-foreground"
+            : "border-border bg-background text-muted-foreground hover:border-foreground/30"
         }`}
       >
-        <Icon className="h-4 w-4 shrink-0 text-white/40" />
-        <span className={selected ? "text-white" : "text-white/50"}>
+        <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+        <span className={selected ? "text-foreground" : ""}>
           {selected ? selected.label : placeholder}
         </span>
         {selected && (
@@ -87,29 +87,29 @@ function Combobox({
               e.stopPropagation()
               onChange("")
             }}
-            className="ml-1 rounded-full p-0.5 text-white/40 hover:text-white"
+            className="ml-1 rounded-full p-0.5 text-muted-foreground hover:text-foreground"
           >
             <X className="h-3 w-3" />
           </button>
         )}
-        <ChevronDown className={`h-4 w-4 shrink-0 text-white/40 transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 z-50 mt-1 w-56 overflow-hidden rounded-lg border border-white/20 bg-navy shadow-xl">
-          <div className="border-b border-white/10 p-2">
+        <div className="absolute top-full left-0 z-50 mt-1 w-56 overflow-hidden rounded-lg border border-border bg-white shadow-xl">
+          <div className="border-b border-border p-2">
             <input
               ref={inputRef}
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
-              className="w-full rounded-md bg-white/10 px-3 py-1.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-orange/50"
+              className="w-full rounded-md bg-background px-3 py-1.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-orange/50"
             />
           </div>
           <div className="max-h-48 overflow-y-auto py-1">
             {filtered.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-white/40">No results</div>
+              <div className="px-3 py-2 text-sm text-muted-foreground">No results</div>
             ) : (
               filtered.map((opt) => (
                 <button
@@ -119,8 +119,8 @@ function Combobox({
                     onChange(opt.value === value ? "" : opt.value)
                     close()
                   }}
-                  className={`flex w-full items-center gap-2 px-3 py-2 text-sm transition hover:bg-white/10 ${
-                    opt.value === value ? "text-orange" : "text-white/80"
+                  className={`flex w-full items-center gap-2 px-3 py-2 text-sm transition hover:bg-accent ${
+                    opt.value === value ? "text-orange" : "text-foreground"
                   }`}
                 >
                   <Check className={`h-4 w-4 shrink-0 ${opt.value === value ? "opacity-100" : "opacity-0"}`} />
@@ -173,16 +173,16 @@ export function SearchSection({ categories }: { categories: Category[] }) {
         </div>
 
         {/* Search bar */}
-        <div className="mt-10 rounded-2xl border border-white/20 bg-white/10 p-3 backdrop-blur-sm">
+        <div className="mt-10 rounded-2xl border border-border bg-white p-3 shadow-lg">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             <div className="flex flex-1 items-center gap-2">
-              <Search className="ml-2 h-5 w-5 shrink-0 text-white/50" />
+              <Search className="ml-2 h-5 w-5 shrink-0 text-muted-foreground" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search treks, tours, destinations..."
-                className="flex-1 bg-transparent px-2 py-3 text-base text-white placeholder:text-white/40 focus:outline-none"
+                className="flex-1 bg-transparent px-2 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     window.location.href = buildExploreUrl()
@@ -199,7 +199,7 @@ export function SearchSection({ categories }: { categories: Category[] }) {
           </div>
 
           {/* Combobox filters */}
-          <div className="relative mt-3 flex flex-col gap-2 border-t border-white/10 pt-3 sm:flex-row sm:items-center">
+          <div className="relative mt-3 flex flex-col gap-2 border-t border-border pt-3 sm:flex-row sm:items-center">
             <Combobox
               icon={Tag}
               placeholder="Category"
@@ -223,10 +223,10 @@ export function SearchSection({ categories }: { categories: Category[] }) {
             />
           </div>
 
-          <div className="mt-3 flex justify-center border-t border-white/10 pt-3">
+          <div className="mt-3 flex justify-center border-t border-border pt-3">
             <Link
               href="/design-your-trip"
-              className="flex items-center gap-2 text-sm text-white/60 transition hover:text-white"
+              className="flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground"
             >
               Not sure where to go? <span className="font-semibold text-orange">Let us plan it for you</span> <ChevronRight className="h-4 w-4" />
             </Link>
