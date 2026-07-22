@@ -306,3 +306,63 @@ html::-webkit-scrollbar-thumb:hover {
   color: inherit;
   white-space: pre;
 }
+
+/* Backend tables in print page */
+.print-plain table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #000 !important;
+  color: #000;
+}
+.print-plain th,
+.print-plain td {
+  border: 1px solid #000 !important;
+  padding: 8px !important;
+  white-space: normal;
+  color: #000;
+}
+.print-plain th {
+  font-weight: 700;
+}
+/* Restore list styling in backend content */
+.print-plain ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+}
+.print-plain ol {
+  list-style-type: decimal;
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+}
+.print-plain li {
+  margin-bottom: 0.25rem;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+  }
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+  }
+  /* Scale chart to fit print width */
+  .recharts-responsive-container {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  .recharts-wrapper div {
+    min-width: 0 !important;
+  }
+}

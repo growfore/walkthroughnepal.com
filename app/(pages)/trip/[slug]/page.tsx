@@ -20,7 +20,7 @@ import { notFound } from "next/navigation"
 import { getActivityBySlug, getTestimonials, getSlots } from "@/lib/api"
 import { siteConfig } from "@/lib/siteConfig"
 
-type Props = { params: Promise<{ slug: string }> }
+type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ print?: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
@@ -51,6 +51,7 @@ import { AltitudeChart } from "@/components/altitude-chart"
 import { CustomizeTripCTA } from "@/components/customize-trip-cta"
 import { TripPageClient } from "@/components/trip-page-client"
 import { getIcon } from "@/lib/icons"
+import { TripPrintPage } from "@/components/trip-print-page"
 
 const API = API_BASE
 
@@ -69,10 +70,14 @@ const sectionIds = [
 
 export default async function PackagePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ print?: string }>
 }) {
   const { slug } = await params
+  const { print } = await searchParams
+  const isPrint = print === "print"
 
   let pkg
   try {
@@ -128,6 +133,10 @@ export default async function PackagePage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {isPrint ? (
+        <TripPrintPage pkg={pkg} itineraryVariants={itineraryVariants} />
+      ) : (
+        <>
       {/* ── Hero Gallery ── */}
       <section className="-mt-[40px] pb-0 md:-mt-[100px]">
         <HorizontalGallery images={pkg.images} apiUrl={API} />
@@ -582,6 +591,8 @@ export default async function PackagePage({
           )}
         </div>
       </div>
+        </>
+      )}
     </div>
   )
 }
