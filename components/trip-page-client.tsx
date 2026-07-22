@@ -21,7 +21,8 @@ export function TripPageClient({
   const [tab, setTab] = useState<"departures" | "private">("departures")
   const [selectedTier, setSelectedTier] = useState<Tier | null>(null)
 
-  const privateTiers = tiers.filter((t) => !t.bestValue)
+  //const privateTiers = tiers.filter((t) => !t.bestValue)
+  const privateTiers = tiers
 
   return (
     <>
