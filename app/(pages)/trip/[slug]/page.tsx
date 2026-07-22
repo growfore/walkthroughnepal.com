@@ -57,12 +57,12 @@ const API = API_BASE
 
 const sectionIds = [
   "overview",
+  "departures",
   "itinerary",
   "cost-breakdown",
-  "map",
   "includes",
   "excludes",
-  "departures",
+  "map",
   "packing-list",
   "useful-info",
   "faqs",
@@ -318,29 +318,7 @@ export default async function PackagePage({
               </div>
             )}
 
-            {/* ── Map ── */}
-            {pkg.map && (
-              <div id="map" className="mt-12 scroll-mt-40">
-                <div
-                  className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word"
-                  dangerouslySetInnerHTML={{
-                    __html: resolveContentImages(renderRichText(pkg.map)),
-                  }}
-                />
-              </div>
-            )}
 
-            {/* ── Altitude Profile ── */}
-            {pkg.altitudeChart?.length > 0 && (
-              <div className="mt-12 scroll-mt-40">
-                <h2 className="text-2xl font-bold text-navy md:text-3xl">
-                  Altitude Profile
-                </h2>
-                <div className="mt-4 overflow-x-auto rounded-lg border border-border bg-card p-4">
-                  <AltitudeChart data={pkg.altitudeChart} />
-                </div>
-              </div>
-            )}
 
             {/* ── Includes ── */}
             <div id="includes" className="mt-12 scroll-mt-40">
@@ -375,6 +353,31 @@ export default async function PackagePage({
                   ))}
               </div>
             </div>
+
+            {/* ── Map ── */}
+                       {pkg.map && (
+                         <div id="map" className="mt-12 scroll-mt-40">
+                           <div
+                             className="prose prose-lg mt-4 w-full max-w-none wrap-break-word **:wrap-break-word"
+                             dangerouslySetInnerHTML={{
+                               __html: resolveContentImages(renderRichText(pkg.map)),
+                             }}
+                           />
+                         </div>
+                       )}
+
+                       {/* ── Altitude Profile ── */}
+                       {pkg.altitudeChart?.length > 0 && (
+                         <div className="mt-12 scroll-mt-40">
+                           <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                             Altitude Profile
+                           </h2>
+                           <div className="mt-4 overflow-x-auto rounded-lg border border-border bg-card p-4">
+                             <AltitudeChart data={pkg.altitudeChart} />
+                           </div>
+                         </div>
+                       )}
+
 
             {/* ── Packing List ── */}
             {pkg.whatToBring && pkg.whatToBring.categories.length > 0 && (

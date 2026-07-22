@@ -43,7 +43,7 @@ export function AltitudeChart({ data }: { data: Point[] }) {
           ))}
         </div>
       </div>
-      <div className="h-90 min-w-[720px] p-4">
+      <div className="h-90 min-w-[720px] p-1">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 40 }}>
             <defs>
@@ -68,7 +68,7 @@ export function AltitudeChart({ data }: { data: Point[] }) {
               width={100}
             />
               <Tooltip
-                wrapperStyle={{ width: "auto" }}
+              wrapperStyle={{ width: "fit" }}
                 contentStyle={{
                   borderRadius: "0.5rem",
                   border: "1px solid var(--color-border)",
