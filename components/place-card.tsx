@@ -3,6 +3,19 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Info, X } from "lucide-react"
+import { Drawer, DrawerContent } from "@/components/ui/drawer"
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)")
+    setIsMobile(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener("change", handler)
+    return () => mq.removeEventListener("change", handler)
+  }, [])
+  return isMobile
+}
 
 function parseAlt(alt: string): { title: string; description: string } {
   const idx = alt.indexOf("::")
@@ -21,17 +34,9 @@ interface PlaceCardProps {
 
 export function PlaceCard({ image, alt, className }: PlaceCardProps) {
   const [open, setOpen] = useState(false)
+  const isMobile = useIsMobile()
   const { title, description } = parseAlt(alt)
   const hasInfo = description.length > 0
-
-  useEffect(() => {
-    if (!open) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false)
-    }
-    document.addEventListener("keydown", onKey)
-    return () => document.removeEventListener("keydown", onKey)
-  }, [open])
 
   return (
     <>
@@ -72,59 +77,45 @@ export function PlaceCard({ image, alt, className }: PlaceCardProps) {
       {hasInfo && (
         <>
           {/* Desktop: centered dialog */}
-          <div
-            className={`fixed inset-0 z-50 pointer-events-none items-center justify-center p-4 ${
-              open ? "hidden md:flex" : "hidden"
-            }`}
-          >
+          {!isMobile && (
             <div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm pointer-events-auto"
-              onClick={() => setOpen(false)}
-            />
-            <div
-              className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl dark:bg-gray-900 pointer-events-auto"
-              onClick={(e) => e.stopPropagation()}
+              className={`fixed inset-0 z-50 pointer-events-none items-center justify-center p-4 ${
+                open ? "flex" : "hidden"
+              }`}
             >
-              <button
+              <div
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm pointer-events-auto"
                 onClick={() => setOpen(false)}
-                className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/10 text-gray-600 transition-colors hover:bg-black/20 hover:text-gray-900 dark:bg-white/10 dark:text-gray-400 dark:hover:bg-white/20 dark:hover:text-white"
+              />
+              <div
+                className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl dark:bg-gray-900 pointer-events-auto"
+                onClick={(e) => e.stopPropagation()}
               >
-                <X className="h-4 w-4" />
-              </button>
-              <p className="pr-10 font-sans text-base leading-relaxed text-gray-700 dark:text-gray-300">
-                {description}
-              </p>
-            </div>
-          </div>
-
-          {/* Mobile: drawer from bottom */}
-          <div
-            className={`fixed inset-0 z-50 pointer-events-none md:hidden ${
-              open ? "flex items-end" : "hidden"
-            }`}
-          >
-            <div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm pointer-events-auto"
-              onClick={() => setOpen(false)}
-            />
-            <div
-              className="relative z-10 w-full rounded-t-2xl bg-white p-6 shadow-2xl dark:bg-gray-900 pointer-events-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="mb-4 flex justify-center">
-                <div className="h-1 w-10 rounded-full bg-gray-300" />
+                <button
+                  onClick={() => setOpen(false)}
+                  className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/10 text-gray-600 transition-colors hover:bg-black/20 hover:text-gray-900 dark:bg-white/10 dark:text-gray-400 dark:hover:bg-white/20 dark:hover:text-white"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+                <p className="pr-10 font-sans text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                  {description}
+                </p>
               </div>
-              <button
-                onClick={() => setOpen(false)}
-                className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/10 text-gray-600 transition-colors hover:bg-black/20 hover:text-gray-900 dark:bg-white/10 dark:text-gray-400 dark:hover:bg-white/20 dark:hover:text-white"
-              >
-                <X className="h-4 w-4" />
-              </button>
-              <p className="pr-10 font-sans text-base leading-relaxed text-gray-700 dark:text-gray-300">
-                {description}
-              </p>
             </div>
-          </div>
+          )}
+
+          {/* Mobile: vaul bottom drawer */}
+          {isMobile && (
+            <Drawer open={open} onOpenChange={setOpen}>
+              <DrawerContent>
+                <div className="p-6">
+                  <p className="font-sans text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                    {description}
+                  </p>
+                </div>
+              </DrawerContent>
+            </Drawer>
+          )}
         </>
       )}
     </>

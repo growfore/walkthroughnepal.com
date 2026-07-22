@@ -10,19 +10,8 @@ import {
   Mail,
   Phone,
   X,
-  Info,
-  Route,
-  HelpCircle,
-  MessageSquare,
   Utensils,
   Bus,
-  DollarSign,
-  Map,
-  Backpack,
-  Footprints,
-  Scissors,
-  Shield,
-  type LucideIcon,
 } from "lucide-react"
 import { FAQSection } from "@/components/faq-section"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
@@ -53,6 +42,7 @@ import { renderRichText } from "@/lib/html-decoder"
 import { resolveContentImages, API_BASE } from "@/lib/api"
 import { parseListItems } from "@/lib/forms"
 import { StickyWrapper } from "@/components/sticky-wrapper"
+import { SectionNav } from "@/components/section-nav"
 import { ItineraryList } from "@/components/itinerary-list"
 import { DownloadItineraryButton } from "@/components/download-itinerary-button"
 import { HorizontalGallery } from "@/components/horizontal-gallery"
@@ -60,31 +50,21 @@ import { ReviewsCarousel } from "@/components/reviews-carousel"
 import { AltitudeChart } from "@/components/altitude-chart"
 import { CustomizeTripCTA } from "@/components/customize-trip-cta"
 import { TripPageClient } from "@/components/trip-page-client"
+import { getIcon } from "@/lib/icons"
 
 const API = API_BASE
 
-const packingIconMap: Record<string, LucideIcon> = {
-  HelpCircle,
-  Footprints,
-  Scissors,
-  Shield,
-}
-
-function getPackingIcon(name: string): LucideIcon {
-  return packingIconMap[name] ?? HelpCircle
-}
-
-const tabs = [
-  { label: "Overview", icon: Info },
-  { label: "Itinerary", icon: Route },
-  { label: "Cost Breakdown", icon: DollarSign },
-  { label: "Map", icon: Map },
-  { label: "Includes", icon: Check },
-  { label: "Excludes", icon: X },
-  { label: "Departures", icon: Calendar },
-  { label: "Packing List", icon: Backpack },
-  { label: "Useful Info", icon: HelpCircle },
-  { label: "FAQs", icon: MessageSquare },
+const sectionIds = [
+  "overview",
+  "itinerary",
+  "cost-breakdown",
+  "map",
+  "includes",
+  "excludes",
+  "departures",
+  "packing-list",
+  "useful-info",
+  "faqs",
 ]
 
 export default async function PackagePage({
@@ -154,30 +134,7 @@ export default async function PackagePage({
       </section>
 
       {/* ── Sticky section nav ── */}
-      <div className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm">
-        <div className="relative">
-          <div className="mx-auto scrollbar-hide flex max-w-7xl flex-nowrap gap-1 overflow-x-auto py-3">
-            {tabs.map((t) => {
-              const Icon = t.icon
-              return (
-                <a
-                  key={t.label}
-                  href={`#${t.label.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-navy"
-                >
-                  <Icon className="h-4 w-4 shrink-0" />
-                  {t.label}
-                </a>
-              )
-            })}
-          </div>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-1">
-            <div className="h-6 w-6 animate-pulse rounded-full bg-muted text-muted-foreground grid place-items-center">
-              <ChevronRight className="h-4 w-4" />
-            </div>
-          </div>
-        </div>
-      </div>
+      <SectionNav sectionIds={sectionIds} />
 
       {/* ── Main content ── */}
       <section className="pt-4 pb-20 text-lg leading-relaxed font-medium lg:pb-12">
@@ -426,7 +383,7 @@ export default async function PackagePage({
                 )}
                 <div className="mt-6 space-y-6">
                   {pkg.whatToBring.categories.map((cat, i) => {
-                    const Icon = getPackingIcon(cat.icon)
+                    const Icon = getIcon(cat.icon)
                     return (
                       <div key={i}>
                         <h3 className="flex items-center gap-2 text-lg font-bold text-navy">

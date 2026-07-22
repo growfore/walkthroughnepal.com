@@ -64,16 +64,18 @@ export function AltitudeChart({ data }: { data: Point[] }) {
               tick={{ fontSize: 12, fill: "var(--color-muted-foreground)" }}
               tickLine={false}
               axisLine={false}
-              unit={unit}
-              width={55}
+              unit={` ${unit}`}
+              width={60}
             />
             <Tooltip
               contentStyle={{
                 borderRadius: "0.5rem",
                 border: "1px solid var(--color-border)",
                 background: "var(--color-background)",
+                fontSize: "12px",
+                padding: "6px 10px",
               }}
-              formatter={(v) => [`${v}${unit}`, "Altitude"]}
+              formatter={(v) => [`${v} ${unit}`, "Altitude"]}
             />
             <Area
               type="monotone"
@@ -81,6 +83,17 @@ export function AltitudeChart({ data }: { data: Point[] }) {
               stroke="var(--color-orange)"
               fill="url(#altGrad)"
               strokeWidth={2}
+              dot={{ r: 4, fill: "var(--color-orange)", stroke: "white", strokeWidth: 2 }}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              label={(props: any) => {
+                const { x, y, value } = props
+                if (x == null || y == null || value == null) return null
+                return (
+                  <text x={x} y={Number(y) - 8} textAnchor="middle" fontSize={10} fill="var(--color-navy)" fontWeight={600}>
+                    {value} {unit}
+                  </text>
+                )
+              }}
             />
           </AreaChart>
         </ResponsiveContainer>

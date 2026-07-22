@@ -5,33 +5,10 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import { renderRichText } from "@/lib/html-decoder"
 import type { FAQGroup } from "@/lib/types"
 import {
-  HelpCircle,
-  MapPin,
-  DollarSign,
-  Calendar,
-  Shield,
-  Users,
-  Mountain,
-  Luggage,
   ChevronsDownUp,
   ChevronsUpDown,
-  type LucideIcon,
 } from "lucide-react"
-
-const iconMap: Record<string, LucideIcon> = {
-  HelpCircle,
-  MapPin,
-  DollarSign,
-  Calendar,
-  Shield,
-  Users,
-  Mountain,
-  Luggage,
-}
-
-function getIcon(name: string): LucideIcon {
-  return iconMap[name] ?? HelpCircle
-}
+import { getIcon } from "@/lib/icons"
 
 export function FAQSection({
   groups,
