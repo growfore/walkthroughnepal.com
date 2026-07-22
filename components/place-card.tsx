@@ -88,16 +88,16 @@ export function PlaceCard({ image, alt, className }: PlaceCardProps) {
                 onClick={() => setOpen(false)}
               />
               <div
-                className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl dark:bg-gray-900 pointer-events-auto"
+                className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl pointer-events-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
                   onClick={() => setOpen(false)}
-                  className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/10 text-gray-600 transition-colors hover:bg-black/20 hover:text-gray-900 dark:bg-white/10 dark:text-gray-400 dark:hover:bg-white/20 dark:hover:text-white"
+                  className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/10 text-gray-600 transition-colors hover:bg-black/20 hover:text-gray-900"
                 >
                   <X className="h-4 w-4" />
                 </button>
-                <p className="pr-10 font-sans text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                <p className="pr-10 font-sans text-base leading-relaxed text-gray-700">
                   {description}
                 </p>
               </div>
@@ -109,7 +109,7 @@ export function PlaceCard({ image, alt, className }: PlaceCardProps) {
             <Drawer open={open} onOpenChange={setOpen}>
               <DrawerContent>
                 <div className="p-6">
-                  <p className="font-sans text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                  <p className="font-sans text-base leading-relaxed text-gray-700">
                     {description}
                   </p>
                 </div>

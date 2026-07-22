@@ -26,8 +26,8 @@ export function AltitudeChart({ data }: { data: Point[] }) {
 
   return (
     <div>
-      <div className="mb-3 flex justify-end">
-        <div className="inline-flex rounded-lg border border-border bg-muted p-0.5">
+      <div className="mb-3 justify-end ">
+        <div className="inline-flex rounded-lg bg-transparent p-0.5 justify-end">
           {(["m", "ft"] as const).map((u) => (
             <button
               key={u}
@@ -43,7 +43,7 @@ export function AltitudeChart({ data }: { data: Point[] }) {
           ))}
         </div>
       </div>
-      <div className="h-80 min-w-[720px]">
+      <div className="h-90 min-w-[720px] p-4">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 40 }}>
             <defs>
@@ -54,7 +54,7 @@ export function AltitudeChart({ data }: { data: Point[] }) {
             </defs>
             <XAxis
               dataKey="location"
-              tick={{ fontSize: 11, fill: "var(--color-muted-foreground)", angle: -40, textAnchor: "end" }}
+              tick={{ fontSize: 11, fill: "var(--color-muted-foreground)", angle: -50, textAnchor: "end" }}
               tickLine={false}
               axisLine={false}
               interval={0}
@@ -65,18 +65,19 @@ export function AltitudeChart({ data }: { data: Point[] }) {
               tickLine={false}
               axisLine={false}
               unit={` ${unit}`}
-              width={60}
+              width={100}
             />
-            <Tooltip
-              contentStyle={{
-                borderRadius: "0.5rem",
-                border: "1px solid var(--color-border)",
-                background: "var(--color-background)",
-                fontSize: "12px",
-                padding: "6px 10px",
-              }}
-              formatter={(v) => [`${v} ${unit}`, "Altitude"]}
-            />
+              <Tooltip
+                wrapperStyle={{ width: "auto" }}
+                contentStyle={{
+                  borderRadius: "0.5rem",
+                  border: "1px solid var(--color-border)",
+                  background: "var(--color-background)",
+                  fontSize: "12px",
+                  padding: "6px 10px",
+                }}
+                formatter={(v) => [`${v} ${unit}`, "Altitude"]}
+              />
             <Area
               type="monotone"
               dataKey="altitude"

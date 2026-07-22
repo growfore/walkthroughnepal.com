@@ -3,10 +3,6 @@ import type { NextConfig } from "next"
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
 const nextConfig: NextConfig = {
-  outputFileTracingIncludes: {
-    "/api/pdf": ["node_modules/@sparticuz/chromium/bin/**"],
-    "/api/pdf/route": ["node_modules/@sparticuz/chromium/bin/**"],
-  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "api.walkthroughnepal.com", pathname: "/uploads/**" },

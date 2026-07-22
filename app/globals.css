@@ -3,7 +3,7 @@
 @import "shadcn/tailwind.css";
 @plugin "@tailwindcss/typography";
 
-@custom-variant dark (&:is(.dark *));
+/* dark mode removed */
 
 @theme inline {
   --font-heading: var(--font-heading), sans-serif;
@@ -364,5 +364,8 @@ html::-webkit-scrollbar-thumb:hover {
   }
   .recharts-wrapper div {
     min-width: 0 !important;
+  }
+  .recharts-tooltip-wrapper {
+    width: fit-content !important;
   }
 }
