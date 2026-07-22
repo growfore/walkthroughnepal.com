@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react"
 import { renderRichText } from "@/lib/html-decoder"
-import { resolveContentImages, API_BASE, PUBLIC_API_BASE } from "@/lib/api"
+import { resolveContentImages, API_BASE } from "@/lib/api"
 import { parseListItems } from "@/lib/forms"
 import { siteConfig } from "@/lib/siteConfig"
 import { AltitudeChart } from "@/components/altitude-chart"
@@ -52,7 +52,7 @@ export function TripPrintPage({ pkg, itineraryVariants }: TripPrintPageProps) {
     setErrorMsg("")
 
     try {
-      const res = await fetch(`${PUBLIC_API_BASE}/api/v1/pdf/generate-email`, {
+      const res = await fetch(`${API_BASE}/api/v1/pdf/generate-email`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
