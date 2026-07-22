@@ -3,7 +3,7 @@
 import { Check } from "lucide-react"
 import type { Tier } from "@/lib/types"
 
-export function TierPricingCards({ tiers, hasSlots, onSelect }: { tiers: Tier[]; hasSlots: boolean; onSelect?: (tab: "departures" | "private") => void }) {
+export function TierPricingCards({ tiers, hasSlots, onSelect }: { tiers: Tier[]; hasSlots: boolean; onSelect?: (tab: "departures" | "private", tier?: Tier) => void }) {
   if (!tiers.length) return null
 
   return (
@@ -39,7 +39,7 @@ export function TierPricingCards({ tiers, hasSlots, onSelect }: { tiers: Tier[];
             </ul>
             <a
               href={hasSlots ? "#departures" : "/inquiry"}
-              onClick={() => onSelect?.(tier.bestValue ? "departures" : "private")}
+              onClick={() => onSelect?.(tier.bestValue ? "departures" : "private", tier)}
               className={`mt-3 block text-center py-2.5 px-5 rounded-lg text-sm font-semibold transition-shadow hover:shadow-md ${
                 tier.bestValue
                   ? "bg-primary text-primary-foreground border border-primary"

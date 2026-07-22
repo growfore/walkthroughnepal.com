@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Calendar, Users, CheckCircle2 } from "lucide-react"
+import { Calendar, Users, CheckCircle2, Package } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -25,27 +25,31 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { toast } from "react-toastify"
-import { DURATION_VALUES, GROUP_OPTIONS } from "@/lib/forms"
-import type { Slot } from "@/lib/types"
+import type { Slot, Tier } from "@/lib/types"
 
 const formSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email"),
-  phone: z.string().optional(),
-  duration: z.enum(DURATION_VALUES, { message: "Please select a duration" }),
+  phone: z.string().min(1, "Phone is required"),
+  tier: z.string().min(1, "Please select a package"),
   startDate: z.string().min(1, "Please select a start date"),
-  groupType: z.enum(GROUP_OPTIONS.map((o) => o.value) as [string, ...string[]], { message: "Please select a group type" }),
-  numberOfTravellers: z.string().optional(),
-  otherMentions: z.string().optional(),
-}).superRefine((data, ctx) => {
-  if ((data.groupType === "family" || data.groupType === "friends") && (!data.numberOfTravellers || data.numberOfTravellers.trim() === "")) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please select number of travellers", path: ["numberOfTravellers"] })
-  }
+  numberOfTravellers: z.string().min(1, "Number of travellers is required"),
+  otherMentions: z.string().min(1, "Notes are required"),
 })
 
 type FormValues = z.infer<typeof formSchema>
 
-export function DeparturesSection({ slots, slug, tripTitle, tab: tabProp, onTabChange }: { slots: Slot[]; slug: string; tripTitle: string; tab?: "departures" | "private"; onTabChange?: (tab: "departures" | "private") => void }) {
+export function DeparturesSection({
+  slots, slug, tripTitle, tab: tabProp, onTabChange, tiers = [], selectedTier,
+}: {
+  slots: Slot[]
+  slug: string
+  tripTitle: string
+  tab?: "departures" | "private"
+  onTabChange?: (tab: "departures" | "private") => void
+  tiers?: Tier[]
+  selectedTier?: Tier | null
+}) {
   const [internalTab, setInternalTab] = useState<"departures" | "private">("departures")
   const tab = tabProp ?? internalTab
   const setTab = onTabChange ?? setInternalTab
@@ -56,12 +60,21 @@ export function DeparturesSection({ slots, slug, tripTitle, tab: tabProp, onTabC
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema) as never,
     defaultValues: {
-      fullName: "", email: "", phone: "", duration: undefined, startDate: "",
-      groupType: undefined, numberOfTravellers: "", otherMentions: "",
+      fullName: "", email: "", phone: "", tier: "", startDate: "",
+      numberOfTravellers: "", otherMentions: "",
     },
   })
 
-  const groupType = form.watch("groupType")
+  const watchedTier = form.watch("tier")
+
+  useEffect(() => {
+    if (selectedTier && tab === "private") {
+      form.setValue("tier", selectedTier.name)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTier?.id, tab])
+
+  const packageName = watchedTier ? `${tripTitle} : ${watchedTier}` : ""
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true)
@@ -76,10 +89,8 @@ export function DeparturesSection({ slots, slug, tripTitle, tab: tabProp, onTabC
           fullName: data.fullName,
           email: data.email,
           phone: data.phone,
-          tripTitle,
-          duration: data.duration,
+          tripTitle: packageName,
           startDate: data.startDate,
-          groupType: data.groupType,
           numberOfTravellers: data.numberOfTravellers,
           otherMentions: data.otherMentions,
           "cf-turnstile-response": tokenValue,
@@ -158,13 +169,19 @@ export function DeparturesSection({ slots, slug, tripTitle, tab: tabProp, onTabC
           ) : (
             <Form {...form}>
               <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 p-4">
+                {packageName && (
+                  <div className="flex items-center gap-2 rounded-lg bg-navy/5 px-3 py-2 text-sm text-navy">
+                    <Package className="h-4 w-4 shrink-0" />
+                    <span className="font-semibold">{packageName}</span>
+                  </div>
+                )}
                 <div className="grid sm:grid-cols-3 gap-3">
                   <div className="space-y-3">
                     <FormField control={form.control} name="fullName" render={({ field }) => (
                       <FormItem><FormLabel className="text-xs font-semibold text-ink">Name *</FormLabel><FormControl><Input className="h-9 text-sm w-full" placeholder="Your name" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
-                    <FormField control={form.control} name="duration" render={({ field }) => (
-                      <FormItem><FormLabel className="text-xs font-semibold text-ink">Duration *</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger size="sm" className="text-sm w-full"><SelectValue placeholder="Days" /></SelectTrigger></FormControl><SelectContent>{DURATION_VALUES.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+                    <FormField control={form.control} name="tier" render={({ field }) => (
+                      <FormItem><FormLabel className="text-xs font-semibold text-ink">Package *</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger size="sm" className="text-sm w-full"><SelectValue placeholder="Select package" /></SelectTrigger></FormControl><SelectContent>{tiers.map((t) => <SelectItem key={t.id} value={t.name}>{t.name} — {t.price}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
                     )} />
                   </div>
                   <div className="space-y-3">
@@ -177,20 +194,15 @@ export function DeparturesSection({ slots, slug, tripTitle, tab: tabProp, onTabC
                   </div>
                   <div className="space-y-3">
                     <FormField control={form.control} name="phone" render={({ field }) => (
-                      <FormItem><FormLabel className="text-xs font-semibold text-ink">Phone</FormLabel><FormControl><Input className="h-9 text-sm w-full" placeholder="+1 234 567 890" {...field} /></FormControl><FormMessage /></FormItem>
+                      <FormItem><FormLabel className="text-xs font-semibold text-ink">Phone *</FormLabel><FormControl><Input className="h-9 text-sm w-full" placeholder="+1 234 567 890" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
-                    <FormField control={form.control} name="groupType" render={({ field }) => (
-                      <FormItem><FormLabel className="text-xs font-semibold text-ink">Group *</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger size="sm" className="text-sm w-full"><SelectValue placeholder="Who?" /></SelectTrigger></FormControl><SelectContent>{GROUP_OPTIONS.map((opt) => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
+                    <FormField control={form.control} name="numberOfTravellers" render={({ field }) => (
+                      <FormItem><FormLabel className="text-xs font-semibold text-ink">Travellers *</FormLabel><FormControl><Input className="h-9 text-sm w-full" type="number" min="1" placeholder="Number of people" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                   </div>
                 </div>
-                {(groupType === "family" || groupType === "friends") && (
-                  <FormField control={form.control} name="numberOfTravellers" render={({ field }) => (
-                    <FormItem><FormLabel className="text-xs font-semibold text-ink">Travellers *</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger size="sm" className="text-sm w-full"><SelectValue placeholder="How many?" /></SelectTrigger></FormControl><SelectContent>{["1", "2", "3", "4", "5–7", "8–10", "11–15", "16+"].map((n) => <SelectItem key={n} value={n}>{n} {n === "1" ? "person" : "people"}</SelectItem>)}</SelectContent></Select><FormMessage /></FormItem>
-                  )} />
-                )}
                 <FormField control={form.control} name="otherMentions" render={({ field }) => (
-                  <FormItem><FormLabel className="text-xs font-semibold text-ink">Notes</FormLabel><FormControl><Textarea className="text-sm w-full" rows={2} placeholder="Dietary restrictions, health conditions, celebrations..." {...field} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel className="text-xs font-semibold text-ink">Notes *</FormLabel><FormControl><Textarea className="text-sm w-full" rows={2} placeholder="Dietary restrictions, health conditions, celebrations..." {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <Button type="submit" disabled={isSubmitting} className="w-full bg-orange text-orange-foreground hover:bg-orange/90 h-9 text-sm font-semibold">
                   {isSubmitting ? "Sending..." : "Send Request"}
@@ -204,5 +216,3 @@ export function DeparturesSection({ slots, slug, tripTitle, tab: tabProp, onTabC
     </div>
   )
 }
-
-

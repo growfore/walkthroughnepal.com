@@ -19,6 +19,9 @@ export function TripPageClient({
   tripTitle: string
 }) {
   const [tab, setTab] = useState<"departures" | "private">("departures")
+  const [selectedTier, setSelectedTier] = useState<Tier | null>(null)
+
+  const privateTiers = tiers.filter((t) => !t.bestValue)
 
   return (
     <>
@@ -27,7 +30,10 @@ export function TripPageClient({
           <TierPricingCards
             tiers={tiers}
             hasSlots={hasSlots}
-            onSelect={setTab}
+            onSelect={(newTab, tier) => {
+              setTab(newTab)
+              if (tier) setSelectedTier(tier)
+            }}
           />
         </div>
       )}
@@ -38,6 +44,8 @@ export function TripPageClient({
         tripTitle={tripTitle}
         tab={tab}
         onTabChange={setTab}
+        tiers={privateTiers}
+        selectedTier={selectedTier}
       />
     </>
   )
