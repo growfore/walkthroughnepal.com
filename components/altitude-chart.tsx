@@ -86,15 +86,15 @@ export function AltitudeChart({ data }: { data: Point[] }) {
               strokeWidth={2}
               dot={{ r: 4, fill: "var(--color-orange)", stroke: "white", strokeWidth: 2 }}
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              label={(props: any) => {
-                const { x, y, value } = props
-                if (x == null || y == null || value == null) return null
-                return (
-                  <text x={x} y={Number(y) - 8} textAnchor="middle" fontSize={10} fill="var(--color-navy)" fontWeight={600}>
-                    {value} {unit}
-                  </text>
-                )
-              }}
+              // label={(props: any) => {
+              //   const { x, y, value } = props
+              //   if (x == null || y == null || value == null) return null
+              //   return (
+              //     <text x={x} y={Number(y) - 8} textAnchor="middle" fontSize={10} fill="var(--color-navy)" fontWeight={600}>
+              //       {value} {unit}
+              //     </text>
+              //   )
+              // }}
             />
           </AreaChart>
         </ResponsiveContainer>
