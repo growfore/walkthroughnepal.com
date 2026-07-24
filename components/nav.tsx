@@ -89,7 +89,7 @@ export function Nav() {
           </Link>
         </div>
 
-        <div className="hidden justify-center gap-1 lg:flex">
+        <div className="hidden justify-center gap-3 lg:flex">
           {navLinks.map((l) => (
             <Link
               key={l.label}

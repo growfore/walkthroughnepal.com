@@ -57,7 +57,7 @@ const API = API_BASE
 
 const sectionIds = [
   "overview",
-  "departures",
+  // "departures",
   "itinerary",
   "cost-breakdown",
   "includes",
