@@ -482,11 +482,12 @@ export default async function PackagePage({
                 <div className="text-sm text-muted-foreground">per person</div>
 
                 <Link
-                  href={`/booking?trip=${slug}`}
+                  href={`/inquiry?trip=${slug}`}
                   className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-4 py-3 text-sm font-semibold text-orange-foreground hover:opacity-90"
                 >
-                  Book Now
+                  Send a inquire for this Trip
                 </Link>
+                {/*
                 <a
                   href="#departures"
                   className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg border border-navy bg-transparent px-4 py-3 text-sm font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
@@ -498,7 +499,7 @@ export default async function PackagePage({
                   className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg border border-navy bg-transparent px-4 py-3 text-sm font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
                 >
                   Inquire Now
-                </Link>
+                </Link>*/}
               </div>
 
               <div className="border-t border-border px-4 py-3 sm:px-5">
@@ -577,21 +578,12 @@ export default async function PackagePage({
               <span className="text-xs text-muted-foreground">/person</span>
             </div>
           </div>
-          {upcomingSlots.length > 0 ? (
-            <Link
-              href={`/booking?trip=${slug}&slot=${upcomingSlots[0].id}`}
-              className="shrink-0 rounded-lg bg-orange px-6 py-3 text-sm font-bold text-orange-foreground hover:opacity-90"
-            >
-              Book Now
-            </Link>
-          ) : (
-            <Link
+          <Link
               href={`/inquiry?trip=${slug}`}
               className="shrink-0 rounded-lg bg-orange px-6 py-3 text-sm font-bold text-orange-foreground hover:opacity-90"
             >
-              Book Now
+              Inquire Now
             </Link>
-          )}
         </div>
       </div>
         </>

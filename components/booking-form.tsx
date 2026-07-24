@@ -22,7 +22,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 export function BookingForm({ slot, activityId, activityTitle }: { slot: Slot; activityId: number; activityTitle: string }) {
-  const [error, setError] = useState("")
+  const [error] = useState("")
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -35,31 +35,34 @@ export function BookingForm({ slot, activityId, activityTitle }: { slot: Slot; a
   const deposit = Math.round(total * 0.3)
   const payAmount = paymentType === "DEPOSIT" ? deposit : total
 
-  const handleSubmit = async (data: FormValues) => {
-    setError("")
-    try {
-      const formEl = document.querySelector("form")
-      const token = (formEl?.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
-      if (!token) throw new Error("Please complete the verification")
-      const verify = await fetch("/api/turnstile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
-      })
-      const verifyData = await verify.json()
-      if (!verifyData.success) throw new Error("Verification failed. Please try again.")
-      const res = await fetch(`${API_BASE}/api/v1/stripe/create-checkout-session`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ activityId, slotId: slot.id, ...data }),
-      })
-      const result = await res.json()
-      if (!res.ok) throw new Error(result.message || "Checkout failed")
-      window.location.href = result.data.url
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Something went wrong")
-    }
-  }
+  // PONYTAIL: Stripe checkout disabled — payments API not active yet
+  // Uncomment below to re-enable Stripe checkout
+  //
+  // const handleSubmit = async (data: FormValues) => {
+  //   setError("")
+  //   try {
+  //     const formEl = document.querySelector("form")
+  //     const token = (formEl?.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
+  //     if (!token) throw new Error("Please complete the verification")
+  //     const verify = await fetch("/api/turnstile", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ token }),
+  //     })
+  //     const verifyData = await verify.json()
+  //     if (!verifyData.success) throw new Error("Verification failed. Please try again.")
+  //     const res = await fetch(`${API_BASE}/api/v1/stripe/create-checkout-session`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ activityId, slotId: slot.id, ...data }),
+  //     })
+  //     const result = await res.json()
+  //     if (!res.ok) throw new Error(result.message || "Checkout failed")
+  //     window.location.href = result.data.url
+  //   } catch (e: unknown) {
+  //     setError(e instanceof Error ? e.message : "Something went wrong")
+  //   }
+  // }
 
   return (
     <div className="mx-auto w-full max-w-4xl">
@@ -70,7 +73,7 @@ export function BookingForm({ slot, activityId, activityTitle }: { slot: Slot; a
             <p className="mt-1 text-sm text-muted-foreground">{activityTitle}</p>
             {error && <div className="mb-4 mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</div>}
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleSubmit)} className="mt-6 space-y-4">
+              <form className="mt-6 space-y-4">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <FormField control={form.control} name="name" render={({ field }) => (
                     <FormItem>
@@ -129,9 +132,10 @@ export function BookingForm({ slot, activityId, activityTitle }: { slot: Slot; a
                     <FormMessage />
                   </FormItem>
                 )} />
-                <Button type="submit" disabled={form.formState.isSubmitting} className="w-full bg-[#635bff] text-white hover:bg-[#635bff]/90 py-6">
+                {/* PONYTAIL: Stripe checkout disabled — payments API not active yet */}
+                {/* <Button type="submit" disabled={form.formState.isSubmitting} className="w-full bg-[#635bff] text-white hover:bg-[#635bff]/90 py-6">
                   {form.formState.isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Processing...</> : <><CreditCard className="h-4 w-4" /> Proceed to Checkout <ChevronRight className="h-4 w-4" /></>}
-                </Button>
+                </Button> */}
                 <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
               </form>
             </Form>

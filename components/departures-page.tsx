@@ -177,10 +177,10 @@ export function DeparturesPage({
                       <span className="inline-flex w-full items-center justify-center rounded-lg bg-muted px-4 py-2.5 text-sm font-semibold text-muted-foreground cursor-not-allowed sm:w-auto">Full</span>
                     ) : (
                       <Link
-                        href={`/booking?trip=${slot.activity.slug}&slot=${slot.id}`}
+                        href={`/inquiry?trip=${slot.activity.slug}`}
                         className="inline-flex w-full items-center justify-center rounded-lg bg-orange px-4 py-2.5 text-sm font-semibold text-orange-foreground transition-all hover:opacity-90 hover:shadow-md sm:w-auto"
                       >
-                        Book Now
+                        Inquire Now
                       </Link>
                     )}
                   </div>

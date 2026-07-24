@@ -52,7 +52,7 @@ export function TripPrintPage({ pkg, itineraryVariants }: TripPrintPageProps) {
     setErrorMsg("")
 
     try {
-      const res = await fetch(`${API_BASE}/api/v1/pdf/generate-email`, {
+      const res = await fetch("/api/pdf-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -115,12 +115,12 @@ export function TripPrintPage({ pkg, itineraryVariants }: TripPrintPageProps) {
               {sending === "error" && (
                 <p className="mt-2 text-sm text-error">{errorMsg}</p>
               )}
-              <label className="mt-3 flex items-start gap-2 text-sm text-muted-foreground cursor-pointer">
+              <label className="mt-3 flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
                 <input
                   type="checkbox"
                   checked={subscribe}
                   onChange={(e) => setSubscribe(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 rounded border-border accent-orange"
+                  className="h-4 w-4 rounded border-border accent-orange"
                 />
                 <span>Keep me updated with travel tips and new trip deals from Walk Through Nepal</span>
               </label>

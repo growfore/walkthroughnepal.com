@@ -22,6 +22,8 @@ const formSchema = z.object({
   phone: z.string().optional(),
   destination: z.string().optional(),
   groupSize: z.string().optional(),
+  startDate: z.string().optional(),
+  experienceLevel: z.string().optional(),
   message: z.string().min(10, "Message must be at least 10 characters"),
 })
 
@@ -101,7 +103,7 @@ function InquiryForm() {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: { fullName: "", email: "", phone: "", destination: "", groupSize: "", message: "" },
+    defaultValues: { fullName: "", email: "", phone: "", destination: "", groupSize: "", startDate: "", experienceLevel: "", message: "" },
   })
 
   useEffect(() => {
@@ -211,6 +213,30 @@ function InquiryForm() {
                     <FormMessage />
                   </FormItem>
                 )} />
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <FormField control={form.control} name="startDate" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold text-navy">Preferred Start Date</FormLabel>
+                      <FormControl><Input type="date" min={new Date().toISOString().split("T")[0]} {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField control={form.control} name="experienceLevel" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold text-navy">Experience Level</FormLabel>
+                      <FormControl>
+                        <select value={field.value ?? ""} onChange={field.onChange} className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20">
+                          <option value="">Select...</option>
+                          <option value="beginner">Beginner — First time trekker</option>
+                          <option value="intermediate">Intermediate — Some hiking experience</option>
+                          <option value="advanced">Advanced — Regular trekker</option>
+                          <option value="expert">Expert — Very experienced</option>
+                        </select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </div>
                 <FormField control={form.control} name="message" render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-sm font-semibold text-navy">Message <span className="text-orange">*</span></FormLabel>

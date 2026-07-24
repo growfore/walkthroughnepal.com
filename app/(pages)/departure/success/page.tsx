@@ -31,27 +31,33 @@ export default function BookingSuccess() {
     sessionId ? { phase: "verifying" } : { phase: "failed", message: "Missing session ID" },
   )
 
-  useEffect(() => {
-    if (!sessionId) return
+  // PONYTAIL: Stripe verification disabled — payments API not active yet
+  // Uncomment below to re-enable session verification
+  // useEffect(() => {
+  //   if (!sessionId) return
+  //
+  //   fetch(`${PUBLIC_API_BASE}/api/v1/stripe/verify-session`, {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ sessionId }),
+  //   })
+  //     .then((r) => r.json())
+  //     .then((data) => {
+  //       if (data.data?.booking) {
+  //         setState({
+  //           phase: data.message === "Booking already confirmed" ? "already-confirmed" : "confirmed",
+  //           booking: data.data.booking,
+  //         })
+  //       } else {
+  //         setState({ phase: "failed", message: data.message || "Payment verification failed" })
+  //       }
+  //     })
+  //     .catch(() => setState({ phase: "failed", message: "Could not verify payment. Contact support." }))
+  // }, [sessionId])
 
-    fetch(`${PUBLIC_API_BASE}/api/v1/stripe/verify-session`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId }),
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.data?.booking) {
-          setState({
-            phase: data.message === "Booking already confirmed" ? "already-confirmed" : "confirmed",
-            booking: data.data.booking,
-          })
-        } else {
-          setState({ phase: "failed", message: data.message || "Payment verification failed" })
-        }
-      })
-      .catch(() => setState({ phase: "failed", message: "Could not verify payment. Contact support." }))
-  }, [sessionId])
+  useEffect(() => {
+    setState({ phase: "failed", message: "Online booking is currently unavailable. Please contact us to complete your booking." })
+  }, [])
 
   if (state.phase === "verifying") {
     return (

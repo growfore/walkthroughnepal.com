@@ -108,9 +108,9 @@ export function Nav() {
           >
             Customize My Trip
           </Link>
-          <button className="hidden rounded-md bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground transition hover:opacity-90 md:inline-flex">
-            Book Now
-          </button>
+          <Link href="/inquiry" className="hidden rounded-md bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground transition hover:opacity-90 md:inline-flex">
+            Inquire Now
+          </Link>
           <button
             className="p-2 lg:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -145,9 +145,9 @@ export function Nav() {
             >
               Customize My Trip
             </Link>
-            <button className="flex-1 rounded-md bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground">
-              Book Now
-            </button>
+            <Link href="/inquiry" className="flex-1 rounded-md bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground text-center">
+              Inquire Now
+            </Link>
           </div>
         </div>
       )}

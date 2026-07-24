@@ -20,19 +20,24 @@ export function FooterNewsletter() {
       setMessage("Please complete the verification")
       return
     }
-    const res = await fetch("/api/newsletter", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, "cf-turnstile-response": token }),
-    })
-    const data = await res.json()
-    if (res.ok) {
-      setStatus("success")
-      setMessage("Thanks for subscribing!")
-      form.reset()
-    } else {
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, "cf-turnstile-response": token }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setStatus("success")
+        setMessage("Thanks for subscribing!")
+        form.reset()
+      } else {
+        setStatus("error")
+        setMessage(data.error || data.message || "Something went wrong")
+      }
+    } catch {
       setStatus("error")
-      setMessage(data.error || data.message || "Something went wrong")
+      setMessage("Network error. Please try again.")
     }
   }
 

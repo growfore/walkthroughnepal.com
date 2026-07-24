@@ -1,10 +1,11 @@
 import type { Metadata } from "next"
-import { getActivities, getTripCategories } from "@/lib/api"
+import { getActivities, getTripCategories, getTripTypes } from "@/lib/api"
 import type { Activity } from "@/lib/types"
 import Link from "next/link"
 import { Mountain } from "lucide-react"
 import { TripCard } from "@/components/trip-card"
 import { PageHero } from "@/components/page-hero"
+import { ExploreFilters } from "@/components/explore-filters"
 
 export const metadata: Metadata = {
   title: "Explore All Trips",
@@ -14,12 +15,19 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic"
 
-export default async function ExplorePage({ searchParams }: { searchParams: Promise<{ page?: string; category?: string }> }) {
+type SearchParams = { page?: string; category?: string; type?: string; min?: string; max?: string; search?: string }
+
+export default async function ExplorePage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const params = await searchParams
   const page = Number(params.page) || 1
   const categoryFilter = params.category || ""
+  const typeFilter = params.type || ""
+  const minFilter = params.min || ""
+  const maxFilter = params.max || ""
+  const searchFilter = params.search || ""
 
   let categories: { handle: string; name: string }[] = []
+  let tripTypes: { handle: string; name: string }[] = []
   let activities: Activity[] = []
   let totalCount = 0
   let totalPages = 1
@@ -29,8 +37,17 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
     categories = tripCategories.map((c) => ({ handle: c.categoryHandle, name: c.categoryName }))
   } catch {}
 
+  try {
+    const { data: { tripTypes: types } } = await getTripTypes()
+    tripTypes = types.map((t) => ({ handle: t.tripTypeHandle, name: t.tripTypeName }))
+  } catch {}
+
   const filters: Record<string, string> = {}
   if (categoryFilter) filters.category = categoryFilter
+  if (typeFilter) filters.type = typeFilter
+  if (minFilter) filters.min = minFilter
+  if (maxFilter) filters.max = maxFilter
+  if (searchFilter) filters.search = searchFilter
   filters.limit = "12"
   filters.page = String(page)
 
@@ -41,8 +58,15 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
     totalPages = res.pagination.totalPages
   } catch {}
 
-  function pageUrl(p: number) {
-    return `/explore?page=${p}${categoryFilter ? `&category=${categoryFilter}` : ""}`
+  function pageUrl(pg: number) {
+    const p = new URLSearchParams()
+    p.set("page", String(pg))
+    if (categoryFilter) p.set("category", categoryFilter)
+    if (typeFilter) p.set("type", typeFilter)
+    if (minFilter) p.set("min", minFilter)
+    if (maxFilter) p.set("max", maxFilter)
+    if (searchFilter) p.set("search", searchFilter)
+    return `/explore?${p.toString()}`
   }
 
   return (
@@ -51,37 +75,23 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
 
       <section className="py-10">
         <div className="mx-auto max-w-7xl px-4">
-          {categories.length > 0 && (
-            <div className="mb-10 flex flex-wrap items-center gap-2">
-              <Link
-                href="/explore"
-                className={`rounded-full px-4 py-2 text-sm font-medium transition ${!categoryFilter ? "bg-orange text-orange-foreground" : "border border-border text-navy hover:bg-border"}`}
-              >
-                All
-              </Link>
-              {categories.map((c) => (
-                <Link
-                  key={c.handle}
-                  href={`/explore?category=${c.handle}`}
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition ${categoryFilter === c.handle ? "bg-orange text-orange-foreground" : "border border-border text-navy hover:bg-border"}`}
-                >
-                  {c.name}
-                </Link>
-              ))}
-            </div>
-          )}
+
+          <ExploreFilters
+            categories={categories}
+            tripTypes={tripTypes}
+            active={{ category: categoryFilter, type: typeFilter, min: minFilter, max: maxFilter, search: searchFilter }}
+          />
 
           {activities.length > 0 && (
             <p className="mb-6 text-sm text-muted-foreground">
               Showing {activities.length} of {totalCount} trips
-              {categoryFilter && ` in this category`}
             </p>
           )}
           {activities.length === 0 ? (
             <div className="py-20 text-center text-muted-foreground">
               <Mountain className="mx-auto h-12 w-12 mb-4 opacity-40" />
               <p className="text-lg">No trips found.</p>
-              <Link href="/explore" className="mt-4 inline-block text-orange font-medium hover:underline">← Clear filters</Link>
+              <Link href="/explore" className="mt-4 inline-block text-orange font-medium hover:underline">&larr; Clear filters</Link>
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

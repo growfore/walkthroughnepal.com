@@ -304,7 +304,7 @@ export default async function HomePage() {
       )}
 
       {/* ── Departures ── */}
-      <section className="bg-muted py-16">
+      {/*<section className="bg-muted py-16">
         <div className="mx-auto max-w-7xl px-4">
           <SectionHeader
             title="Upcoming Departures"
@@ -328,7 +328,7 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
-      </section>
+      </section>*/}
 
       {/* ── Testimonials ── */}
       <section className="py-16">

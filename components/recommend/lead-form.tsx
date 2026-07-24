@@ -10,16 +10,18 @@ interface LeadFormProps {
 export function LeadForm({ tripTitle }: LeadFormProps) {
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
   const [form, setForm] = useState({ name: "", email: "", whatsapp: "", country: "", travelDates: "" })
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
+    setError("")
     try {
       const el = e.currentTarget as HTMLFormElement
       const token = (el.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
       if (!token) throw new Error("Verification required")
-      await fetch("/api/inquiry", {
+      const res = await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -34,9 +36,13 @@ export function LeadForm({ tripTitle }: LeadFormProps) {
           "cf-turnstile-response": token,
         }),
       })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || "Failed to send")
+      }
       setSubmitted(true)
-    } catch {
-      // silent
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Something went wrong. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -68,6 +74,7 @@ export function LeadForm({ tripTitle }: LeadFormProps) {
           <Send className="h-4 w-4" />
           {loading ? "Sending..." : "Send Inquiry"}
         </button>
+        {error && <p className="text-sm text-red-500">{error}</p>}
         <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
       </form>
     </div>

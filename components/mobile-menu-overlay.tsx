@@ -71,10 +71,10 @@ export function MobileMenuOverlay({
               Customize My Trip
             </Link>
             <Link
-              href="/departure"
+              href="/inquiry"
               className="flex-1 rounded-full bg-orange px-3 py-2 text-xs font-semibold text-orange-foreground text-center sm:px-5 sm:py-2.5 sm:text-sm"
             >
-              Book Now
+              Inquire Now
             </Link>
           </div>
         </div>

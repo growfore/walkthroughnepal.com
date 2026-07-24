@@ -198,10 +198,10 @@ export function MenuController({ items }: MenuControllerProps) {
           <SearchDialog />
           <div className="hidden items-center gap-2 md:flex">
             <Link
-              href="/departure"
+              href="/inquiry"
               className="inline-flex items-center rounded-full bg-orange px-5 py-2 text-sm font-semibold text-orange-foreground transition hover:opacity-90"
             >
-              Book Now
+              Inquire Now
             </Link>
           </div>
           <button

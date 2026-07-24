@@ -18,10 +18,10 @@ export function TripPageClient({
   slug: string
   tripTitle: string
 }) {
-  const [tab, setTab] = useState<"departures" | "private">("departures")
+  // PONYTAIL: Departures tab disabled — payments API not active yet
+  // const [tab, setTab] = useState<"departures" | "private">("departures")
   const [selectedTier, setSelectedTier] = useState<Tier | null>(null)
 
-  //const privateTiers = tiers.filter((t) => !t.bestValue)
   const privateTiers = tiers
 
   return (
@@ -31,8 +31,9 @@ export function TripPageClient({
           <TierPricingCards
             tiers={tiers}
             hasSlots={hasSlots}
-            onSelect={(newTab, tier) => {
-              setTab(newTab)
+            onSelect={(tier) => {
+              // PONYTAIL: Departures tab disabled — payments API not active yet
+              // setTab(newTab)
               if (tier) setSelectedTier(tier)
             }}
           />
@@ -43,8 +44,9 @@ export function TripPageClient({
         slots={slots}
         slug={slug}
         tripTitle={tripTitle}
-        tab={tab}
-        onTabChange={setTab}
+        // PONYTAIL: Departures tab disabled — payments API not active yet
+        // tab={tab}
+        // onTabChange={setTab}
         tiers={privateTiers}
         selectedTier={selectedTier}
       />

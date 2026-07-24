@@ -22,9 +22,9 @@ export async function POST(req: Request) {
     ``,
     `── Trip Details ──`,
     `Trip:        ${tripTitle}`,
-    `Duration:    ${duration}`,
-    `Start:       ${startDate}`,
-    `Group:       ${groupType}`,
+    `Duration:    ${duration || "N/A"}`,
+    `Start:       ${startDate || "N/A"}`,
+    `Group:       ${groupType || "N/A"}`,
     `Travellers:  ${numberOfTravellers || "N/A"}`,
     ``,
     `── Other ──`,
@@ -36,9 +36,9 @@ export async function POST(req: Request) {
     <p><strong>Name:</strong> ${escapeHtml(fullName)}</p>
     <p><strong>Email:</strong> ${escapeHtml(email)}</p>
     <p><strong>Phone:</strong> ${escapeHtml(phone || "N/A")}</p>
-    <p><strong>Duration:</strong> ${escapeHtml(duration)}</p>
-    <p><strong>Start Date:</strong> ${escapeHtml(startDate)}</p>
-    <p><strong>Group Type:</strong> ${escapeHtml(groupType)}</p>
+    <p><strong>Duration:</strong> ${escapeHtml(duration || "N/A")}</p>
+    <p><strong>Start Date:</strong> ${escapeHtml(startDate || "N/A")}</p>
+    <p><strong>Group Type:</strong> ${escapeHtml(groupType || "N/A")}</p>
     <p><strong>Travellers:</strong> ${escapeHtml(String(numberOfTravellers || "N/A"))}</p>
     <hr/>
     <p>${escapeHtml(otherMentions || "None").replace(/\n/g, "<br/>")}</p>
