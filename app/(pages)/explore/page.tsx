@@ -6,11 +6,21 @@ import { Mountain } from "lucide-react"
 import { TripCard } from "@/components/trip-card"
 import { PageHero } from "@/components/page-hero"
 import { ExploreFilters } from "@/components/explore-filters"
+import { BreadcrumbJsonLd } from "@/components/json-ld"
 
 export const metadata: Metadata = {
   title: "Explore All Trips",
   description:
     "Browse our complete collection of Nepal trekking and travel packages. Find the perfect Himalayan adventure for your next journey.",
+  keywords: ["Nepal trips", "explore Nepal", "trekking packages", "Himalayan adventures", "Nepal travel"],
+  alternates: { canonical: "/explore" },
+  openGraph: {
+    title: "Explore All Trips | Walk Through Nepal",
+    description:
+      "Browse our complete collection of Nepal trekking and travel packages.",
+    url: "https://walkthroughnepal.com/explore",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Explore Nepal Trips" }],
+  },
 }
 
 export const dynamic = "force-dynamic"
@@ -71,6 +81,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
 
   return (
     <div className="min-h-screen">
+      <BreadcrumbJsonLd items={[{ label: "All Trips" }]} />
       <PageHero title="Explore All Trips" description="Browse our complete collection of Nepal adventures" breadcrumbs={[{ label: "Home", href: "/" }, { label: "All Trips" }]} />
 
       <section className="py-10">

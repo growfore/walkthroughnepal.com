@@ -3,11 +3,20 @@ import Link from "next/link"
 import { PageHero } from "@/components/page-hero"
 import { SectionHeader } from "@/components/section-header"
 import { Users, MapPin, Shield, HeartHandshake } from "lucide-react"
+import { BreadcrumbJsonLd, FAQPageJsonLd } from "@/components/json-ld"
 
 export const metadata: Metadata = {
   title: "About Us",
   description:
     "Meet the Nepal-based team behind Walk Through Nepal. Local trekking experts with over 20 years of experience crafting authentic Himalayan adventures.",
+  keywords: ["Walk Through Nepal team", "Nepal trekking company", "about Walk Through Nepal", "local Nepal guides"],
+  alternates: { canonical: "/about" },
+  openGraph: {
+    title: "About Us | Walk Through Nepal",
+    description:
+      "Meet the Nepal-based team behind Walk Through Nepal. Local trekking experts with over 20 years of experience.",
+    url: "https://walkthroughnepal.com/about",
+  },
 }
 
 export const dynamic = "force-dynamic"
@@ -22,6 +31,7 @@ export default async function AboutPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <BreadcrumbJsonLd items={[{ label: "About Us" }]} />
       <PageHero
         title="About Us"
         description="We are a Nepal-based team of trekking and travel enthusiasts dedicated to showing you the Himalayas beyond the guidebook."

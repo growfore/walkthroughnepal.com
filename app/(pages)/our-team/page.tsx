@@ -4,11 +4,20 @@ import type { TeamMember } from "@/lib/types"
 import { PageHero } from "@/components/page-hero"
 
 import { TeamCard } from "@/components/team-card"
+import { BreadcrumbJsonLd } from "@/components/json-ld"
 
 export const metadata: Metadata = {
   title: "Our Team",
   description:
     "Meet the passionate Nepal-based team behind Walk Through Nepal — local trekking experts dedicated to making your Himalayan adventure unforgettable.",
+  keywords: ["Walk Through Nepal team", "Nepal trekking guides", "local Nepal experts", "travel team Nepal"],
+  alternates: { canonical: "/our-team" },
+  openGraph: {
+    title: "Our Team | Walk Through Nepal",
+    description:
+      "Meet the passionate Nepal-based team behind Walk Through Nepal.",
+    url: "https://walkthroughnepal.com/our-team",
+  },
 }
 
 export default async function OurTeamPage() {
@@ -39,6 +48,7 @@ export default async function OurTeamPage() {
 
   return (
     <main className="min-h-screen bg-background">
+      <BreadcrumbJsonLd items={[{ label: "Our Team" }]} />
       <PageHero
         title="Our Team"
         description="Meet the passionate people behind Walk Through Nepal — local experts dedicated to making your trek unforgettable."

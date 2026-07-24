@@ -17,14 +17,38 @@ import Link from "next/link"
 import type { FeaturedTag } from "@/lib/types"
 
 export const metadata: Metadata = {
-  title: "Walk Through Nepal",
+  title: "Walk Through Nepal — Authentic Himalayan Adventures",
   description:
-    "Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas with Walk Through Nepal.",
+    "Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas with Walk Through Nepal. 20+ years of local expertise, 50+ destinations, 5000+ happy travelers.",
+  keywords: [
+    "Nepal trekking",
+    "Himalayan adventure",
+    "Nepal travel agency",
+    "trekking packages Nepal",
+    "Nepal tour operator",
+  ],
   openGraph: {
-    title: "Walk Through Nepal",
+    title: "Walk Through Nepal — Authentic Himalayan Adventures",
     description:
       "Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas.",
+    url: "https://walkthroughnepal.com",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Walk Through Nepal — Authentic Himalayan Adventures",
+      },
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Walk Through Nepal — Authentic Himalayan Adventures",
+    description:
+      "Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas.",
+    images: ["/opengraph-image"],
+  },
+  alternates: { canonical: "/" },
 }
 import {
   getFeaturedTags,
@@ -33,6 +57,7 @@ import {
   img,
   API_BASE,
 } from "@/lib/api"
+import { WebSiteJsonLd } from "@/components/json-ld"
 import { CategoryScroll } from "@/components/category-scroll"
 import { HorizontalScroll } from "@/components/horizontal-scroll"
 import { TripCard } from "@/components/trip-card"
@@ -165,6 +190,8 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <WebSiteJsonLd />
+
       {/* ── Hero ── */}
       <section className="relative h-[90vh] w-full overflow-hidden">
         <img

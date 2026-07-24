@@ -2,12 +2,14 @@ import type { Metadata } from "next"
 import { PageHero } from "@/components/page-hero"
 import { DeparturesPage } from "@/components/departures-page"
 import { API_BASE } from "@/lib/api"
+import { BreadcrumbJsonLd } from "@/components/json-ld"
 
 export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: "Departures",
   description: "Browse upcoming trek and tour departure dates. Pick your destination, choose a date, and book your Nepal adventure.",
+  keywords: ["Nepal departure dates", "trek departure schedule", "Nepal group tours", "join a trek Nepal"],
   alternates: { canonical: "/departure" },
   openGraph: {
     title: "Departures | Walk Through Nepal",
@@ -54,6 +56,7 @@ export default async function BookingPage() {
 
   return (
     <main className="min-h-screen bg-background">
+      <BreadcrumbJsonLd items={[{ label: "Departures" }]} />
       <PageHero
         title="Departures"
         description="Browse upcoming trek and tour departure dates. Pick your destination and book your adventure."

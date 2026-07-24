@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Mountain } from "lucide-react"
 import { TripCard } from "@/components/trip-card"
 import { PageHero } from "@/components/page-hero"
+import { BreadcrumbJsonLd } from "@/components/json-ld"
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -13,10 +14,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const label = slug
     .replace(/-/g, " ")
     .replace(/\b\w/g, (l: string) => l.toUpperCase())
+  const desc = `Explore our ${label.toLowerCase()} packages in Nepal. Find authentic treks, tours, and adventures in the Himalayas.`
   return {
     title: `${label} Trips`,
-    description: `Explore our ${label.toLowerCase()} packages in Nepal. Find authentic treks, tours, and adventures in the Himalayas.`,
+    description: desc,
+    keywords: [label, "Nepal trips", "Nepal trekking", `${label.toLowerCase()} Nepal`],
     alternates: { canonical: `/category/${slug}` },
+    openGraph: {
+      title: `${label} Trips | Walk Through Nepal`,
+      description: desc,
+      url: `https://walkthroughnepal.com/category/${slug}`,
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${label} Trips in Nepal` }],
+    },
   }
 }
 
@@ -35,6 +44,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   return (
     <div className="min-h-screen">
+      <BreadcrumbJsonLd items={[{ label: "Explore", href: "/explore" }, { label }]} />
       <PageHero title={label} description={`Explore our ${label.toLowerCase()} packages in Nepal`} breadcrumbs={[{ label: "Home", href: "/" }, { label }]} />
 
       <section className="py-16">

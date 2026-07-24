@@ -1,9 +1,10 @@
 import type { Metadata } from "next"
-import { getPostBySlug, resolveContentImages } from "@/lib/api"
+import { getPostBySlug, resolveContentImages, img } from "@/lib/api"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { BlogRenderer } from "@/components/blog-renderer"
 import { PageHero } from "@/components/page-hero"
+import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/json-ld"
 
 import { Calendar } from "lucide-react"
 
@@ -13,10 +14,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { slug } = await params
     const post = await getPostBySlug(slug)
+    const desc = post.metaDescription || post.content?.replace(/<[^>]*>/g, "").slice(0, 160) || undefined
+    const imageUrl = post.coverImage ? (post.coverImage.startsWith("http") ? post.coverImage : `https://walkthroughnepal.com${post.coverImage}`) : "https://walkthroughnepal.com/opengraph-image"
     return {
       title: post.metaTitle || post.title,
-      description: post.metaDescription || undefined,
+      description: desc,
+      keywords: [post.title, post.category?.name, "Nepal travel blog", "trekking guide"].filter((k): k is string => Boolean(k)),
       alternates: { canonical: `/blog/${slug}` },
+      openGraph: {
+        title: post.metaTitle || post.title,
+        description: desc,
+        url: `https://walkthroughnepal.com/blog/${slug}`,
+        type: "article",
+        publishedTime: post.publishedAt || post.createdAt,
+        modifiedTime: post.updatedAt,
+        authors: post.writer?.name ? [post.writer.name] : undefined,
+        section: post.category?.name || undefined,
+        images: [{ url: imageUrl, width: 1200, height: 630, alt: post.title }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: post.metaTitle || post.title,
+        description: desc,
+        images: [imageUrl],
+      },
     }
   } catch {
     return {}
@@ -64,6 +85,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   return (
     <div className="min-h-screen bg-background">
+      <ArticleJsonLd
+        title={post.title}
+        description={post.metaDescription || post.content}
+        image={post.coverImage ? img(post.coverImage) : "/opengraph-image"}
+        slug={slug}
+        publishedAt={post.publishedAt || post.createdAt}
+        updatedAt={post.updatedAt}
+        author={post.writer?.name}
+        category={post.category?.name}
+      />
+      <BreadcrumbJsonLd items={[{ label: "Blog", href: "/blog" }, { label: post.title }]} />
       <PageHero
         title={post.title}
         description={

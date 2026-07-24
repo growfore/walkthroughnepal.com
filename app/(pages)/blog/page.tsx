@@ -4,11 +4,20 @@ import Link from "next/link"
 import { PageHero } from "@/components/page-hero"
 import { BlogCard } from "@/components/blog-card"
 import { Search, X } from "lucide-react"
+import { BreadcrumbJsonLd } from "@/components/json-ld"
 
 export const metadata: Metadata = {
   title: "Travel Blog",
   description:
     "Trekking tips, travel stories, and insider insights from Nepal. Read about Himalayan adventures, culture, and off-the-beaten-path destinations.",
+  keywords: ["Nepal travel blog", "trekking tips", "Himalayan stories", "Nepal culture", "adventure travel blog"],
+  alternates: { canonical: "/blog" },
+  openGraph: {
+    title: "Travel Blog | Walk Through Nepal",
+    description:
+      "Trekking tips, travel stories, and insider insights from Nepal.",
+    url: "https://walkthroughnepal.com/blog",
+  },
 }
 
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string; search?: string }> }) {
@@ -19,6 +28,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
 
   return (
     <div className="min-h-screen">
+      <BreadcrumbJsonLd items={[{ label: "Blog" }]} />
       <PageHero title="Travel Blog" description="Trekking tips, travel stories & insights from Nepal" breadcrumbs={[{ label: "Home", href: "/" }, { label: "Blog" }]} />
 
       <section className="py-16">

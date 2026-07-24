@@ -17,8 +17,9 @@ import { FAQSection } from "@/components/faq-section"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getActivityBySlug, getTestimonials, getSlots } from "@/lib/api"
+import { getActivityBySlug, getTestimonials, getSlots, img } from "@/lib/api"
 import { siteConfig } from "@/lib/siteConfig"
+import { TouristTripJsonLd, FAQPageJsonLd, BreadcrumbJsonLd } from "@/components/json-ld"
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ print?: string }> }
 
@@ -27,12 +28,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params
     const res = await getActivityBySlug(slug)
     const pkg = res.data
+    const desc = pkg.shortDescription?.replace(/<[^>]*>/g, "").slice(0, 160) || undefined
+    const imageUrl = pkg.images?.[0] ? (pkg.images[0].startsWith("http") ? pkg.images[0] : `https://walkthroughnepal.com${pkg.images[0]}`) : "https://walkthroughnepal.com/opengraph-image"
     return {
       title: pkg.title,
-      description:
-        pkg.shortDescription?.replace(/<[^>]*>/g, "").slice(0, 160) ||
-        undefined,
+      description: desc,
+      keywords: [pkg.title, "Nepal trek", pkg.difficultyLevel, pkg.bestSeason, "trekking package"].filter(Boolean),
       alternates: { canonical: `/trip/${slug}` },
+      openGraph: {
+        title: pkg.title,
+        description: desc,
+        url: `https://walkthroughnepal.com/trip/${slug}`,
+        type: "article",
+        images: [{ url: imageUrl, width: 1200, height: 630, alt: pkg.title }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: pkg.title,
+        description: desc,
+        images: [imageUrl],
+      },
     }
   } catch {
     return {}
@@ -133,6 +148,25 @@ export default async function PackagePage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <TouristTripJsonLd
+        title={pkg.title}
+        description={pkg.shortDescription || ""}
+        image={pkg.images?.[0] ? img(pkg.images[0]) : "/opengraph-image"}
+        price={pkg.price}
+        maxPrice={pkg.maxPrice}
+        duration={pkg.duration}
+        difficulty={difficulty}
+        bestSeason={pkg.bestSeason || ""}
+        slug={slug}
+      />
+      <BreadcrumbJsonLd items={[{ label: pkg.title, href: `/trip/${slug}` }]} />
+      {(pkg.faqs ?? []).flatMap((g) => g.faqs).length > 0 && (
+        <FAQPageJsonLd
+          items={(pkg.faqs ?? []).flatMap((g) =>
+            g.faqs.map((f) => ({ question: f.question, answer: f.answer }))
+          )}
+        />
+      )}
       {isPrint ? (
         <TripPrintPage pkg={pkg} itineraryVariants={itineraryVariants} />
       ) : (

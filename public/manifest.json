@@ -1,0 +1,16 @@
+{
+  "name": "Walk Through Nepal",
+  "short_name": "WalkThroughNepal",
+  "description": "Authentic treks, cultural journeys & wildlife adventures across the Himalayas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a3f4f",
+  "theme_color": "#1a3f4f",
+  "icons": [
+    {
+      "src": "/walkthrough-nepal-logo.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}

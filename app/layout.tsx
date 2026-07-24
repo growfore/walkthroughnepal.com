@@ -10,6 +10,7 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { BackToTop } from "@/components/back-to-top"
 import { ToastContainer } from "react-toastify"
+import { OrganizationJsonLd } from "@/components/json-ld"
 
 const mulish = Mulish({
   subsets: ["latin"],
@@ -32,30 +33,69 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://walkthroughnepal.com"),
   title: {
     template: "%s | Walk Through Nepal",
-    default: "Walk Through Nepal",
+    default: "Walk Through Nepal — Authentic Himalayan Adventures",
   },
   description:
-    "Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas with Walk Through Nepal.",
+    "Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas with Walk Through Nepal. 20+ years of local expertise.",
+  keywords: [
+    "Nepal trekking",
+    "Himalayan adventure",
+    "Nepal travel agency",
+    "trekking in Nepal",
+    "Nepal tour packages",
+    "Everest Base Camp trek",
+    "Annapurna Circuit",
+    "Nepal hiking",
+    "adventure travel Nepal",
+    "Nepal cultural tours",
+    "wildlife safari Nepal",
+    "Pokhara trekking",
+  ],
   robots: {
     index: false,
     follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   alternates: {
     canonical: "/",
+    languages: {
+      "en-US": "/",
+    },
   },
   openGraph: {
     type: "website",
     locale: "en_US",
+    url: "https://walkthroughnepal.com",
     siteName: "Walk Through Nepal",
-    title: "Walk Through Nepal",
+    title: "Walk Through Nepal — Authentic Himalayan Adventures",
     description:
       "Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Walk Through Nepal — Authentic Himalayan Adventures",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Walk Through Nepal",
+    title: "Walk Through Nepal — Authentic Himalayan Adventures",
     description:
       "Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas.",
+    images: ["/opengraph-image"],
+  },
+  other: {
+    "theme-color": "#1a3f4f",
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-status-bar-style": "black-translucent",
   },
 }
 
@@ -82,7 +122,26 @@ export default function RootLayout({
         sora.variable
       )}
     >
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="apple-touch-icon" href="/walkthrough-nepal-logo.png" />
+        <link rel="manifest" href="/manifest.json" />
+        {/* Google Analytics — placeholder. Replace G-XXXXXXXXXX with your Measurement ID. */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXX');
+          `}
+        </Script>
+      </head>
       <body>
+        <OrganizationJsonLd />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:m-2 focus:rounded-md focus:bg-navy focus:px-4 focus:py-2 focus:text-navy-foreground focus:outline-none focus:ring-2 focus:ring-orange"

@@ -6,6 +6,7 @@ import type { Metadata } from "next"
 import { Mountain } from "lucide-react"
 import { TripCard } from "@/components/trip-card"
 import { PageHero } from "@/components/page-hero"
+import { BreadcrumbJsonLd } from "@/components/json-ld"
 
 export const dynamic = "force-dynamic"
 
@@ -17,10 +18,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const match = res.data.tripTypes.find((t) => t.tripTypeHandle === slug)
     if (match) label = match.tripTypeName
   } catch {}
+  const desc = `Explore our ${label.toLowerCase()} packages in Nepal. Find authentic Himalayan adventures.`
   return {
-    title: `${label} Trips — Walk Through Nepal`,
-    description: `Explore our ${label.toLowerCase()} packages in Nepal.`,
+    title: `${label} Trips`,
+    description: desc,
+    keywords: [label, "Nepal trips", `${label.toLowerCase()} Nepal`, "adventure travel"],
     alternates: { canonical: `/activity/${slug}` },
+    openGraph: {
+      title: `${label} Trips | Walk Through Nepal`,
+      description: desc,
+      url: `https://walkthroughnepal.com/activity/${slug}`,
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${label} Trips in Nepal` }],
+    },
   }
 }
 
@@ -45,6 +54,7 @@ export default async function ActivitiesByTypePage({ params }: { params: Promise
 
   return (
     <div className="min-h-screen">
+      <BreadcrumbJsonLd items={[{ label: "Explore", href: "/explore" }, { label: "Activities", href: "/explore" }, { label: typeName }]} />
       <PageHero title={typeName} description={`Explore our ${typeName.toLowerCase()} packages in Nepal`} breadcrumbs={[{ label: "Home", href: "/" }, { label: "Activities", href: "/explore" }, { label: typeName }]} />
 
       <section className="py-16">
