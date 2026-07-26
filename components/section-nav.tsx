@@ -71,6 +71,7 @@ export function SectionNav({ sectionIds }: { sectionIds: string[] }) {
             const id = entry.target.id
             setActive(id)
             scrollToTab(id)
+            history.replaceState(null, "", `#${id}`)
             break
           }
         }
@@ -103,6 +104,7 @@ export function SectionNav({ sectionIds }: { sectionIds: string[] }) {
                   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
                   setActive(id)
                   scrollToTab(id)
+                  history.pushState(null, "", `#${id}`)
                 }}
                 className={cn(
                   "inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold whitespace-nowrap transition-colors",
