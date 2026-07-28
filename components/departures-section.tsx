@@ -24,8 +24,9 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { toast } from "react-toastify"
-import Link from "next/link"
-import { Calendar } from "lucide-react"
+// PONYTAIL: Departures tab disabled — payments API not active yet
+// import Link from "next/link"
+// import { Calendar } from "lucide-react"
 import type { Slot, Tier } from "@/lib/types"
 
 const formSchema = z.object({
@@ -48,14 +49,18 @@ export function DeparturesSection({
   slots: Slot[]
   slug: string
   tripTitle: string
-  tab?: "departures" | "private"
-  onTabChange?: (tab: "departures" | "private") => void
+  // PONYTAIL: Departures tab disabled — payments API not active yet
+  // tab?: "departures" | "private"
+  // onTabChange?: (tab: "departures" | "private") => void
+  tab?: "private"
+  onTabChange?: (tab: "private") => void
   tiers?: Tier[]
   selectedTier?: Tier | null
 }) {
-  const [internalTab, setInternalTab] = useState<"departures" | "private">("departures")
-  const tab = tabProp ?? internalTab
-  const setTab = onTabChange ?? setInternalTab
+  // PONYTAIL: Departures tab disabled — payments API not active yet
+  // const [internalTab, setInternalTab] = useState<"departures" | "private">("departures")
+  // const tab = tabProp ?? internalTab
+  // const setTab = onTabChange ?? setInternalTab
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
@@ -113,18 +118,21 @@ export function DeparturesSection({
       <h2 className="text-2xl font-bold text-navy md:text-3xl">Customize This Trip</h2>
       <p className="mt-2 text-muted-foreground">Tell us your preferences and we&apos;ll craft the perfect private tour for your group.</p>
 
+      {/* PONYTAIL: Departures tab disabled — payments API not active yet
+      Uncomment below to re-enable the Departures tab
+      ──────────────────────────────────────────────── */}
       {/* Tabs */}
-      <div className="mt-6 flex gap-2">
+      {/* <div className="mt-6 flex gap-2">
         <button onClick={() => setTab("departures")} className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors ${tab === "departures" ? "bg-navy text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}>
           <Calendar className="h-4 w-4" /> Departures
         </button>
         <button onClick={() => setTab("private")} className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors ${tab === "private" ? "bg-navy text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}>
           <Users className="h-4 w-4" /> Private Tour
         </button>
-      </div>
+      </div> */}
 
       {/* Departures Tab */}
-      {tab === "departures" && (
+      {/* {tab === "departures" && (
         <div className="mt-6 overflow-x-auto rounded-xl border border-border shadow-sm">
           <table className="hidden w-full border-collapse sm:table">
             <thead><tr className="bg-muted/50">
@@ -160,10 +168,10 @@ export function DeparturesSection({
             ))}
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Private Tour Tab */}
-      {tab === "private" && (
+      {/* PONYTAIL: End of commented departures tab section */}
       <div className="mt-6 rounded-xl border border-border bg-card shadow-sm overflow-hidden">
         {submitted ? (
           <div className="py-12 text-center">
@@ -225,7 +233,6 @@ export function DeparturesSection({
           </Form>
         )}
       </div>
-      )}
     </div>
   )
 }
