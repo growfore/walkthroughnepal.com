@@ -92,10 +92,19 @@ export const metadata: Metadata = {
       "Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas.",
     images: ["/opengraph-image"],
   },
-  other: {
-    "theme-color": "#1a3f4f",
-    "apple-mobile-web-app-capable": "yes",
-    "apple-mobile-web-app-status-bar-style": "black-translucent",
+  icons: {
+    icon: [
+      { url: "/favicon/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon/favicon.ico",
+    apple: "/favicon/apple-touch-icon.png",
+  },
+  manifest: "/favicon/site.webmanifest",
+  appleWebApp: {
+    title: "Walk Through Nepal",
+    capable: true,
+    statusBarStyle: "black-translucent",
   },
 }
 
@@ -123,9 +132,6 @@ export default function RootLayout({
       )}
     >
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/walkthrough-nepal-logo.png" />
-        <link rel="manifest" href="/manifest.json" />
         {/* Google Analytics — placeholder. Replace G-XXXXXXXXXX with your Measurement ID. */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
