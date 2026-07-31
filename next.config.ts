@@ -6,12 +6,18 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "api.walkthroughnepal.com", pathname: "/uploads/**" },
+      { protocol: "https", hostname: "cms.walkthroughnepal.com", pathname: "/uploads/**" },
+      { protocol: "https", hostname: "cms.walkthroughnepal.com", pathname: "/wp-content/**" },
       { protocol: "https", hostname: "walkthroughnepal.com", pathname: "/wp-content/**" },
       { protocol: "https", hostname: "picsum.photos", pathname: "/**" },
     ],
   },
   async rewrites() {
     return [
+      {
+        source: "/cms/uploads/:path*",
+        destination: "https://cms.walkthroughnepal.com/uploads/:path*",
+      },
       {
         source: "/uploads/:path*",
         destination: `${API}/uploads/:path*`,
@@ -32,7 +38,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://api.walkthroughnepal.com https://walkthroughnepal.com https://picsum.photos https://fastly.picsum.photos https://new.walkthroughnepal.com",
+              "img-src 'self' data: blob: https://api.walkthroughnepal.com https://cms.walkthroughnepal.com https://walkthroughnepal.com https://picsum.photos https://fastly.picsum.photos https://new.walkthroughnepal.com",
               "connect-src 'self' https://api.walkthroughnepal.com",
               "frame-src https://challenges.cloudflare.com",
               "font-src 'self'",

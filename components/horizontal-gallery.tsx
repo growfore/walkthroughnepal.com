@@ -7,10 +7,8 @@ import { img } from "@/lib/api"
 
 export function HorizontalGallery({
   images,
-  apiUrl,
 }: {
   images: string[]
-  apiUrl: string
 }) {
   const [openIdx, setOpenIdx] = useState<number | null>(null)
 
@@ -27,7 +25,7 @@ export function HorizontalGallery({
   }
 
   const allImages = images.map((src, i) => ({
-    src: img(src, apiUrl),
+    src: img(src),
     alt: makeAlt(src, i),
   }))
 

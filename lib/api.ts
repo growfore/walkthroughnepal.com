@@ -7,24 +7,24 @@ export const CMS_API_BASE = process.env.CMS_API_URL ?? "https://cms.walkthroughn
 // ponytail: client components can't read non-NEXT_PUBLIC env vars
 export const PUBLIC_API_BASE = process.env.NEXT_PUBLIC_API_URL ?? API_BASE
 
-export function img(path: string | null | undefined, _base?: string): string {
+export function img(path: string | null | undefined): string {
   if (!path) return "/placeholder-image.png"
   const p = path.trim()
+  // full URLs are external sources — render as-is, no proxy, no prepend
   if (p.startsWith("http://") || p.startsWith("https://")) return p
   if (p.startsWith("//")) return `https:${p}`
-  // ponytail: same-domain proxy via rewrite at /uploads/*
+  // ponytail: /wp-content/ is legacy CMS media, proxied via /cms/uploads/* rewrite
+  if (p.startsWith("/wp-content/")) return `/cms${p.replace(/^\/wp-content/, "")}`
+  // /uploads/* is API media, proxied via existing /uploads/* rewrite
   if (p.startsWith("/")) return p
   return `/${p}`
 }
 
-export function resolveContentImages(html: string, _base?: string): string {
-  return html.replace(
-    /src="((?:https?:\/\/[^/]+)?\/uploads\/[^"]+)"/g,
-    (_match, url: string) => {
-      const path = url.replace(/^https?:\/\/[^/]+/, "")
-      return `src="${path}"`
-    },
-  )
+export function resolveContentImages(html: string): string {
+  return html.replace(/src="([^"]+)"/g, (match, src: string) => {
+    if (/^(?:https?:\/\/|\/\/|\/)/.test(src)) return `src="${img(src)}"`
+    return match
+  })
 }
 
 async function fetchJSON<T>(path: string, options?: RequestInit, base: string = API_BASE): Promise<T> {

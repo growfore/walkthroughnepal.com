@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 import { renderRichText } from "@/lib/html-decoder"
-import { resolveContentImages, API_BASE } from "@/lib/api"
+import { resolveContentImages } from "@/lib/api"
 import { parseListItems } from "@/lib/forms"
 import { StickyWrapper } from "@/components/sticky-wrapper"
 import { SectionNav } from "@/components/section-nav"
@@ -67,8 +67,6 @@ import { CustomizeTripCTA } from "@/components/customize-trip-cta"
 import { TripPageClient } from "@/components/trip-page-client"
 import { getIcon } from "@/lib/icons"
 import { TripPrintPage } from "@/components/trip-print-page"
-
-const API = API_BASE
 
 const sectionIds = [
   "overview",
@@ -173,7 +171,7 @@ export default async function PackagePage({
         <>
       {/* ── Hero Gallery ── */}
       <section className="-mt-[40px] pb-0 md:-mt-[100px]">
-        <HorizontalGallery images={pkg.images} apiUrl={API} />
+        <HorizontalGallery images={pkg.images} />
       </section>
 
       {/* ── Sticky section nav ── */}
