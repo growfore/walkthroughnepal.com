@@ -13,8 +13,9 @@ export function img(path: string | null | undefined): string {
   // full URLs are external sources — render as-is, no proxy, no prepend
   if (p.startsWith("http://") || p.startsWith("https://")) return p
   if (p.startsWith("//")) return `https:${p}`
-  // ponytail: /wp-content/ is legacy CMS media, proxied via /cms/uploads/* rewrite
+  // ponytail: /wp-content/ and /api/uploads/ are CMS media, proxied via /cms/uploads/* rewrite
   if (p.startsWith("/wp-content/")) return `/cms${p.replace(/^\/wp-content/, "")}`
+  if (p.startsWith("/api/uploads/")) return `/cms${p.replace(/^\/api/, "")}`
   // /uploads/* is API media, proxied via existing /uploads/* rewrite
   if (p.startsWith("/")) return p
   return `/${p}`

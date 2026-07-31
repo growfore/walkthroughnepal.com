@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "api.walkthroughnepal.com", pathname: "/uploads/**" },
       { protocol: "https", hostname: "cms.walkthroughnepal.com", pathname: "/uploads/**" },
+      { protocol: "https", hostname: "cms.walkthroughnepal.com", pathname: "/api/uploads/**" },
       { protocol: "https", hostname: "cms.walkthroughnepal.com", pathname: "/wp-content/**" },
       { protocol: "https", hostname: "walkthroughnepal.com", pathname: "/wp-content/**" },
       { protocol: "https", hostname: "picsum.photos", pathname: "/**" },
@@ -16,7 +17,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/cms/uploads/:path*",
-        destination: "https://cms.walkthroughnepal.com/uploads/:path*",
+        destination: "https://cms.walkthroughnepal.com/api/uploads/:path*",
       },
       {
         source: "/uploads/:path*",
