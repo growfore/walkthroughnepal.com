@@ -124,7 +124,6 @@ export interface CMSPost {
   slug: string
   content: string
   coverImage: string
-  published: boolean
   publishedAt: string
   views: number
   createdAt: string
@@ -132,10 +131,10 @@ export interface CMSPost {
   metaTitle: string | null
   metaDescription: string | null
   category: { id: string; name: string; slug: string } | null
-  writer: { id: string; name: string; username: string } | null
+  author: { id?: string; name: string; username: string; bio?: string; image?: string } | null
   tags: string
   canonicalUrl: string | null
-  postType: string
+  toc: { id: string; text: string; level: number }[]
 }
 
 export interface TeamMember {

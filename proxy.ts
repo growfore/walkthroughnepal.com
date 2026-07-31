@@ -1,0 +1,45 @@
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
+
+const CMS_API_BASE = process.env.CMS_API_URL ?? "https://cms.walkthroughnepal.com"
+
+// ponytail: in-memory per-instance TTL cache; multi-instance/CDN edge would need a shared store
+type Entry = { redirect: { destination: string; type: string } | null; expires: number }
+const cache = new Map<string, Entry>()
+const TTL = 60_000
+
+async function resolveRedirect(source: string): Promise<{ destination: string; type: string } | null> {
+  const cached = cache.get(source)
+  if (cached && cached.expires > Date.now()) return cached.redirect
+  let redirect: { destination: string; type: string } | null = null
+  try {
+    const res = await fetch(`${CMS_API_BASE}/api/redirects/resolve?source=${encodeURIComponent(source)}`, {
+      cache: "no-store",
+    })
+    if (res.ok) {
+      const body = await res.json().catch(() => null)
+      if (body?.destination) redirect = { destination: body.destination, type: body.type }
+    }
+  } catch {
+    return null
+  }
+  cache.set(source, { redirect, expires: Date.now() + TTL })
+  return redirect
+}
+
+export async function proxy(request: NextRequest) {
+  if (request.method !== "GET" && request.method !== "HEAD") return NextResponse.next()
+
+  const { pathname } = request.nextUrl
+  const redirect = await resolveRedirect(pathname)
+  if (!redirect || redirect.destination === pathname) return NextResponse.next()
+
+  return NextResponse.redirect(new URL(redirect.destination, request.url), redirect.type === "permanent" ? 301 : 302)
+}
+
+export const config = {
+  matcher: [
+    // exclude API routes, Next internals, and static assets
+    "/((?!api|_next/static|_next/image|.*\\.(?:png|jpg|jpeg|gif|svg|webp|avif|ico|css|js|mjs|json|woff2?|ttf|eot|map|xml|txt|mp4|webm|pdf)$).*)",
+  ],
+}

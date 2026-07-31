@@ -1,12 +1,12 @@
 import type { Metadata } from "next"
-import { getPostBySlug, resolveContentImages, img } from "@/lib/api"
+import { getPostBySlug, img } from "@/lib/api"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { BlogRenderer } from "@/components/blog-renderer"
 import { PageHero } from "@/components/page-hero"
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/json-ld"
 
-import { Calendar } from "lucide-react"
+import { Calendar, LucideChevronLeft } from "lucide-react"
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         type: "article",
         publishedTime: post.publishedAt || post.createdAt,
         modifiedTime: post.updatedAt,
-        authors: post.writer?.name ? [post.writer.name] : undefined,
+        authors: post.author?.name ? [post.author.name] : undefined,
         section: post.category?.name || undefined,
         images: [{ url: imageUrl, width: 1200, height: 630, alt: post.title }],
       },
@@ -44,26 +44,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-function extractToc(html: string): { id: string; text: string }[] {
-  const toc: { id: string; text: string }[] = []
-  const regex = /<h2\b[^>]*>(.*?)<\/h2>/gi
-  let match
-  while ((match = regex.exec(html)) !== null) {
-    const text = match[1].replace(/<[^>]*>/g, "").trim()
-    const id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
-    toc.push({ id, text })
-  }
-  return toc
-}
-
-function addIdsToHeadings(html: string): string {
-  return html.replace(/<h([23])\b([^>]*)>(.*?)<\/h([23])>/gi, (m, level, attrs, content) => {
-    const text = content.replace(/<[^>]*>/g, "").trim()
-    const id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
-    return `<h${level}${attrs} id="${id}">${content}</h${level}>`
-  })
-}
-
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
 
@@ -74,9 +54,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound()
   }
 
-  const contentHtml = resolveContentImages(post.content)
-  const contentWithIds = addIdsToHeadings(contentHtml)
-  const toc = extractToc(contentHtml)
+  const toc = post.toc ?? []
   const date = new Date(post.publishedAt || post.createdAt).toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -92,7 +70,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         slug={slug}
         publishedAt={post.publishedAt || post.createdAt}
         updatedAt={post.updatedAt}
-        author={post.writer?.name}
+        author={post.author?.name}
         category={post.category?.name}
       />
       <BreadcrumbJsonLd items={[{ label: "Blog", href: "/blog" }, { label: post.title }]} />
@@ -100,12 +78,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         title={post.title}
         description={
           <div className="mt-4 flex items-center justify-center gap-4 text-sm text-white/70">
-            {post.writer && (
+            {post.author && (
               <span className="flex items-center gap-2">
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-xs font-bold text-white">
-                  {post.writer.name.charAt(0)}
+                  {post.author.name.charAt(0)}
                 </span>
-                {post.writer.name}
+                {post.author.name}
               </span>
             )}
             <span className="flex items-center gap-1.5">
@@ -136,11 +114,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               </nav>
             </div>
           )}
-          <BlogRenderer html={contentWithIds} />
+          <BlogRenderer html={post.content} />
         </article>
 
         <div className="mt-8 text-center">
-          <Link href="/blog" className="text-orange font-medium hover:underline">← Back to Blog</Link>
+          <Link href="/blog" className="text-orange font-medium hover:underline flex items-center"><LucideChevronLeft/> Back to Blog</Link>
         </div>
       </section>
     </div>

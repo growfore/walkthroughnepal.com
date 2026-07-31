@@ -24,7 +24,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
   const params = await searchParams
   const page = Number(params.page) || 1
   const search = params.search || ""
-  const { blogs, pagination } = await getPublishedPosts(page, 12, search)
+  const { posts, pagination } = await getPublishedPosts(page, 12, search)
 
   return (
     <div className="min-h-screen">
@@ -66,7 +66,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
             </div>
           </form>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {blogs.map((post) => (
+            {posts.map((post) => (
               <BlogCard
                 key={post.slug}
                 slug={post.slug}

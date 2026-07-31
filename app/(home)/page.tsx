@@ -125,8 +125,8 @@ export default async function HomePage() {
     : null
 
   try {
-    const { blogs } = await getPublishedPosts(1, 4)
-    blogList = blogs.map((b) => ({
+    const { posts } = await getPublishedPosts(1, 4)
+    blogList = posts.map((b) => ({
       slug: b.slug,
       image: img(b.coverImage),
       tag: b.category?.name?.toUpperCase() ?? "TRAVEL",

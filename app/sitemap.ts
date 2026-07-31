@@ -2,10 +2,11 @@ import type { MetadataRoute } from "next"
 
 const SITE_URL = "https://walkthroughnepal.com"
 const API_BASE = process.env.API_URL ?? "https://api.walkthroughnepal.com"
+const CMS_API_BASE = process.env.CMS_API_URL ?? "https://cms.walkthroughnepal.com"
 
-async function fetchJSON<T>(path: string): Promise<T | null> {
+async function fetchJSON<T>(path: string, base: string = API_BASE): Promise<T | null> {
   try {
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(`${base}${path}`, {
       headers: { "Content-Type": "application/json" },
       next: { revalidate: 3600 },
     })
@@ -58,11 +59,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic: blog posts
   const blogPages: MetadataRoute.Sitemap = []
   try {
-    const blogRes = await fetchJSON<{ blogs: Array<{ slug: string; updatedAt: string }> }>(
-      `/api/v1/blogs/published?page=1&limit=500`
+    const blogRes = await fetchJSON<{ posts: Array<{ slug: string; updatedAt: string }> }>(
+      `/api/posts/published?page=1&limit=500`,
+      CMS_API_BASE
     )
-    if (blogRes?.blogs) {
-      for (const b of blogRes.blogs) {
+    if (blogRes?.posts) {
+      for (const b of blogRes.posts) {
         blogPages.push({
           url: `${SITE_URL}/blog/${b.slug}`,
           lastModified: b.updatedAt || now,

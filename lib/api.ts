@@ -3,6 +3,7 @@ import type { Activity, CMSPost, FeaturedTag, InfoPage, Pagination, Slot, Testim
 import type { SiteConfig } from "./siteConfig"
 
 export const API_BASE = process.env.API_URL ?? "https://api.walkthroughnepal.com"
+export const CMS_API_BASE = process.env.CMS_API_URL ?? "https://cms.walkthroughnepal.com"
 // ponytail: client components can't read non-NEXT_PUBLIC env vars
 export const PUBLIC_API_BASE = process.env.NEXT_PUBLIC_API_URL ?? API_BASE
 
@@ -26,8 +27,8 @@ export function resolveContentImages(html: string, _base?: string): string {
   )
 }
 
-async function fetchJSON<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+async function fetchJSON<T>(path: string, options?: RequestInit, base: string = API_BASE): Promise<T> {
+  const res = await fetch(`${base}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -78,14 +79,15 @@ export function getTripTypes() {
 }
 
 export function getPublishedPosts(page = 1, limit = 10, search?: string, category?: string) {
-  let url = `/api/v1/blogs/published?page=${page}&limit=${limit}`
+  let url = `/api/posts/published?page=${page}&limit=${limit}`
   if (search) url += `&search=${encodeURIComponent(search)}`
   if (category) url += `&category=${encodeURIComponent(category)}`
-  return fetchJSON<{ blogs: CMSPost[]; pagination: Pagination }>(url)
+  return fetchJSON<{ posts: CMSPost[]; pagination: Pagination }>(url, undefined, CMS_API_BASE)
 }
 
-export function getPostBySlug(slug: string) {
-  return fetchJSON<CMSPost>(`/api/v1/blogs/${slug}`)
+export async function getPostBySlug(slug: string) {
+  const res = await fetchJSON<{ post: CMSPost }>(`/api/posts/${encodeURIComponent(slug)}`, undefined, CMS_API_BASE)
+  return res.post
 }
 
 export function getInfoPageBySlug(slug: string) {
