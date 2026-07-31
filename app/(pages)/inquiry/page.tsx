@@ -97,6 +97,8 @@ function TripCombobox({ value, onChange }: { value: string; onChange: (v: string
 function InquiryForm() {
   const searchParams = useSearchParams()
   const tripSlug = searchParams.get("trip")
+  const departureDate = searchParams.get("date")
+  const departureDetails = searchParams.get("details")
 
   const [sent, setSent] = useState(false)
   const [error, setError] = useState("")
@@ -107,16 +109,17 @@ function InquiryForm() {
   })
 
   useEffect(() => {
-    if (tripSlug) {
-      fetch(`${API_BASE}/api/v1/activity?search=${encodeURIComponent(tripSlug)}&limit=1`)
-        .then((r) => r.json())
-        .then((json) => {
-          const match = (json.data ?? []).find((a: Activity) => a.slug === tripSlug)
-          if (match) form.setValue("destination", match.title)
-        })
-        .catch(() => {})
-    }
-  }, [tripSlug, form])
+    if (departureDate) form.setValue("startDate", departureDate)
+    if (departureDetails) form.setValue("message", `Group Departure Details:\n${departureDetails}\n__________________`)
+    if (!tripSlug) return
+    fetch(`${API_BASE}/api/v1/activity/slug/${encodeURIComponent(tripSlug)}`)
+      .then((r) => r.json())
+      .then((json) => {
+        const match = (json.data as Activity | undefined)
+        if (match?.slug === tripSlug) form.setValue("destination", match.title)
+      })
+      .catch(() => {})
+  }, [tripSlug, departureDate, departureDetails, form])
 
   async function onSubmit(data: FormValues) {
     setError("")

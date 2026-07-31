@@ -70,7 +70,7 @@ import { TripPrintPage } from "@/components/trip-print-page"
 
 const sectionIds = [
   "overview",
-  // "departures",
+  "departures",
   "itinerary",
   "cost-breakdown",
   "includes",
@@ -519,19 +519,12 @@ export default async function PackagePage({
                 >
                   Send a inquire for this Trip
                 </Link>
-                {/*
                 <a
                   href="#departures"
                   className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg border border-navy bg-transparent px-4 py-3 text-sm font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
                 >
                   Check Availability
                 </a>
-                <Link
-                  href={`/inquiry?trip=${slug}`}
-                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg border border-navy bg-transparent px-4 py-3 text-sm font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
-                >
-                  Inquire Now
-                </Link>*/}
               </div>
 
               <div className="border-t border-border px-4 py-3 sm:px-5">

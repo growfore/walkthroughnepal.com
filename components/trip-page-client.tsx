@@ -18,8 +18,7 @@ export function TripPageClient({
   slug: string
   tripTitle: string
 }) {
-  // PONYTAIL: Departures tab disabled — payments API not active yet
-  // const [tab, setTab] = useState<"departures" | "private">("departures")
+  const [tab, setTab] = useState<"departures" | "private">("departures")
   const [selectedTier, setSelectedTier] = useState<Tier | null>(null)
 
   const privateTiers = tiers
@@ -32,9 +31,11 @@ export function TripPageClient({
             tiers={tiers}
             hasSlots={hasSlots}
             onSelect={(tier) => {
-              // PONYTAIL: Departures tab disabled — payments API not active yet
-              // setTab(newTab)
+              setTab(tier?.bestValue ? "departures" : "private")
               if (tier) setSelectedTier(tier)
+              document
+                .getElementById("departures")
+                ?.scrollIntoView({ behavior: "smooth" })
             }}
           />
         </div>
@@ -44,9 +45,8 @@ export function TripPageClient({
         slots={slots}
         slug={slug}
         tripTitle={tripTitle}
-        // PONYTAIL: Departures tab disabled — payments API not active yet
-        // tab={tab}
-        // onTabChange={setTab}
+        tab={tab}
+        onTabChange={setTab}
         tiers={privateTiers}
         selectedTier={selectedTier}
       />

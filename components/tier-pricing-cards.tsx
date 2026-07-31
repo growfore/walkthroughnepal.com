@@ -37,17 +37,17 @@ export function TierPricingCards({ tiers, hasSlots, onSelect }: { tiers: Tier[];
                 </li>
               ))}
             </ul>
-            <a
-              href="/inquiry"
+            <button
+              type="button"
               onClick={() => onSelect?.(tier)}
-              className={`mt-3 block text-center py-2.5 px-5 rounded-lg text-sm font-semibold transition-shadow hover:shadow-md ${
+              className={`mt-3 block w-full text-center py-2.5 px-5 rounded-lg text-sm font-semibold transition-shadow hover:shadow-md cursor-pointer ${
                 tier.bestValue
                   ? "bg-primary text-primary-foreground border border-primary"
                   : "bg-secondary text-secondary-foreground border border-hairline"
               }`}
             >
               Inquire Now
-            </a>
+            </button>
           </div>
         ))}
       </div>
