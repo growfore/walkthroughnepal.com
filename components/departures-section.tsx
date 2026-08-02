@@ -34,7 +34,6 @@ const formSchema = z.object({
   phone: z.string().min(1, "Phone is required"),
   tier: z.string().min(1, "Please select a package"),
   startDate: z.string().min(1, "Please select a start date"),
-  duration: z.string().optional(),
   groupType: z.string().optional(),
   numberOfTravellers: z.string().min(1, "Number of travellers is required"),
   otherMentions: z.string().min(1, "Notes are required"),
@@ -85,7 +84,6 @@ export function DeparturesSection({
       phone: "",
       tier: "",
       startDate: "",
-      duration: "",
       groupType: "",
       numberOfTravellers: "",
       otherMentions: "",
@@ -120,7 +118,6 @@ export function DeparturesSection({
           email: data.email,
           phone: data.phone,
           tripTitle: packageName,
-          duration: data.duration,
           startDate: data.startDate,
           groupType: data.groupType,
           numberOfTravellers: data.numberOfTravellers,
@@ -493,35 +490,7 @@ export function DeparturesSection({
                     />
                   </div>
                 </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <FormField
-                    control={form.control}
-                    name="duration"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs font-semibold text-ink">
-                          Preferred Duration
-                        </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger size="sm" className="w-full text-sm">
-                              <SelectValue placeholder="Select duration" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="short">1–3 Days</SelectItem>
-                            <SelectItem value="medium">4–7 Days</SelectItem>
-                            <SelectItem value="long">8–14 Days</SelectItem>
-                            <SelectItem value="extended">15+ Days</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <div className="grid gap-3">
                   <FormField
                     control={form.control}
                     name="groupType"
