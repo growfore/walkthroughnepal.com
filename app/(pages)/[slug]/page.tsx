@@ -6,6 +6,7 @@ import { getInfoPageBySlug, resolveContentImages, img } from "@/lib/api"
 import { BlogRenderer } from "@/components/blog-renderer"
 import { PageHero } from "@/components/page-hero"
 import { BreadcrumbJsonLd } from "@/components/json-ld"
+import { ChevronLeft } from "lucide-react"
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -66,8 +67,8 @@ export default async function InfoPage({ params }: Props) {
           <BlogRenderer html={contentHtml} />
         </article>
 
-        <div className="mt-8 text-center">
-          <Link href="/" className="text-orange font-medium hover:underline">← Back to Home</Link>
+        <div className="mt-8 text-center ">
+          <Link href="/" className="text-orange font-medium hover:underline flex items-center justify-center"><ChevronLeft/> Back to Home</Link>
         </div>
       </section>
     </div>

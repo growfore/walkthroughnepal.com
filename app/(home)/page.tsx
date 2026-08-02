@@ -132,11 +132,7 @@ export default async function HomePage() {
       tag: b.category?.name?.toUpperCase() ?? "TRAVEL",
       title: b.title,
       description: b.metaDescription ?? null,
-      date: new Date(b.createdAt).toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      }),
+      date: b.publishedAt || b.createdAt,
     }))
   } catch {}
 
@@ -331,7 +327,7 @@ export default async function HomePage() {
       )}
 
       {/* ── Departures ── */}
-      {/*<section className="bg-muted py-16">
+      <section className="bg-muted py-16">
         <div className="mx-auto max-w-7xl px-4">
           <SectionHeader
             title="Upcoming Departures"
@@ -355,7 +351,7 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
-      </section>*/}
+      </section>
 
       {/* ── Testimonials ── */}
       <section className="py-16">
@@ -390,7 +386,8 @@ export default async function HomePage() {
           <SectionHeader title="Travel Inspiration" />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {blogList.map((b) => (
-              <BlogCard key={b.slug} {...b} />
+              <BlogCard
+                key={b.slug} {...b} />
             ))}
           </div>
           <div className="mt-8 text-center">

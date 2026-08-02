@@ -74,7 +74,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                 tag={post.category?.name?.toUpperCase() ?? "TRAVEL"}
                 title={post.title}
                 description={post.metaDescription?.slice(0, 150) ?? ""}
-                date={new Date(post.publishedAt || post.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                date={post.publishedAt || post.createdAt}
               />
             ))}
           </div>

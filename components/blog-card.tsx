@@ -11,6 +11,11 @@ type BlogCardProps = {
 }
 
 export function BlogCard({ slug, image, tag, title, description, date }: BlogCardProps) {
+  const parsed = new Date(date)
+  const formatted = isNaN(parsed.getTime())
+    ? date
+    : parsed.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+
   return (
     <Link
       href={`/blog/${slug}`}
@@ -28,14 +33,10 @@ export function BlogCard({ slug, image, tag, title, description, date }: BlogCar
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent" />
       </div>
 
-      <span className="absolute left-4 top-4 z-10 inline-flex items-center rounded-full bg-navy/90 px-2.5 py-1 text-[10px] font-bold text-navy-foreground shadow-sm backdrop-blur-sm">
-        {tag}
-      </span>
-
       <div className="absolute inset-x-0 bottom-0 z-10 p-5 text-white">
         <h3 className="font-extrabold tracking-tight text-lg">{title}</h3>
         <p className="mt-2 text-sm text-white/80 line-clamp-2">{description}</p>
-        <div className="mt-3 text-xs text-white/60">{date}</div>
+        <div className="mt-3 text-xs text-white/60">{formatted}</div>
       </div>
     </Link>
   )

@@ -104,7 +104,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               <nav>
                 <ul className="space-y-2 list-disc list-inside">
                   {toc.map((item) => (
-                    <li key={item.id}>
+                    <li key={item.id} className="flex items-center">
                       <a href={`#${item.id}`} className="text-navy hover:underline text-base">
                         {item.text}
                       </a>
