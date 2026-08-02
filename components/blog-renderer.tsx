@@ -1,5 +1,60 @@
-export function BlogRenderer({ html }: { html: string }) {
-  const markup = { __html: html }
+import { parseShortcodes } from "@/lib/shortcodes"
+import { getActivityBySlug, getFeaturedActivitiesByTag, getPostBySlug } from "@/lib/api"
+import { TripEmbedCard } from "@/components/trip-embed-card"
+import { FeaturedTripsCarousel } from "@/components/featured-trips-carousel"
+import { PostEmbedCard } from "@/components/post-embed-card"
+
+export async function BlogRenderer({ html }: { html: string }) {
+  const rendered = await Promise.all(
+    parseShortcodes(html).map(async (seg, i) => {
+      if (seg.type === "html") {
+        return (
+          <div
+            key={i}
+            className="[&_img]:!w-full [&_img]:!h-auto"
+            dangerouslySetInnerHTML={{ __html: seg.html }}
+          />
+        )
+      }
+      try {
+        if (seg.type === "trip") {
+          const { data } = await getActivityBySlug(seg.slug)
+          return (
+            <div key={i} className="not-prose my-8">
+              <TripEmbedCard activity={data} />
+            </div>
+          )
+        }
+        if (seg.type === "featured") {
+          const res = await getFeaturedActivitiesByTag(seg.tag)
+          const activities = (res.data?.featuredTag?.activity ?? []).slice(0, seg.count)
+          if (!activities.length) return null
+          if (activities.length === 1) {
+            return (
+              <div key={i} className="not-prose my-8">
+                <TripEmbedCard activity={activities[0]} />
+              </div>
+            )
+          }
+          return (
+            <div key={i} className="not-prose my-8">
+              <FeaturedTripsCarousel activities={activities} />
+            </div>
+          )
+        }
+        const post = await getPostBySlug(seg.slug)
+        return (
+          <div key={i} className="not-prose my-8">
+            <PostEmbedCard post={post} />
+          </div>
+        )
+      } catch {
+        // ponytail: a dead/removed slug drops the embed silently — never 404 the post
+        return null
+      }
+    }),
+  )
+
   return (
     <div
       className="prose md:prose-lg max-w-none w-full
@@ -14,10 +69,10 @@ export function BlogRenderer({ html }: { html: string }) {
         prose-ul:my-2 prose-ol:my-2
         prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-foreground/80
         prose-img:rounded-lg prose-img:my-6
-        [&_img]:!w-full [&_img]:!h-auto
         prose-code:bg-accent prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm
         prose-pre:bg-foreground prose-pre:text-foreground prose-pre:rounded-lg prose-pre:p-4"
-      dangerouslySetInnerHTML={markup}
-    />
+    >
+      {rendered}
+    </div>
   )
 }

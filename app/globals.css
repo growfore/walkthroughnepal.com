@@ -196,66 +196,45 @@
   border-bottom: 2px solid var(--muted-foreground);
   transform: rotate(-45deg);
 }
-.prose table {
+:is(.prose, .wrap-break-word) table {
   table-layout: auto;
   width: 100%;
   max-width: 100%;
   border-collapse: collapse;
-  font-size: 0.85rem;
+  border: 1px solid var(--hairline);
+  font-size: inherit;
 }
-.prose th,
-.prose td {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  padding-left: 6px;
-  padding-right: 6px;
+:is(.prose, .wrap-break-word) th,
+:is(.prose, .wrap-break-word) td {
+  padding: 8px 10px;
   text-align: left;
-  border-bottom: 1px solid var(--hairline);
-  vertical-align: middle;
+  border: 1px solid var(--hairline);
+  vertical-align: top;
 }
 @media (max-width: 768px) {
-  .prose table {
+  :is(.prose, .wrap-break-word) table {
     display: block;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
-  .prose th,
-  .prose td {
+  :is(.prose, .wrap-break-word) th,
+  :is(.prose, .wrap-break-word) td {
     white-space: nowrap;
   }
 }
-.prose th:not(:last-child),
-.prose td:not(:last-child) {
-  border-right: 1px solid var(--hairline);
-}
-.prose tr:last-child th,
-.prose tr:last-child td {
-  border-bottom: none;
-}
-.prose tr:first-child th,
-.prose tr:first-child td {
+:is(.prose, .wrap-break-word) tr:first-child th,
+:is(.prose, .wrap-break-word) tr:first-child td {
   background: var(--navy);
   color: white !important;
   font-weight: 700;
 }
-.prose tr:first-child th *,
-.prose tr:first-child td * {
+:is(.prose, .wrap-break-word) tr:first-child th *,
+:is(.prose, .wrap-break-word) tr:first-child td * {
   color: inherit !important;
   font-weight: inherit !important;
 }
-.prose tbody tr:nth-child(even) {
+:is(.prose, .wrap-break-word) tbody tr:nth-child(even) {
   background: var(--muted);
-}
-.prose table.cms-table {
-  table-layout: auto;
-  border-collapse: separate;
-  border-spacing: 0;
-  border: 1px solid var(--hairline);
-  border-radius: 8px;
-}
-.prose .cms-table th,
-.prose .cms-table td {
-  padding: 0 6px;
 }
 
 html::-webkit-scrollbar {

@@ -63,6 +63,22 @@ export function getFeaturedTags() {
   return fetchJSON<{ data: { featuredTags: FeaturedTag[] } }>("/api/v1/featured?includeActivity=true")
 }
 
+export interface FeaturedActivity {
+  id: number
+  slug: string
+  title: string
+  price: number
+  duration: string
+  images: string[]
+  difficultyLevel: string
+}
+
+export function getFeaturedActivitiesByTag(tagSlug: string) {
+  return fetchJSON<{ message: string; data: { featuredTag: { activity: FeaturedActivity[] } } }>(
+    `/api/v1/featured/${encodeURIComponent(tagSlug)}?includeActivity=true`,
+  )
+}
+
 export function getTeamMembers() {
   return fetchJSON<{ message: string; data: TeamMember[] }>("/api/v1/team")
 }
