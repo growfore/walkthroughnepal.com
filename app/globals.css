@@ -169,6 +169,9 @@
 .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
   letter-spacing: normal;
 }
+.prose [id] {
+  scroll-margin-top: 7.5rem;
+}
 .prose ul,
 .prose ol {
   padding-left: 0;

@@ -3,6 +3,7 @@ import { getPostBySlug, img, resolveContentImages } from "@/lib/api"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { BlogRenderer } from "@/components/blog-renderer"
+import { TocSidebar } from "@/components/toc-sidebar"
 import { PageHero } from "@/components/page-hero"
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/json-ld"
 
@@ -96,10 +97,22 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Blog", href: "/blog" }, { label: post.title }]}
       />
 
-      <section className="mx-auto max-w-4xl px-4 pb-16 pt-8">
+      <section
+        className={`mx-auto px-4 pb-16 pt-8 ${
+          toc.length > 0
+            ? "max-w-6xl lg:grid lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-12"
+            : "max-w-4xl"
+        }`}
+      >
+        {toc.length > 0 && (
+          <aside className="hidden lg:block">
+            <TocSidebar items={toc} />
+          </aside>
+        )}
+        <div>
         <article className="prose prose-lg prose-gray max-w-none w-full wrap-break-word **:wrap-break-word">
           {toc.length > 0 && (
-            <div className="not-prose mb-8">
+            <div className="not-prose mb-8 lg:hidden">
               <h2 className="text-2xl font-bold text-navy mb-4">Contents</h2>
               <nav>
                 <ul className="space-y-2 list-disc list-inside">
@@ -119,6 +132,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
         <div className="mt-8 text-center">
           <Link href="/blog" className="text-orange font-medium hover:underline flex items-center"><LucideChevronLeft/> Back to Blog</Link>
+        </div>
         </div>
       </section>
     </div>
