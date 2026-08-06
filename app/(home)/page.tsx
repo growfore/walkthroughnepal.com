@@ -10,8 +10,6 @@ import {
   ArrowUpRight,
   MessageCircle,
   Sparkles,
-  Clock,
-  MapPin,
 } from "lucide-react"
 import Link from "next/link"
 import type { FeaturedTag } from "@/lib/types"
@@ -201,7 +199,7 @@ export default async function HomePage() {
         {heroActivity && (
           <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-4 pb-24">
             <div className="max-w-3xl">
-              <h1 className="text-5xl leading-[1.05] font-bold text-white md:text-7xl lg:text-8xl">
+              <h1 className="text-5xl leading-[1.05] font-bold text-white md:text-7xl">
                 {(() => {
                   const firstPart = heroActivity.title.split(":")[0].trim()
                   const words = firstPart.split(" ")
