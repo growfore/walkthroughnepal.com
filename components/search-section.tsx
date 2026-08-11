@@ -86,7 +86,7 @@ export function SearchSection({ categories }: { categories: Category[] }) {
               href="/design-your-trip"
               className="flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground"
             >
-              Not sure where to go? <span className="font-semibold text-orange">Let us plan it for you</span> <ChevronRight className="h-4 w-4" />
+              Not sure where to go? <span className="underline">Let us plan it for you. </span>
             </Link>
           </div>
         </div>

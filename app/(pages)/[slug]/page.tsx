@@ -68,7 +68,7 @@ export default async function InfoPage({ params }: Props) {
         </article>
 
         <div className="mt-8 text-center ">
-          <Link href="/" className="text-orange font-medium hover:underline flex items-center justify-center"><ChevronLeft/> Back to Home</Link>
+          <Link href="/" className="text-orange font-medium hover:underline"><ChevronLeft/> Back to Home</Link>
         </div>
       </section>
     </div>

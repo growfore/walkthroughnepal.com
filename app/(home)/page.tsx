@@ -199,7 +199,7 @@ export default async function HomePage() {
         {heroActivity && (
           <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-4 pb-24">
             <div className="max-w-3xl">
-              <h1 className="text-5xl leading-[1.05] font-bold text-white md:text-7xl">
+              <h1 className="text-3xl sm:text-5xl leading-[1.05] font-bold text-white md:text-7xl">
                 {(() => {
                   const firstPart = heroActivity.title.split(":")[0].trim()
                   const words = firstPart.split(" ")
@@ -404,27 +404,23 @@ export default async function HomePage() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 lg:grid-cols-2">
           <div className="flex justify-center">
             <div className="relative">
-              <div className="h-80 w-80 overflow-hidden rounded-full border-8 border-white shadow-xl">
+              <div className="h-100 w-80 overflow-hidden  border-8 border-white shadow-xl">
                 <img
-                  src="/images/hero-trekker.jpg"
+                  src="/images/hero-narphu.jpg"
                   alt="Travel Consultant"
                   width={700}
                   height={700}
                   className="h-full w-full object-cover"
                 />
               </div>
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-lg bg-orange px-8 py-3 text-center shadow-lg">
-                <p className="font-extrabold text-white">Walk Through Nepal</p>
-                <p className="text-xs text-white/90">Travel Consultant</p>
-              </div>
             </div>
           </div>
           <div>
             <p className="flex items-center gap-2 text-sm font-semibold text-orange">
-              <Mountain className="h-5 w-5" /> Looking for a Private Trip?
+               Looking for a Private Trip?
             </p>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-navy md:text-4xl">
-              SAY HELLO TO YOUR TRAVEL CONSULTANT
+              Say Hello to your Travel Consultant
             </h2>
             <p className="mt-5 max-w-xl leading-relaxed text-muted-foreground">
               Planning your holiday? Our travel experts are here to craft the perfect
