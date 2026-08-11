@@ -52,11 +52,11 @@ export const metadata: Metadata = {
     "Pokhara trekking",
   ],
   robots: {
-    index: false,
-    follow: false,
+    index: true,
+    follow: true,
     googleBot: {
-      index: false,
-      follow: false,
+      index: true,
+      follow: true,
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
@@ -132,9 +132,8 @@ export default function RootLayout({
       )}
     >
       <head>
-        {/* Google Analytics — placeholder. Replace G-XXXXXXXXXX with your Measurement ID. */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+          src="https://www.googletagmanager.com/gtag/js?id=G-TLS8DKG5GG"
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
@@ -142,7 +141,7 @@ export default function RootLayout({
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-XXXXXXXXXX');
+            gtag('config', 'G-TLS8DKG5GG');
           `}
         </Script>
       </head>
