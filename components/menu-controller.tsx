@@ -91,7 +91,7 @@ export function MenuController({ items }: MenuControllerProps) {
     <nav
       ref={navRef}
       aria-label="Main navigation"
-      className={`${isTripPage ? "relative w-full" : "fixed inset-x-0 top-0"} z-50 border-b border-border bg-white`}
+          className={`${isTripPage ? "relative w-full" : "fixed inset-x-0 top-0"} z-50 border-b border-border bg-white/40 backdrop-blur-xl`}
     >
       {/* Top bar */}
       <div className="hidden bg-navy text-navy-foreground md:block">
@@ -134,7 +134,7 @@ export function MenuController({ items }: MenuControllerProps) {
             className="h-auto w-32 md:w-36"
           />
         </Link>
-        <div className="flex items-center gap-0">
+        <div className="flex items-center gap-4">
           {items.map((item) => {
             const itemHasChildren = hasChildren(item)
             const itemHasGrandchildren = hasGrandchildren(item)
@@ -154,10 +154,10 @@ export function MenuController({ items }: MenuControllerProps) {
                   <button
                     aria-haspopup="true"
                     aria-expanded={isActive}
-                    className={`text-md inline-flex items-center gap-0.5 rounded-lg px-3 py-1.5 font-medium transition-colors ${
+                    className={`text-lg inline-flex items-center gap-1 rounded-lg px-3 py-1.5 font-semibold transition-colors ${
                       isActive
                         ? "bg-muted text-navy"
-                        : "text-muted-foreground hover:bg-muted hover:text-navy"
+                        : "text-navy hover:bg-muted"
                     }`}
                   >
                     {item.label}
@@ -166,7 +166,7 @@ export function MenuController({ items }: MenuControllerProps) {
                 ) : (
                   <Link
                     href={item.url || "#"}
-                    className="text-md inline-flex items-center rounded-lg px-3 py-1.5 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-navy"
+                    className="text-lg inline-flex items-center rounded-lg px-3 py-1.5 font-semibold text-navy transition-colors hover:bg-muted"
                   >
                     {item.label}
                   </Link>
@@ -176,7 +176,7 @@ export function MenuController({ items }: MenuControllerProps) {
                     onMouseEnter={cancelHide}
                     className="absolute top-full left-0 z-[100] pt-1"
                   >
-                    <div className="min-w-[220px] max-w-[320px] rounded-xl border border-border bg-white py-2 shadow-lg">
+                    <div className="min-w-[220px] max-w-[320px] rounded-xl border border-border bg-white/40 py-2 shadow-lg backdrop-blur-xl">
                       {item.children.map((child) => (
                         <Link
                           key={child.id}
@@ -220,10 +220,10 @@ export function MenuController({ items }: MenuControllerProps) {
         {activeMegaItem && hasActiveGrandchildren && (
           <div
             onMouseEnter={cancelHide}
-            className="pointer-events-none absolute inset-x-0 top-0 z-[100] max-lg:hidden"
+            className="pointer-events-none absolute inset-x-0 top-2 z-[100] max-lg:hidden border-t-0"
           >
             <div className="h-16" aria-hidden="true" />
-            <div className="pointer-events-auto rounded-none border border-border bg-white shadow-lg">
+            <div className="pointer-events-auto rounded-none border border-border bg-white backdrop-blur-xl shadow-[0_16px_24px_-12px_rgb(0_0_0/0.2)]">
               <div className="mx-auto max-w-7xl px-4 md:px-8">
                 <div className="flex">
                   <div className="w-[240px] shrink-0 border-r border-border py-6 pr-6">

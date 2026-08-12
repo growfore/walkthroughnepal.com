@@ -519,13 +519,13 @@ export default async function PackagePage({
 
                 <Link
                   href={`/inquiry?trip=${slug}`}
-                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-4 py-3 text-sm font-semibold text-orange-foreground hover:opacity-90"
+                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-4 py-3 font-semibold text-orange-foreground hover:opacity-90 underline text-lg"
                 >
-                  Send a inquire for this Trip
+                  Inqury Now
                 </Link>
                 <a
                   href="#departures"
-                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg border border-navy bg-transparent px-4 py-3 text-sm font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
+                  className="mt-2 text-lg flex w-full items-center justify-center gap-2 rounded-lg border border-navy bg-transparent px-4 py-3  font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
                 >
                   Check Availability
                 </a>

@@ -10,6 +10,9 @@ import {
   ArrowUpRight,
   MessageCircle,
   Sparkles,
+  MapPin,
+  Shield,
+  HeartHandshake,
 } from "lucide-react"
 import Link from "next/link"
 import type { FeaturedTag } from "@/lib/types"
@@ -278,6 +281,60 @@ export default async function HomePage() {
               className="inline-flex items-center gap-1 rounded-full border border-orange px-6 py-3 text-sm font-semibold text-orange hover:bg-orange hover:text-orange-foreground transition-colors"
             >
               View All Departures <ChevronRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── About Us ── */}
+      <section className="py-16">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 lg:grid-cols-2">
+          <div className="flex justify-center">
+            <div className="relative">
+              <div className="h-100 w-80 overflow-hidden border-8 border-white shadow-xl">
+                <img
+                  src="/images/hero-narphu.jpg"
+                  alt="Trekking in the Nar Phu Valley, Nepal"
+                  width={700}
+                  height={700}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-semibold tracking-widest uppercase text-orange">
+              About Walk Through Nepal
+            </p>
+            <h2 className="mt-3 text-3xl font-bold text-navy md:text-4xl">
+              Local Experts. Authentic Himalayan Adventures.
+            </h2>
+            <p className="mt-5 max-w-xl leading-relaxed text-muted-foreground">
+              Founded by local trekking guides, we&apos;ve spent{" "}
+              {siteConfig.experience} leading adventurers through the Himalayas —
+              from the bustling streets of Kathmandu to the remote trails of the Nar
+              Phu Valley. Every journey is designed to immerse you in Nepal&apos;s
+              rich culture, breathtaking landscapes, and warm hospitality.
+            </p>
+            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+              {[
+                { icon: Users, value: "20+", label: "Years Experience" },
+                { icon: MapPin, value: "50+", label: "Destinations" },
+                { icon: Shield, value: "5,000+", label: "Happy Travelers" },
+                { icon: HeartHandshake, value: "100%", label: "Local Team" },
+              ].map((s) => (
+                <div key={s.label} className="text-center">
+                  <s.icon className="mx-auto h-6 w-6 text-orange" />
+                  <p className="mt-2 text-xl font-bold text-navy">{s.value}</p>
+                  <p className="text-xs text-muted-foreground">{s.label}</p>
+                </div>
+              ))}
+            </div>
+            <Link
+              href="/about"
+              className="mt-8 inline-flex items-center gap-1 rounded-full bg-orange px-6 py-3 text-sm font-semibold text-orange-foreground hover:opacity-90"
+            >
+              More About Us <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
         </div>

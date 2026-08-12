@@ -1,7 +1,36 @@
 "use client"
 
 import { ChevronLeft, ChevronRight, Star } from "lucide-react"
-import { useRef } from "react"
+import { useRef, useState } from "react"
+
+function ReviewCard({ content, author }: { content: string; author: string }) {
+  const [expanded, setExpanded] = useState(false)
+  const isLong = content.length > 160
+
+  return (
+    <div className="w-72 shrink-0 snap-start rounded-lg border border-border bg-card p-4">
+      <div className="flex text-orange">
+        {[...Array(5)].map((_, idx) => (
+          <Star key={idx} className="h-3.5 w-3.5 fill-current" />
+        ))}
+      </div>
+      <p
+        className={`mt-2 text-sm leading-relaxed text-muted-foreground ${expanded ? "" : "line-clamp-4"}`}
+      >
+        &ldquo;{content}&rdquo;
+      </p>
+      {isLong && (
+        <button
+          onClick={() => setExpanded((e) => !e)}
+          className="mt-2 text-xs font-semibold text-orange hover:underline"
+        >
+          {expanded ? "Read less" : "Read more +"}
+        </button>
+      )}
+      <div className="mt-3 text-sm font-semibold text-navy">– {author}</div>
+    </div>
+  )
+}
 
 export function ReviewsCarousel({ items }: { items: { author: string; content: string }[] }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -34,20 +63,7 @@ export function ReviewsCarousel({ items }: { items: { author: string; content: s
         style={{ scrollbarWidth: "none" }}
       >
         {items.map((t, i) => (
-          <div
-            key={i}
-            className="w-72 shrink-0 snap-start rounded-lg border border-border bg-card p-4"
-          >
-            <div className="flex text-orange">
-              {[...Array(5)].map((_, idx) => (
-                <Star key={idx} className="h-3.5 w-3.5 fill-current" />
-              ))}
-            </div>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-4">
-              &ldquo;{t.content}&rdquo;
-            </p>
-            <div className="mt-3 text-sm font-semibold text-navy">– {t.author}</div>
-          </div>
+          <ReviewCard key={i} content={t.content} author={t.author} />
         ))}
       </div>
     </div>
