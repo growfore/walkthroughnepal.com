@@ -3,7 +3,6 @@
 import { useState, useRef, useCallback } from "react"
 import { renderRichText } from "@/lib/html-decoder"
 import { resolveContentImages, API_BASE } from "@/lib/api"
-import { parseListItems } from "@/lib/forms"
 import { siteConfig } from "@/lib/siteConfig"
 import { AltitudeChart } from "@/components/altitude-chart"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
@@ -176,11 +175,15 @@ export function TripPrintPage({ pkg, itineraryVariants }: TripPrintPageProps) {
         {/* Trip Highlights */}
         {pkg.highlights?.length > 0 && (
           <Section title="Trip Highlights">
-            <ul className="list-disc pl-5 space-y-2">
-              {pkg.highlights.flatMap((h) => parseListItems(renderRichText(h))).map((item, i) => (
-                <li key={i} dangerouslySetInnerHTML={{ __html: item }} />
-              ))}
-            </ul>
+            {pkg.highlights.map((h, i) => (
+              <div
+                key={i}
+                className="mt-4 text-base leading-relaxed text-black print-plain"
+                dangerouslySetInnerHTML={{
+                  __html: stripStyles(resolveContentImages(renderRichText(h))),
+                }}
+              />
+            ))}
           </Section>
         )}
 
@@ -237,22 +240,30 @@ export function TripPrintPage({ pkg, itineraryVariants }: TripPrintPageProps) {
         {/* Price Includes */}
         {pkg.inclusions?.length > 0 && (
           <Section title="Price Includes">
-            <ul className="list-disc pl-5 space-y-2">
-              {pkg.inclusions.flatMap((h) => parseListItems(renderRichText(h))).map((item, i) => (
-                <li key={i} dangerouslySetInnerHTML={{ __html: resolveContentImages(item) }} />
-              ))}
-            </ul>
+            {pkg.inclusions.map((h, i) => (
+              <div
+                key={i}
+                className="mt-4 text-base leading-relaxed text-black print-plain"
+                dangerouslySetInnerHTML={{
+                  __html: stripStyles(resolveContentImages(renderRichText(h))),
+                }}
+              />
+            ))}
           </Section>
         )}
 
         {/* Price Excludes */}
         {pkg.exclusions?.length > 0 && (
           <Section title="Price Excludes">
-            <ul className="list-disc pl-5 space-y-2">
-              {pkg.exclusions.flatMap((h) => parseListItems(renderRichText(h))).map((item, i) => (
-                <li key={i} dangerouslySetInnerHTML={{ __html: resolveContentImages(item) }} />
-              ))}
-            </ul>
+            {pkg.exclusions.map((h, i) => (
+              <div
+                key={i}
+                className="mt-4 text-base leading-relaxed text-black print-plain"
+                dangerouslySetInnerHTML={{
+                  __html: stripStyles(resolveContentImages(renderRichText(h))),
+                }}
+              />
+            ))}
           </Section>
         )}
 

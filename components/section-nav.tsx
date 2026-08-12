@@ -108,7 +108,7 @@ export function SectionNav({ sectionIds }: { sectionIds: string[] }) {
                   "inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold whitespace-nowrap transition-colors",
                   isActive
                     ? "bg-navy text-white"
-                    : "text-muted-foreground hover:bg-muted hover:text-navy"
+                    : "text-navy hover:bg-muted hover:text-navy"
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />

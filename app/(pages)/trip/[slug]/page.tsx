@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 import { renderRichText } from "@/lib/html-decoder"
 import { resolveContentImages } from "@/lib/api"
-import { parseListItems } from "@/lib/forms"
+import { parseRichList, type RichSegment } from "@/lib/forms"
 import { StickyWrapper } from "@/components/sticky-wrapper"
 import { SectionNav } from "@/components/section-nav"
 import { ItineraryList } from "@/components/itinerary-list"
@@ -84,6 +84,36 @@ const sectionIds = [
   "useful-info",
   "faqs",
 ]
+
+function SegmentBlock({
+  segments,
+  Icon,
+  iconClass,
+  textClass,
+}: {
+  segments: RichSegment[]
+  Icon: typeof Check
+  iconClass: string
+  textClass: string
+}) {
+  return segments.map((seg, i) =>
+    seg.type === "prose" ? (
+      <div
+        key={i}
+        className="prose prose-lg w-full max-w-none wrap-break-word **:wrap-break-word"
+        dangerouslySetInnerHTML={{ __html: resolveContentImages(seg.html) }}
+      />
+    ) : (
+      <div key={i} className={`flex items-start gap-3 text-lg ${textClass}`}>
+        <Icon className={`mt-1.5 h-4 w-4 shrink-0 ${iconClass}`} />
+        <span
+          className="wrap-break-word"
+          dangerouslySetInnerHTML={{ __html: resolveContentImages(seg.html) }}
+        />
+      </div>
+    ),
+  )
+}
 
 export default async function PackagePage({
   params,
@@ -138,10 +168,9 @@ export default async function PackagePage({
     slots = slotRes.data.slots
   } catch {}
 
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  // ponytail: no client-side date filter — the CMS `visible` flag is the gate
   const upcomingSlots = slots
-    .filter((s) => s.visible && new Date(s.departureDate) >= today)
+    .filter((s) => s.visible)
     .sort(
       (a, b) =>
         new Date(a.departureDate).getTime() -
@@ -283,23 +312,13 @@ export default async function PackagePage({
                   Trip Highlights
                 </h2>
                 <div className="mt-6 space-y-3">
-                  {pkg.highlights
-                  .flatMap((h) => parseListItems(renderRichText(h)))
-                  .map((item, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-3 text-lg text-navy"
-                    >
-                      <Check className="mt-1.5 h-4 w-4 shrink-0 text-success" />
-                      <span
-                        className="wrap-break-word"
-                        dangerouslySetInnerHTML={{
-                          __html: item,
-                        }}
-                      />
-                    </div>
-                  ))}
-              </div>
+                  <SegmentBlock
+                    segments={pkg.highlights.flatMap((h) => parseRichList(renderRichText(h)))}
+                    Icon={Check}
+                    iconClass="text-success"
+                    textClass="text-navy"
+                  />
+                </div>
             </div>
             )}
 
@@ -362,14 +381,12 @@ export default async function PackagePage({
                 What&apos;s Included
               </h2>
               <div className="mt-6 space-y-3">
-                {(pkg.inclusions ?? [])
-                  .flatMap((h) => parseListItems(renderRichText(h)))
-                  .map((item, i) => (
-                    <div key={i} className="flex items-start gap-3 text-lg text-navy">
-                      <Check className="mt-1.5 h-4 w-4 shrink-0 text-success" />
-                      <span className="wrap-break-word" dangerouslySetInnerHTML={{ __html: resolveContentImages(item) }} />
-                    </div>
-                  ))}
+                <SegmentBlock
+                  segments={(pkg.inclusions ?? []).flatMap((h) => parseRichList(renderRichText(h)))}
+                  Icon={Check}
+                  iconClass="text-success"
+                  textClass="text-navy"
+                />
               </div>
             </div>
 
@@ -379,14 +396,12 @@ export default async function PackagePage({
                 What&apos;s Excluded
               </h2>
               <div className="mt-6 space-y-3">
-                {(pkg.exclusions ?? [])
-                  .flatMap((h) => parseListItems(renderRichText(h)))
-                  .map((item, i) => (
-                    <div key={i} className="flex items-start gap-3 text-lg text-navy">
-                      <X className="mt-1.5 h-4 w-4 shrink-0 text-error" />
-                      <span className="wrap-break-word" dangerouslySetInnerHTML={{ __html: resolveContentImages(item) }} />
-                    </div>
-                  ))}
+                <SegmentBlock
+                  segments={(pkg.exclusions ?? []).flatMap((h) => parseRichList(renderRichText(h)))}
+                  Icon={X}
+                  iconClass="text-error"
+                  textClass="text-navy"
+                />
               </div>
             </div>
 
@@ -438,15 +453,13 @@ export default async function PackagePage({
                           <Icon className="h-5 w-5" />
                           {cat.name}
                         </h3>
-                        <div className="mt-2 space-y-2">
-                          {cat.content
-                            .flatMap((h) => parseListItems(renderRichText(h)))
-                            .map((item, j) => (
-                              <div key={j} className="flex items-start gap-3 text-lg text-ink">
-                                <Check className="mt-1.5 h-4 w-4 shrink-0 text-muted-foreground" />
-                                <span className="wrap-break-word" dangerouslySetInnerHTML={{ __html: resolveContentImages(item) }} />
-                              </div>
-                            ))}
+                        <div className="mt-2 space-y-3">
+                          <SegmentBlock
+                            segments={cat.content.flatMap((h) => parseRichList(renderRichText(h)))}
+                            Icon={Check}
+                            iconClass="text-muted-foreground"
+                            textClass="text-ink"
+                          />
                         </div>
                       </div>
                     )
@@ -521,7 +534,7 @@ export default async function PackagePage({
                   href={`/inquiry?trip=${slug}`}
                   className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-4 py-3 font-semibold text-orange-foreground hover:opacity-90 underline text-lg"
                 >
-                  Inqury Now
+                  Inquiry Now
                 </Link>
                 <a
                   href="#departures"

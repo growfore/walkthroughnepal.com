@@ -290,10 +290,19 @@ export default async function HomePage() {
       <section className="py-16">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 lg:grid-cols-2">
           <div className="flex justify-center">
-            <div className="relative">
-              <div className="h-100 w-80 overflow-hidden border-8 border-white shadow-xl">
+            <div className="relative flex gap-1">
+              <div className="h-100 w-80 overflow-hidden border-8 border-white shadow-xl -rotate-9 left-2">
                 <img
-                  src="/images/hero-narphu.jpg"
+                  src="/narphu-trek.webp"
+                  alt="Trekking in the Nar Phu Valley, Nepal"
+                  width={700}
+                  height={700}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="h-100 w-80 overflow-hidden border-8 border-white shadow-xl absolute top-2 rotate-8 right-4">
+                <img
+                  src="/narphu-trek.webp"
                   alt="Trekking in the Nar Phu Valley, Nepal"
                   width={700}
                   height={700}

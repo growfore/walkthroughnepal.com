@@ -6,7 +6,20 @@ export const GROUP_OPTIONS = [
   { value: "custom", label: "Custom Group" },
 ] as const
 
-export function parseListItems(html: string): string[] {
-  const m = html.match(/<li>(.*?)<\/li>/gi)
-  return m ? m.map((s) => s.replace(/<\/?li>/gi, "")) : [html]
+export type RichSegment = { type: "prose" | "item"; html: string }
+
+export function parseRichList(html: string): RichSegment[] {
+  const segs: RichSegment[] = []
+  const listRe = /<ul[\s\S]*?<\/ul>|<ol[\s\S]*?<\/ol>/gi
+  let last = 0
+  for (const m of html.matchAll(listRe)) {
+    const before = html.slice(last, m.index)
+    if (before.trim()) segs.push({ type: "prose", html: before })
+    for (const li of m[0].match(/<li[\s\S]*?<\/li>/gi) ?? []) {
+      segs.push({ type: "item", html: li.replace(/^<li[^>]*>/, "").replace(/<\/li>\s*$/, "") })
+    }
+    last = m.index + m[0].length
+  }
+  if (html.slice(last).trim()) segs.push({ type: "prose", html: html.slice(last) })
+  return segs
 }

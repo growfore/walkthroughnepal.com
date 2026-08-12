@@ -59,9 +59,10 @@ export function DeparturesSection({
   selectedTier?: Tier | null
 }) {
   const [internalTab, setInternalTab] = useState<"departures" | "private">(
-    "departures"
+    slots.length > 0 ? "departures" : "private"
   )
-  const tab = tabProp ?? internalTab
+  const hasDepartures = slots.length > 0
+  const tab = hasDepartures ? (tabProp ?? internalTab) : "private"
   const setTab = onTabChange ?? setInternalTab
   const slotDetails = (s: Slot) =>
     [
@@ -142,20 +143,22 @@ export function DeparturesSection({
       </p>
 
       {/* Tabs */}
-      <div className="mt-6 flex gap-2">
-        <button
-          onClick={() => setTab("departures")}
-          className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors ${tab === "departures" ? "bg-navy text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
-        >
-          <Calendar className="h-4 w-4" /> Departures
-        </button>
-        <button
-          onClick={() => setTab("private")}
-          className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors ${tab === "private" ? "bg-navy text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
-        >
-          <Users className="h-4 w-4" /> Private Tour
-        </button>
-      </div>
+      {hasDepartures && (
+        <div className="mt-6 flex gap-2">
+          <button
+            onClick={() => setTab("departures")}
+            className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors ${tab === "departures" ? "bg-navy text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+          >
+            <Calendar className="h-4 w-4" /> Departures
+          </button>
+          <button
+            onClick={() => setTab("private")}
+            className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors ${tab === "private" ? "bg-navy text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+          >
+            <Users className="h-4 w-4" /> Private Tour
+          </button>
+        </div>
+      )}
 
       {/* Departures Tab */}
       {tab === "departures" && (
