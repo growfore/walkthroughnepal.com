@@ -1,17 +1,13 @@
 import { NextResponse } from "next/server"
-import { verifyTurnstile } from "@/lib/turnstile"
 import { API_BASE } from "@/lib/api"
 import { escapeHtml } from "@/lib/escape-html"
 
 export async function POST(req: Request) {
   const body = await req.json()
-  const { fullName, email, phone, duration, experienceType, startDate, locations, groupType, numberOfTravellers, inclusions, accommodationPreferences, foodPreferences, otherMentions, "cf-turnstile-response": token } = body
+  const { fullName, email, phone, duration, experienceType, startDate, locations, groupType, numberOfTravellers, inclusions, accommodationPreferences, foodPreferences, otherMentions } = body
 
   if (!fullName || !email) {
     return NextResponse.json({ error: "fullName and email required" }, { status: 400 })
-  }
-  if (!token || !(await verifyTurnstile(token))) {
-    return NextResponse.json({ error: "Turnstile verification failed" }, { status: 403 })
   }
 
   const locationsSummary = Array.isArray(locations)

@@ -56,13 +56,10 @@ export default function ContactPage() {
   async function onSubmit(data: FormValues) {
     setError("")
     try {
-      const formEl = document.querySelector("form")
-      const token = (formEl?.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
-      if (!token) throw new Error("Verification required")
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, "cf-turnstile-response": token }),
+        body: JSON.stringify({ ...data }),
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
@@ -140,7 +137,6 @@ export default function ContactPage() {
                     <Button type="submit" disabled={isSubmitting} className="rounded-full bg-orange px-8 py-3 font-semibold text-orange-foreground hover:bg-orange/90">
                       {isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Sending...</> : <><Send className="h-4 w-4" /> Send Message</>}
                     </Button>
-                    <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
                   </form>
                 </Form>
               )}

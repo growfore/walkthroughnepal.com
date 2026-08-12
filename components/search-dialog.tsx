@@ -16,7 +16,10 @@ type Result = {
 export function SearchDialog() {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<{ trips: Result[]; blogs: Result[] }>({ trips: [], blogs: [] })
+  const [results, setResults] = useState<{ trips: Result[]; blogs: Result[] }>({
+    trips: [],
+    blogs: [],
+  })
   const [loading, setLoading] = useState(false)
   const [idx, setIdx] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -84,7 +87,8 @@ export function SearchDialog() {
     } else if (e.key === "Enter") {
       if (idx >= 0) {
         const item = allResults[idx]
-        window.location.href = item.type === "trip" ? `/trip/${item.slug}` : `/blog/${item.slug}`
+        window.location.href =
+          item.type === "trip" ? `/trip/${item.slug}` : `/blog/${item.slug}`
       } else if (query.trim()) {
         window.location.href = `/explore?search=${encodeURIComponent(query.trim())}`
       }
@@ -96,7 +100,7 @@ export function SearchDialog() {
     const Icon = icon
     return (
       <div>
-        <div className="px-4 py-2 text-[11px] font-bold tracking-wider text-muted-foreground uppercase flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
           <Icon className="h-3 w-3" /> {label}
         </div>
         {items.map((item) => {
@@ -104,15 +108,29 @@ export function SearchDialog() {
           return (
             <Link
               key={`${item.type}-${item.slug}`}
-              href={item.type === "trip" ? `/trip/${item.slug}` : `/blog/${item.slug}`}
+              href={
+                item.type === "trip"
+                  ? `/trip/${item.slug}`
+                  : `/blog/${item.slug}`
+              }
               className={`flex items-center gap-3 px-4 py-2.5 text-sm transition ${globalIdx === idx ? "bg-accent/30" : "hover:bg-accent/20"}`}
               onMouseEnter={() => setIdx(globalIdx)}
               onClick={() => setOpen(false)}
             >
-              <Image src={item.image} alt="" width={36} height={36} className="h-9 w-9 shrink-0 rounded object-cover" />
+              <Image
+                src={item.image}
+                alt=""
+                width={36}
+                height={36}
+                className="h-9 w-9 shrink-0 rounded object-cover"
+              />
               <div className="min-w-0 flex-1">
-                <div className="truncate font-medium text-navy">{item.title}</div>
-                <div className="text-xs text-muted-foreground">{item.subtitle}</div>
+                <div className="truncate font-medium text-navy">
+                  {item.title}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {item.subtitle}
+                </div>
               </div>
             </Link>
           )
@@ -121,64 +139,70 @@ export function SearchDialog() {
     )
   }
 
-  if (!open) {
-    return (
+  return (
+    <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 rounded-full lg:border lg:border-border px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-navy"
+        className={`flex w-full max-w-xl items-center justify-between gap-2 rounded-md bg-white px-3 py-4 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-navy lg:border lg:border-border ${open ? "invisible" : ""}`}
         aria-label="Search"
+        aria-expanded={open}
       >
-        <Search className="h-5 w-5" />
-        <span className="hidden lg:inline">Search</span>
-        <kbd className="hidden lg:inline-flex h-5 items-center gap-0.5 rounded border border-border bg-muted px-1.5 text-[10px] font-medium text-muted-foreground">
+        <div className="flex items-center gap-1">
+          <Search className="h-5 w-5" />
+          <span className="lg:inline">Search trips, blogs ...</span>
+        </div>
+        <kbd className="hidden h-5 items-center gap-0.5 rounded border border-border bg-muted px-1.5 text-[10px] font-medium text-muted-foreground lg:inline-flex">
           <Command className="h-2.5 w-2.5" />K
         </kbd>
       </button>
-    )
-  }
 
-  return (
-    <div className="fixed inset-0 z-[200] flex items-start justify-center pt-[15vh]">
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
-      <div className="relative z-10 w-full max-w-xl rounded-xl border border-border bg-white shadow-2xl overflow-hidden">
-        <div className="flex items-center border-b border-border px-4">
-          <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
-          <input
-            ref={inputRef}
-            type="text"
-            value={query}
-            onChange={(e) => { setQuery(e.target.value); setIdx(-1) }}
-            onKeyDown={onKeyDown}
-            placeholder="Search trips, blogs..."
-            className="w-full bg-transparent px-3 py-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
-          />
-          {loading && (
-            <div className="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-muted-foreground/30 border-t-foreground" />
-          )}
-          <kbd className="ml-2 flex h-5 shrink-0 items-center gap-0.5 rounded border border-border bg-muted px-1.5 text-[10px] font-medium text-muted-foreground">
-            esc
-          </kbd>
+      {open && (
+        <div className="absolute inset-0 z-20 flex items-start justify-center">
+          {/*<div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />*/}
+          <div className="relative z-999 w-full max-w-xl overflow-hidden rounded-xl border border-border bg-white shadow-2xl">
+            <div className="z-9999 flex items-center border-b border-border px-4">
+              <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
+              <input
+                ref={inputRef}
+                type="text"
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value)
+                  setIdx(-1)
+                }}
+                onKeyDown={onKeyDown}
+                placeholder="Search trips, blogs..."
+                className="w-full bg-transparent px-3 py-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
+              />
+              {loading && (
+                <div className="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-muted-foreground/30 border-t-foreground" />
+              )}
+              <kbd className="ml-2 flex h-5 shrink-0 items-center gap-0.5 rounded border border-border bg-muted px-1.5 text-[10px] font-medium text-muted-foreground">
+                esc
+              </kbd>
+            </div>
+
+            {(results.trips.length > 0 || results.blogs.length > 0) && (
+              <div className="z-999 max-h-80 overflow-y-auto">
+                {section("Trips", results.trips, Mountain)}
+                {section("Blogs", results.blogs, FileText)}
+              </div>
+            )}
+
+            {query.length >= 2 && !loading && allResults.length === 0 && (
+              <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+                No results found for &ldquo;{query}&rdquo;
+              </div>
+            )}
+
+            {query.length < 2 && (
+              <div className="px-4 py-6 text-center text-sm text-muted-foreground">
+                Type to search trips and blogs...
+              </div>
+            )}
+          </div>
         </div>
-
-        {(results.trips.length > 0 || results.blogs.length > 0) && (
-          <div className="max-h-80 overflow-y-auto">
-            {section("Trips", results.trips, Mountain)}
-            {section("Blogs", results.blogs, FileText)}
-          </div>
-        )}
-
-        {query.length >= 2 && !loading && allResults.length === 0 && (
-          <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-            No results found for &ldquo;{query}&rdquo;
-          </div>
-        )}
-
-        {query.length < 2 && (
-          <div className="px-4 py-6 text-center text-sm text-muted-foreground">
-            Type to search trips and blogs...
-          </div>
-        )}
-      </div>
-    </div>
+      )}
+    </>
   )
 }

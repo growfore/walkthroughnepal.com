@@ -14,17 +14,11 @@ export function FooterNewsletter() {
     setStatus("loading")
     const form = e.currentTarget
     const email = new FormData(form).get("email") as string
-    const token = (form.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
-    if (!token) {
-      setStatus("error")
-      setMessage("Please complete the verification")
-      return
-    }
     try {
       const res = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, "cf-turnstile-response": token }),
+        body: JSON.stringify({ email }),
       })
       const data = await res.json()
       if (res.ok) {
@@ -78,11 +72,6 @@ export function FooterNewsletter() {
                 )}
               </button>
             </div>
-            <div
-              className="cf-turnstile"
-              data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY}
-              data-theme="dark"
-            />
           </form>
         </div>
         {status === "success" && (

@@ -195,7 +195,6 @@ export function MenuController({ items }: MenuControllerProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <SearchDialog />
           <div className="hidden items-center gap-2 md:flex">
             <Link
               href="/inquiry"

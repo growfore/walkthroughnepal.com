@@ -66,6 +66,7 @@ import { DeparturesPage } from "@/components/departures-page"
 import { ScrollButtons } from "@/components/scroll-buttons"
 import { TestimonialCard } from "@/components/testimonial-card"
 import { siteConfig } from "@/lib/siteConfig"
+import HeroSection from "./hero"
 
 export const dynamic = "force-dynamic"
 
@@ -186,76 +187,7 @@ export default async function HomePage() {
     <div className="min-h-screen bg-background text-foreground">
       <WebSiteJsonLd />
 
-      {/* ── Hero ── */}
-      <section className="relative h-[90vh] w-full overflow-hidden">
-        <img
-          src={heroActivity ? img(heroActivity.images?.[0]) ?? "/manaslu-view.webp" : "/manaslu-view.webp"}
-          alt={heroActivity?.title ?? "Nepal Adventures"}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30" />
-
-        {/* Content */}
-        {heroActivity && (
-          <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-4 pb-24">
-            <div className="max-w-3xl">
-              <h1 className="text-3xl sm:text-5xl leading-[1.05] font-bold text-white md:text-7xl">
-                {(() => {
-                  const firstPart = heroActivity.title.split(":")[0].trim()
-                  const words = firstPart.split(" ")
-                  const lastWord = words.pop() ?? ""
-                  return (
-                    <>
-                      {words.join(" ")}{" "}
-                      <span className="text-orange">{lastWord}</span>
-                    </>
-                  )
-                })()}
-              </h1>
-              <p className="mt-5 max-w-xl text-lg text-white/80">
-                {(heroActivity.shortDescription?.length > 250
-                  ? heroActivity.shortDescription.slice(0, 250).trim() + "..."
-                  : heroActivity.shortDescription) || "An unforgettable journey through the heart of Nepal. Expert-led, handcrafted itineraries designed for the curious traveler."}
-              </p>
-              <div className="mt-8 flex flex-wrap items-center gap-4">
-                <Link
-                  href={`/trip/${heroActivity.slug}`}
-                  className="inline-flex items-center gap-2 rounded-full bg-orange px-8 py-3.5 text-sm font-bold text-white transition hover:bg-orange/90 hover:shadow-lg hover:shadow-orange/20"
-                >
-                  Explore This Trek <ChevronRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/explore"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/30 px-8 py-3.5 text-sm font-bold text-white transition hover:bg-white/10"
-                >
-                  View All Trips
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Stats - bottom right */}
-        {/*<div className="absolute bottom-8 right-8 z-10 hidden md:block">
-          <div className="flex items-center gap-6 rounded-xl border border-white/10 bg-white/5 px-6 py-3 backdrop-blur-md">
-            {[
-              { icon: Clock, value: "15+", label: "Years" },
-              { icon: MapPin, value: "500+", label: "Trips" },
-              { icon: Users, value: "2,000+", label: "Travelers" },
-              { icon: Star, value: "4.9", label: "Rating" },
-            ].map((s) => (
-              <div key={s.label} className="flex items-center gap-2">
-                <s.icon className="h-4 w-4 text-orange" />
-                <div>
-                  <span className="font-bold text-white">{s.value}</span>
-                  <span className="ml-1 text-xs text-white/50">{s.label}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>*/}
-      </section>
-
+      <HeroSection/>
 
       {/* ── Featured Trips ── */}
       {featuredSections.filter((t) => t.activity?.length).map((tag) => (

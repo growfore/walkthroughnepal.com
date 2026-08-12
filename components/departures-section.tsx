@@ -106,10 +106,6 @@ export function DeparturesSection({
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true)
     try {
-      const token = formRef.current?.elements.namedItem("cf-turnstile-response")
-      const tokenValue =
-        token instanceof HTMLInputElement ? token.value : undefined
-      if (!tokenValue) throw new Error("Verification required")
       const res = await fetch("/api/private-tour", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -122,7 +118,6 @@ export function DeparturesSection({
           groupType: data.groupType,
           numberOfTravellers: data.numberOfTravellers,
           otherMentions: data.otherMentions,
-          "cf-turnstile-response": tokenValue,
         }),
       })
       if (!res.ok) throw new Error(`API ${res.status}`)
@@ -548,10 +543,6 @@ export function DeparturesSection({
                 >
                   {isSubmitting ? "Sending..." : "Send Request"}
                 </Button>
-                <div
-                  className="cf-turnstile"
-                  data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY}
-                />
               </form>
             </Form>
           )}

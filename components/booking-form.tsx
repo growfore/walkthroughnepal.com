@@ -136,7 +136,6 @@ export function BookingForm({ slot, activityId, activityTitle }: { slot: Slot; a
                 {/* <Button type="submit" disabled={form.formState.isSubmitting} className="w-full bg-[#635bff] text-white hover:bg-[#635bff]/90 py-6">
                   {form.formState.isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Processing...</> : <><CreditCard className="h-4 w-4" /> Proceed to Checkout <ChevronRight className="h-4 w-4" /></>}
                 </Button> */}
-                <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
               </form>
             </Form>
           </div>

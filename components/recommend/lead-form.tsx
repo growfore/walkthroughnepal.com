@@ -18,9 +18,6 @@ export function LeadForm({ tripTitle }: LeadFormProps) {
     setLoading(true)
     setError("")
     try {
-      const el = e.currentTarget as HTMLFormElement
-      const token = (el.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
-      if (!token) throw new Error("Verification required")
       const res = await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -33,7 +30,6 @@ export function LeadForm({ tripTitle }: LeadFormProps) {
           trip: tripTitle,
           message: `Recommended trip inquiry: ${tripTitle}`,
           source: "recommendation-engine",
-          "cf-turnstile-response": token,
         }),
       })
       if (!res.ok) {
@@ -75,7 +71,6 @@ export function LeadForm({ tripTitle }: LeadFormProps) {
           {loading ? "Sending..." : "Send Inquiry"}
         </button>
         {error && <p className="text-sm text-red-500">{error}</p>}
-        <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
       </form>
     </div>
   )

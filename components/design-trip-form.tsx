@@ -225,10 +225,6 @@ export function DesignTripForm() {
   const onSubmit = async (data: ItineraryFormValues) => {
     setIsSubmitting(true)
     try {
-      const tokenEl = formRef.current?.elements.namedItem("cf-turnstile-response")
-      const token = tokenEl instanceof HTMLInputElement ? tokenEl.value : undefined
-      if (!token) throw new Error("Verification required")
-
       const res = await fetch("/api/design-trip", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -248,7 +244,6 @@ export function DesignTripForm() {
           accommodationPreferences: data.accommodationPreferences,
           foodPreferences: data.foodPreferences,
           otherMentions: data.otherMentions,
-          "cf-turnstile-response": token,
         }),
       })
       if (!res.ok) throw new Error(`API returned ${res.status}`)
@@ -789,7 +784,6 @@ export function DesignTripForm() {
                   <LucideSend className="size-4" />
                   {isSubmitting ? "Sending…" : "Send My Request"}
                 </Button>
-                <div className="cf-turnstile mt-4" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
               </>
             )}
           </div>

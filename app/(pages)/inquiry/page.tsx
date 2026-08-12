@@ -124,13 +124,10 @@ function InquiryForm() {
   async function onSubmit(data: FormValues) {
     setError("")
     try {
-      const formEl = document.querySelector("form")
-      const token = (formEl?.elements.namedItem("cf-turnstile-response") as HTMLInputElement)?.value
-      if (!token) throw new Error("Verification required")
       const res = await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, "cf-turnstile-response": token }),
+        body: JSON.stringify({ ...data }),
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
@@ -250,7 +247,6 @@ function InquiryForm() {
                 <Button type="submit" disabled={form.formState.isSubmitting} className="w-full bg-orange text-orange-foreground hover:bg-orange/90">
                   {form.formState.isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Sending...</> : <><Send className="h-4 w-4" /> Send Inquiry</>}
                 </Button>
-                <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY} />
               </form>
             </Form>
           </div>
