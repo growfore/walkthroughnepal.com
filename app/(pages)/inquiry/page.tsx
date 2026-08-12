@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { toast } from "react-toastify"
 
 type Activity = { id: number; slug: string; title: string }
 
@@ -100,7 +101,6 @@ function InquiryForm() {
   const departureDate = searchParams.get("date")
   const departureDetails = searchParams.get("details")
 
-  const [sent, setSent] = useState(false)
   const [error, setError] = useState("")
 
   const form = useForm<FormValues>({
@@ -133,24 +133,11 @@ function InquiryForm() {
         const err = await res.json().catch(() => ({}))
         throw new Error(err.error || "Failed to send inquiry")
       }
-      setSent(true)
+      toast.success("Inquiry sent! Our team will get back to you within 24 hours.")
+      form.reset()
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Something went wrong. Please try again or email us directly.")
     }
-  }
-
-  if (sent) {
-    return (
-      <section className="py-20">
-        <div className="mx-auto max-w-lg px-4 text-center">
-          <CheckCircle2 className="mx-auto h-16 w-16 text-green-600" />
-          <h2 className="mt-6 text-2xl font-bold text-navy">Thank You!</h2>
-          <p className="mt-3 text-muted-foreground">
-            Your inquiry has been received. Our team will review it and get back to you within 24 hours.
-          </p>
-        </div>
-      </section>
-    )
   }
 
   return (

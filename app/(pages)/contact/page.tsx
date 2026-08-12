@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Mail, Phone, MapPin, Send, Loader2, CheckCircle2 } from "lucide-react"
+import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react"
 import { PageHero } from "@/components/page-hero"
 import { FAQSection } from "@/components/faq-section"
 import { Button } from "@/components/ui/button"
@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { siteConfig } from "@/lib/siteConfig"
+import { toast } from "react-toastify"
 
 const faqs = [
   {
@@ -43,7 +44,6 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 export default function ContactPage() {
-  const [sent, setSent] = useState(false)
   const [error, setError] = useState("")
 
   const form = useForm<FormValues>({
@@ -65,7 +65,8 @@ export default function ContactPage() {
         const err = await res.json().catch(() => ({}))
         throw new Error(err.error || "Failed to send message")
       }
-      setSent(true)
+      toast.success("Message sent! We'll get back to you within 24 hours.")
+      form.reset()
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Something went wrong. Please try again.")
     }
@@ -79,18 +80,7 @@ export default function ContactPage() {
         <div className="mx-auto max-w-7xl px-4">
           <div className="grid gap-12 lg:grid-cols-5">
             <div className="lg:col-span-3">
-              {sent ? (
-                <div className="rounded-xl border border-border bg-card p-8 text-center">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-orange/10 text-orange text-3xl font-bold">
-                    <CheckCircle2 className="h-8 w-8" />
-                  </div>
-                  <h2 className="mt-4 text-xl font-bold text-navy">Message Sent!</h2>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    Thanks for reaching out. We&apos;ll get back to you within 24 hours.
-                  </p>
-                </div>
-              ) : (
-                <Form {...form}>
+              <Form {...form}>
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                     {error && (
                       <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</div>
@@ -139,7 +129,6 @@ export default function ContactPage() {
                     </Button>
                   </form>
                 </Form>
-              )}
             </div>
 
             <div className="lg:col-span-2">
