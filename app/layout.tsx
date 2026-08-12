@@ -32,7 +32,7 @@ const sora = Sora({
 export const metadata: Metadata = {
   metadataBase: new URL("https://walkthroughnepal.com"),
   title: {
-    template: "%s | Walk Through Nepal",
+    template: "%s",
     default: "Walk Through Nepal — Authentic Himalayan Adventures",
   },
   description:

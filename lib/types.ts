@@ -63,6 +63,18 @@ export interface Activity {
   tier: Tier[]
   createdAt: string
   updatedAt: string
+  seo: ActivitySeo | null
+}
+
+export interface ActivitySeo {
+  id?: string
+  metaTitle: string | null
+  metaDescription: string | null
+  metaKeywords: string | null
+  metaRobots: string | null
+  metaAuthor: string | null
+  featuredMedia: string | null
+  schema: string | null
 }
 
 export interface ItineraryDay {

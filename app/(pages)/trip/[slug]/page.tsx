@@ -28,12 +28,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params
     const res = await getActivityBySlug(slug)
     const pkg = res.data
-    const desc = pkg.shortDescription?.replace(/<[^>]*>/g, "").slice(0, 160) || undefined
+    const seo = pkg.seo
+    const desc = seo?.metaDescription?.trim() || pkg.shortDescription?.replace(/<[^>]*>/g, "").slice(0, 160) || undefined
     const imageUrl = pkg.images?.[0] ? (pkg.images[0].startsWith("http") ? pkg.images[0] : `https://walkthroughnepal.com${pkg.images[0]}`) : "https://walkthroughnepal.com/opengraph-image"
     return {
-      title: pkg.title,
+      title: seo?.metaTitle?.trim() || pkg.title,
       description: desc,
-      keywords: [pkg.title, "Nepal trek", pkg.difficultyLevel, pkg.bestSeason, "trekking package"].filter(Boolean),
+      keywords: seo?.metaKeywords
+        ? seo.metaKeywords.split(",").map((k) => k.trim()).filter(Boolean)
+        : [pkg.title, "Nepal trek", pkg.difficultyLevel, pkg.bestSeason, "trekking package"].filter(Boolean),
+      robots: seo?.metaRobots?.trim() || undefined,
       alternates: { canonical: `/trip/${slug}` },
       openGraph: {
         title: pkg.title,
