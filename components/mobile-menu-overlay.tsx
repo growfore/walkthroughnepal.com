@@ -66,13 +66,13 @@ export function MobileMenuOverlay({
           <div className="flex gap-2 p-4 border-t border-border">
             <Link
               href="/design-your-trip"
-              className="flex-1 rounded-full border border-border px-3 py-2 text-xs font-semibold text-navy text-center sm:px-5 sm:py-2.5 sm:text-sm"
+              className="flex-1 rounded-full border border-border px-3 py-2 text-xs font-semibold text-navy text-center sm:px-5 sm:py-2.5 sm:text-sm uppercase"
             >
               Customize My Trip
             </Link>
             <Link
               href="/inquiry"
-              className="flex-1 rounded-full bg-orange px-3 py-2 text-xs font-semibold text-orange-foreground text-center sm:px-5 sm:py-2.5 sm:text-sm"
+              className="flex-1 rounded-full bg-orange px-3 py-2 text-xs font-semibold text-orange-foreground text-center sm:px-5 sm:py-2.5 sm:text-sm uppercase"
             >
               Inquire Now
             </Link>

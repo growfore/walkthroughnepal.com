@@ -3,10 +3,6 @@ import {
   Star,
   ChevronRight,
   Users,
-  ClipboardList,
-  Heart,
-  PhoneCall,
-  Mountain,
   ArrowUpRight,
   MessageCircle,
   Sparkles,
@@ -179,12 +175,6 @@ export default async function HomePage() {
     departuresCount = allSlots.length
   } catch {}
 
-  const reasons = [
-    { icon: Users, title: "Local Experts", text: "Real Nepal based team with in-depth knowledge." },
-    { icon: ClipboardList, title: "Flexible Itineraries", text: "Customize your trip to match your time and budget." },
-    { icon: Heart, title: "Responsible Tourism", text: "We support local communities and sustainable travel." },
-    { icon: PhoneCall, title: "24/7 Support", text: "We're with you before, during and after your trip." },
-  ]
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -448,22 +438,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── Selling Points ── */}
-      <section className="border-t border-border bg-navy py-16 text-navy-foreground">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {reasons.map((r) => (
-              <div key={r.title} className="text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange/10 text-orange">
-                  <r.icon className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 font-bold">{r.title}</h3>
-                <p className="mt-1 text-sm text-white/70">{r.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ── Floating Recommend Button ── */}
       <Link

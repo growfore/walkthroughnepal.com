@@ -4,6 +4,12 @@ import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { useState } from "react"
 import { SearchDialog } from "@/components/search-dialog"
+import {
+  ClipboardList,
+  Heart,
+  PhoneCall,
+  Users
+} from "lucide-react";
 
 export const HeroSection = () => {
   const router = useRouter()
@@ -15,6 +21,13 @@ export const HeroSection = () => {
     router.push(term ? `/explore?q=${encodeURIComponent(term)}` : "/explore")
   }
 
+  const reasons = [
+    { icon: Users, title: "Local Experts", text: "Real Nepal based team with in-depth knowledge." },
+    { icon: ClipboardList, title: "Flexible Itineraries", text: "Customize your trip to match your time and budget." },
+    { icon: Heart, title: "Responsible Tourism", text: "We support local communities and sustainable travel." },
+    { icon: PhoneCall, title: "24/7 Support", text: "We're with you before, during and after your trip." },
+  ]
+
   return (
     <section className="relative min-h-[80vh] w-full">
       <Image
@@ -24,21 +37,35 @@ export const HeroSection = () => {
         priority
         className="object-cover"
       />
-      <div className="absolute inset-0 bg-linear-to-r from-primary to-secondary p-6 opacity-10" />
+      <div className="absolute inset-0 bg-white/40" />
 
       <div className="relative z-10 container mx-auto flex h-full flex-col items-center justify-center px-4 pt-24 text-center">
-        <h1 className="max-w-5xl text-5xl font-black text-balance text-primary capitalize sm:text-5xl md:text-6xl">
-          discover something unforgettable
+        <p className="font-bold capitalize">Every Step, A New Story</p>
+        <h1 className="max-w-5xl text-5xl font-black text-balance text-primary sm:text-5xl md:text-6xl uppercase">
+          Walk beyond the trails discover Nepal
         </h1>
-        <p className="mt-6 mb-10 max-w-xl px-4 text-base text-balance md:mt-8 md:text-xl">
-          Authentic treks and unforgettable journeys across Nepal — thoughtfully
-          crafted by local experts who know every trail, village, and mountain.
-        </p>
       </div>
 
       <div className="relative z-20 container mx-auto flex max-w-[1400px] items-center justify-center px-4 pb-10 md:pb-14">
         <SearchDialog />
       </div>
+
+      {/* ── Selling Points ── */}
+      <section className="relative  max-w-3xl py-4 text-navy-foreground mx-auto">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {reasons.map((r) => (
+              <div key={r.title} className="text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange/10 text-orange">
+                  <r.icon className="h-6 w-6" />
+                </div>
+                <h3 className="mt-4 font-bold text-navy">{r.title}</h3>
+                <p className="mt-1 text-sm text-black font-medium">{r.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </section>
   )
 }

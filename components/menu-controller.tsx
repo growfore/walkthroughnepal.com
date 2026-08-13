@@ -198,7 +198,7 @@ export function MenuController({ items }: MenuControllerProps) {
           <div className="hidden items-center gap-2 md:flex">
             <Link
               href="/inquiry"
-              className="inline-flex items-center rounded-full bg-orange px-5 py-2 text-sm font-semibold text-orange-foreground transition hover:opacity-90"
+              className="inline-flex items-center rounded-full bg-orange px-5 py-2 text-sm font-semibold text-orange-foreground transition hover:opacity-90 uppercase"
             >
               Inquire Now
             </Link>

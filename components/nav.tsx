@@ -108,8 +108,8 @@ export function Nav() {
           >
             Customize My Trip
           </Link>
-          <Link href="/inquiry" className="hidden rounded-md bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground transition hover:opacity-90 md:inline-flex">
-            Inquire Now
+          <Link href="/inquiry" className="hidden rounded-md bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground transition hover:opacity-90 md:inline-flex uppercase">
+           INQUIRE NOW
           </Link>
           <button
             className="p-2 lg:hidden"
@@ -141,11 +141,11 @@ export function Nav() {
           <div className="flex gap-2 border-t border-border p-4 md:px-8">
             <Link
               href="/design-your-trip"
-              className="flex-1 rounded-md border border-navy px-4 py-2 text-center text-sm font-semibold text-navy"
+              className="flex-1 rounded-md border border-navy px-4 py-2 text-center text-sm font-semibold text-navy uppercase"
             >
               Customize My Trip
             </Link>
-            <Link href="/inquiry" className="flex-1 rounded-md bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground text-center">
+            <Link href="/inquiry" className="uppercase flex-1 rounded-md bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground text-center">
               Inquire Now
             </Link>
           </div>
