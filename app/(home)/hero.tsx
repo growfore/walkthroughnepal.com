@@ -46,7 +46,7 @@ export const HeroSection = () => {
         </h1>
       </div>
 
-      <div className="relative z-20 container mx-auto flex max-w-[1400px] items-center justify-center px-4 pb-10 md:pb-14">
+      <div className="relative z-20 container mx-auto flex max-w-[1400px] items-center justify-center px-4 pb-10 md:pb-14 mt-12">
         <SearchDialog />
       </div>
 
