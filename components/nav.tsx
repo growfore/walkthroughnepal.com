@@ -78,7 +78,7 @@ export function Nav() {
       {/* Main nav */}
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 md:px-8">
         <div className="flex flex-1">
-          <Logo invert={false}/>
+          <Logo/>
         </div>
 
         <div className="hidden justify-center gap-3 lg:flex">

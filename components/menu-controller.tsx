@@ -7,6 +7,7 @@ import { Menu, X, Mail, Phone, ChevronDown } from "lucide-react"
 import { MobileMenuOverlay } from "./mobile-menu-overlay"
 import { SearchDialog } from "./search-dialog"
 import { siteConfig } from "@/lib/siteConfig"
+import { Logo } from "./logo"
 
 type MenuItem = {
   id: string
@@ -127,13 +128,7 @@ export function MenuController({ items }: MenuControllerProps) {
         className="relative mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-4 py-2 md:gap-4 md:px-8"
         onMouseLeave={queueHide}
       >
-        <Link href="/" className="shrink-0">
-          <img
-            src="/walk-through-nepal-logo.png"
-            alt="Walk Through Nepal"
-            className="h-auto w-32 md:w-36"
-          />
-        </Link>
+        <Logo/>
         <div className="flex items-center gap-4">
           {items.map((item) => {
             const itemHasChildren = hasChildren(item)
