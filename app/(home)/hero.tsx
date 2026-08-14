@@ -52,7 +52,7 @@ export const HeroSection = () => {
       </video>
       {/*<div className="absolute inset-0 bg-white/40" />*/}
 
-      <div className="relative z-10 container mx-auto flex h-full flex-col items-center justify-center px-4 pt-24 text-center">
+      <div className="relative z-10 container mx-auto flex h-full flex-col items-center justify-center px-4 pt-42 text-center">
         <p className="font-bold capitalize">Every Step, A New Story</p>
         <h1 className="max-w-5xl text-5xl font-black text-balance text-primary sm:text-5xl md:text-6xl uppercase">
           Walk beyond the trails<br/> discover{" "}
