@@ -33,6 +33,7 @@ export interface Activity {
   duration: string
   difficultyLevel: string
   maximumAltitude: string
+  regionName: string | null
   itinerary: ItineraryVariant[]
   inclusions: string[]
   exclusions: string[]

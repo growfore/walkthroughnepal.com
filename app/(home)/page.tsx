@@ -51,6 +51,7 @@ import {
   getFeaturedTags,
   getTripCategories,
   getPublishedPosts,
+  getTestimonials,
   img,
   API_BASE,
 } from "@/lib/api"
@@ -69,15 +70,6 @@ import HeroSection from "./hero"
 
 export const dynamic = "force-dynamic"
 
-const TESTIMONIALS = [
-  { name: "Sarah Mitchell", country: "United States", trip: "Everest Base Camp", rating: 5, text: "The team at Walk Through Nepal made our trek absolutely unforgettable. Every detail was handled — from the lodge bookings to the guide expertise. We felt safe and supported the entire way." },
-  { name: "James Cooper", country: "United Kingdom", trip: "Annapurna Circuit", rating: 5, text: "I've trekked in many countries, but Nepal with Walk Through Nepal was different. The local knowledge, the flexibility to adjust our pace, and the genuine warmth of the team made it special." },
-  { name: "Priya Sharma", country: "India", trip: "Chitwan Safari", rating: 5, text: "Our family safari in Chitwan was perfectly organized. The kids loved the jungle walk and canoe ride. The guide knew exactly where to find rhinos and crocodiles. Highly recommend for families." },
-  { name: "Marcus Weber", country: "Germany", trip: "Manaslu Circuit", rating: 5, text: "The Manaslu Circuit was the highlight of my travel life. Walk Through Nepal handled all the permits and logistics, so I could just focus on the stunning views and incredible culture." },
-  { name: "Yuki Tanaka", country: "Japan", trip: "Pokhara & Poon Hill", rating: 5, text: "A short trek but the sunrise at Poon Hill was breathtaking. Our guide shared stories about the local Gurung villages that made the experience so much richer. Thank you!" },
-  { name: "Anna Bergström", country: "Sweden", trip: "Langtang Valley", rating: 5, text: "Langtang was quieter than the Everest region, which I loved. The trail was beautiful, the teahouses were cozy, and our guide Tendi was incredibly knowledgeable about the Tamang culture." },
-]
-
 export default async function HomePage() {
   let categories: {
     img: string
@@ -95,6 +87,16 @@ export default async function HomePage() {
     description: string | null
     date: string
   }[] = []
+  let testimonials: { name: string; rating: number; text: string }[] = []
+  try {
+    testimonials = (await getTestimonials())
+      .slice(0, 6)
+      .map((t) => ({
+        name: t.author,
+        rating: t.rating,
+        text: t.content,
+      }))
+  } catch {}
   try {
     const {
       data: { tripCategories },
@@ -359,8 +361,8 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {TESTIMONIALS.map((t, i) => (
-              <TestimonialCard key={i} {...t} />
+            {testimonials.map((t) => (
+              <TestimonialCard key={t.name} {...t} />
             ))}
           </div>
         </div>

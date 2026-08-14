@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { BackToTop } from "@/components/back-to-top"
+import { WhatsAppButton } from "@/components/whatsapp-button"
 import { ToastContainer } from "react-toastify"
 import { OrganizationJsonLd } from "@/components/json-ld"
 
@@ -159,6 +160,7 @@ export default function RootLayout({
             {children}
           </main>
           <BackToTop />
+          <WhatsAppButton />
           <Footer />
           <ToastContainer position="bottom-right" />
         </ThemeProvider>

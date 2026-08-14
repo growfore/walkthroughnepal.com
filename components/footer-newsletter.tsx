@@ -36,7 +36,7 @@ export function FooterNewsletter() {
   }
 
   return (
-    <div className="border-b border-white/10">
+    <div className="border-y border-white/10">
       <div className="mx-auto max-w-7xl px-4 py-10">
         <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
           <div className="sm:flex-1">

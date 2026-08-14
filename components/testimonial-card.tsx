@@ -2,8 +2,8 @@ import { Star, Quote } from "lucide-react"
 
 interface TestimonialCardProps {
   name: string
-  country: string
-  trip: string
+  country?: string
+  trip?: string
   rating: number
   text: string
 }
@@ -28,7 +28,9 @@ export function TestimonialCard({ name, country, trip, rating, text }: Testimoni
         </div>
         <div className="min-w-0">
           <div className="truncate text-sm font-semibold text-navy">{name}</div>
-          <div className="text-xs text-muted-foreground">{country} · {trip}</div>
+          <div className="text-xs text-muted-foreground">
+            {[country, trip].filter(Boolean).join(" · ")}
+          </div>
         </div>
       </div>
     </div>

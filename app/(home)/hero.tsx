@@ -4,9 +4,11 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { SearchDialog } from "@/components/search-dialog"
 import {
-  ClipboardList,
-  Heart,
-  PhoneCall,
+    CalendarDays,
+  HeartHandshake,
+  MapPin,
+  Shield,
+  Telescope,
   Users
 } from "lucide-react";
 
@@ -27,15 +29,15 @@ export const HeroSection = () => {
     router.push(term ? `/explore?q=${encodeURIComponent(term)}` : "/explore")
   }
 
-  const reasons = [
-    { icon: Users, title: "Local Experts", text: "Real Nepal based team with in-depth knowledge." },
-    { icon: ClipboardList, title: "Flexible Itineraries", text: "Customize your trip to match your time and budget." },
-    { icon: Heart, title: "Responsible Tourism", text: "We support local communities and sustainable travel." },
-    { icon: PhoneCall, title: "24/7 Support", text: "We're with you before, during and after your trip." },
+  const stats = [
+    { icon: CalendarDays, value: "20+ Years of Experience", label: "Decades of local knowledge shaping unforgettable journeys." },
+    { icon: MapPin, value: "50+ Destinations across Nepal", label: "From iconic trails to hidden villages across Nepal." },
+    { icon: Telescope , value: "5,000+ Happy Travellers", label: "Thousands of travelers trust us for memorable adventures." },
+    { icon: HeartHandshake, value: "100% Local Team", label: "Local guides who know Nepal firsthand, one trip at a time." },
   ]
 
   return (
-    <section className="relative min-h-[80vh] w-full">
+    <section className="relative min-h-[90vh] w-full">
       <video
         className="absolute inset-0 h-full w-full object-cover"
         autoPlay
@@ -56,7 +58,7 @@ export const HeroSection = () => {
           Walk beyond the trails<br/> discover{" "}
           <span
             key={place}
-            className="inline-block animate-in fade-in slide-in-from-bottom-1 duration-500"
+            className="inline-block animate-in fade-in slide-in-from-bottom-1 duration-500 text-orange"
           >
             {places[place]}
           </span>
@@ -68,16 +70,16 @@ export const HeroSection = () => {
       </div>
 
       {/* ── Selling Points ── */}
-      <section className="relative  max-w-3xl py-4 text-navy-foreground mx-auto">
+      <section className="relative  max-w-4xl py-4 text-navy-foreground mx-auto">
         <div className="mx-auto max-w-7xl px-4">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {reasons.map((r) => (
-              <div key={r.title} className="text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full">
-                  <r.icon className="h-6 w-6" />
+            {stats.map((s) => (
+              <div key={s.label} className="text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange/50">
+                  <s.icon className="h-6 w-6" />
                 </div>
-                <h3 className="mt-4 font-bold text-white">{r.title}</h3>
-                <p className="mt-1 text-sm text-white font-medium">{r.text}</p>
+                <p className="mt-2 text-xl font-bold text-white">{s.value}</p>
+                <p className="text-xs text-white font-medium leading-normal">{s.label}</p>
               </div>
             ))}
           </div>

@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Clock } from "lucide-react"
+import { Clock, MapPin, Mountain } from "lucide-react"
 import { img } from "@/lib/api"
 
 export function TripCard({
@@ -15,6 +15,8 @@ export function TripCard({
     difficultyLevel: string
     price: number
     locations?: string[]
+    maximumAltitude?: string
+    regionName?: string | null
   }
   compact?: boolean
 }) {
@@ -77,6 +79,21 @@ export function TripCard({
             />
           </div>
         </div>
+
+        {(a.regionName || a.maximumAltitude) && (
+          <div className="mt-2 flex items-center gap-4 text-xs opacity-80">
+            {a.regionName && (
+              <span className="flex items-center gap-1">
+                <MapPin className="h-3 w-3" /> {a.regionName}
+              </span>
+            )}
+            {a.maximumAltitude && (
+              <span className="flex items-center gap-1">
+                <Mountain className="h-3 w-3" /> {a.maximumAltitude.split(" / ")[0]}
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </Link>
   )

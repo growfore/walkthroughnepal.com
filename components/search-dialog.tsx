@@ -23,6 +23,7 @@ export function SearchDialog() {
   const [loading, setLoading] = useState(false)
   const [idx, setIdx] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
 
   const allResults = [...results.trips, ...results.blogs]
 
@@ -74,6 +75,17 @@ export function SearchDialog() {
     }
     document.addEventListener("keydown", onKey)
     return () => document.removeEventListener("keydown", onKey)
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+    function onPointerDown(e: PointerEvent) {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener("pointerdown", onPointerDown)
+    return () => document.removeEventListener("pointerdown", onPointerDown)
   }, [open])
 
   function onKeyDown(e: React.KeyboardEvent) {
@@ -143,7 +155,7 @@ export function SearchDialog() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className={`flex w-full max-w-xl items-center justify-between gap-2 rounded-md bg-white px-3 py-4 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-navy lg:border lg:border-border ${open ? "invisible" : ""}`}
+        className={`flex w-3xl items-center justify-between gap-2 rounded-md bg-white px-3 py-4 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-navy lg:border lg:border-border ${open ? "invisible" : ""}`}
         aria-label="Search"
         aria-expanded={open}
       >
@@ -159,7 +171,7 @@ export function SearchDialog() {
       {open && (
         <div className="absolute inset-0 z-20 flex items-start justify-center">
           {/*<div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />*/}
-          <div className="relative z-999 w-full max-w-xl overflow-hidden rounded-xl border border-border bg-white shadow-2xl">
+          <div ref={panelRef} className="relative z-999 w-3xl  overflow-hidden rounded-xl border border-border bg-white shadow-2xl">
             <div className="z-9999 flex items-center border-b border-border px-4">
               <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
               <input

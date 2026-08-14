@@ -5,6 +5,7 @@ import {
   Phone,
   Mail,
   Clock,
+  Users, ClipboardList, Heart, PhoneCall
 } from "lucide-react"
 import { siteConfig, type SiteConfig } from "@/lib/siteConfig"
 import { getFooterItems, getSiteConfig } from "@/lib/api"
@@ -12,6 +13,14 @@ import { Logo } from "./logo"
 import { FooterNewsletter } from "./footer-newsletter"
 
 type SocialIconProps = { url: string }
+
+const reasons = [
+  { icon: Users, title: "Local Experts", text: "Real Nepal based team with in-depth knowledge." },
+  { icon: ClipboardList, title: "Flexible Itineraries", text: "Customize your trip to match your time and budget." },
+  { icon: Heart, title: "Responsible Tourism", text: "We support local communities and sustainable travel." },
+  { icon: PhoneCall, title: "24/7 Support", text: "We're with you before, during and after your trip." },
+]
+
 
 function SocialIcon({ url }: SocialIconProps) {
   const d = url.toLowerCase()
@@ -90,6 +99,22 @@ export async function Footer() {
 
   return (
     <footer className="bg-navy text-navy-foreground">
+      {/* ── Selling Points ── */}
+            <section className=" bg-navy py-16 text-navy-foreground">
+              <div className="mx-auto max-w-7xl px-4">
+                <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                  {reasons.map((r) => (
+                    <div key={r.title} className="text-center">
+                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange/10 text-orange">
+                        <r.icon className="h-6 w-6" />
+                      </div>
+                      <h3 className="mt-4 font-bold">{r.title}</h3>
+                      <p className="mt-1 text-sm text-white/70">{r.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
       <FooterNewsletter />
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pt-14 pb-10 md:grid-cols-3 lg:grid-cols-6">
         <div className="md:col-span-2">
