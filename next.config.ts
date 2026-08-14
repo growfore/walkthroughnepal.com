@@ -10,7 +10,16 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "cms.walkthroughnepal.com", pathname: "/api/uploads/**" },
       { protocol: "https", hostname: "cms.walkthroughnepal.com", pathname: "/wp-content/**" },
       { protocol: "https", hostname: "walkthroughnepal.com", pathname: "/wp-content/**" },
-      { protocol: "https", hostname: "picsum.photos", pathname: "/**" },
+      {
+        protocol: "https",
+        hostname: "api.growfore.com",
+        pathname: "/api/v1/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "growfore.com",
+        pathname: "/wp-content/uploads/**",
+      },
     ],
   },
   async rewrites() {

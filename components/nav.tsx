@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { siteConfig } from "@/lib/siteConfig"
+import { Logo } from "./logo"
 
 const navLinks = [
   { label: "Treks", href: "#" },
@@ -77,16 +78,7 @@ export function Nav() {
       {/* Main nav */}
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 md:px-8">
         <div className="flex flex-1">
-          <Link href="/">
-            <Image
-              src="/logo-july-6.png"
-              alt="Walk Through Nepal"
-              width={56}
-              height={56}
-              priority
-              className="h-14 w-auto p-2"
-            />
-          </Link>
+          <Logo invert={false}/>
         </div>
 
         <div className="hidden justify-center gap-3 lg:flex">

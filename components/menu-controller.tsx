@@ -129,7 +129,7 @@ export function MenuController({ items }: MenuControllerProps) {
       >
         <Link href="/" className="shrink-0">
           <img
-            src="/logo-july-6.png"
+            src="/walk-through-nepal-logo.png"
             alt="Walk Through Nepal"
             className="h-auto w-32 md:w-36"
           />

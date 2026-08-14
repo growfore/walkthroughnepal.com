@@ -17,10 +17,13 @@ export const siteConfig: SiteConfig = {
     "Authentic adventures, meaningful connections and responsible travel experiences in Nepal.",
   experience: "20+ years",
   established: "2004",
-  whatsAppNumber: "9779856085151",
-  phoneNumbers: [{ phone: "+977-9856085151" }],
+  whatsAppNumber: "9779866266688",
+  phoneNumbers: [{ phone: "+977-9866266688" }],
   email: "info@walkthroughnepal.com",
   openHours: "Sun - Fri: 9AM - 6PM, Sat: Closed",
   fullAddress: "New Road -11, Pokhara, Kaski, Nepal",
-  socials: {},
+  socials: {
+    instagram: "https://www.instagram.com/walkthroughnepal/",
+    facebook: "https://www.facebook.com/walkthroughnepal/"
+  },
 }

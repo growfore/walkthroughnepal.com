@@ -11,6 +11,7 @@ import { siteConfig, type SiteConfig } from "@/lib/siteConfig"
 import { getFooterItems, getSiteConfig } from "@/lib/api"
 import { Logo } from "./logo"
 import { FooterNewsletter } from "./footer-newsletter"
+import Image from "next/image";
 
 type SocialIconProps = { url: string }
 
@@ -174,10 +175,11 @@ export async function Footer() {
           <span>
             &copy; {cfg.name}. {new Date().getFullYear()}. All rights reserved.
           </span>
-          <div className="flex gap-5">
-            <Link href="/privacy-policy">Privacy Policy</Link>
-            <Link href="/terms">Terms & Conditions</Link>
-            <Link href="/sitemap">Sitemap</Link>
+          <div className="flex gap-2 items-center">
+            Designed and Developed by
+            <Link  href={"https://growfore.com/"} target="_blank" className="flex gap-1 items-center underline">
+              <Image src={"https://growfore.com/wp-content/uploads/2025/08/cropped-growfore-rounded-blue-on-white.png"} height={200} width={200} alt="Grofore Solution Logo" className="size-6" /> Growfore Solution.
+            </Link>
           </div>
         </div>
       </div>

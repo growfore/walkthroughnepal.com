@@ -6,7 +6,7 @@ export function Logo({ invert }: { invert: boolean }) {
   return (
     <Link href="/" className="flex items-center gap-2">
       <Image
-        src="/logo-july-6.png"
+        src="/walk-through-nepal-logo.png"
         alt="Walk Through Nepal"
         width={56}
         height={56}

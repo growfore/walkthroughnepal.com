@@ -292,15 +292,6 @@ export default async function HomePage() {
                   className="h-full w-full object-cover"
                 />
               </div>
-              <div className="h-100 w-80 overflow-hidden border-8 border-white shadow-xl absolute top-2 rotate-8 right-4">
-                <img
-                  src="/narphu-trek.webp"
-                  alt="Trekking in the Nar Phu Valley, Nepal"
-                  width={700}
-                  height={700}
-                  className="h-full w-full object-cover"
-                />
-              </div>
             </div>
           </div>
           <div>
