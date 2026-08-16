@@ -96,7 +96,7 @@ export function MenuController({ items }: MenuControllerProps) {
     >
       {/* Top bar */}
       <div className="hidden bg-navy text-navy-foreground md:block">
-        <div className="mx-auto flex h-10 container items-center justify-between px-4 md:px-5">
+        <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 md:px-5">
           <div>
             <a
               href={`mailto:${siteConfig.email}`}
