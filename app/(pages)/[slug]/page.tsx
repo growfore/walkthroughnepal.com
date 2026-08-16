@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import type { Metadata } from "next"
-import { getInfoPageBySlug, resolveContentImages, img } from "@/lib/api"
+import { getInfoPageBySlug, getAllInfoPageSlugs, resolveContentImages } from "@/lib/api"
 
 import { BlogRenderer } from "@/components/blog-renderer"
 import { PageHero } from "@/components/page-hero"
@@ -9,6 +9,10 @@ import { BreadcrumbJsonLd } from "@/components/json-ld"
 import { ChevronLeft } from "lucide-react"
 
 type Props = { params: Promise<{ slug: string }> }
+
+export function generateStaticParams() {
+  return getAllInfoPageSlugs().then((slugs) => slugs.map((slug) => ({ slug })))
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {

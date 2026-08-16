@@ -11,7 +11,7 @@ export function DownloadItineraryButton({
 }) {
   return (
     <Link
-      href={`/trip/${slug}?print=print`}
+      href={`/trip/${slug}/print`}
       target="_blank"
       className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-border py-2.5 text-lgfont-medium text-muted-foreground hover:bg-muted hover:text-navy transition-colors "
     >

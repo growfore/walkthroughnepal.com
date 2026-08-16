@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/departure/failed", "/departure/success"],
+        disallow: ["/api/", "/trip/*/print", "/departure/failed", "/departure/success"],
       },
     ],
     sitemap: "https://walkthroughnepal.com/sitemap.xml",

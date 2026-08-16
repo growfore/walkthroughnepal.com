@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { getPostBySlug, img, resolveContentImages } from "@/lib/api"
+import { getPostBySlug, getAllPostSlugs, img, resolveContentImages } from "@/lib/api"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { BlogRenderer } from "@/components/blog-renderer"
@@ -10,6 +10,10 @@ import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/json-ld"
 import { Calendar, LucideChevronLeft } from "lucide-react"
 
 type Props = { params: Promise<{ slug: string }> }
+
+export function generateStaticParams() {
+  return getAllPostSlugs().then((slugs) => slugs.map((slug) => ({ slug })))
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {

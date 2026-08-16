@@ -7,14 +7,17 @@ import { img } from "@/lib/api"
 
 export function HorizontalGallery({
   images,
+  title,
 }: {
   images: string[]
+  title?: string
 }) {
   const [openIdx, setOpenIdx] = useState<number | null>(null)
 
   if (images.length === 0) return null
 
   function makeAlt(src: string, i: number) {
+    if (i === 0 && title) return title
     const name =
       src
         .split("/")

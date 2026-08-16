@@ -17,11 +17,22 @@ import { FAQSection } from "@/components/faq-section"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getActivityBySlug, getTestimonials, getSlots, img } from "@/lib/api"
+import {
+  getActivityBySlug,
+  getAllActivitySlugs,
+  getTestimonials,
+  getSlots,
+  img,
+  parseItineraryVariants,
+} from "@/lib/api"
 import { siteConfig } from "@/lib/siteConfig"
 import { TouristTripJsonLd, FAQPageJsonLd, BreadcrumbJsonLd } from "@/components/json-ld"
 
-type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ print?: string }> }
+type Props = { params: Promise<{ slug: string }> }
+
+export function generateStaticParams() {
+  return getAllActivitySlugs().then((slugs) => slugs.map((slug) => ({ slug })))
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
@@ -70,7 +81,6 @@ import { AltitudeChart } from "@/components/altitude-chart"
 import { CustomizeTripCTA } from "@/components/customize-trip-cta"
 import { TripPageClient } from "@/components/trip-page-client"
 import { getIcon } from "@/lib/icons"
-import { TripPrintPage } from "@/components/trip-print-page"
 
 const sectionIds = [
   "overview",
@@ -117,14 +127,10 @@ function SegmentBlock({
 
 export default async function PackagePage({
   params,
-  searchParams,
 }: {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ print?: string }>
 }) {
   const { slug } = await params
-  const { print } = await searchParams
-  const isPrint = print === "print"
 
   let pkg
   try {
@@ -134,21 +140,7 @@ export default async function PackagePage({
     notFound()
   }
 
-  const rawItinerary = pkg.itinerary as unknown
-  const itineraryVariants: import("@/lib/types").ItineraryVariant[] =
-    Array.isArray(rawItinerary) &&
-    rawItinerary.length > 0 &&
-    !("days" in (rawItinerary as Record<string, unknown>[])[0])
-      ? [
-          {
-            id: "default",
-            name: "Standard",
-            description: "",
-            isDefault: true,
-            days: rawItinerary as import("@/lib/types").ItineraryDay[],
-          },
-        ]
-      : rawItinerary as import("@/lib/types").ItineraryVariant[]
+  const itineraryVariants = parseItineraryVariants(pkg.itinerary as unknown)
 
   const difficulty =
     pkg.difficultyLevel
@@ -198,13 +190,9 @@ export default async function PackagePage({
           )}
         />
       )}
-      {isPrint ? (
-        <TripPrintPage pkg={pkg} itineraryVariants={itineraryVariants} />
-      ) : (
-        <>
       {/* ── Hero Gallery ── */}
       <section className="-mt-[40px] pb-0 md:-mt-[100px]">
-        <HorizontalGallery images={pkg.images} />
+        <HorizontalGallery images={pkg.images} title={pkg.title} />
       </section>
 
       {/* ── Sticky section nav ── */}
@@ -628,8 +616,6 @@ export default async function PackagePage({
             </Link>
         </div>
       </div>
-        </>
-      )}
     </div>
   )
 }

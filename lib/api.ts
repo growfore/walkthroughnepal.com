@@ -1,5 +1,5 @@
 import { cache } from "react"
-import type { Activity, CMSPost, FeaturedTag, InfoPage, Pagination, Slot, Testimonial, TeamMember, TripCategory, TripType } from "./types"
+import type { Activity, CMSPost, FeaturedTag, InfoPage, ItineraryVariant, Pagination, Slot, Testimonial, TeamMember, TripCategory, TripType } from "./types"
 import type { SiteConfig } from "./siteConfig"
 
 export const API_BASE = process.env.API_URL ?? "https://api.walkthroughnepal.com"
@@ -47,8 +47,18 @@ export function getActivities(filters?: Record<string, string>) {
   return fetchJSON<{ message: string; data: Activity[]; pagination: { page: number; limit: number; total: number; totalPages: number } }>(`/api/v1/activity${qs}`)
 }
 
-export function getActivityBySlug(slug: string) {
+// cache(): dedupe the API call across generateStaticParams/generateMetadata/page renders
+export const getActivityBySlug = cache(async (slug: string) => {
   return fetchJSON<{ message: string; data: Activity }>(`/api/v1/activity/slug/${slug}`)
+})
+
+export async function getAllActivitySlugs(): Promise<string[]> {
+  try {
+    const res = await fetchJSON<{ data: Array<{ slug: string }> }>("/api/v1/activity?page=1&limit=500")
+    return (res.data ?? []).map((a) => a.slug).filter(Boolean)
+  } catch {
+    return []
+  }
 }
 
 export function getTripCategories() {
@@ -107,8 +117,28 @@ export async function getPostBySlug(slug: string) {
   return res.post
 }
 
-export function getInfoPageBySlug(slug: string) {
+export async function getAllPostSlugs(): Promise<string[]> {
+  try {
+    const res = await fetchJSON<{ posts: Array<{ slug: string }> }>("/api/posts/published?page=1&limit=500", undefined, CMS_API_BASE)
+    return (res?.posts ?? []).map((p) => p.slug).filter(Boolean)
+  } catch {
+    return []
+  }
+}
+
+export const getInfoPageBySlug = cache(async (slug: string) => {
   return fetchJSON<{ infoPage: InfoPage }>(`/api/v1/info-page/slug/${slug}`)
+})
+
+export async function getAllInfoPageSlugs(): Promise<string[]> {
+  try {
+    const res = await fetchJSON<{ data: { pages: Array<{ slug: string }> } }>("/api/v1/info-page?page=1&limit=500")
+    const pages = res?.data?.pages
+    if (!Array.isArray(pages)) return []
+    return pages.map((p) => p.slug).filter(Boolean)
+  } catch {
+    return []
+  }
 }
 
 export function getSlots(activityId: number) {
@@ -138,3 +168,18 @@ export const getFooterItems = cache(async (): Promise<FooterItem[]> => {
     return []
   }
 })
+
+export function parseItineraryVariants(rawItinerary: unknown): ItineraryVariant[] {
+  if (Array.isArray(rawItinerary) && rawItinerary.length > 0 && !("days" in (rawItinerary as Record<string, unknown>[])[0])) {
+    return [
+      {
+        id: "default",
+        name: "Standard",
+        description: "",
+        isDefault: true,
+        days: rawItinerary as ItineraryVariant["days"],
+      },
+    ]
+  }
+  return rawItinerary as ItineraryVariant[]
+}

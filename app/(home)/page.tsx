@@ -14,7 +14,9 @@ import Link from "next/link"
 import type { FeaturedTag } from "@/lib/types"
 
 export const metadata: Metadata = {
-  title: "Walk Through Nepal — Authentic Himalayan Adventures",
+  title: {
+    absolute: "Walk Through Nepal — Authentic Himalayan Adventures",
+  },
   description:
     "Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas with Walk Through Nepal. 20+ years of local expertise, 50+ destinations, 5000+ happy travelers.",
   keywords: [
