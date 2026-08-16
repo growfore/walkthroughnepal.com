@@ -57,7 +57,8 @@ export default function ContactPage() {
   async function onSubmit(data: FormValues, event?: React.BaseSyntheticEvent) {
     setError("")
     try {
-      const token = getTurnstileToken(event?.currentTarget ?? null)
+      const formEl = (event?.target as HTMLElement | null)?.closest("form") as HTMLFormElement | null
+      const token = getTurnstileToken(formEl)
       if (!token) throw new Error("Please complete the verification")
       const res = await fetch("/api/contact", {
         method: "POST",
