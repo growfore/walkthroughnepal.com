@@ -12,6 +12,9 @@ import { BackToTop } from "@/components/back-to-top"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { ToastContainer } from "react-toastify"
 import { OrganizationJsonLd } from "@/components/json-ld"
+import { developer, developerAttributionGraph } from "@/lib/developer-attribution"
+
+const SITE_URL = "https://walkthroughnepal.com"
 
 const mulish = Mulish({
   subsets: ["latin"],
@@ -93,6 +96,7 @@ export const metadata: Metadata = {
       "Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas.",
     images: ["/opengraph-image"],
   },
+  creator: developer.name,
 }
 
 export const viewport: Viewport = {
@@ -134,6 +138,22 @@ export default function RootLayout({
       </head>
       <body>
         <OrganizationJsonLd />
+        <script
+          id="schema-attribution"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": developerAttributionGraph("Walk Through Nepal", SITE_URL)[
+                "@graph"
+              ].filter(
+                (node) =>
+                  node["@type"] !== "WebSite" &&
+                  node["@id"] !== `${SITE_URL}/#organization`,
+              ),
+            }),
+          }}
+        />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:m-2 focus:rounded-md focus:bg-navy focus:px-4 focus:py-2 focus:text-navy-foreground focus:outline-none focus:ring-2 focus:ring-orange"

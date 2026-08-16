@@ -11,6 +11,7 @@ export function OrganizationJsonLd() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TravelAgency",
+    "@id": `${SITE_URL}/#organization`,
     name: siteConfig.name,
     url: SITE_URL,
     logo: `${SITE_URL}/walkthrough-nepal-logo.png`,
@@ -50,8 +51,14 @@ export function WebSiteJsonLd() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
     name: siteConfig.name,
     url: SITE_URL,
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    creator: [
+      { "@id": "https://growfore.com/#organization" },
+      { "@id": "https://kshetritej.com.np/#person" },
+    ],
     potentialAction: {
       "@type": "SearchAction",
       target: {

@@ -283,7 +283,7 @@ export default async function HomePage() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 lg:grid-cols-2">
           <div className="flex justify-center">
             <div className="relative flex gap-1">
-              <div className="h-100 w-80 overflow-hidden border-8 border-white shadow-xl -rotate-9 left-2">
+              <div className="h-100 w-80 overflow-hidden border-8 border-white shadow-xl left-2">
                 <img
                   src="/narphu-trek.webp"
                   alt="Trekking in the Nar Phu Valley, Nepal"
