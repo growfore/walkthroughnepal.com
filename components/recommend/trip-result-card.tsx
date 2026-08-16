@@ -18,9 +18,9 @@ export function TripResultCard({ activity, reasons, rank }: TripResultCardProps)
   const price = activity.tier?.[0]?.price ?? activity.price
 
   return (
-    <div className={`overflow-hidden rounded-2xl border bg-card shadow-sm transition-shadow hover:shadow-md ${isTop ? "border-orange ring-2 ring-orange/20" : "border-border"}`}>
+    <div className={`relative flex h-full flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition-shadow hover:shadow-md ${isTop ? "border-orange ring-2 ring-orange/20" : "border-border"}`}>
       {isTop && (
-        <div className="bg-orange px-4 py-1.5 text-center text-sm font-bold text-white">
+        <div className="absolute top-4 left-4 z-10 rounded-full bg-orange px-4 py-1.5 text-center text-sm font-bold text-white">
           Best Match For You
         </div>
       )}
@@ -36,7 +36,7 @@ export function TripResultCard({ activity, reasons, rank }: TripResultCardProps)
           #{rank}
         </div>
       </div>
-      <div className="p-5">
+      <div className="flex flex-1 flex-col p-5">
         <h3 className="text-xl font-bold text-navy">{activity.title}</h3>
         <div className="mt-2 flex flex-wrap gap-3 text-sm text-muted-foreground">
           <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{activity.duration}</span>
@@ -45,9 +45,8 @@ export function TripResultCard({ activity, reasons, rank }: TripResultCardProps)
             <span className="flex items-center gap-1"><Star className="h-3.5 w-3.5 fill-orange text-orange" />{activity.averageRating.toFixed(1)}</span>
           )}
         </div>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-2">{decodeHtmlEntities(activity.shortDescription?.replace(/<[^>]+>/g, "") ?? "")}</p>
 
-        <div className="mt-4 space-y-1.5">
+        <div className="mt-4 space-y-1.5 mb-4">
           {reasons.slice(0, 4).map((r, i) => (
             <div key={i} className="flex items-start gap-2 text-sm">
               <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
@@ -56,7 +55,7 @@ export function TripResultCard({ activity, reasons, rank }: TripResultCardProps)
           ))}
         </div>
 
-        <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
+        <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
           <div>
             <span className="text-xs text-muted-foreground">From</span>
             <div className="text-xl font-bold text-navy">${Number(price).toLocaleString()}</div>
