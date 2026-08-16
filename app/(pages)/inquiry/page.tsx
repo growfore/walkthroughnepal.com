@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Turnstile, getTurnstileToken } from "@/components/turnstile"
 import { toast } from "react-toastify"
 
 type Activity = { id: number; slug: string; title: string }
@@ -121,13 +122,15 @@ function InquiryForm() {
       .catch(() => {})
   }, [tripSlug, departureDate, departureDetails, form])
 
-  async function onSubmit(data: FormValues) {
+  async function onSubmit(data: FormValues, event?: React.BaseSyntheticEvent) {
     setError("")
     try {
+      const token = getTurnstileToken(event?.currentTarget ?? null)
+      if (!token) throw new Error("Please complete the verification")
       const res = await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data }),
+        body: JSON.stringify({ ...data, "cf-turnstile-response": token }),
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
@@ -234,6 +237,7 @@ function InquiryForm() {
                 <Button type="submit" disabled={form.formState.isSubmitting} className="w-full bg-orange text-orange-foreground hover:bg-orange/90">
                   {form.formState.isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Sending...</> : <><Send className="h-4 w-4" /> Send Inquiry</>}
                 </Button>
+                <Turnstile />
               </form>
             </Form>
           </div>

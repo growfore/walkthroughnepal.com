@@ -8,6 +8,7 @@ import { Users, CheckCircle2, Package } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { Turnstile, getTurnstileToken } from "@/components/turnstile"
 import {
   Select,
   SelectContent,
@@ -107,6 +108,8 @@ export function DeparturesSection({
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true)
     try {
+      const token = getTurnstileToken(formRef.current)
+      if (!token) throw new Error("Please complete the verification")
       const res = await fetch("/api/private-tour", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -119,14 +122,15 @@ export function DeparturesSection({
           groupType: data.groupType,
           numberOfTravellers: data.numberOfTravellers,
           otherMentions: data.otherMentions,
+          "cf-turnstile-response": token,
         }),
       })
       if (!res.ok) throw new Error(`API ${res.status}`)
       setSubmitted(true)
       form.reset()
       setTimeout(() => setSubmitted(false), 6000)
-    } catch {
-      toast.error("Something went wrong. Please try again.")
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Something went wrong. Please try again.")
     } finally {
       setIsSubmitting(false)
     }
@@ -546,6 +550,7 @@ export function DeparturesSection({
                 >
                   {isSubmitting ? "Sending..." : "Send Request"}
                 </Button>
+                <Turnstile />
               </form>
             </Form>
           )}

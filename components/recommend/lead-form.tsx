@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Send, CheckCircle } from "lucide-react"
+import { Turnstile, getTurnstileToken } from "@/components/turnstile"
 
 interface LeadFormProps {
   tripTitle: string
@@ -18,6 +19,8 @@ export function LeadForm({ tripTitle }: LeadFormProps) {
     setLoading(true)
     setError("")
     try {
+      const token = getTurnstileToken(e.currentTarget as HTMLFormElement)
+      if (!token) throw new Error("Please complete the verification")
       const res = await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -30,6 +33,7 @@ export function LeadForm({ tripTitle }: LeadFormProps) {
           trip: tripTitle,
           message: `Recommended trip inquiry: ${tripTitle}`,
           source: "recommendation-engine",
+          "cf-turnstile-response": token,
         }),
       })
       if (!res.ok) {
@@ -70,6 +74,7 @@ export function LeadForm({ tripTitle }: LeadFormProps) {
           <Send className="h-4 w-4" />
           {loading ? "Sending..." : "Send Inquiry"}
         </button>
+        <Turnstile />
         {error && <p className="text-sm text-red-500">{error}</p>}
       </form>
     </div>

@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server"
+import { verifyTurnstile } from "@/lib/turnstile"
 import { API_BASE } from "@/lib/api"
 
 export async function POST(req: Request) {
   const body = await req.json()
-  const { email } = body
+  const { email, "cf-turnstile-response": token } = body
   if (!email) return NextResponse.json({ error: "Email is required" }, { status: 400 })
+  if (!token || !(await verifyTurnstile(token))) {
+    return NextResponse.json({ error: "Turnstile verification failed" }, { status: 403 })
+  }
 
   try {
     const res = await fetch(`${API_BASE}/api/v1/newsletter/subscribe`, {

@@ -170,6 +170,10 @@ export default function RootLayout({
           <Footer />
           <ToastContainer position="bottom-right" />
         </ThemeProvider>
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   )

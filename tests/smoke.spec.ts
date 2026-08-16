@@ -23,10 +23,9 @@ for (const { path, name } of STATIC_PAGES) {
     const res = await page.goto(path, { waitUntil: "domcontentloaded" })
     expect(res?.status()).toBe(200)
 
-    // Filter out known benign errors (turnstile, favicon, etc.)
+    // Filter out known benign errors (favicon, etc.)
     const realErrors = errors.filter(
       (e) =>
-        !e.includes("turnstile") &&
         !e.includes("favicon") &&
         !e.includes("Failed to load resource") &&
         !e.includes("404") &&

@@ -7,6 +7,7 @@ import { z } from "zod"
 import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react"
 import { PageHero } from "@/components/page-hero"
 import { FAQSection } from "@/components/faq-section"
+import { Turnstile, getTurnstileToken } from "@/components/turnstile"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -53,13 +54,15 @@ export default function ContactPage() {
 
   const { handleSubmit, formState: { isSubmitting } } = form
 
-  async function onSubmit(data: FormValues) {
+  async function onSubmit(data: FormValues, event?: React.BaseSyntheticEvent) {
     setError("")
     try {
+      const token = getTurnstileToken(event?.currentTarget ?? null)
+      if (!token) throw new Error("Please complete the verification")
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data }),
+        body: JSON.stringify({ ...data, "cf-turnstile-response": token }),
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
@@ -127,6 +130,7 @@ export default function ContactPage() {
                     <Button type="submit" disabled={isSubmitting} className="rounded-full bg-orange px-8 py-3 font-semibold text-orange-foreground hover:bg-orange/90">
                       {isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Sending...</> : <><Send className="h-4 w-4" /> Send Message</>}
                     </Button>
+                    <Turnstile />
                   </form>
                 </Form>
             </div>

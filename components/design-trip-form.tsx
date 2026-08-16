@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Turnstile, getTurnstileToken } from "@/components/turnstile"
 import {
   Select,
   SelectContent,
@@ -225,6 +226,8 @@ export function DesignTripForm() {
   const onSubmit = async (data: ItineraryFormValues) => {
     setIsSubmitting(true)
     try {
+      const token = getTurnstileToken(formRef.current)
+      if (!token) throw new Error("Please complete the verification")
       const res = await fetch("/api/design-trip", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -244,6 +247,7 @@ export function DesignTripForm() {
           accommodationPreferences: data.accommodationPreferences,
           foodPreferences: data.foodPreferences,
           otherMentions: data.otherMentions,
+          "cf-turnstile-response": token,
         }),
       })
       if (!res.ok) throw new Error(`API returned ${res.status}`)
@@ -253,8 +257,8 @@ export function DesignTripForm() {
       form.reset()
       setStep(0)
       setTimeout(() => setSubmitSuccess(false), 6000)
-    } catch {
-      toast.error("Something went wrong. Please try again or contact us directly.")
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Something went wrong. Please try again or contact us directly.")
     } finally {
       setIsSubmitting(false)
     }
@@ -784,6 +788,7 @@ export function DesignTripForm() {
                   <LucideSend className="size-4" />
                   {isSubmitting ? "Sending…" : "Send My Request"}
                 </Button>
+                <Turnstile />
               </>
             )}
           </div>

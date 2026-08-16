@@ -2,6 +2,7 @@
 
 import { Loader2 } from "lucide-react"
 import { useState, FormEvent } from "react"
+import { Turnstile, getTurnstileToken } from "@/components/turnstile"
 
 export function FooterNewsletter() {
   const [status, setStatus] = useState<
@@ -14,11 +15,17 @@ export function FooterNewsletter() {
     setStatus("loading")
     const form = e.currentTarget
     const email = new FormData(form).get("email") as string
+    const token = getTurnstileToken(form)
+    if (!token) {
+      setStatus("error")
+      setMessage("Please complete the verification")
+      return
+    }
     try {
       const res = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, "cf-turnstile-response": token }),
       })
       const data = await res.json()
       if (res.ok) {
@@ -72,6 +79,7 @@ export function FooterNewsletter() {
                 )}
               </button>
             </div>
+            <Turnstile theme="dark" />
           </form>
         </div>
         {status === "success" && (
