@@ -315,10 +315,10 @@ export default async function HomePage() {
                 { icon: Shield, value: "5,000+", label: "Happy Travelers" },
                 { icon: HeartHandshake, value: "100%", label: "Local Team" },
               ].map((s) => (
-                <div key={s.label} className="text-center">
+                <div key={s.label} className="text-center bg-primary rounded-sm text-white p-4">
                   <s.icon className="mx-auto h-6 w-6 text-orange" />
-                  <p className="mt-2 text-xl font-bold text-navy">{s.value}</p>
-                  <p className="text-xs text-muted-foreground">{s.label}</p>
+                  <p className="mt-2 text-xl font-bold ">{s.value}</p>
+                  <p className="text-xs">{s.label}</p>
                 </div>
               ))}
             </div>
@@ -387,7 +387,7 @@ export default async function HomePage() {
             <div className="relative">
               <div className="h-100 w-80 overflow-hidden  border-8 border-white shadow-xl">
                 <img
-                  src="/images/hero-narphu.jpg"
+                  src="/manaslu-view.webp"
                   alt="Travel Consultant"
                   width={700}
                   height={700}
