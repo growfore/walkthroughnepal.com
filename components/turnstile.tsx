@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 declare global {
   interface Window {
@@ -11,6 +11,9 @@ declare global {
           sitekey: string
           appearance: "always" | "execute" | "interaction-only"
           theme?: "light" | "dark"
+          callback?: (token: string) => void
+          "expired-callback"?: () => void
+          "error-callback"?: () => void
         },
       ) => string
       remove: (widgetId: string) => void
@@ -22,6 +25,7 @@ const SITEKEY = process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY
 
 export function Turnstile({ theme }: { theme?: "light" | "dark" }) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [token, setToken] = useState("")
 
   useEffect(() => {
     const container = containerRef.current
@@ -36,6 +40,15 @@ export function Turnstile({ theme }: { theme?: "light" | "dark" }) {
         sitekey: SITEKEY,
         appearance: "always",
         ...(theme ? { theme } : {}),
+        callback: (t) => {
+          if (!cancelled) setToken(t)
+        },
+        "expired-callback": () => {
+          if (!cancelled) setToken("")
+        },
+        "error-callback": () => {
+          if (!cancelled) setToken("")
+        },
       })
     }
 
@@ -61,10 +74,19 @@ export function Turnstile({ theme }: { theme?: "light" | "dark" }) {
     }
   }, [theme])
 
-  return <div ref={containerRef} className="mt-4" />
+  return (
+    <>
+      <div ref={containerRef} className="mt-4" />
+      {/* Explicit render doesn't guarantee Turnstile's auto hidden input, so
+          mirror the token here; forms read it via form.elements. */}
+      <input type="hidden" name="cf-turnstile-response" value={token} />
+    </>
+  )
 }
 
 export function getTurnstileToken(form: HTMLFormElement | null): string | undefined {
-  const el = form?.elements.namedItem("cf-turnstile-response")
-  return el instanceof HTMLInputElement && el.value ? el.value : undefined
+  if (!form) return undefined
+  const el = form.elements.namedItem("cf-turnstile-response")
+  const inputs = el instanceof RadioNodeList ? Array.from(el) : [el]
+  return inputs.find((i): i is HTMLInputElement => i instanceof HTMLInputElement && Boolean(i.value))?.value
 }
