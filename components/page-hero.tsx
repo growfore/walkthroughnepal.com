@@ -1,4 +1,4 @@
-import { Globe, ShieldCheck, MessageCircle, ChevronRight } from "lucide-react"
+import { Globe,  MessageCircle, ChevronRight,  Map } from "lucide-react"
 import Link from "next/link"
 import type { ReactNode } from "react"
 import { img } from "@/lib/api"
@@ -7,9 +7,9 @@ import { Lightbox } from "@/components/lightbox"
 const DEFAULT_HERO = "/manaslu-view.webp"
 
 const valueProps = [
-  { icon: Globe, text: "Trekking experts per destination" },
-  { icon: ShieldCheck, text: "Free cancellation up to eight weeks in advance" },
-  { icon: MessageCircle, text: "Quick personal advice" },
+  { icon: Globe, text: "Local trekking experts, wherever you go" },
+  { icon: Map, text: "Trips planned around your pace, interests, and time." },
+  { icon: MessageCircle, text: "Real People, Quick and Helpful Support" },
 ]
 
 type Breadcrumb = { label: string; href?: string }

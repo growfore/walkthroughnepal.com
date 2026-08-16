@@ -96,15 +96,14 @@ export function MenuController({ items }: MenuControllerProps) {
     >
       {/* Top bar */}
       <div className="hidden bg-navy text-navy-foreground md:block">
-        <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 md:px-8">
-          <div className="flex items-center gap-2">
-            <span className="flex items-center gap-1 text-sm font-medium">
-              <span className="flex text-orange">★★★★★</span>
-              <span>
-                4.9 <span className="text-navy-foreground/60">·</span> 2,800+
-                reviews
-              </span>
-            </span>
+        <div className="mx-auto flex h-10 container items-center justify-between px-4 md:px-5">
+          <div>
+            <a
+              href={`mailto:${siteConfig.email}`}
+              className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-orange"
+            >
+              <Mail className="h-4 w-4" /> {siteConfig.email}
+            </a>
           </div>
           <div className="flex items-center gap-6">
             <a
@@ -112,12 +111,6 @@ export function MenuController({ items }: MenuControllerProps) {
               className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-orange"
             >
               <Phone className="h-4 w-4" /> {siteConfig.phoneNumbers[0].phone}
-            </a>
-            <a
-              href={`mailto:${siteConfig.email}`}
-              className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-orange"
-            >
-              <Mail className="h-4 w-4" /> {siteConfig.email}
             </a>
           </div>
         </div>
