@@ -36,7 +36,7 @@ export function Lightbox({ src, alt, priority }: { src: string; alt: string; pri
 
   return (
     <>
-      <Image src={src} alt={alt} fill priority={priority} sizes="100vw" className="object-cover cursor-pointer" onClick={() => setOpen(true)} />
+      <img src={src} alt={alt} fill priority={priority} sizes="100vw" className="object-cover cursor-pointer" onClick={() => setOpen(true)} />
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={close} role="dialog" aria-modal="true" aria-label={alt}>
           <button ref={closeRef} onClick={close} className="absolute right-4 top-4 text-white/80 hover:text-white transition-colors" aria-label="Close"><X className="h-8 w-8" /></button>
