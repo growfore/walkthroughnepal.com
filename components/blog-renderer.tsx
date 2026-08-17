@@ -48,8 +48,8 @@ export async function BlogRenderer({ html }: { html: string }) {
             <PostEmbedCard post={post} />
           </div>
         )
-      } catch {
-        // ponytail: a dead/removed slug drops the embed silently — never 404 the post
+      } catch (e) {
+        console.error(`[BlogRenderer] shortcode failed:`, seg, e)
         return null
       }
     }),
