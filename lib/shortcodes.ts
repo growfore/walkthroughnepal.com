@@ -23,11 +23,22 @@ function parseAttrs(str: string): Record<string, string> {
   return attrs
 }
 
+function normalizeSlug(raw: string, prefix: string): string {
+  try {
+    const url = new URL(raw)
+    const path = url.pathname.replace(new RegExp(`^/${prefix}/`), "")
+    return path || raw
+  } catch {
+    return raw.replace(new RegExp(`^/${prefix}/`), "")
+  }
+}
+
 function toSegment(kind: string, attrs: Record<string, string>): ShortcodeSegment | null {
   switch (kind) {
     case "trip":
+      return attrs.slug ? { type: "trip", slug: normalizeSlug(attrs.slug, "trip") } : null
     case "post":
-      return attrs.slug ? { type: kind, slug: attrs.slug } : null
+      return attrs.slug ? { type: "post", slug: normalizeSlug(attrs.slug, "blog") } : null
     case "featured-trips": {
       const tag = attrs.tag
       if (!tag) return null
