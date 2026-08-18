@@ -1,11 +1,12 @@
 import type { Metadata } from "next"
-import { getPostBySlug, getAllPostSlugs, img, resolveContentImages } from "@/lib/api"
+import { getPostBySlug, getPublishedPosts, getAllPostSlugs, img, resolveContentImages } from "@/lib/api"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { BlogRenderer } from "@/components/blog-renderer"
 import { TocSidebar } from "@/components/toc-sidebar"
 import { PageHero } from "@/components/page-hero"
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/json-ld"
+import { BlogCard } from "@/components/blog-card"
 
 import { Calendar, LucideChevronLeft } from "lucide-react"
 
@@ -58,6 +59,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   } catch {
     notFound()
   }
+
+  let recommended: Awaited<ReturnType<typeof getPublishedPosts>>["posts"] = []
+  try {
+    const { posts } = await getPublishedPosts(1, 4)
+    recommended = posts.filter((p) => p.slug !== slug).slice(0, 3)
+  } catch {}
 
   const toc = post.toc ?? []
   const date = new Date(post.publishedAt || post.createdAt).toLocaleDateString("en-US", {
@@ -137,6 +144,25 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <div className="mt-8 text-center">
           <Link href="/blog" className="text-orange font-medium hover:underline flex items-center"><LucideChevronLeft/> Back to Blog</Link>
         </div>
+
+        {recommended.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold text-navy mb-6">Recommended Reads</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recommended.map((p) => (
+                <BlogCard
+                  key={p.id}
+                  slug={p.slug}
+                  image={img(p.coverImage)}
+                  tag={p.category?.name ?? "Travel"}
+                  title={p.title}
+                  description={p.metaDescription}
+                  date={p.publishedAt || p.createdAt}
+                />
+              ))}
+            </div>
+          </div>
+        )}
         </div>
       </section>
     </div>
