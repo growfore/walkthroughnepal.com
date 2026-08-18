@@ -113,7 +113,7 @@ export function getPublishedPosts(page = 1, limit = 10, search?: string, categor
 }
 
 export async function getPostBySlug(slug: string) {
-  const res = await fetchJSON<{ post: CMSPost }>(`/api/posts/${encodeURIComponent(slug)}`, undefined, CMS_API_BASE)
+  const res = await fetchJSON<{ post: CMSPost }>(`/api/posts/published/${encodeURIComponent(slug)}`, undefined, CMS_API_BASE)
   return res.post
 }
 
