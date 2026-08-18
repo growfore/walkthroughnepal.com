@@ -135,6 +135,8 @@ export function MenuController({ items }: MenuControllerProps) {
                   if (itemHasChildren) {
                     openMega(item.id)
                     setActiveSidebar(null)
+                  } else {
+                    closeMega()
                   }
                 }}
               >
