@@ -9,6 +9,9 @@ import {
   MapPin,
   Shield,
   HeartHandshake,
+  MapPinned,
+  Mountain,
+  LocationEditIcon,
 } from "lucide-react"
 import Link from "next/link"
 import type { FeaturedTag } from "@/lib/types"
@@ -297,13 +300,13 @@ export default async function HomePage() {
             </div>
           </div>
           <div>
-            <p className="text-sm font-semibold tracking-widest uppercase text-orange">
+            <p className="text-sm font-semibold uppercase text-orange">
               About Walk Through Nepal
             </p>
             <h2 className="mt-3 text-3xl font-bold text-navy md:text-4xl">
               Local Experts. Authentic Himalayan Adventures.
             </h2>
-            <p className="mt-5 max-w-xl leading-relaxed text-muted-foreground">
+            <p className="mt-5 max-w-xl text-muted-foreground">
               Founded by local trekking guides, we&apos;ve spent{" "}
               {siteConfig.experience} leading adventurers through the Himalayas —
               from the bustling streets of Kathmandu to the remote trails of the Nar
@@ -312,15 +315,14 @@ export default async function HomePage() {
             </p>
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
               {[
-                { icon: Users, value: "20+", label: "Years Experience" },
-                { icon: MapPin, value: "50+", label: "Destinations" },
-                { icon: Shield, value: "5,000+", label: "Happy Travelers" },
-                { icon: HeartHandshake, value: "100%", label: "Local Team" },
+                  { icon: MapPinned, value: "Local Expertise", label: "Travel Nepal with people who know it from the inside."},
+                  { icon: Mountain, value: "15+ Destinations", label: "Discover Nepal’s iconic places and hidden gems." },
+                  { icon: LocationEditIcon, value: "Taior Made Journeys", label: "Your interests. Your pace. Your Nepal." },
+                  { icon: HeartHandshake, value: "Personalized Support", label: "From your first inquiry to your final goodbye." },
               ].map((s) => (
                 <div key={s.label} className="text-center bg-primary rounded-sm text-white p-4">
                   <s.icon className="mx-auto h-6 w-6 text-orange" />
-                  <p className="mt-2 text-xl font-bold ">{s.value}</p>
-                  <p className="text-xs">{s.label}</p>
+                  <p className="mt-2 text-md font-bold ">{s.value}</p>
                 </div>
               ))}
             </div>
@@ -437,7 +439,7 @@ export default async function HomePage() {
       {/* ── Floating Recommend Button ── */}
       <Link
         href="/recommend"
-        className="group fixed bottom-6 right-6 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-orange text-white shadow-sm transition-all hover:bg-orange/90 hover:text-white"
+        className="group fixed bottom-6 right-6 z-90 flex h-10 w-10 items-center justify-center rounded-full bg-orange text-white shadow-sm transition-all hover:bg-orange/90 hover:text-white"
       >
         <Sparkles className="h-5 w-5" />
         <span className="pointer-events-none absolute bottom-full right-0 mb-2 whitespace-nowrap rounded-lg bg-navy px-3 py-1.5 text-xs font-semibold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">

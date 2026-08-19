@@ -4,12 +4,10 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { SearchDialog } from "@/components/search-dialog"
 import {
-    CalendarDays,
   HeartHandshake,
-  MapPin,
-  Shield,
-  Telescope,
-  Users
+  LocationEditIcon,
+  MapPinned,
+  Mountain,
 } from "lucide-react";
 
 export const HeroSection = () => {
@@ -30,10 +28,10 @@ export const HeroSection = () => {
   }
 
   const stats = [
-    { icon: CalendarDays, value: "20+ Years of Experience", label: "Decades of local knowledge shaping unforgettable journeys." },
-    { icon: MapPin, value: "50+ Destinations across Nepal", label: "From iconic trails to hidden villages across Nepal." },
-    { icon: Telescope , value: "5,000+ Happy Travellers", label: "Thousands of travelers trust us for memorable adventures." },
-    { icon: HeartHandshake, value: "100% Local Team", label: "Local guides who know Nepal firsthand, one trip at a time." },
+    { icon: MapPinned, value: "Local Expertise", label: "Travel Nepal with people who know it from the inside."},
+    { icon: Mountain, value: "15+ Destinations", label: "Discover Nepal’s iconic places and hidden gems." },
+    { icon: LocationEditIcon, value: "Taior Made Journeys", label: "Your interests. Your pace. Your Nepal." },
+    { icon: HeartHandshake, value: "Personalized Support", label: "From your first inquiry to your final goodbye." },
   ]
 
   return (
@@ -70,7 +68,7 @@ export const HeroSection = () => {
       </div>
 
       {/* ── Selling Points ── */}
-      <section className="relative  max-w-4xl py-4 text-navy-foreground mx-auto">
+      <section className="relative  max-w-5xl py-4 text-navy-foreground mx-auto">
         <div className="mx-auto max-w-7xl px-4">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((s) => (
