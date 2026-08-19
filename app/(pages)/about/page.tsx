@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { PageHero } from "@/components/page-hero"
 import { SectionHeader } from "@/components/section-header"
-import { Users, MapPin, Shield, HeartHandshake } from "lucide-react"
+import { Users, MapPin, Shield, HeartHandshake, MapPinned, Mountain, LocationEditIcon } from "lucide-react"
 import { BreadcrumbJsonLd, FAQPageJsonLd } from "@/components/json-ld"
 
 export const metadata: Metadata = {
@@ -23,10 +23,10 @@ export const dynamic = "force-dynamic"
 
 export default async function AboutPage() {
   const stats = [
-    { icon: Users, value: "20+", label: "Years Experience" },
-    { icon: MapPin, value: "50+", label: "Nepal Destinations" },
-    { icon: Shield, value: "5,000+", label: "Happy Travelers" },
-    { icon: HeartHandshake, value: "100%", label: "Local Team" },
+    { icon: MapPinned, value: "Local Expertise", label: "Travel Nepal with people who know it from the inside."},
+    { icon: Mountain, value: "15+ Destinations", label: "Discover Nepal’s iconic places and hidden gems." },
+    { icon: LocationEditIcon, value: "Tailor Made Journeys", label: "Your interests. Your pace. Your Nepal." },
+    { icon: HeartHandshake, value: "Personalized Support", label: "From your first inquiry to your final goodbye." },
   ]
 
   return (

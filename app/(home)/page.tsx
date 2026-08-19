@@ -2,12 +2,9 @@ import type { Metadata } from "next"
 import {
   Star,
   ChevronRight,
-  Users,
   ArrowUpRight,
   MessageCircle,
   Sparkles,
-  MapPin,
-  Shield,
   HeartHandshake,
   MapPinned,
   Mountain,
@@ -317,7 +314,7 @@ export default async function HomePage() {
               {[
                   { icon: MapPinned, value: "Local Expertise", label: "Travel Nepal with people who know it from the inside."},
                   { icon: Mountain, value: "15+ Destinations", label: "Discover Nepal’s iconic places and hidden gems." },
-                  { icon: LocationEditIcon, value: "Taior Made Journeys", label: "Your interests. Your pace. Your Nepal." },
+                  { icon: LocationEditIcon, value: "Tailor Made Journeys", label: "Your interests. Your pace. Your Nepal." },
                   { icon: HeartHandshake, value: "Personalized Support", label: "From your first inquiry to your final goodbye." },
               ].map((s) => (
                 <div key={s.label} className="text-center bg-primary rounded-sm text-white p-4">

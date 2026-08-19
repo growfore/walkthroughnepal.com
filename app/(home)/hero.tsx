@@ -30,7 +30,7 @@ export const HeroSection = () => {
   const stats = [
     { icon: MapPinned, value: "Local Expertise", label: "Travel Nepal with people who know it from the inside."},
     { icon: Mountain, value: "15+ Destinations", label: "Discover Nepal’s iconic places and hidden gems." },
-    { icon: LocationEditIcon, value: "Taior Made Journeys", label: "Your interests. Your pace. Your Nepal." },
+    { icon: LocationEditIcon, value: "Tailor Made Journeys", label: "Your interests. Your pace. Your Nepal." },
     { icon: HeartHandshake, value: "Personalized Support", label: "From your first inquiry to your final goodbye." },
   ]
 
