@@ -99,7 +99,13 @@ export async function Footer() {
   const items = footerItems.filter((i) => i.label && i.url)
 
   return (
-    <footer className="bg-navy text-navy-foreground">
+    <footer
+      className="bg-navy bg-cover bg-center text-navy-foreground"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(15,43,61,.88), rgba(15,43,61,.88)), url('/footer-bg.png')",
+      }}
+    >
       {/* ── Selling Points ── */}
             <section className=" bg-navy py-16 text-navy-foreground">
               <div className="mx-auto max-w-7xl px-4">

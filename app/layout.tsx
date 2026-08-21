@@ -1,4 +1,4 @@
-import { Mulish, Geist_Mono, Sora } from "next/font/google"
+import { Livvic, Martian_Mono, Barlow_Semi_Condensed } from "next/font/google"
 import type { Metadata, Viewport } from "next"
 import Script from "next/script"
 
@@ -16,18 +16,19 @@ import { developer, developerAttributionGraph } from "@/lib/developer-attributio
 
 const SITE_URL = "https://walkthroughnepal.com"
 
-const mulish = Mulish({
+const livvic = Livvic({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["400", "500", "600", "700", "800"],
+  // ponytail: Livvic has no 800 weight — 900 stands in for extrabold
+  weight: ["400", "500", "600", "700", "900"],
 })
 
-const fontMono = Geist_Mono({
+const fontMono = Martian_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
 
-const sora = Sora({
+const barlowSemiCondensed = Barlow_Semi_Condensed({
   subsets: ["latin"],
   variable: "--font-heading",
   weight: ["400", "500", "600", "700"],
@@ -117,9 +118,9 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn(
         "antialiased",
-        mulish.variable,
+        livvic.variable,
         fontMono.variable,
-        sora.variable
+        barlowSemiCondensed.variable
       )}
     >
       <head>

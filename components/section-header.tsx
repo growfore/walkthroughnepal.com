@@ -5,25 +5,25 @@ import type { ReactNode } from "react"
 export function SectionHeader({
   title,
   description,
+  descriptionClassName,
   link,
   align = "left",
   rightAction,
 }: {
   title: string
   description?: string
+  descriptionClassName?: string
   link?: { href: string; label: string }
   align?: "center" | "left"
   rightAction?: ReactNode
 }) {
   return (
-    <div className={`mb-6 ${align === "center" ? "text-center" : "flex items-end justify-between"}`}>
+    <div className={`mb-6 ${align === "center" ? "text-center" : "flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between"}`}>
       <div>
-        <h2 className={`text-3xl font-bold text-navy ${align === "center" ? "relative inline-block" : ""}`}>
+        <h2 className="text-3xl font-bold text-navy">
           {title}
-          {align === "center" && <span className="mx-auto mt-2 block h-1 w-16 rounded-full bg-orange" />}
         </h2>
-        {description && <div className="mt-1 text-sm text-muted-foreground" dangerouslySetInnerHTML={{ __html: description }} />}
-        {align === "left" && <span className="mt-2 block h-1 w-16 rounded-full bg-orange" />}
+        {description && <div className={`mt-1 text-sm text-muted-foreground ${descriptionClassName ?? ""}`} dangerouslySetInnerHTML={{ __html: description }} />}
       </div>
       {rightAction ?? (
         link && (

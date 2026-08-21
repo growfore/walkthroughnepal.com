@@ -28,6 +28,21 @@ export function resolveContentImages(html: string): string {
   })
 }
 
+// ponytail: CMS emits bare <img alt="..."> with no figure markup — render alt as caption
+export function wrapContentImageCaptions(html: string): string {
+  return html
+    .split(/(<figure[\s\S]*?<\/figure>)/g)
+    .map((chunk) =>
+      chunk.startsWith("<figure")
+        ? chunk
+        : chunk.replace(/<img[^>]*>/g, (tag) => {
+            const alt = /alt=["']([^"']*)["']/.exec(tag)?.[1]?.trim()
+            return alt ? `<figure>${tag}<figcaption>${alt}</figcaption></figure>` : tag
+          }),
+    )
+    .join("")
+}
+
 async function fetchJSON<T>(path: string, options?: RequestInit, base: string = API_BASE): Promise<T> {
   const res = await fetch(`${base}${path}`, {
     ...options,

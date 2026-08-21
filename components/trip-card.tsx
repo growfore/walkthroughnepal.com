@@ -56,7 +56,7 @@ export function TripCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent" />
       </div>
 
-      <span className="absolute top-4 left-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-orange/90 px-3 py-1.5 text-xs font-bold text-orange-foreground shadow-sm backdrop-blur-sm">
+      <span className="absolute top-4 left-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-orange/90 px-3 py-1.5 font-mono text-xs font-bold text-orange-foreground shadow-sm backdrop-blur-sm">
         <Clock className="h-3 w-3" /> {a.duration}
       </span>
 

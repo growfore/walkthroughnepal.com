@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { getPostBySlug, getPublishedPosts, getAllPostSlugs, img, resolveContentImages } from "@/lib/api"
+import { getPostBySlug, getPublishedPosts, getAllPostSlugs, img, resolveContentImages, wrapContentImageCaptions } from "@/lib/api"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { BlogRenderer } from "@/components/blog-renderer"
@@ -138,7 +138,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               </nav>
             </div>
           )}
-          <BlogRenderer html={resolveContentImages(post.content)} />
+          <BlogRenderer html={wrapContentImageCaptions(resolveContentImages(post.content))} />
         </article>
 
         <div className="mt-8 text-center">

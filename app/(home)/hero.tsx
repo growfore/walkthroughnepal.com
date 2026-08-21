@@ -3,12 +3,6 @@
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { SearchDialog } from "@/components/search-dialog"
-import {
-  HeartHandshake,
-  LocationEditIcon,
-  MapPinned,
-  Mountain,
-} from "lucide-react";
 
 export const HeroSection = () => {
   const router = useRouter()
@@ -28,10 +22,10 @@ export const HeroSection = () => {
   }
 
   const stats = [
-    { icon: MapPinned, value: "Local Expertise", label: "Travel Nepal with people who know it from the inside."},
-    { icon: Mountain, value: "15+ Destinations", label: "Discover Nepal’s iconic places and hidden gems." },
-    { icon: LocationEditIcon, value: "Tailor Made Journeys", label: "Your interests. Your pace. Your Nepal." },
-    { icon: HeartHandshake, value: "Personalized Support", label: "From your first inquiry to your final goodbye." },
+    { icon: "/icons/map-location.png", value: "Local Expertise", label: "Travel Nepal with people who know it from the inside."},
+    { icon: "/icons/destination.png", value: "15+ Destinations", label: "Discover Nepal’s iconic places and hidden gems." },
+    { icon: "/icons/journey.png", value: "Tailor Made Journeys", label: "Your interests. Your pace. Your Nepal." },
+    { icon: "/icons/customer-support.png", value: "Personalized Support", label: "From your first inquiry to your final goodbye." },
   ]
 
   return (
@@ -73,8 +67,8 @@ export const HeroSection = () => {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((s) => (
               <div key={s.label} className="text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange/50">
-                  <s.icon className="h-6 w-6" />
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-orange/50">
+                  <img src={s.icon} alt="" width={28} height={28} className="h-7 w-7 object-contain brightness-0 invert" />
                 </div>
                 <p className="mt-2 text-xl font-bold text-white">{s.value}</p>
                 <p className="text-xs text-white font-medium leading-normal">{s.label}</p>

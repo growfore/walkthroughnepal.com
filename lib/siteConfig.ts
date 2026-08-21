@@ -15,7 +15,7 @@ export const siteConfig: SiteConfig = {
   name: "Walk Through Nepal",
   description:
     "Authentic adventures, meaningful connections and responsible travel experiences in Nepal.",
-  experience: "20+ years",
+  experience: "years",
   established: "2004",
   whatsAppNumber: "9779866266688",
   phoneNumbers: [{ phone: "+977-9866266688" }],
