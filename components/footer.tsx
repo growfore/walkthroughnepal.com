@@ -125,7 +125,9 @@ export async function Footer() {
       <FooterNewsletter />
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pt-14 pb-10 md:grid-cols-3 lg:grid-cols-6">
         <div className="md:col-span-2">
-          <Image src={"/walkthrough-nepal-logo-white.svg"} height={200} width={200} alt="walk through nepal logo white"/>
+          <a href={"/"}>
+            <Image src={"/walkthrough-nepal-logo-white.svg"} height={200} width={200} alt="walk through nepal logo white"/>
+          </a>
           <p className="mt-4 max-w-xs text-sm text-white/70">
             {cfg.description}
           </p>
@@ -162,12 +164,16 @@ export async function Footer() {
               {cfg.fullAddress}
             </li>
             <li className="flex items-start gap-2">
-              <Phone className="mt-0.5 h-4 w-4 shrink-0 text-orange" />
-              {cfg.phoneNumbers[0]?.phone}
+              <Link href={`tel:${cfg.phoneNumbers[0]?.phone}`} className="flex items-start gap-2">
+                <Phone className="mt-0.5 h-4 w-4 shrink-0 text-orange" />
+                {cfg.phoneNumbers[0]?.phone}
+              </Link>
             </li>
             <li className="flex items-start gap-2">
-              <Mail className="mt-0.5 h-4 w-4 shrink-0 text-orange" />
-              {cfg.email}
+              <Link href={`mailto:${cfg.email}`} className="flex items-start gap-2">
+                <Mail className="mt-0.5 h-4 w-4 shrink-0 text-orange" />
+                {cfg.email}
+              </Link>
             </li>
             <li className="flex items-start gap-2">
               <Clock className="mt-0.5 h-4 w-4 shrink-0 text-orange" />
