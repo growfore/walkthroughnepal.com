@@ -36,37 +36,33 @@ export async function proxy(request: NextRequest) {
 
   const { pathname, search } = request.nextUrl
 
-  // Locale routing: `/{code}/...` → internal path + ?locale= + header; en stays at root.
+  // Locale routing: `/{code}/...` are REAL routes (app/[...rest]) — the proxy
+  // only tags the request (x-locale + wt-locale cookie). en stays at root.
+  // ponytail: no rewrite — Next's client router resolved the rewritten URL's original
+  // path (`/de/...`) against the route table, found nothing, and injected a 404.
   const localeMatch = LOCALE_PATTERN.exec(pathname)
-  let locale: string = "en"
-  let internalPath = pathname
   if (localeMatch) {
-    locale = localeMatch[1].toLowerCase()
-    internalPath = pathname.slice(localeMatch[1].length) || "/"
-    const url = new URL(`${internalPath}${search}`, request.url)
-    // ponytail: query param keeps cache entries distinct per locale (untranslated
-    // locales reuse the base slug, which would otherwise collide with the en route)
-    url.searchParams.set("locale", locale)
-    // forward x-locale on the *request* headers so server components' headers() sees it
+    const locale = localeMatch[1].toLowerCase()
     const newReqHeaders = new Headers(request.headers)
     newReqHeaders.set("x-locale", locale)
-    const res = NextResponse.rewrite(url, { request: { headers: newReqHeaders } })
+    const res = NextResponse.next({ request: { headers: newReqHeaders } })
     res.cookies.set(LOCALE_COOKIE, locale, { path: "/", maxAge: 31536000, sameSite: "lax" })
     return res
   }
 
-  // Persisted-language redirect: bare root with a locale cookie → /{code}/
+  // Persisted-language redirect: any EN path → /{code}/... (root → /{code}/) so the
+  // user stays in their chosen locale. SEO/dev/CDN assets stay at root.
   const cookie = request.cookies.get(LOCALE_COOKIE)?.value
-  if (pathname === "/" && cookie && /^(de|es|fr|it|pt)$/.test(cookie) && cookie !== locale) {
-    return NextResponse.redirect(new URL(`/${cookie}/`, request.url), 302)
+  if (cookie && /^(de|es|fr|it|pt)$/.test(cookie)) {
+    const excluded = /^\/(cms|uploads)(\/|$)/.test(pathname) || pathname === "/opengraph-image"
+    if (!excluded) {
+      const dest = pathname === "/" ? `/${cookie}/` : `/${cookie}${pathname}`
+      return NextResponse.redirect(new URL(`${dest}${search}`, request.url), 302)
+    }
   }
 
   const redirect = await resolveRedirect(pathname)
-  if (!redirect || redirect.destination === pathname) {
-    const res = NextResponse.next()
-    res.headers.set("x-locale", "en")
-    return res
-  }
+  if (!redirect || redirect.destination === pathname) return NextResponse.next()
 
   return NextResponse.redirect(new URL(redirect.destination, request.url), redirect.type === "permanent" ? 301 : 302)
 }
