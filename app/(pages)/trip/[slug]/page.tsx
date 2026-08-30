@@ -527,7 +527,7 @@ export default async function PackagePage({
                   href={`/inquiry?trip=${slug}`}
                   className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-4 py-3 font-semibold text-orange-foreground hover:opacity-90 underline text-lg"
                 >
-                  Inquiry Now
+                  Inquire Now
                 </Link>
                 <a
                   href="#departures"

@@ -101,7 +101,7 @@ export function Nav() {
             Customize My Trip
           </Link>
           <Link href="/inquiry" className="hidden rounded-md bg-orange px-4 py-2 text-sm font-semibold text-orange-foreground transition hover:opacity-90 md:inline-flex uppercase">
-           INQUIRE NOW
+           Inquire Now
           </Link>
           <button
             className="p-2 lg:hidden"

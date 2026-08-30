@@ -155,9 +155,9 @@ export default async function CatchAll({ params, searchParams }: { params: Param
   if (hit === "info") return <InfoPageEl slug={inner[0]} locale={locale} />
 
   const [idx, mod] = hit
-  if (idx === 0) return mod.default({})
-  if (idx === -2) return mod.default({ searchParams })
-  return mod.default({ params: Promise.resolve({ slug: inner[idx] }) })
+  if (idx === 0) return <mod.default />
+  if (idx === -2) return <mod.default searchParams={searchParams} />
+  return <mod.default params={Promise.resolve({ slug: inner[idx] })} />
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {

@@ -188,7 +188,7 @@ export async function Footer() {
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-3 px-4 py-5 text-xs text-white/60">
           <span>
-            &copy; {cfg.name}. {new Date().getFullYear()}. All rights reserved.
+            {t("© {name}. {year}. All rights reserved.", { name: cfg.name, year: String(new Date().getFullYear()) })}
           </span>
           <div className="flex gap-2 items-center">
             Designed and Developed by
