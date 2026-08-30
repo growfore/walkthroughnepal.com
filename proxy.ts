@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server"
 const CMS_API_BASE = process.env.CMS_API_URL ?? "https://cms.walkthroughnepal.com"
 
 // ponytail: fixed list, keep in sync with be/src/lib/i18n.ts LOCALES
-const LOCALE_PATTERN = /^\/(de|es|fr|it|pt)(\/.*)?$/i
+const LOCALE_PATTERN = /^\/(de|es|fr|it|pt|ru|ja)(\/.*)?$/i
 const LOCALE_COOKIE = "wt-locale"
 
 // ponytail: in-memory per-instance TTL cache; multi-instance/CDN edge would need a shared store
@@ -53,7 +53,7 @@ export async function proxy(request: NextRequest) {
   // Persisted-language redirect: any EN path → /{code}/... (root → /{code}/) so the
   // user stays in their chosen locale. SEO/dev/CDN assets stay at root.
   const cookie = request.cookies.get(LOCALE_COOKIE)?.value
-  if (cookie && /^(de|es|fr|it|pt)$/.test(cookie)) {
+  if (cookie && /^(de|es|fr|it|pt|ru|ja)$/.test(cookie)) {
     const excluded = /^\/(cms|uploads)(\/|$)/.test(pathname) || pathname === "/opengraph-image"
     if (!excluded) {
       const dest = pathname === "/" ? `/${cookie}/` : `/${cookie}${pathname}`

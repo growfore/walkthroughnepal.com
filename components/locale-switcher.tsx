@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { Check, ChevronDown, Globe } from "lucide-react"
 import { LOCALES, type LocaleCode } from "@/lib/locales"
 
-const PREFIX_RE = /^\/(de|es|fr|it|pt)(\/|$)/
+const PREFIX_RE = /^\/(de|es|fr|it|pt|ru|ja)(\/|$)/
 
 function currentFromPath(path: string): LocaleCode {
   const m = PREFIX_RE.exec(path)

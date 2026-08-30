@@ -5,6 +5,8 @@ export const LOCALES = [
   { code: "fr", name: "Français" },
   { code: "it", name: "Italiano" },
   { code: "pt", name: "Português" },
+  { code: "ru", name: "Русский" },
+  { code: "ja", name: "日本語" },
 ] as const
 
 export type LocaleCode = (typeof LOCALES)[number]["code"]
@@ -17,4 +19,13 @@ export function isLocaleCode(value: string | undefined): value is LocaleCode {
 
 export function localeName(code: LocaleCode): string {
   return LOCALES.find((l) => l.code === code)?.name ?? "English"
+}
+
+const LOCALE_PREFIX_RE = /^\/(de|es|fr|it|pt|ru|ja)(?=\/|$)/
+
+export function localizedPath(path: string, locale: LocaleCode): string {
+  if (!path.startsWith("/") || path.startsWith("//")) return path
+  const base = path.replace(LOCALE_PREFIX_RE, "") || "/"
+  if (locale === "en") return base
+  return `/${locale}${base === "/" ? "/" : base}`
 }

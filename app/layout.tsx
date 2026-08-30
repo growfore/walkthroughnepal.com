@@ -16,6 +16,7 @@ import { ClientTranslate } from "@/components/client-translate"
 import { OrganizationJsonLd } from "@/components/json-ld"
 import { developer, developerAttributionGraph } from "@/lib/developer-attribution"
 import { isLocaleCode } from "@/lib/locales"
+import { formatMessage, getMessages } from "@/lib/messages"
 
 const SITE_URL = "https://walkthroughnepal.com"
 
@@ -116,7 +117,9 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const headersList = await headers()
-  const locale = isLocaleCode(headersList.get("x-locale") ?? undefined) ? headersList.get("x-locale")! : "en"
+  const requestedLocale = headersList.get("x-locale") ?? undefined
+  const locale = isLocaleCode(requestedLocale) ? requestedLocale : "en"
+  const messages = getMessages(locale)
   return (
     <html
       lang={locale}
@@ -164,7 +167,7 @@ export default async function RootLayout({
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:m-2 focus:rounded-md focus:bg-navy focus:px-4 focus:py-2 focus:text-navy-foreground focus:outline-none focus:ring-2 focus:ring-orange"
         >
-          Skip to main content
+          {formatMessage(messages, "Skip to main content")}
         </a>
         <ThemeProvider>
           <Navigation />
@@ -180,7 +183,7 @@ export default async function RootLayout({
           src="https://challenges.cloudflare.com/turnstile/v0/api.js"
           strategy="afterInteractive"
         />
-        <ClientTranslate locale={locale} />
+        <ClientTranslate locale={locale} messages={locale === "en" ? {} : messages} />
       </body>
     </html>
   )

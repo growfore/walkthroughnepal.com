@@ -1,8 +1,7 @@
 import { cache } from "react"
-import { headers } from "next/headers"
 import { MenuController } from "./menu-controller"
 import { API_BASE } from "@/lib/api"
-import { isLocaleCode } from "@/lib/locales"
+import { getI18n } from "@/lib/server-locale"
 
 type MenuItem = {
   id: string
@@ -31,7 +30,12 @@ const fetchMenu = cache(async () => {
 
 export async function Navigation() {
   const items = await fetchMenu()
-  const headersList = await headers()
-  const locale = headersList.get("x-locale") ?? "en"
-  return <MenuController items={items} locale={isLocaleCode(locale) ? locale : "en"} />
+  const { locale, t, href } = await getI18n()
+  const localize = (item: MenuItem): MenuItem => ({
+    ...item,
+    label: t(item.label),
+    url: href(item.url),
+    children: item.children.map(localize),
+  })
+  return <MenuController items={items.map(localize)} locale={locale} />
 }
