@@ -3,6 +3,10 @@ import type { NextRequest } from "next/server"
 
 const CMS_API_BASE = process.env.CMS_API_URL ?? "https://cms.walkthroughnepal.com"
 
+// ponytail: fixed list, keep in sync with be/src/lib/i18n.ts LOCALES
+const LOCALE_PATTERN = /^\/(de|es|fr|it|pt)(\/.*)?$/i
+const LOCALE_COOKIE = "wt-locale"
+
 // ponytail: in-memory per-instance TTL cache; multi-instance/CDN edge would need a shared store
 type Entry = { redirect: { destination: string; type: string } | null; expires: number }
 const cache = new Map<string, Entry>()
@@ -30,9 +34,39 @@ async function resolveRedirect(source: string): Promise<{ destination: string; t
 export async function proxy(request: NextRequest) {
   if (request.method !== "GET" && request.method !== "HEAD") return NextResponse.next()
 
-  const { pathname } = request.nextUrl
+  const { pathname, search } = request.nextUrl
+
+  // Locale routing: `/{code}/...` → internal path + ?locale= + header; en stays at root.
+  const localeMatch = LOCALE_PATTERN.exec(pathname)
+  let locale: string = "en"
+  let internalPath = pathname
+  if (localeMatch) {
+    locale = localeMatch[1].toLowerCase()
+    internalPath = pathname.slice(localeMatch[1].length) || "/"
+    const url = new URL(`${internalPath}${search}`, request.url)
+    // ponytail: query param keeps cache entries distinct per locale (untranslated
+    // locales reuse the base slug, which would otherwise collide with the en route)
+    url.searchParams.set("locale", locale)
+    // forward x-locale on the *request* headers so server components' headers() sees it
+    const newReqHeaders = new Headers(request.headers)
+    newReqHeaders.set("x-locale", locale)
+    const res = NextResponse.rewrite(url, { request: { headers: newReqHeaders } })
+    res.cookies.set(LOCALE_COOKIE, locale, { path: "/", maxAge: 31536000, sameSite: "lax" })
+    return res
+  }
+
+  // Persisted-language redirect: bare root with a locale cookie → /{code}/
+  const cookie = request.cookies.get(LOCALE_COOKIE)?.value
+  if (pathname === "/" && cookie && /^(de|es|fr|it|pt)$/.test(cookie) && cookie !== locale) {
+    return NextResponse.redirect(new URL(`/${cookie}/`, request.url), 302)
+  }
+
   const redirect = await resolveRedirect(pathname)
-  if (!redirect || redirect.destination === pathname) return NextResponse.next()
+  if (!redirect || redirect.destination === pathname) {
+    const res = NextResponse.next()
+    res.headers.set("x-locale", "en")
+    return res
+  }
 
   return NextResponse.redirect(new URL(redirect.destination, request.url), redirect.type === "permanent" ? 301 : 302)
 }

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import type { Metadata } from "next"
+import { headers } from "next/headers"
 import { getInfoPageBySlug, getAllInfoPageSlugs, resolveContentImages } from "@/lib/api"
 
 import { BlogRenderer } from "@/components/blog-renderer"
@@ -17,7 +18,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { slug } = await params
-    const { infoPage } = await getInfoPageBySlug(slug)
+    const h = await headers()
+    const locale = h.get("x-locale") ?? "en"
+    const { infoPage } = await getInfoPageBySlug(slug, locale)
     if (!infoPage || !infoPage.published) return {}
     const desc = infoPage.metaDescription || infoPage.content?.replace(/<[^>]*>/g, "").slice(0, 160) || undefined
     const imageUrl = infoPage.coverImage ? (infoPage.coverImage.startsWith("http") ? infoPage.coverImage : `https://walkthroughnepal.com${infoPage.coverImage}`) : "https://walkthroughnepal.com/opengraph-image"
@@ -45,10 +48,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function InfoPage({ params }: Props) {
   const { slug } = await params
+  const h = await headers()
+  const locale = h.get("x-locale") ?? "en"
 
   let infoPage
   try {
-    const res = await getInfoPageBySlug(slug)
+    const res = await getInfoPageBySlug(slug, locale)
     infoPage = res.infoPage
     if (!infoPage || !infoPage.published) return notFound()
   } catch {

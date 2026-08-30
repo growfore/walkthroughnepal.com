@@ -24,6 +24,8 @@ export interface Activity {
   id: number
   title: string
   slug: string
+  locale?: string
+  translated?: boolean
   shortDescription: string
   fullDescription: string
   highlights: string[]
@@ -168,6 +170,8 @@ export interface InfoPage {
   metaTitle: string | null
   metaDescription: string | null
   published: boolean
+  locale?: string
+  translated?: boolean
   createdAt: string
   updatedAt: string
   infoPageCategory: { id: string; categoryHandle: string; categoryName: string } | null

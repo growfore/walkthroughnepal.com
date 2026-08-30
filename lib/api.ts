@@ -63,8 +63,8 @@ export function getActivities(filters?: Record<string, string>) {
 }
 
 // cache(): dedupe the API call across generateStaticParams/generateMetadata/page renders
-export const getActivityBySlug = cache(async (slug: string) => {
-  return fetchJSON<{ message: string; data: Activity }>(`/api/v1/activity/slug/${slug}`)
+export const getActivityBySlug = cache(async (slug: string, locale = "en") => {
+  return fetchJSON<{ message: string; data: Activity }>(`/api/v1/activity/slug/${slug}?locale=${encodeURIComponent(locale)}`)
 })
 
 export async function getAllActivitySlugs(): Promise<string[]> {
@@ -141,8 +141,8 @@ export async function getAllPostSlugs(): Promise<string[]> {
   }
 }
 
-export const getInfoPageBySlug = cache(async (slug: string) => {
-  return fetchJSON<{ infoPage: InfoPage }>(`/api/v1/info-page/slug/${slug}`)
+export const getInfoPageBySlug = cache(async (slug: string, locale = "en") => {
+  return fetchJSON<{ infoPage: InfoPage }>(`/api/v1/info-page/slug/${slug}?locale=${encodeURIComponent(locale)}`)
 })
 
 export async function getAllInfoPageSlugs(): Promise<string[]> {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { headers } from "next/headers"
 import {
   Mountain,
   Clock,
@@ -37,7 +38,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { slug } = await params
-    const res = await getActivityBySlug(slug)
+    const h = await headers()
+    const locale = h.get("x-locale") ?? "en"
+    const res = await getActivityBySlug(slug, locale)
     const pkg = res.data
     const seo = pkg.seo
     const desc = seo?.metaDescription?.trim() || pkg.shortDescription?.replace(/<[^>]*>/g, "").slice(0, 160) || undefined
@@ -131,10 +134,12 @@ export default async function PackagePage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
+  const h = await headers()
+  const locale = h.get("x-locale") ?? "en"
 
   let pkg
   try {
-    const res = await getActivityBySlug(slug)
+    const res = await getActivityBySlug(slug, locale)
     pkg = res.data
   } catch {
     notFound()
