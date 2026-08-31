@@ -60,6 +60,11 @@ export interface Activity {
   transportation: string
   meals: string
   priceBreakdown: string
+  groupDiscount?: {
+    groupSize: number
+    discount: number
+    discountType: "PERCENTAGE" | "FLAT"
+  }[]
   videoUrl: string
   map: string
   altitudeChart: { id: string; altitude: number; location: string }[]
