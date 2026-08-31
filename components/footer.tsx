@@ -103,7 +103,6 @@ export async function Footer() {
 
   return (
     <footer
-      translate="no"
       className="bg-navy bg-cover bg-center text-navy-foreground"
       style={{
         backgroundImage:

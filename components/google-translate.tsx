@@ -15,34 +15,24 @@ declare global {
 
 const SCRIPT_SRC = "https://translate.google.com/translate_a/element.js"
 
-function loadScript(): Promise<void> {
-  return new Promise((resolve) => {
-    if (document.querySelector(`script[src="${SCRIPT_SRC}"]`)) {
-      resolve()
-      return
-    }
-    const s = document.createElement("script")
-    s.type = "text/javascript"
-    s.src = SCRIPT_SRC
-    s.async = true
-    s.onload = () => resolve()
-    document.body.appendChild(s)
-  })
-}
-
 export function GoogleTranslate() {
   useEffect(() => {
-    if (!window.googleTranslateElementInit) {
-      window.googleTranslateElementInit = () => {
-        new window.google!.translate.TranslateElement(
-          { pageLanguage: "en", autoDisplay: false },
-          "google_translate_element",
-        )
-      }
+    if (document.getElementById("google_translate_element")?.firstChild) return
+
+    window.googleTranslateElementInit = () => {
+      new window.google!.translate.TranslateElement(
+        { pageLanguage: "en", autoDisplay: false },
+        "google_translate_element",
+      )
     }
-    loadScript()
-    window.googleTranslateElementInit()
-    return () => {}
+
+    if (!document.querySelector(`script[src="${SCRIPT_SRC}"]`)) {
+      const s = document.createElement("script")
+      s.type = "text/javascript"
+      s.src = SCRIPT_SRC
+      s.async = true
+      document.body.appendChild(s)
+    }
   }, [])
 
   return (

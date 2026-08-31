@@ -185,7 +185,7 @@ export default async function RootLayout({
           strategy="afterInteractive"
         />
         <ClientTranslate locale={locale} messages={messages} />
-        {locale !== "en" && <GoogleTranslate locale={locale} />}
+        <GoogleTranslate />
       </body>
     </html>
   )
