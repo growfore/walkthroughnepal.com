@@ -55,7 +55,13 @@ function groupDiscountTable(
       rule.discountType === "FLAT"
         ? rule.discount
         : Math.round(basePrice * (1 - rule.discount / 100))
-    const row = { pax: `${start}-${rule.groupSize} Pax`, price }
+    const row = {
+      pax:
+        start === rule.groupSize
+          ? `${rule.groupSize} Pax`
+          : `${start}-${rule.groupSize} Pax`,
+      price,
+    }
     start = rule.groupSize + 1
     return row
   })
