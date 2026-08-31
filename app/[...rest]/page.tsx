@@ -8,7 +8,7 @@ import { BlogRenderer } from "@/components/blog-renderer"
 import { PageHero } from "@/components/page-hero"
 import { BreadcrumbJsonLd } from "@/components/json-ld"
 import { ChevronLeft } from "lucide-react"
-import HomePage, { metadata as homeMetadata } from "@/app/(home)/page"
+import HomePage, { generateMetadataHome } from "@/app/(home)/page"
 import * as TripMod from "@/app/(pages)/trip/[slug]/page"
 import * as TripPrintMod from "@/app/(pages)/trip/[slug]/print/page"
 import * as ActivityMod from "@/app/(pages)/activity/[slug]/page"
@@ -97,7 +97,7 @@ async function InfoPageEl({ slug, locale }: { slug: string; locale: string }) {
 
       <section className="mx-auto max-w-4xl px-4 pb-16 pt-8">
         <article className="prose prose-lg prose-gray max-w-none w-full wrap-break-word **:wrap-break-word">
-          <BlogRenderer html={contentHtml} />
+          <BlogRenderer html={contentHtml} locale={locale} />
         </article>
 
         <div className="mt-8 text-center">
@@ -164,7 +164,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { rest } = await params
   const { locale, inner } = split(rest)
 
-  if (locale !== "en" && inner.length === 0) return homeMetadata
+  if (locale !== "en" && inner.length === 0) return generateMetadataHome()
 
   const hit = match(inner)
   if (!hit) return {}

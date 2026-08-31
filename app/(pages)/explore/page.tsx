@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { getActivities, getTripCategories, getTripTypes } from "@/lib/api"
+import { getI18n } from "@/lib/server-locale"
 import type { Activity } from "@/lib/types"
 import Link from "next/link"
 import { Mountain } from "lucide-react"
@@ -29,6 +30,7 @@ type SearchParams = { page?: string; category?: string; type?: string; min?: str
 
 export default async function ExplorePage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const params = await searchParams
+  const { locale } = await getI18n()
   const page = Number(params.page) || 1
   const categoryFilter = params.category || ""
   const typeFilter = params.type || ""
@@ -43,12 +45,12 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
   let totalPages = 1
 
   try {
-    const { data: { tripCategories } } = await getTripCategories()
+    const { data: { tripCategories } } = await getTripCategories(locale)
     categories = tripCategories.map((c) => ({ handle: c.categoryHandle, name: c.categoryName }))
   } catch {}
 
   try {
-    const { data: { tripTypes: types } } = await getTripTypes()
+    const { data: { tripTypes: types } } = await getTripTypes(locale)
     tripTypes = types.map((t) => ({ handle: t.tripTypeHandle, name: t.tripTypeName }))
   } catch {}
 
@@ -62,7 +64,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
   filters.page = String(page)
 
   try {
-    const res = await getActivities(filters)
+    const res = await getActivities(filters, locale)
     activities = res.data ?? []
     totalCount = res.pagination.total
     totalPages = res.pagination.totalPages

@@ -80,12 +80,12 @@ function SocialLinks({ socials }: { socials: Record<string, string> }) {
 }
 
 export async function Footer() {
-  const [apiConfig, footerItems, i18n] = await Promise.all([
+  const i18n = await getI18n()
+  const { t, href, locale } = i18n
+  const [apiConfig, footerItems] = await Promise.all([
     getSiteConfig(),
-    getFooterItems(),
-    getI18n(),
+    getFooterItems(locale),
   ])
-  const { t, href } = i18n
 
   const cfg: SiteConfig = apiConfig
     ? {
@@ -141,7 +141,7 @@ export async function Footer() {
         {items.map((item) => (
           <div key={item.label}>
             <Link href={href(item.url)}>
-              <h4 className="mb-4 font-semibold">{t(item.label)}</h4>
+              <h4 className="mb-4 font-semibold">{locale === "en" ? t(item.label) : item.label}</h4>
             </Link>
             {item.children && item.children.length > 0 && (
               <ul className="space-y-2 text-sm text-white/75">
@@ -151,7 +151,7 @@ export async function Footer() {
                       href={href(sub.url)}
                       className="hover:text-orange transition-colors"
                     >
-                      {t(sub.label)}
+                      {locale === "en" ? t(sub.label) : sub.label}
                     </Link>
                   </li>
                 ))}

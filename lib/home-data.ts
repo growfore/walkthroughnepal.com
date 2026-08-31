@@ -27,11 +27,11 @@ export type DepartureSlot = {
 }
 export type DepartureFilterMeta = { years: string[]; activityIds: number[]; months: number[]; days: number[] }
 
-export async function getHomeCategories(): Promise<HomeCategory[]> {
+export async function getHomeCategories(locale = "en"): Promise<HomeCategory[]> {
   try {
     const {
       data: { tripCategories },
-    } = await getTripCategories()
+    } = await getTripCategories(locale)
     // ponytail: one API call per category for counts — fine at ~6 categories
     const counts = await Promise.all(
       tripCategories.map(async (c) => {
@@ -61,11 +61,11 @@ export async function getHomeCategories(): Promise<HomeCategory[]> {
   }
 }
 
-export async function getHomeFeaturedTags(): Promise<FeaturedTag[]> {
+export async function getHomeFeaturedTags(locale = "en"): Promise<FeaturedTag[]> {
   try {
     const {
       data: { featuredTags },
-    } = await getFeaturedTags()
+    } = await getFeaturedTags(locale)
     return featuredTags
   } catch {
     return []
@@ -102,9 +102,9 @@ export async function getHomeTestimonials(): Promise<HomeTestimonial[]> {
   }
 }
 
-export async function getHomeDestinations(): Promise<HomeDestination[]> {
+export async function getHomeDestinations(locale = "en"): Promise<HomeDestination[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/v1/city?page=1&limit=10`, { next: { revalidate: 3600 } })
+    const res = await fetch(`${API_BASE}/api/v1/city?page=1&limit=10&locale=${encodeURIComponent(locale)}`, { next: { revalidate: 3600 } })
     const json = await res.json()
     return (json.data?.cities ?? []).map((c: { cityName: string; cityHandle: string; cityImage: string }) => ({
       img: c.cityImage || "/manaslu-view.webp",

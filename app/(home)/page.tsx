@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { WebSiteJsonLd } from "@/components/json-ld"
+import { getI18n } from "@/lib/server-locale"
 import { SearchSection } from "@/components/search-section"
 import { FeaturedTrips } from "@/components/home/featured-trips"
 import { CategorySection } from "@/components/home/category-section"
@@ -57,16 +58,48 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 }
 
+export async function generateMetadataHome(): Promise<Metadata> {
+  const { t } = await getI18n()
+  const title = t("Walk Through Nepal — Authentic Himalayan Adventures")
+  const description = t("Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas with Walk Through Nepal. 20+ years of local expertise, 50+ destinations, 5000+ happy travelers.")
+  const ogDescription = t("Discover authentic treks, cultural journeys, wildlife adventures and local experiences across the Himalayas.")
+  return {
+    title: { absolute: title },
+    description,
+    keywords: [
+      "Nepal trekking",
+      "Himalayan adventure",
+      "Nepal travel agency",
+      "trekking packages Nepal",
+      "Nepal tour operator",
+    ],
+    openGraph: {
+      title,
+      description: ogDescription,
+      url: "https://walkthroughnepal.com",
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: ogDescription,
+      images: ["/opengraph-image"],
+    },
+    alternates: { canonical: "/" },
+  }
+}
+
 export const dynamic = "force-dynamic"
 
 export default async function HomePage() {
+  const { locale } = await getI18n()
   const [categories, featuredTags, blogList, testimonials, destinations, departures] =
     await Promise.all([
-      getHomeCategories(),
-      getHomeFeaturedTags(),
+      getHomeCategories(locale),
+      getHomeFeaturedTags(locale),
       getHomeBlog(),
       getHomeTestimonials(),
-      getHomeDestinations(),
+      getHomeDestinations(locale),
       getHomeDepartures(),
     ])
 

@@ -1,4 +1,5 @@
 import { getActivitiesByType, getTripTypes } from "@/lib/api"
+import { getI18n } from "@/lib/server-locale"
 import type { Activity } from "@/lib/types"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -12,9 +13,10 @@ export const dynamic = "force-dynamic"
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
+  const { locale } = await getI18n()
   let label = slug.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase())
   try {
-    const res = await getTripTypes()
+    const res = await getTripTypes(locale)
     const match = res.data.tripTypes.find((t) => t.tripTypeHandle === slug)
     if (match) label = match.tripTypeName
   } catch {}
@@ -35,10 +37,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ActivitiesByTypePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
+  const { locale } = await getI18n()
 
   let typeName: string | null = null
   try {
-    const res = await getTripTypes()
+    const res = await getTripTypes(locale)
     const match = res.data.tripTypes.find((t) => t.tripTypeHandle === slug)
     if (!match) notFound()
     typeName = match.tripTypeName
@@ -48,7 +51,7 @@ export default async function ActivitiesByTypePage({ params }: { params: Promise
 
   let activities: Activity[] = []
   try {
-    const res = await getActivitiesByType(slug)
+    const res = await getActivitiesByType(slug, locale)
     activities = res.data ?? []
   } catch {}
 
