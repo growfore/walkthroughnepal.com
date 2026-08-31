@@ -354,17 +354,19 @@ export default async function PackagePage({
             )}
 
             {/* ── Reviews ── */}
-            <div id="reviews" className="mt-12 scroll-mt-40">
-              <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-2xl font-bold text-navy md:text-3xl">
-                    Traveler Reviews
-                  </h2>
+            {testimonials && testimonials.length > 0 &&
+              <div id="reviews" className="mt-12 scroll-mt-40">
+                <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                      Traveler Reviews
+                    </h2>
+                  </div>
                 </div>
-              </div>
 
-              <ReviewsCarousel items={testimonials} />
-            </div>
+                <ReviewsCarousel items={testimonials} />
+              </div>
+            }
 
             {/* ── Full Description ── */}
             {pkg.fullDescription && (
