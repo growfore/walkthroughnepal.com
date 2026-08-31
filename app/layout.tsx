@@ -13,6 +13,7 @@ import { BackToTop } from "@/components/back-to-top"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { ToastContainer } from "react-toastify"
 import { ClientTranslate } from "@/components/client-translate"
+import { GoogleTranslate } from "@/components/google-translate"
 import { OrganizationJsonLd } from "@/components/json-ld"
 import { developer, developerAttributionGraph } from "@/lib/developer-attribution"
 import { isLocaleCode } from "@/lib/locales"
@@ -183,7 +184,11 @@ export default async function RootLayout({
           src="https://challenges.cloudflare.com/turnstile/v0/api.js"
           strategy="afterInteractive"
         />
-        <ClientTranslate locale={locale} messages={locale === "en" ? {} : messages} />
+        {locale === "en" ? (
+          <ClientTranslate locale="en" messages={{}} />
+        ) : (
+          <GoogleTranslate locale={locale} />
+        )}
       </body>
     </html>
   )

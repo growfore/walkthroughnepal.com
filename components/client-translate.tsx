@@ -43,6 +43,8 @@ function translateElement(element: Element, messages: Messages, locale: LocaleCo
 
 export function ClientTranslate({ locale, messages }: { locale: LocaleCode; messages: Messages }) {
   useEffect(() => {
+    // Google Translate owns client-side translation on non-en locales.
+    if (locale !== "en") return
     if (!Object.keys(messages).length) return
     translateElement(document.body, messages, locale)
 

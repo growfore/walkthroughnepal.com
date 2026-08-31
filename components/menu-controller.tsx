@@ -95,6 +95,7 @@ export function MenuController({ items, locale = "en" }: MenuControllerProps) {
     <nav
       ref={navRef}
       aria-label="Main navigation"
+      translate="no"
           className={`${isTripPage ? "relative w-full" : "fixed inset-x-0 top-0"} z-50 border-b border-border bg-white/40 backdrop-blur-xl`}
     >
       {/* Top bar */}
