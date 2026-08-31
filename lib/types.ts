@@ -65,6 +65,7 @@ export interface Activity {
     discount: number
     discountType: "PERCENTAGE" | "FLAT"
   }[]
+  showGroupDiscount?: boolean
   videoUrl: string
   map: string
   altitudeChart: { id: string; altitude: number; location: string }[]
