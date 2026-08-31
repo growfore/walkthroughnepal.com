@@ -184,11 +184,8 @@ export default async function RootLayout({
           src="https://challenges.cloudflare.com/turnstile/v0/api.js"
           strategy="afterInteractive"
         />
-        {locale === "en" ? (
-          <ClientTranslate locale="en" messages={{}} />
-        ) : (
-          <GoogleTranslate locale={locale} />
-        )}
+        <ClientTranslate locale={locale} messages={messages} />
+        {locale !== "en" && <GoogleTranslate locale={locale} />}
       </body>
     </html>
   )
