@@ -1,8 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import { usePathname } from "next/navigation"
-import { LOCALE_CODES, type LocaleCode } from "@/lib/locales"
+import { useEffect } from "react"
 
 declare global {
   interface Window {
@@ -24,6 +22,7 @@ function loadScript(): Promise<void> {
       return
     }
     const s = document.createElement("script")
+    s.type = "text/javascript"
     s.src = SCRIPT_SRC
     s.async = true
     s.onload = () => resolve()
@@ -31,67 +30,24 @@ function loadScript(): Promise<void> {
   })
 }
 
-function setLanguage(code: LocaleCode) {
-  const select = document.querySelector(".goog-te-combo") as HTMLSelectElement | null
-  if (!select) return
-  if (!Array.from(select.options).some((o) => o.value === code)) return
-  select.value = code
-  select.dispatchEvent(new Event("change"))
-}
-
-function ensureWidgetEl() {
-  if (!document.getElementById("google_translate_element")) {
-    const el = document.createElement("div")
-    el.id = "google_translate_element"
-    el.className = "hidden"
-    document.body.appendChild(el)
-  }
-}
-
-export function GoogleTranslate({ locale }: { locale: LocaleCode }) {
-  const pathname = usePathname()
-  const inited = useRef(false)
-
+export function GoogleTranslate() {
   useEffect(() => {
-    if (locale === "en") return
-    let cancelled = false
-
-    loadScript().then(() => {
-      if (cancelled) return
-      ensureWidgetEl()
-
-      if (!window.googleTranslateElementInit) {
-        window.googleTranslateElementInit = () => {
-          new window.google!.translate.TranslateElement(
-            {
-              pageLanguage: "en",
-              includedLanguages: LOCALE_CODES.join(","),
-              autoDisplay: false,
-            },
-            "google_translate_element",
-          )
-        }
+    if (!window.googleTranslateElementInit) {
+      window.googleTranslateElementInit = () => {
+        new window.google!.translate.TranslateElement(
+          { pageLanguage: "en", autoDisplay: false },
+          "google_translate_element",
+        )
       }
-      if (!inited.current) {
-        inited.current = true
-        window.googleTranslateElementInit()
-      }
-      // wait for GT to build its <select>, then switch to the target locale
-      setTimeout(() => setLanguage(locale), 100)
-    })
-
-    return () => {
-      cancelled = true
     }
-  }, [locale])
+    loadScript()
+    window.googleTranslateElementInit()
+    return () => {}
+  }, [])
 
-  // GT's classic widget does not follow App Router soft navigation — re-apply
-  // after each route change so freshly rendered content gets translated.
-  useEffect(() => {
-    if (locale === "en") return
-    const id = setTimeout(() => setLanguage(locale), 400)
-    return () => clearTimeout(id)
-  }, [pathname, locale])
-
-  return null
+  return (
+    <div className="fixed bottom-4 left-4 z-[200]">
+      <div id="google_translate_element" />
+    </div>
+  )
 }
