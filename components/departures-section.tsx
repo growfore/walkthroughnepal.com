@@ -354,145 +354,139 @@ export function DeparturesSection({
                   </div>
                 )}
                 <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="space-y-3">
-                    <FormField
-                      control={form.control}
-                      name="fullName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-xs font-semibold text-ink">
-                            Name *
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              className="h-9 w-full text-sm"
-                              placeholder="Your name"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="tier"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-xs font-semibold text-ink">
-                            Package *
-                          </FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger
-                                size="sm"
-                                className="w-full text-sm"
-                              >
-                                <SelectValue placeholder="Select package" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {tiers.map((t) => (
-                                <SelectItem key={t.id} value={t.name}>
-                                  {t.name} — {t.price}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-xs font-semibold text-ink">
-                            Email *
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              className="h-9 w-full text-sm"
-                              type="email"
-                              placeholder="you@example.com"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="startDate"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-xs font-semibold text-ink">
-                            Start Date *
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              className="h-9 w-full text-sm [&::-webkit-calendar-picker-indicator]:py-1"
-                              type="date"
-                              min={new Date().toISOString().split("T")[0]}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-xs font-semibold text-ink">
-                            Phone *
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              className="h-9 w-full text-sm"
-                              placeholder="+1 234 567 890"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="numberOfTravellers"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-xs font-semibold text-ink">
-                            Travellers *
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              className="h-9 w-full text-sm"
-                              type="number"
-                              min="1"
-                              placeholder="Number of people"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="fullName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-ink">
+                          Name *
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className="h-9 w-full text-sm"
+                            placeholder="Your name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-ink">
+                          Email *
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className="h-9 w-full text-sm"
+                            type="email"
+                            placeholder="you@example.com"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-ink">
+                          Phone *
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className="h-9 w-full text-sm"
+                            placeholder="+1 234 567 890"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-                <div className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="tier"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold text-ink">
+                        Package *
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger
+                            size="sm"
+                            className="w-full text-sm"
+                          >
+                            <SelectValue placeholder="Select package" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {tiers.map((t) => (
+                            <SelectItem key={t.id} value={t.name}>
+                              {t.name} — {t.price}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <FormField
+                    control={form.control}
+                    name="startDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-ink">
+                          Start Date *
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className="h-9 w-full text-sm [&::-webkit-calendar-picker-indicator]:py-1"
+                            type="date"
+                            min={new Date().toISOString().split("T")[0]}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="numberOfTravellers"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-ink">
+                          Travellers *
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className="h-9 w-full text-sm"
+                            type="number"
+                            min="1"
+                            placeholder="Number of people"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name="groupType"
