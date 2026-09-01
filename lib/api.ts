@@ -22,9 +22,23 @@ export function img(path: string | null | undefined): string {
 }
 
 export function resolveContentImages(html: string): string {
-  return html.replace(/src="([^"]+)"/g, (match, src: string) => {
-    if (/^(?:https?:\/\/|\/\/|\/)/.test(src)) return `src="${img(src)}"`
-    return match
+  return html.replace(/<img\b[^>]*\ssrc\s*=\s*(["'])([^"']+)\1[^>]*>/gi, (tag, _quote, src: string) => {
+    const resolved = /^(?:https?:\/\/|\/\/|\/)/.test(src) ? img(src) : src
+    const normalized = tag.replace(/(\ssrc\s*=\s*)(["'])[^"']*\2/i, `$1$2${resolved}$2`)
+    if (!resolved.startsWith("/cms/uploads/") || /(?:^|\s)srcset\s*=/i.test(normalized)) return normalized
+
+    const separator = resolved.includes("?") ? "&" : "?"
+    const srcset = [480, 768, 1024, 1440]
+      .map((width) => `${resolved}${separator}w=${width} ${width}w`)
+      .join(", ")
+    const attributes = [
+      `srcset="${srcset}"`,
+      /(?:^|\s)sizes\s*=/i.test(normalized) ? "" : 'sizes="(max-width: 1024px) calc(100vw - 2rem), 896px"',
+      /(?:^|\s)loading\s*=/i.test(normalized) ? "" : 'loading="lazy"',
+      /(?:^|\s)decoding\s*=/i.test(normalized) ? "" : 'decoding="async"',
+    ].filter(Boolean).join(" ")
+
+    return normalized.replace(/\s*\/?>$/, (closing) => ` ${attributes}${closing}`)
   })
 }
 
