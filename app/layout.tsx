@@ -160,7 +160,7 @@ export default async function RootLayout({
         </a>
         <ThemeProvider>
           <Navigation />
-          <main id="main-content" className="pt-[40px] md:pt-[100px]">
+          <main id="main-content" className="pt-16 md:pt-28">
             {children}
           </main>
           <BackToTop />
