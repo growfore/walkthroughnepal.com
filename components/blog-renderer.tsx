@@ -4,7 +4,7 @@ import { TripEmbedCard } from "@/components/trip-embed-card"
 import { FeaturedTripsCarousel } from "@/components/featured-trips-carousel"
 import { PostEmbedCard } from "@/components/post-embed-card"
 
-export async function BlogRenderer({ html }: { html: string }) {
+export async function BlogRenderer({ html, locale = "en" }: { html: string; locale?: string }) {
   const rendered = await Promise.all(
     parseShortcodes(html).map(async (seg, i) => {
       if (seg.type === "html") {
@@ -18,7 +18,7 @@ export async function BlogRenderer({ html }: { html: string }) {
       }
       try {
         if (seg.type === "trip") {
-          const { data } = await getActivityBySlug(seg.slug)
+          const { data } = await getActivityBySlug(seg.slug, locale)
           return (
             <div key={i} className="not-prose my-8">
               <TripEmbedCard activity={data} />
@@ -26,7 +26,7 @@ export async function BlogRenderer({ html }: { html: string }) {
           )
         }
         if (seg.type === "featured") {
-          const res = await getFeaturedActivitiesByTag(seg.tag)
+          const res = await getFeaturedActivitiesByTag(seg.tag, locale)
           const activities = (res.data?.featuredTag?.activity ?? []).slice(0, seg.count)
           if (!activities.length) return null
           if (activities.length === 1) {

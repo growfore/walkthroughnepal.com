@@ -12,6 +12,7 @@ import { getFooterItems, getSiteConfig } from "@/lib/api"
 import { Logo } from "./logo"
 import { FooterNewsletter } from "./footer-newsletter"
 import Image from "next/image";
+import { getI18n } from "@/lib/server-locale"
 
 type SocialIconProps = { url: string }
 
@@ -79,9 +80,11 @@ function SocialLinks({ socials }: { socials: Record<string, string> }) {
 }
 
 export async function Footer() {
+  const i18n = await getI18n()
+  const { t, href, locale } = i18n
   const [apiConfig, footerItems] = await Promise.all([
     getSiteConfig(),
-    getFooterItems(),
+    getFooterItems(locale),
   ])
 
   const cfg: SiteConfig = apiConfig
@@ -115,8 +118,8 @@ export async function Footer() {
                       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange/10 text-orange">
                         <r.icon className="h-6 w-6" />
                       </div>
-                      <h3 className="mt-4 font-bold">{r.title}</h3>
-                      <p className="mt-1 text-sm text-white/70">{r.text}</p>
+                      <h3 className="mt-4 font-bold">{t(r.title)}</h3>
+                      <p className="mt-1 text-sm text-white/70">{t(r.text)}</p>
                     </div>
                   ))}
                 </div>
@@ -125,7 +128,7 @@ export async function Footer() {
       <FooterNewsletter />
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pt-14 pb-10 md:grid-cols-3 lg:grid-cols-6">
         <div className="md:col-span-2">
-          <a href={"/"}>
+          <a href={href("/")}>
             <Image src={"/walkthrough-nepal-logo-white.svg"} height={200} width={200} alt="walk through nepal logo white"/>
           </a>
           <p className="mt-4 max-w-xs text-sm text-white/70">
@@ -137,18 +140,18 @@ export async function Footer() {
         </div>
         {items.map((item) => (
           <div key={item.label}>
-            <Link href={item.url}>
-              <h4 className="mb-4 font-semibold">{item.label}</h4>
+            <Link href={href(item.url)}>
+              <h4 className="mb-4 font-semibold">{locale === "en" ? t(item.label) : item.label}</h4>
             </Link>
             {item.children && item.children.length > 0 && (
               <ul className="space-y-2 text-sm text-white/75">
                 {item.children.map((sub) => (
                   <li key={sub.label}>
                     <Link
-                      href={sub.url}
+                      href={href(sub.url)}
                       className="hover:text-orange transition-colors"
                     >
-                      {sub.label}
+                      {locale === "en" ? t(sub.label) : sub.label}
                     </Link>
                   </li>
                 ))}
@@ -157,7 +160,7 @@ export async function Footer() {
           </div>
         ))}
         <div>
-          <h4 className="mb-4 font-semibold">Contact Us</h4>
+          <h4 className="mb-4 font-semibold">{t("Contact Us")}</h4>
           <ul className="space-y-2 text-sm text-white/75">
             <li className="flex items-start gap-2">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-orange" />
@@ -185,7 +188,7 @@ export async function Footer() {
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-3 px-4 py-5 text-xs text-white/60">
           <span>
-            &copy; {cfg.name}. {new Date().getFullYear()}. All rights reserved.
+            {t("© {name}. {year}. All rights reserved.", { name: cfg.name, year: String(new Date().getFullYear()) })}
           </span>
           <div className="flex gap-2 items-center">
             Designed and Developed by

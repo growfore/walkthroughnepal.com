@@ -8,6 +8,7 @@ import { MobileMenuOverlay } from "./mobile-menu-overlay"
 import { SearchDialog } from "./search-dialog"
 import { siteConfig } from "@/lib/siteConfig"
 import { Logo } from "./logo"
+import type { LocaleCode } from "@/lib/locales"
 
 type MenuItem = {
   id: string
@@ -24,9 +25,10 @@ const hasGrandchildren = (item: MenuItem) =>
 
 interface MenuControllerProps {
   items: MenuItem[]
+  locale?: LocaleCode
 }
 
-export function MenuController({ items }: MenuControllerProps) {
+export function MenuController({ items, locale = "en" }: MenuControllerProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [activeMega, setActiveMega] = useState<string | null>(null)
   const pathname = usePathname()
@@ -274,6 +276,7 @@ export function MenuController({ items }: MenuControllerProps) {
         isOpen={isMobileOpen}
         setIsOpen={setIsMobileOpen}
         onNavigate={() => setIsMobileOpen(false)}
+        locale={locale}
       />
     </nav>
   )

@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
-import { getActivitiesByCategory } from "@/lib/api"
+import { getActivitiesByCategory, getTripCategories } from "@/lib/api"
+import { getI18n } from "@/lib/server-locale"
 import type { Activity } from "@/lib/types"
 import Link from "next/link"
 import { Mountain } from "lucide-react"
@@ -33,12 +34,19 @@ export const dynamic = "force-dynamic"
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const label = slug.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase())
+  const { locale } = await getI18n()
+  let label = slug.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase())
+
+  try {
+    const { data: { tripCategories } } = await getTripCategories(locale)
+    const match = tripCategories.find((c) => c.categoryHandle === slug)
+    if (match) label = match.categoryName
+  } catch {}
 
   let activities: Activity[] = []
 
   try {
-    const res = await getActivitiesByCategory(slug)
+    const res = await getActivitiesByCategory(slug, locale)
     activities = res.data ?? []
   } catch {}
 

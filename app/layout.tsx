@@ -1,6 +1,7 @@
 import { Livvic, Martian_Mono, Barlow_Semi_Condensed } from "next/font/google"
 import type { Metadata, Viewport } from "next"
 import Script from "next/script"
+import { headers } from "next/headers"
 
 import "./globals.css"
 import "react-toastify/dist/ReactToastify.css"
@@ -11,8 +12,11 @@ import { Footer } from "@/components/footer"
 import { BackToTop } from "@/components/back-to-top"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { ToastContainer } from "react-toastify"
+import { ClientTranslate } from "@/components/client-translate"
 import { OrganizationJsonLd } from "@/components/json-ld"
 import { developer, developerAttributionGraph } from "@/lib/developer-attribution"
+import { isLocaleCode } from "@/lib/locales"
+import { formatMessage, getMessages } from "@/lib/messages"
 
 const SITE_URL = "https://walkthroughnepal.com"
 
@@ -56,17 +60,6 @@ export const metadata: Metadata = {
     "wildlife safari Nepal",
     "Pokhara trekking",
   ],
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
   alternates: {
     canonical: "/",
     languages: {
@@ -109,12 +102,16 @@ export const viewport: Viewport = {
   ],
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const headersList = await headers()
+  const requestedLocale = headersList.get("x-locale") ?? undefined
+  const locale = isLocaleCode(requestedLocale) ? requestedLocale : "en"
+  const messages = getMessages(locale)
   return (
     <html
-      lang="en"
+      lang={locale}
       suppressHydrationWarning
       className={cn(
         "antialiased",
@@ -159,7 +156,7 @@ export default function RootLayout({
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:m-2 focus:rounded-md focus:bg-navy focus:px-4 focus:py-2 focus:text-navy-foreground focus:outline-none focus:ring-2 focus:ring-orange"
         >
-          Skip to main content
+          {formatMessage(messages, "Skip to main content")}
         </a>
         <ThemeProvider>
           <Navigation />
@@ -175,6 +172,7 @@ export default function RootLayout({
           src="https://challenges.cloudflare.com/turnstile/v0/api.js"
           strategy="afterInteractive"
         />
+        <ClientTranslate locale={locale} messages={messages} />
       </body>
     </html>
   )

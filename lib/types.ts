@@ -24,6 +24,8 @@ export interface Activity {
   id: number
   title: string
   slug: string
+  locale?: string
+  translated?: boolean
   shortDescription: string
   fullDescription: string
   highlights: string[]
@@ -58,6 +60,12 @@ export interface Activity {
   transportation: string
   meals: string
   priceBreakdown: string
+  groupDiscount?: {
+    groupSize: number
+    discount: number
+    discountType: "PERCENTAGE" | "FLAT"
+  }[]
+  showGroupDiscount?: boolean
   videoUrl: string
   map: string
   altitudeChart: { id: string; altitude: number; location: string }[]
@@ -168,6 +176,8 @@ export interface InfoPage {
   metaTitle: string | null
   metaDescription: string | null
   published: boolean
+  locale?: string
+  translated?: boolean
   createdAt: string
   updatedAt: string
   infoPageCategory: { id: string; categoryHandle: string; categoryName: string } | null

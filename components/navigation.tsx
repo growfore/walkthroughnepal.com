@@ -1,6 +1,7 @@
 import { cache } from "react"
 import { MenuController } from "./menu-controller"
 import { API_BASE } from "@/lib/api"
+import { getI18n } from "@/lib/server-locale"
 
 type MenuItem = {
   id: string
@@ -16,9 +17,9 @@ type MenuData = {
   }
 }
 
-const fetchMenu = cache(async () => {
+const fetchMenu = cache(async (locale: string) => {
   try {
-    const res = await fetch(`${API_BASE}/api/v1/menu`, { next: { revalidate: 60 } })
+    const res = await fetch(`${API_BASE}/api/v1/menu?locale=${encodeURIComponent(locale)}`, { next: { revalidate: 60 } })
     if (!res.ok) return []
     const data: MenuData = await res.json()
     return data?.data?.items ?? []
@@ -28,6 +29,13 @@ const fetchMenu = cache(async () => {
 })
 
 export async function Navigation() {
-  const items = await fetchMenu()
-  return <MenuController items={items} />
+  const { locale, t, href } = await getI18n()
+  const items = await fetchMenu(locale)
+  const localize = (item: MenuItem): MenuItem => ({
+    ...item,
+    label: locale === "en" ? t(item.label) : item.label,
+    url: href(item.url),
+    children: item.children.map(localize),
+  })
+  return <MenuController items={items.map(localize)} locale={locale} />
 }

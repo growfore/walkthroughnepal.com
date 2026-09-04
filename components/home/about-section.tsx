@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 import { siteConfig } from "@/lib/siteConfig"
+import { getI18n } from "@/lib/server-locale"
 
 const stats = [
   { icon: "/icons/map-location.png", value: "Local Expertise", label: "Travel Nepal with people who know it from the inside." },
@@ -9,7 +10,8 @@ const stats = [
   { icon: "/icons/customer-support.png", value: "Personalized Support", label: "From your first inquiry to your final goodbye." },
 ]
 
-export function AboutSection() {
+export async function AboutSection() {
+  const { t } = await getI18n()
   return (
     <section className="py-16">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 lg:grid-cols-2">
@@ -34,11 +36,7 @@ export function AboutSection() {
             Local Experts. Authentic Himalayan Adventures.
           </h2>
           <p className="mt-5 max-w-xl text-muted-foreground">
-            Founded by local trekking guides, we&apos;ve spent{" "}
-            {siteConfig.experience} {" "} leading adventurers through the Himalayas —
-            from the bustling streets of Kathmandu to the remote trails of the Nar
-            Phu Valley. Every journey is designed to immerse you in Nepal&apos;s
-            rich culture, breathtaking landscapes, and warm hospitality.
+            {t("Founded by local trekking guides, we've spent {years} leading adventurers through the Himalayas — from the bustling streets of Kathmandu to the remote trails of the Nar Phu Valley. Every journey is designed to immerse you in Nepal's rich culture, breathtaking landscapes, and warm hospitality.", { years: siteConfig.experience })}
           </p>
           <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
             {stats.map((s) => (

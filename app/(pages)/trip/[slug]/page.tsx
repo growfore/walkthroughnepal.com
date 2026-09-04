@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
+import { headers } from "next/headers"
 import {
   Mountain,
   Clock,
   ChevronRight,
+  ChevronDown,
   Calendar,
   Users,
   Home as HomeIcon,
@@ -18,17 +20,55 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import {
-  getActivityBySlug,
   getAllActivitySlugs,
+  getPublishedActivityBySlug,
   getTestimonials,
   getSlots,
   img,
   parseItineraryVariants,
 } from "@/lib/api"
 import { siteConfig } from "@/lib/siteConfig"
+import { getI18n } from "@/lib/server-locale"
+import { buildTripAlternates, SITE_URL } from "@/lib/hreflang"
+import { isLocaleCode, LOCALE_TERRITORY } from "@/lib/locales"
 import { TouristTripJsonLd, FAQPageJsonLd, BreadcrumbJsonLd } from "@/components/json-ld"
 
 type Props = { params: Promise<{ slug: string }> }
+
+type GroupDiscountRule = {
+  groupSize: number
+  discount: number
+  discountType: "PERCENTAGE" | "FLAT"
+}
+
+function groupDiscountTable(
+  basePrice: number,
+  rules?: GroupDiscountRule[],
+): { pax: string; price: number }[] | null {
+  if (!basePrice || !rules || rules.length === 0) return null
+  const sorted = rules
+    .filter((r) => r.groupSize >= 2 && r.discount > 0)
+    .sort((a, b) => a.groupSize - b.groupSize)
+  if (sorted.length === 0) return null
+
+  let start = 2
+  const rows = sorted.map((rule) => {
+    const price =
+      rule.discountType === "FLAT"
+        ? rule.discount
+        : Math.round(basePrice * (1 - rule.discount / 100))
+    const row = {
+      pax:
+        start === rule.groupSize
+          ? `${rule.groupSize} Pax`
+          : `${start}-${rule.groupSize} Pax`,
+      price,
+    }
+    start = rule.groupSize + 1
+    return row
+  })
+  return [{ pax: "1 Pax", price: basePrice }, ...rows]
+}
 
 export function generateStaticParams() {
   return getAllActivitySlugs().then((slugs) => slugs.map((slug) => ({ slug })))
@@ -37,11 +77,16 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { slug } = await params
-    const res = await getActivityBySlug(slug)
-    const pkg = res.data
+    const h = await headers()
+    const locale = h.get("x-locale") ?? "en"
+    if (!isLocaleCode(locale)) return {}
+    const pkg = await getPublishedActivityBySlug(slug, locale)
+    if (!pkg) return {}
     const seo = pkg.seo
     const desc = seo?.metaDescription?.trim() || pkg.shortDescription?.replace(/<[^>]*>/g, "").slice(0, 160) || undefined
-    const imageUrl = pkg.images?.[0] ? (pkg.images[0].startsWith("http") ? pkg.images[0] : `https://walkthroughnepal.com${pkg.images[0]}`) : "https://walkthroughnepal.com/opengraph-image"
+    const imageUrl = pkg.images?.[0] ? (pkg.images[0].startsWith("http") ? pkg.images[0] : `${SITE_URL}${pkg.images[0]}`) : `${SITE_URL}/opengraph-image`
+    const { canonical, languages } = await buildTripAlternates(pkg.id, locale, slug)
+    const ogLocale = LOCALE_TERRITORY[locale]
     return {
       title: seo?.metaTitle?.trim() || pkg.title,
       description: desc,
@@ -49,11 +94,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ? seo.metaKeywords.split(",").map((k) => k.trim()).filter(Boolean)
         : [pkg.title, "Nepal trek", pkg.difficultyLevel, pkg.bestSeason, "trekking package"].filter(Boolean),
       robots: seo?.metaRobots?.trim() || undefined,
-      alternates: { canonical: `/trip/${slug}` },
+      alternates: { canonical, languages },
       openGraph: {
+        locale: ogLocale,
         title: pkg.title,
         description: desc,
-        url: `https://walkthroughnepal.com/trip/${slug}`,
+        url: `${SITE_URL}${canonical}`,
         type: "article",
         images: [{ url: imageUrl, width: 1200, height: 630, alt: pkg.title }],
       },
@@ -131,11 +177,15 @@ export default async function PackagePage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
+  const h = await headers()
+  const locale = h.get("x-locale") ?? "en"
+  if (!isLocaleCode(locale)) notFound()
+  const { t } = await getI18n()
 
   let pkg
   try {
-    const res = await getActivityBySlug(slug)
-    pkg = res.data
+    pkg = await getPublishedActivityBySlug(slug, locale)
+    if (!pkg) notFound()
   } catch {
     notFound()
   }
@@ -311,17 +361,19 @@ export default async function PackagePage({
             )}
 
             {/* ── Reviews ── */}
-            <div id="reviews" className="mt-12 scroll-mt-40">
-              <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-2xl font-bold text-navy md:text-3xl">
-                    Traveler Reviews
-                  </h2>
+            {testimonials && testimonials.length > 0 &&
+              <div id="reviews" className="mt-12 scroll-mt-40">
+                <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-bold text-navy md:text-3xl">
+                      Traveler Reviews
+                    </h2>
+                  </div>
                 </div>
-              </div>
 
-              <ReviewsCarousel items={testimonials} />
-            </div>
+                <ReviewsCarousel items={testimonials} />
+              </div>
+            }
 
             {/* ── Full Description ── */}
             {pkg.fullDescription && (
@@ -518,11 +570,40 @@ export default async function PackagePage({
                 </div>
                 <div className="text-sm text-muted-foreground">per person</div>
 
+                {pkg.showGroupDiscount !== false && groupDiscountTable(pkg.price, pkg.groupDiscount) && (
+                  <details className="group mt-3">
+                    <summary className="flex w-full cursor-pointer list-none items-center justify-between rounded-md border border-border bg-muted/40 px-3 py-2 text-sm font-semibold text-navy [&::-webkit-details-marker]:hidden">
+                      {t("See group booking discount")}
+                      <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
+                    </summary>
+                    <div className="mt-2 overflow-hidden rounded-md border border-border">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-border bg-muted/40 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                            <th className="px-3 py-2">{t("No. of people")}</th>
+                            <th className="px-3 py-2">{t("Price per person")}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {groupDiscountTable(pkg.price, pkg.groupDiscount)?.map((row) => (
+                            <tr key={row.pax} className="border-b border-border last:border-0">
+                              <td className="px-3 py-2 text-navy">{row.pax}</td>
+                              <td className="px-3 py-2 text-navy">
+                                USD {row.price.toLocaleString()}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </details>
+                )}
+
                 <Link
                   href={`/inquiry?trip=${slug}`}
                   className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-4 py-3 font-semibold text-orange-foreground hover:opacity-90 underline text-lg"
                 >
-                  Inquiry Now
+                  Inquire Now
                 </Link>
                 <a
                   href="#departures"

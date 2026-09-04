@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { getPostBySlug, getPublishedPosts, getAllPostSlugs, img, resolveContentImages, wrapContentImageCaptions } from "@/lib/api"
+import { getI18n } from "@/lib/server-locale"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { BlogRenderer } from "@/components/blog-renderer"
@@ -52,6 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
+  const { locale } = await getI18n()
 
   let post
   try {
@@ -138,7 +140,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               </nav>
             </div>
           )}
-          <BlogRenderer html={wrapContentImageCaptions(resolveContentImages(post.content))} />
+          <BlogRenderer html={wrapContentImageCaptions(resolveContentImages(post.content))} locale={locale} />
         </article>
 
         <div className="mt-8 text-center">

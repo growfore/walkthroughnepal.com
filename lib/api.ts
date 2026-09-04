@@ -22,9 +22,23 @@ export function img(path: string | null | undefined): string {
 }
 
 export function resolveContentImages(html: string): string {
-  return html.replace(/src="([^"]+)"/g, (match, src: string) => {
-    if (/^(?:https?:\/\/|\/\/|\/)/.test(src)) return `src="${img(src)}"`
-    return match
+  return html.replace(/<img\b[^>]*\ssrc\s*=\s*(["'])([^"']+)\1[^>]*>/gi, (tag, _quote, src: string) => {
+    const resolved = /^(?:https?:\/\/|\/\/|\/)/.test(src) ? img(src) : src
+    const normalized = tag.replace(/(\ssrc\s*=\s*)(["'])[^"']*\2/i, `$1$2${resolved}$2`)
+    if (!resolved.startsWith("/cms/uploads/") || /(?:^|\s)srcset\s*=/i.test(normalized)) return normalized
+
+    const separator = resolved.includes("?") ? "&" : "?"
+    const srcset = [480, 768, 1024, 1440]
+      .map((width) => `${resolved}${separator}w=${width} ${width}w`)
+      .join(", ")
+    const attributes = [
+      `srcset="${srcset}"`,
+      /(?:^|\s)sizes\s*=/i.test(normalized) ? "" : 'sizes="(max-width: 1024px) calc(100vw - 2rem), 896px"',
+      /(?:^|\s)loading\s*=/i.test(normalized) ? "" : 'loading="lazy"',
+      /(?:^|\s)decoding\s*=/i.test(normalized) ? "" : 'decoding="async"',
+    ].filter(Boolean).join(" ")
+
+    return normalized.replace(/\s*\/?>$/, (closing) => ` ${attributes}${closing}`)
   })
 }
 
@@ -57,14 +71,37 @@ async function fetchJSON<T>(path: string, options?: RequestInit, base: string = 
   return res.json()
 }
 
-export function getActivities(filters?: Record<string, string>) {
-  const qs = filters ? "?" + new URLSearchParams(filters).toString() : ""
+export function getActivities(filters?: Record<string, string>, locale = "en") {
+  const qs = "?" + new URLSearchParams({ ...filters, locale }).toString()
   return fetchJSON<{ message: string; data: Activity[]; pagination: { page: number; limit: number; total: number; totalPages: number } }>(`/api/v1/activity${qs}`)
 }
 
 // cache(): dedupe the API call across generateStaticParams/generateMetadata/page renders
-export const getActivityBySlug = cache(async (slug: string) => {
-  return fetchJSON<{ message: string; data: Activity }>(`/api/v1/activity/slug/${slug}`)
+export const getActivityBySlug = cache(async (slug: string, locale = "en") => {
+  return fetchJSON<{ message: string; data: Activity }>(`/api/v1/activity/slug/${slug}?locale=${encodeURIComponent(locale)}`)
+})
+
+export interface ActivityAlternate {
+  locale: string
+  slug: string | null
+  updatedAt: Date | string | null
+  auto: boolean
+  skipped: boolean
+}
+
+export const getActivityAlternates = cache(async (id: number) => {
+  return fetchJSON<{ message: string; data: ActivityAlternate[] }>(`/api/v1/activity/alt/${id}`)
+})
+
+export function hasActivityLocaleSlug(alternates: ActivityAlternate[], locale: string, slug: string) {
+  return locale === "en" || alternates.some((alt) => alt.locale === locale && alt.slug === slug && !alt.skipped)
+}
+
+export const getPublishedActivityBySlug = cache(async (slug: string, locale = "en") => {
+  const res = await getActivityBySlug(slug, locale)
+  if (locale === "en") return res.data
+  const { data: alternates } = await getActivityAlternates(res.data.id)
+  return hasActivityLocaleSlug(alternates, locale, slug) ? res.data : null
 })
 
 export async function getAllActivitySlugs(): Promise<string[]> {
@@ -76,16 +113,16 @@ export async function getAllActivitySlugs(): Promise<string[]> {
   }
 }
 
-export function getTripCategories() {
-  return fetchJSON<{ message: string; data: { tripCategories: TripCategory[] } }>("/api/v1/trip-category")
+export function getTripCategories(locale = "en") {
+  return fetchJSON<{ message: string; data: { tripCategories: TripCategory[] } }>(`/api/v1/trip-category?locale=${encodeURIComponent(locale)}`)
 }
 
 export function getTestimonials() {
   return fetchJSON<Testimonial[]>("/api/v1/testimonial")
 }
 
-export function getFeaturedTags() {
-  return fetchJSON<{ data: { featuredTags: FeaturedTag[] } }>("/api/v1/featured?includeActivity=true")
+export function getFeaturedTags(locale = "en") {
+  return fetchJSON<{ data: { featuredTags: FeaturedTag[] } }>(`/api/v1/featured?includeActivity=true&locale=${encodeURIComponent(locale)}`)
 }
 
 export interface FeaturedActivity {
@@ -98,9 +135,9 @@ export interface FeaturedActivity {
   difficultyLevel: string
 }
 
-export function getFeaturedActivitiesByTag(tagSlug: string) {
+export function getFeaturedActivitiesByTag(tagSlug: string, locale = "en") {
   return fetchJSON<{ message: string; data: { featuredTag: { activity: FeaturedActivity[] } } }>(
-    `/api/v1/featured/${encodeURIComponent(tagSlug)}?includeActivity=true`,
+    `/api/v1/featured/${encodeURIComponent(tagSlug)}?includeActivity=true&locale=${encodeURIComponent(locale)}`,
   )
 }
 
@@ -108,16 +145,16 @@ export function getTeamMembers() {
   return fetchJSON<{ message: string; data: TeamMember[] }>("/api/v1/team")
 }
 
-export function getActivitiesByCategory(categoryHandle: string) {
-  return getActivities({ category: categoryHandle })
+export function getActivitiesByCategory(categoryHandle: string, locale = "en") {
+  return getActivities({ category: categoryHandle }, locale)
 }
 
-export function getActivitiesByType(typeSlug: string) {
-  return getActivities({ type: typeSlug })
+export function getActivitiesByType(typeSlug: string, locale = "en") {
+  return getActivities({ type: typeSlug }, locale)
 }
 
-export function getTripTypes() {
-  return fetchJSON<{ message: string; data: { tripTypes: TripType[] } }>("/api/v1/trip-type")
+export function getTripTypes(locale = "en") {
+  return fetchJSON<{ message: string; data: { tripTypes: TripType[] } }>(`/api/v1/trip-type?locale=${encodeURIComponent(locale)}`)
 }
 
 export function getPublishedPosts(page = 1, limit = 10, search?: string, category?: string) {
@@ -141,8 +178,8 @@ export async function getAllPostSlugs(): Promise<string[]> {
   }
 }
 
-export const getInfoPageBySlug = cache(async (slug: string) => {
-  return fetchJSON<{ infoPage: InfoPage }>(`/api/v1/info-page/slug/${slug}`)
+export const getInfoPageBySlug = cache(async (slug: string, locale = "en") => {
+  return fetchJSON<{ infoPage: InfoPage }>(`/api/v1/info-page/slug/${slug}?locale=${encodeURIComponent(locale)}`)
 })
 
 export async function getAllInfoPageSlugs(): Promise<string[]> {
@@ -175,9 +212,9 @@ export const getSiteConfig = cache(async (): Promise<SiteConfig | null> => {
   }
 })
 
-export const getFooterItems = cache(async (): Promise<FooterItem[]> => {
+export const getFooterItems = cache(async (locale = "en"): Promise<FooterItem[]> => {
   try {
-    const res = await fetchJSON<{ data: { items: FooterItem[] } }>("/api/v1/footer")
+    const res = await fetchJSON<{ data: { items: FooterItem[] } }>(`/api/v1/footer?locale=${encodeURIComponent(locale)}`)
     return res?.data?.items ?? []
   } catch {
     return []
