@@ -81,6 +81,29 @@ export const getActivityBySlug = cache(async (slug: string, locale = "en") => {
   return fetchJSON<{ message: string; data: Activity }>(`/api/v1/activity/slug/${slug}?locale=${encodeURIComponent(locale)}`)
 })
 
+export interface ActivityAlternate {
+  locale: string
+  slug: string | null
+  updatedAt: Date | string | null
+  auto: boolean
+  skipped: boolean
+}
+
+export const getActivityAlternates = cache(async (id: number) => {
+  return fetchJSON<{ message: string; data: ActivityAlternate[] }>(`/api/v1/activity/alt/${id}`)
+})
+
+export function hasActivityLocaleSlug(alternates: ActivityAlternate[], locale: string, slug: string) {
+  return locale === "en" || alternates.some((alt) => alt.locale === locale && alt.slug === slug && !alt.skipped)
+}
+
+export const getPublishedActivityBySlug = cache(async (slug: string, locale = "en") => {
+  const res = await getActivityBySlug(slug, locale)
+  if (locale === "en") return res.data
+  const { data: alternates } = await getActivityAlternates(res.data.id)
+  return hasActivityLocaleSlug(alternates, locale, slug) ? res.data : null
+})
+
 export async function getAllActivitySlugs(): Promise<string[]> {
   try {
     const res = await fetchJSON<{ data: Array<{ slug: string }> }>("/api/v1/activity?page=1&limit=500")

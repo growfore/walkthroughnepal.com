@@ -2,6 +2,7 @@ import test from "node:test"
 import assert from "node:assert/strict"
 import { getMessages, MESSAGE_ROWS } from "../lib/messages.ts"
 import { localizedPath, LOCALES } from "../lib/locales.ts"
+import { hasActivityLocaleSlug } from "../lib/api.ts"
 
 test("all locales provide non-empty translations for every source string", () => {
   const sources = [...new Set(MESSAGE_ROWS.map(([source]) => source))]
@@ -26,4 +27,16 @@ test("localized paths use stable base slugs", () => {
   assert.equal(localizedPath("/fr/trip/everest-base-camp", "ja"), "/ja/trip/everest-base-camp")
   assert.equal(localizedPath("/fr/trip/everest-base-camp", "en"), "/trip/everest-base-camp")
   assert.equal(localizedPath("https://example.com", "fr"), "https://example.com")
+})
+
+test("only published locale slugs qualify as translated trips", () => {
+  const alternates = [
+    { locale: "en", slug: "everest-base-camp", updatedAt: null, auto: false, skipped: false },
+    { locale: "de", slug: "everest-basislager", updatedAt: null, auto: false, skipped: false },
+    { locale: "fr", slug: "camp-de-base-everest", updatedAt: null, auto: false, skipped: true },
+  ]
+  assert.ok(hasActivityLocaleSlug(alternates, "en", "everest-base-camp"))
+  assert.ok(hasActivityLocaleSlug(alternates, "de", "everest-basislager"))
+  assert.equal(hasActivityLocaleSlug(alternates, "de", "everest-base-camp"), false)
+  assert.equal(hasActivityLocaleSlug(alternates, "fr", "camp-de-base-everest"), false)
 })

@@ -37,11 +37,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic: trip pages
   const tripPages: MetadataRoute.Sitemap = []
   try {
-    const actRes = await fetchJSON<{ data: { activities: Array<{ slug: string; updatedAt: string }> } }>(
+    const actRes = await fetchJSON<{ data: Array<{ id: number; slug: string; updatedAt: string }> }>(
       `/api/v1/activity?page=1&limit=500`
     )
-    // API returns flat array under `data`, not nested in `activities`
-    const acts = (actRes as unknown as { data: Array<{ slug: string; updatedAt: string }> })?.data
+    const acts = actRes?.data
     if (Array.isArray(acts)) {
       for (const a of acts) {
         if (a.slug) {
@@ -52,6 +51,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.8,
           })
         }
+      }
+      for (let start = 0; start < acts.length; start += 20) {
+        const translated = await Promise.all(acts.slice(start, start + 20).map(async (a) => {
+          const res = await fetchJSON<{ data: Array<{ locale: string; slug: string | null; skipped: boolean; updatedAt: string | null }> }>(`/api/v1/activity/alt/${a.id}`)
+          return (res?.data ?? [])
+            .filter((alt) => alt.locale !== "en" && alt.slug && !alt.skipped)
+            .map((alt) => ({
+              url: `${SITE_URL}/${alt.locale}/trip/${alt.slug}`,
+              lastModified: alt.updatedAt || a.updatedAt || now,
+              changeFrequency: "weekly" as const,
+              priority: 0.8,
+            }))
+        }))
+        tripPages.push(...translated.flat())
       }
     }
   } catch {}

@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation"
 import { Menu, X, Mail, Phone, ChevronDown } from "lucide-react"
 import { MobileMenuOverlay } from "./mobile-menu-overlay"
 import { SearchDialog } from "./search-dialog"
-import { LocaleSwitcher } from "./locale-switcher"
 import { siteConfig } from "@/lib/siteConfig"
 import { Logo } from "./logo"
 import type { LocaleCode } from "@/lib/locales"
@@ -188,7 +187,6 @@ export function MenuController({ items, locale = "en" }: MenuControllerProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <LocaleSwitcher current={locale} className="hidden md:block" />
           <div className="hidden items-center gap-2 md:flex">
             <Link
               href="/inquiry"

@@ -5,7 +5,6 @@ const CMS_API_BASE = process.env.CMS_API_URL ?? "https://cms.walkthroughnepal.co
 
 // ponytail: fixed list, keep in sync with be/src/lib/i18n.ts LOCALES
 const LOCALE_PATTERN = /^\/(de|es|fr|it|pt|ru|ja)(\/.*)?$/i
-const LOCALE_COOKIE = "wt-locale"
 
 // ponytail: in-memory per-instance TTL cache; multi-instance/CDN edge would need a shared store
 type Entry = { redirect: { destination: string; type: string } | null; expires: number }
@@ -34,10 +33,10 @@ async function resolveRedirect(source: string): Promise<{ destination: string; t
 export async function proxy(request: NextRequest) {
   if (request.method !== "GET" && request.method !== "HEAD") return NextResponse.next()
 
-  const { pathname, search } = request.nextUrl
+  const { pathname } = request.nextUrl
 
   // Locale routing: `/{code}/...` are REAL routes (app/[...rest]) — the proxy
-  // only tags the request (x-locale + wt-locale cookie). en stays at root.
+  // only tags the request. en stays at root.
   // ponytail: no rewrite — Next's client router resolved the rewritten URL's original
   // path (`/de/...`) against the route table, found nothing, and injected a 404.
   const localeMatch = LOCALE_PATTERN.exec(pathname)
@@ -45,20 +44,7 @@ export async function proxy(request: NextRequest) {
     const locale = localeMatch[1].toLowerCase()
     const newReqHeaders = new Headers(request.headers)
     newReqHeaders.set("x-locale", locale)
-    const res = NextResponse.next({ request: { headers: newReqHeaders } })
-    res.cookies.set(LOCALE_COOKIE, locale, { path: "/", maxAge: 31536000, sameSite: "lax" })
-    return res
-  }
-
-  // Persisted-language redirect: any EN path → /{code}/... (root → /{code}/) so the
-  // user stays in their chosen locale. SEO/dev/CDN assets stay at root.
-  const cookie = request.cookies.get(LOCALE_COOKIE)?.value
-  if (cookie && /^(de|es|fr|it|pt|ru|ja)$/.test(cookie)) {
-    const excluded = /^\/(cms|uploads)(\/|$)/.test(pathname) || pathname === "/opengraph-image"
-    if (!excluded) {
-      const dest = pathname === "/" ? `/${cookie}/` : `/${cookie}${pathname}`
-      return NextResponse.redirect(new URL(`${dest}${search}`, request.url), 302)
-    }
+    return NextResponse.next({ request: { headers: newReqHeaders } })
   }
 
   const redirect = await resolveRedirect(pathname)

@@ -17,6 +17,18 @@ export function isLocaleCode(value: string | undefined): value is LocaleCode {
   return !!value && LOCALE_CODES.includes(value as LocaleCode)
 }
 
+// lang tag (hreflang / og:locale territory form), e.g. "de-DE", "en-US"
+export const LOCALE_TERRITORY: Record<LocaleCode, string> = {
+  en: "en-US",
+  de: "de-DE",
+  es: "es-ES",
+  fr: "fr-FR",
+  it: "it-IT",
+  pt: "pt-PT",
+  ru: "ru-RU",
+  ja: "ja-JP",
+}
+
 export function localeName(code: LocaleCode): string {
   return LOCALES.find((l) => l.code === code)?.name ?? "English"
 }

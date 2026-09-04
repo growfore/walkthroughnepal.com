@@ -13,7 +13,6 @@ import { BackToTop } from "@/components/back-to-top"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { ToastContainer } from "react-toastify"
 import { ClientTranslate } from "@/components/client-translate"
-import { GoogleTranslate } from "@/components/google-translate"
 import { OrganizationJsonLd } from "@/components/json-ld"
 import { developer, developerAttributionGraph } from "@/lib/developer-attribution"
 import { isLocaleCode } from "@/lib/locales"
@@ -61,17 +60,6 @@ export const metadata: Metadata = {
     "wildlife safari Nepal",
     "Pokhara trekking",
   ],
-  robots: {
-    index: false,
-    follow: false,
-    googleBot: {
-      index: false,
-      follow: false,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
   alternates: {
     canonical: "/",
     languages: {
@@ -185,7 +173,6 @@ export default async function RootLayout({
           strategy="afterInteractive"
         />
         <ClientTranslate locale={locale} messages={messages} />
-        <GoogleTranslate />
       </body>
     </html>
   )

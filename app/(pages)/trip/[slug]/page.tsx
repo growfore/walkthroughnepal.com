@@ -20,8 +20,8 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import {
-  getActivityBySlug,
   getAllActivitySlugs,
+  getPublishedActivityBySlug,
   getTestimonials,
   getSlots,
   img,
@@ -29,6 +29,8 @@ import {
 } from "@/lib/api"
 import { siteConfig } from "@/lib/siteConfig"
 import { getI18n } from "@/lib/server-locale"
+import { buildTripAlternates, SITE_URL } from "@/lib/hreflang"
+import { isLocaleCode, LOCALE_TERRITORY } from "@/lib/locales"
 import { TouristTripJsonLd, FAQPageJsonLd, BreadcrumbJsonLd } from "@/components/json-ld"
 
 type Props = { params: Promise<{ slug: string }> }
@@ -77,11 +79,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params
     const h = await headers()
     const locale = h.get("x-locale") ?? "en"
-    const res = await getActivityBySlug(slug, locale)
-    const pkg = res.data
+    if (!isLocaleCode(locale)) return {}
+    const pkg = await getPublishedActivityBySlug(slug, locale)
+    if (!pkg) return {}
     const seo = pkg.seo
     const desc = seo?.metaDescription?.trim() || pkg.shortDescription?.replace(/<[^>]*>/g, "").slice(0, 160) || undefined
-    const imageUrl = pkg.images?.[0] ? (pkg.images[0].startsWith("http") ? pkg.images[0] : `https://walkthroughnepal.com${pkg.images[0]}`) : "https://walkthroughnepal.com/opengraph-image"
+    const imageUrl = pkg.images?.[0] ? (pkg.images[0].startsWith("http") ? pkg.images[0] : `${SITE_URL}${pkg.images[0]}`) : `${SITE_URL}/opengraph-image`
+    const { canonical, languages } = await buildTripAlternates(pkg.id, locale, slug)
+    const ogLocale = LOCALE_TERRITORY[locale]
     return {
       title: seo?.metaTitle?.trim() || pkg.title,
       description: desc,
@@ -89,11 +94,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ? seo.metaKeywords.split(",").map((k) => k.trim()).filter(Boolean)
         : [pkg.title, "Nepal trek", pkg.difficultyLevel, pkg.bestSeason, "trekking package"].filter(Boolean),
       robots: seo?.metaRobots?.trim() || undefined,
-      alternates: { canonical: `/trip/${slug}` },
+      alternates: { canonical, languages },
       openGraph: {
+        locale: ogLocale,
         title: pkg.title,
         description: desc,
-        url: `https://walkthroughnepal.com/trip/${slug}`,
+        url: `${SITE_URL}${canonical}`,
         type: "article",
         images: [{ url: imageUrl, width: 1200, height: 630, alt: pkg.title }],
       },
@@ -173,12 +179,13 @@ export default async function PackagePage({
   const { slug } = await params
   const h = await headers()
   const locale = h.get("x-locale") ?? "en"
+  if (!isLocaleCode(locale)) notFound()
   const { t } = await getI18n()
 
   let pkg
   try {
-    const res = await getActivityBySlug(slug, locale)
-    pkg = res.data
+    pkg = await getPublishedActivityBySlug(slug, locale)
+    if (!pkg) notFound()
   } catch {
     notFound()
   }

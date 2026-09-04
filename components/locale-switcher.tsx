@@ -23,16 +23,6 @@ function buildSwitchUrl(target: LocaleCode): string {
   return `/${target}${rest || "/"}`
 }
 
-const COOKIE = "wt-locale"
-
-function persistLocale(code: LocaleCode) {
-  // selecting English clears persistence so "" (root) no longer bounces to /de/
-  document.cookie =
-    code === "en"
-      ? `${COOKIE}=; path=/; max-age=0; samesite=lax`
-      : `${COOKIE}=${code}; path=/; max-age=31536000; samesite=lax`
-}
-
 export function LocaleSwitcher({
   current = "en",
   className = "",
@@ -85,7 +75,6 @@ export function LocaleSwitcher({
                 type="button"
                 onClick={() => {
                   if (l.code !== current) {
-                    persistLocale(l.code)
                     window.location.href = buildSwitchUrl(l.code)
                   }
                 }}

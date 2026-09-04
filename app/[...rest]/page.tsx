@@ -39,6 +39,10 @@ type SearchParams = Promise<Record<string, string | string[] | undefined>>
 // [path, idx] — idx: 0=no props, >0 = 1-based index of the real slug in `rest`, -2=searchParams
 type Mod = { default: (props: Record<string, unknown>) => ReactNode; generateMetadata?: (p: unknown) => Promise<Metadata>; metadata?: Metadata }
 
+function noindex(metadata: Metadata): Metadata {
+  return { ...metadata, robots: { index: false, follow: true } }
+}
+
 const ROUTES: [string, number, Mod][] = [
   ["trip", 1, TripMod as unknown as Mod],
   ["trip/print", 1, TripPrintMod as unknown as Mod],
@@ -164,15 +168,18 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { rest } = await params
   const { locale, inner } = split(rest)
 
-  if (locale !== "en" && inner.length === 0) return generateMetadataHome()
+  if (locale !== "en" && inner.length === 0) return noindex(await generateMetadataHome())
 
   const hit = match(inner)
   if (!hit) return {}
-  if (hit === "info") return infoMeta(inner[0], locale)
+  if (hit === "info") return locale === "en" ? infoMeta(inner[0], locale) : noindex(await infoMeta(inner[0], locale))
 
   const [idx, mod] = hit
+  let metadata: Metadata
   if (typeof mod.generateMetadata === "function") {
-    return (await mod.generateMetadata({ params: Promise.resolve({ slug: inner[idx] }) })) ?? {}
+    metadata = (await mod.generateMetadata({ params: Promise.resolve({ slug: inner[idx] }) })) ?? {}
+  } else {
+    metadata = mod.metadata ?? {}
   }
-  return mod.metadata ?? {}
+  return locale !== "en" && !(inner[0] === "trip" && inner.length === 2) ? noindex(metadata) : metadata
 }
