@@ -37,5 +37,5 @@ export async function Navigation() {
     url: href(item.url),
     children: item.children.map(localize),
   })
-  return <MenuController items={items.map(localize)} locale={locale} />
+  return <MenuController items={items.map(localize)} />
 }

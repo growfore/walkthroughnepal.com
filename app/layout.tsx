@@ -1,7 +1,6 @@
 import { Livvic, Martian_Mono, Barlow_Semi_Condensed } from "next/font/google"
 import type { Metadata, Viewport } from "next"
 import Script from "next/script"
-import { headers } from "next/headers"
 
 import "./globals.css"
 import "react-toastify/dist/ReactToastify.css"
@@ -12,10 +11,8 @@ import { Footer } from "@/components/footer"
 import { BackToTop } from "@/components/back-to-top"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { ToastContainer } from "react-toastify"
-import { ClientTranslate } from "@/components/client-translate"
 import { OrganizationJsonLd } from "@/components/json-ld"
 import { developer, developerAttributionGraph } from "@/lib/developer-attribution"
-import { isLocaleCode } from "@/lib/locales"
 import { formatMessage, getMessages } from "@/lib/messages"
 
 const SITE_URL = "https://walkthroughnepal.com"
@@ -105,9 +102,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const headersList = await headers()
-  const requestedLocale = headersList.get("x-locale") ?? undefined
-  const locale = isLocaleCode(requestedLocale) ? requestedLocale : "en"
+  const locale = "en"
   const messages = getMessages(locale)
   return (
     <html
@@ -172,7 +167,6 @@ export default async function RootLayout({
           src="https://challenges.cloudflare.com/turnstile/v0/api.js"
           strategy="afterInteractive"
         />
-        <ClientTranslate locale={locale} messages={messages} />
       </body>
     </html>
   )

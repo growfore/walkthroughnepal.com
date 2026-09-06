@@ -3,12 +3,10 @@ import Link from "next/link"
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
 import { getInfoPageBySlug, resolveContentImages } from "@/lib/api"
-import { isLocaleCode } from "@/lib/locales"
 import { BlogRenderer } from "@/components/blog-renderer"
 import { PageHero } from "@/components/page-hero"
 import { BreadcrumbJsonLd } from "@/components/json-ld"
 import { ChevronLeft } from "lucide-react"
-import HomePage, { generateMetadataHome } from "@/app/(home)/page"
 import * as TripMod from "@/app/(pages)/trip/[slug]/page"
 import * as TripPrintMod from "@/app/(pages)/trip/[slug]/print/page"
 import * as ActivityMod from "@/app/(pages)/activity/[slug]/page"
@@ -29,19 +27,15 @@ import * as ContactMod from "@/app/(pages)/contact/page"
 
 // One root catch-all dispatches everything — sibling single-segment dynamics (`[slug]` info
 // + `[lang]`) are illegal in App Router, so the catch-all disambiguates by content:
-//   - first segment is a locale code (`/de`, `/de/trip/x`, `/es/blog`) → locale routing
 //   - single EN segment (`/about-us`, `/zzz`) → info page (404 when unknown)
 //   - everything else stays plain Not Found. More specific routes (trip/[slug], about, blog, …)
 //     win over the catch-all, so it only ever handles genuinely dynamic paths.
+//   - locale prefixes (`/de/...`, `/fr/...`) are NOT routes — no translation, they 404.
 type Params = Promise<{ rest: string[] }>
 type SearchParams = Promise<Record<string, string | string[] | undefined>>
 
 // [path, idx] — idx: 0=no props, >0 = 1-based index of the real slug in `rest`, -2=searchParams
 type Mod = { default: (props: Record<string, unknown>) => ReactNode; generateMetadata?: (p: unknown) => Promise<Metadata>; metadata?: Metadata }
-
-function noindex(metadata: Metadata): Metadata {
-  return { ...metadata, robots: { index: false, follow: true } }
-}
 
 const ROUTES: [string, number, Mod][] = [
   ["trip", 1, TripMod as unknown as Mod],
@@ -142,21 +136,14 @@ async function infoMeta(slug: string, locale: string): Promise<Metadata> {
   }
 }
 
-function split(rest: string[]): { locale: string; inner: string[] } {
-  return isLocaleCode(rest[0]) ? { locale: rest[0], inner: rest.slice(1) } : { locale: "en", inner: rest }
-}
-
 export default async function CatchAll({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
   const { rest } = await params
-  const { locale, inner } = split(rest)
-
-  // /de (and friends) route home; a locale must never silently be an EN info slug
-  if (locale !== "en" && inner.length === 0) return <HomePage />
+  const inner = rest
 
   const hit = match(inner)
   if (!hit) notFound()
 
-  if (hit === "info") return <InfoPageEl slug={inner[0]} locale={locale} />
+  if (hit === "info") return <InfoPageEl slug={inner[0]} locale="en" />
 
   const [idx, mod] = hit
   if (idx === 0) return <mod.default />
@@ -166,13 +153,11 @@ export default async function CatchAll({ params, searchParams }: { params: Param
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { rest } = await params
-  const { locale, inner } = split(rest)
-
-  if (locale !== "en" && inner.length === 0) return noindex(await generateMetadataHome())
+  const inner = rest
 
   const hit = match(inner)
   if (!hit) return {}
-  if (hit === "info") return locale === "en" ? infoMeta(inner[0], locale) : noindex(await infoMeta(inner[0], locale))
+  if (hit === "info") return infoMeta(inner[0], "en")
 
   const [idx, mod] = hit
   let metadata: Metadata
@@ -181,5 +166,5 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   } else {
     metadata = mod.metadata ?? {}
   }
-  return locale !== "en" && !(inner[0] === "trip" && inner.length === 2) ? noindex(metadata) : metadata
+  return metadata
 }

@@ -29,8 +29,8 @@ import {
 } from "@/lib/api"
 import { siteConfig } from "@/lib/siteConfig"
 import { getI18n } from "@/lib/server-locale"
-import { buildTripAlternates, SITE_URL } from "@/lib/hreflang"
-import { isLocaleCode, LOCALE_TERRITORY } from "@/lib/locales"
+import { SITE_URL } from "@/lib/hreflang"
+import { isLocaleCode } from "@/lib/locales"
 import { TouristTripJsonLd, FAQPageJsonLd, BreadcrumbJsonLd } from "@/components/json-ld"
 
 type Props = { params: Promise<{ slug: string }> }
@@ -77,16 +77,12 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { slug } = await params
-    const h = await headers()
-    const locale = h.get("x-locale") ?? "en"
-    if (!isLocaleCode(locale)) return {}
-    const pkg = await getPublishedActivityBySlug(slug, locale)
+    const pkg = await getPublishedActivityBySlug(slug, "en")
     if (!pkg) return {}
     const seo = pkg.seo
     const desc = seo?.metaDescription?.trim() || pkg.shortDescription?.replace(/<[^>]*>/g, "").slice(0, 160) || undefined
     const imageUrl = pkg.images?.[0] ? (pkg.images[0].startsWith("http") ? pkg.images[0] : `${SITE_URL}${pkg.images[0]}`) : `${SITE_URL}/opengraph-image`
-    const { canonical, languages } = await buildTripAlternates(pkg.id, locale, slug)
-    const ogLocale = LOCALE_TERRITORY[locale]
+    const canonical = `/trip/${slug}`
     return {
       title: seo?.metaTitle?.trim() || pkg.title,
       description: desc,
@@ -94,9 +90,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ? seo.metaKeywords.split(",").map((k) => k.trim()).filter(Boolean)
         : [pkg.title, "Nepal trek", pkg.difficultyLevel, pkg.bestSeason, "trekking package"].filter(Boolean),
       robots: seo?.metaRobots?.trim() || undefined,
-      alternates: { canonical, languages },
+      alternates: { canonical },
       openGraph: {
-        locale: ogLocale,
+        locale: "en_US",
         title: pkg.title,
         description: desc,
         url: `${SITE_URL}${canonical}`,

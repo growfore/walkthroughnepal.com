@@ -3,9 +3,6 @@ import type { NextRequest } from "next/server"
 
 const CMS_API_BASE = process.env.CMS_API_URL ?? "https://cms.walkthroughnepal.com"
 
-// ponytail: fixed list, keep in sync with be/src/lib/i18n.ts LOCALES
-const LOCALE_PATTERN = /^\/(de|es|fr|it|pt|ru|ja)(\/.*)?$/i
-
 // ponytail: in-memory per-instance TTL cache; multi-instance/CDN edge would need a shared store
 type Entry = { redirect: { destination: string; type: string } | null; expires: number }
 const cache = new Map<string, Entry>()
@@ -34,18 +31,6 @@ export async function proxy(request: NextRequest) {
   if (request.method !== "GET" && request.method !== "HEAD") return NextResponse.next()
 
   const { pathname } = request.nextUrl
-
-  // Locale routing: `/{code}/...` are REAL routes (app/[...rest]) — the proxy
-  // only tags the request. en stays at root.
-  // ponytail: no rewrite — Next's client router resolved the rewritten URL's original
-  // path (`/de/...`) against the route table, found nothing, and injected a 404.
-  const localeMatch = LOCALE_PATTERN.exec(pathname)
-  if (localeMatch) {
-    const locale = localeMatch[1].toLowerCase()
-    const newReqHeaders = new Headers(request.headers)
-    newReqHeaders.set("x-locale", locale)
-    return NextResponse.next({ request: { headers: newReqHeaders } })
-  }
 
   const redirect = await resolveRedirect(pathname)
   if (!redirect || redirect.destination === pathname) return NextResponse.next()
