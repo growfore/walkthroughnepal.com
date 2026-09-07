@@ -192,14 +192,7 @@ function InquiryForm() {
                   <FormItem>
                     <FormLabel className="text-sm font-semibold text-navy">Group Size</FormLabel>
                     <FormControl>
-                      <select value={field.value ?? ""} onChange={field.onChange} className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-orange focus:ring-2 focus:ring-orange/20">
-                        <option value="">Select...</option>
-                        <option value="1">1 (Solo)</option>
-                        <option value="2">2</option>
-                        <option value="3-5">3–5</option>
-                        <option value="6-10">6–10</option>
-                        <option value="11+">11+</option>
-                      </select>
+                      <Input type="number" min={1} step={1} placeholder="e.g. 4" {...field} onChange={(e) => field.onChange(e.target.value ? e.target.value : "")} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
