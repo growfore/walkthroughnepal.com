@@ -14,9 +14,11 @@ import {
   X,
   Utensils,
   Bus,
+  LucideCircleQuestionMark,
 } from "lucide-react"
 import { FAQSection } from "@/components/faq-section"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import {
@@ -187,6 +189,8 @@ export default async function PackagePage({
   }
 
   const itineraryVariants = parseItineraryVariants(pkg.itinerary as unknown)
+
+  const maxPax = Math.max(0, ...(pkg.groupDiscount ?? []).map((r) => r.groupSize))
 
   const difficulty =
     pkg.difficultyLevel
@@ -591,6 +595,17 @@ export default async function PackagePage({
                           ))}
                         </tbody>
                       </table>
+                    </div>
+                    <div className="mt-2 flex items-center gap-1 text-sm text-muted-foreground">
+                      <span>{t("More than {n} people? Inquire us!", { n: maxPax })}</span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <LucideCircleQuestionMark className="h-4 w-4 shrink-0 cursor-pointer text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-42">
+                          {t("{n} is the largest group size with listed pricing for this activity. For bigger groups, send an inquiry — we'll quote a custom rate.", { n: maxPax })}
+                        </TooltipContent>
+                      </Tooltip>
                     </div>
                   </details>
                 )}
