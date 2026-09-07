@@ -237,7 +237,7 @@ export default async function PackagePage({
         />
       )}
       {/* ── Hero Gallery ── */}
-      <section className="-mt-[40px] pb-0 md:-mt-[100px]">
+      <section className="-mt-[102px] md:-mt-[120px]">
         <HorizontalGallery images={pkg.images} title={pkg.title} />
       </section>
 
@@ -567,9 +567,9 @@ export default async function PackagePage({
                 <div className="text-sm text-muted-foreground">per person</div>
 
                 {pkg.showGroupDiscount !== false && groupDiscountTable(pkg.price, pkg.groupDiscount) && (
-                  <details className="group mt-3">
+                  <details className="group mt-3" open>
                     <summary className="flex w-full cursor-pointer list-none items-center justify-between rounded-md border border-border bg-muted/40 px-3 py-2 text-sm font-semibold text-navy [&::-webkit-details-marker]:hidden">
-                      {t("See group booking discount")}
+                      Group booking discount
                       <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
                     </summary>
                     <div className="mt-2 overflow-hidden rounded-md border border-border">
