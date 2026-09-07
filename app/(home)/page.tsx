@@ -121,7 +121,7 @@ export default async function HomePage() {
 
       <AboutSection />
 
-      <TestimonialsSection testimonials={testimonials} />
+      {/*<TestimonialsSection testimonials={testimonials} />*/}
 
       <InspirationSection posts={blogList} />
 
