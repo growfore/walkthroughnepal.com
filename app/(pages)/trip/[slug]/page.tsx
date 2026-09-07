@@ -237,7 +237,7 @@ export default async function PackagePage({
         />
       )}
       {/* ── Hero Gallery ── */}
-      <section className="-mt-[102px] md:-mt-[120px]">
+      <section className="-mt-[102px] md:-mt-[124px]">
         <HorizontalGallery images={pkg.images} title={pkg.title} />
       </section>
 
