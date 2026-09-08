@@ -178,9 +178,13 @@ export async function Footer() {
                 {cfg.email}
               </Link>
             </li>
-            <li className="flex items-start gap-2">
-              <Clock className="mt-0.5 h-4 w-4 shrink-0 text-orange" />
-              {cfg.openHours}
+            <li className="flex items-start gap-1 flex-col">
+              <div className="flex items-center gap-1">
+                <Clock className="mt-0.5 h-4 w-4 shrink-0 text-orange" /> <span className="text-orange">Office Hours</span>
+              </div>
+              <div className="pl-5">
+                {cfg.openHours}
+              </div>
             </li>
           </ul>
         </div>

@@ -3,7 +3,7 @@ import { getActivities, getTripCategories, getTripTypes } from "@/lib/api"
 import { getI18n } from "@/lib/server-locale"
 import type { Activity } from "@/lib/types"
 import Link from "next/link"
-import { Mountain } from "lucide-react"
+import { ChevronLeft, ChevronRight, Mountain } from "lucide-react"
 import { TripCard } from "@/components/trip-card"
 import { PageHero } from "@/components/page-hero"
 import { ExploreFilters } from "@/components/explore-filters"
@@ -66,6 +66,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
   try {
     const res = await getActivities(filters, locale)
     activities = res.data ?? []
+    console.log("Activiteis: ", activities)
     totalCount = res.pagination.total
     totalPages = res.pagination.totalPages
   } catch {}
@@ -115,10 +116,10 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
           )}
 
           {totalPages > 1 && (
-            <div className="mt-12 flex justify-center gap-2">
+            <div className="mt-12 flex justify-center gap-2 items-center">
               {page > 1 && (
-                <Link href={pageUrl(page - 1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-navy hover:bg-border">
-                  Previous
+                <Link href={pageUrl(page - 1)} className="px-4 py-1 border rounded-md  text-navy hover:bg-border flex items-center gap-1">
+                  <ChevronLeft className="size-4"/> Previous
                 </Link>
               )}
               {Array.from({ length: totalPages }, (_, i) => i + 1)
@@ -135,8 +136,8 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
                   </span>
                 ))}
               {page < totalPages && (
-                <Link href={pageUrl(page + 1)} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-navy hover:bg-border">
-                  Next
+                <Link href={pageUrl(page + 1)} className="rounded-md border px-4 py-1 text-navy hover:bg-border flex items-center gap-1">
+                    Next <ChevronRight className="size-4"/>
                 </Link>
               )}
             </div>
