@@ -83,7 +83,7 @@ export function SectionNav({ sectionIds }: { sectionIds: string[] }) {
   }, [sectionIds, scrollToTab])
 
   return (
-    <div className="sticky top-0 z-30 border-b border-border bg-primary/10 backdrop-blur-xl">
+    <div className="sticky top-[102px] z-30 border-b border-border bg-primary/10 backdrop-blur-xl md:top-[124px]">
       <div className="relative">
         <div
           ref={navRef}

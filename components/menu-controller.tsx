@@ -92,7 +92,7 @@ export function MenuController({ items }: MenuControllerProps) {
     <nav
       ref={navRef}
       aria-label="Main navigation"
-          className={`${isTripPage ? "relative w-full" : "fixed inset-x-0 top-0"} z-50 border-b border-border bg-white/40 backdrop-blur-xl`}
+      className={`${isTripPage ? "sticky top-0 w-full" : "fixed inset-x-0 top-0"} z-50 border-b border-border bg-white/40 backdrop-blur-xl`}
     >
       {/* Top bar */}
       <div className="hidden bg-navy text-navy-foreground md:block">
