@@ -543,7 +543,7 @@ export default async function PackagePage({
           {/* ── Sidebar ── */}
           <StickyWrapper
             className="sticky space-y-4 self-start max-lg:static"
-            offset={100}
+            offset={188}
           >
             {/* Price */}
             <div

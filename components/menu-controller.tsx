@@ -32,6 +32,8 @@ export function MenuController({ items }: MenuControllerProps) {
   const pathname = usePathname()
   const isTripPage = pathname.startsWith("/trip/")
   const navRef = useRef<HTMLElement>(null)
+  const navVisibleRef = useRef(true)
+  const [isNavVisible, setIsNavVisible] = useState(true)
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const cancelHide = useCallback(() => {
@@ -64,6 +66,34 @@ export function MenuController({ items }: MenuControllerProps) {
   }, [cancelHide])
 
   useEffect(() => {
+    let lastY = window.scrollY
+    const syncOffset = () => {
+      const height = navVisibleRef.current ? navRef.current?.offsetHeight ?? 0 : 0
+      document.documentElement.style.setProperty("--navigation-offset", `${height}px`)
+    }
+    const updateVisibility = (visible: boolean) => {
+      if (visible === navVisibleRef.current) return
+      navVisibleRef.current = visible
+      setIsNavVisible(visible)
+      syncOffset()
+    }
+    const handleScroll = () => {
+      const currentY = window.scrollY
+      updateVisibility(currentY < lastY || currentY < 80)
+      lastY = currentY
+    }
+    const observer = new ResizeObserver(syncOffset)
+    if (navRef.current) observer.observe(navRef.current)
+    syncOffset()
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => {
+      observer.disconnect()
+      window.removeEventListener("scroll", handleScroll)
+      document.documentElement.style.removeProperty("--navigation-offset")
+    }
+  }, [])
+
+  useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeMega()
     }
@@ -92,7 +122,7 @@ export function MenuController({ items }: MenuControllerProps) {
     <nav
       ref={navRef}
       aria-label="Main navigation"
-      className={`${isTripPage ? "sticky top-0 w-full" : "fixed inset-x-0 top-0"} z-50 border-b border-border bg-white/40 backdrop-blur-xl`}
+      className={`${isTripPage ? "sticky top-0 w-full" : "fixed inset-x-0 top-0"} ${isNavVisible ? "translate-y-0" : "-translate-y-full"} z-50 border-b border-border bg-white/40 backdrop-blur-xl transition-transform duration-300`}
     >
       {/* Top bar */}
       <div className="hidden bg-navy text-navy-foreground md:block">
