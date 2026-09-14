@@ -44,10 +44,9 @@ type GroupDiscountRule = {
 }
 
 function groupDiscountTable(
-  basePrice: number,
   rules?: GroupDiscountRule[],
-): { pax: string; price: number }[] | null {
-  if (!basePrice || !rules || rules.length === 0) return null
+): { pax: string; discount: string }[] | null {
+  if (!rules || rules.length === 0) return null
   const sorted = rules
     .filter((r) => r.groupSize >= 2 && r.discount > 0)
     .sort((a, b) => a.groupSize - b.groupSize)
@@ -55,21 +54,21 @@ function groupDiscountTable(
 
   let start = 2
   const rows = sorted.map((rule) => {
-    const price =
+    const discount =
       rule.discountType === "FLAT"
-        ? rule.discount
-        : Math.round(basePrice * (1 - rule.discount / 100))
+        ? `USD ${rule.discount.toLocaleString()} per person`
+        : `${rule.discount}% Off`
     const row = {
       pax:
         start === rule.groupSize
           ? `${rule.groupSize} Pax`
           : `${start}-${rule.groupSize} Pax`,
-      price,
+      discount,
     }
     start = rule.groupSize + 1
     return row
   })
-  return [{ pax: "1 Pax", price: basePrice }, ...rows]
+  return rows
 }
 
 export function generateStaticParams() {
@@ -570,7 +569,7 @@ export default async function PackagePage({
                 </div>
                 <div className="text-sm text-muted-foreground">per person</div>
 
-                {pkg.showGroupDiscount !== false && groupDiscountTable(pkg.price, pkg.groupDiscount) && (
+                {pkg.showGroupDiscount !== false && groupDiscountTable(pkg.groupDiscount) && (
                   <details className="group mt-3" open>
                     <summary className="flex w-full cursor-pointer list-none items-center justify-between rounded-md border border-border bg-muted/40 px-3 py-2 text-sm font-semibold text-navy [&::-webkit-details-marker]:hidden">
                       Group booking discount
@@ -581,15 +580,15 @@ export default async function PackagePage({
                         <thead>
                           <tr className="border-b border-border bg-muted/40 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                             <th className="px-3 py-2">{t("No. of people")}</th>
-                            <th className="px-3 py-2">{t("Price per person")}</th>
+                            <th className="px-3 py-2">{t("Discount")}</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {groupDiscountTable(pkg.price, pkg.groupDiscount)?.map((row) => (
+                          {groupDiscountTable(pkg.groupDiscount)?.map((row) => (
                             <tr key={row.pax} className="border-b border-border last:border-0">
                               <td className="px-3 py-2 text-navy">{row.pax}</td>
                               <td className="px-3 py-2 text-navy">
-                                USD {row.price.toLocaleString()}
+                                {row.discount}
                               </td>
                             </tr>
                           ))}
