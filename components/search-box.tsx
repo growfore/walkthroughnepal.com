@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect, useCallback } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { Search, Mountain, FileText } from "lucide-react"
 
 type Result = {
@@ -99,7 +98,7 @@ export function SearchBox() {
               className={`flex items-center gap-3 px-4 py-2.5 text-sm transition ${globalIdx === idx ? "bg-accent/30" : "hover:bg-accent/20"}`}
               onMouseEnter={() => setIdx(globalIdx)}
             >
-              <Image src={item.image} alt="" width={36} height={36} className="h-9 w-9 shrink-0 rounded object-cover" />
+              <img src={item.image} alt="" width={36} height={36} className="h-9 w-9 shrink-0 rounded object-cover" />
               <div className="min-w-0 flex-1">
                 <div className="truncate font-medium text-navy">{item.title}</div>
                 <div className="text-xs text-muted-foreground">{item.subtitle}</div>

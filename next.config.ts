@@ -3,25 +3,6 @@ import type { NextConfig } from "next"
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
 const nextConfig: NextConfig = {
-  images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "api.walkthroughnepal.com", pathname: "/uploads/**" },
-      { protocol: "https", hostname: "cms.walkthroughnepal.com", pathname: "/uploads/**" },
-      { protocol: "https", hostname: "cms.walkthroughnepal.com", pathname: "/api/uploads/**" },
-      { protocol: "https", hostname: "cms.walkthroughnepal.com", pathname: "/wp-content/**" },
-      { protocol: "https", hostname: "walkthroughnepal.com", pathname: "/wp-content/**" },
-      {
-        protocol: "https",
-        hostname: "api.growfore.com",
-        pathname: "/api/v1/uploads/**",
-      },
-      {
-        protocol: "https",
-        hostname: "growfore.com",
-        pathname: "/wp-content/uploads/**",
-      },
-    ],
-  },
   async rewrites() {
     return [
       {

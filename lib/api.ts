@@ -6,6 +6,7 @@ export const API_BASE = process.env.API_URL ?? "https://api.walkthroughnepal.com
 export const CMS_API_BASE = process.env.CMS_API_URL ?? "https://cms.walkthroughnepal.com"
 // ponytail: client components can't read non-NEXT_PUBLIC env vars
 export const PUBLIC_API_BASE = process.env.NEXT_PUBLIC_API_URL ?? API_BASE
+const IMAGE_OPTIMIZATION_ENABLED = false
 
 export function img(path: string | null | undefined): string {
   if (!path) return "/placeholder-image.png"
@@ -25,7 +26,7 @@ export function resolveContentImages(html: string): string {
   return html.replace(/<img\b[^>]*\ssrc\s*=\s*(["'])([^"']+)\1[^>]*>/gi, (tag, _quote, src: string) => {
     const resolved = /^(?:https?:\/\/|\/\/|\/)/.test(src) ? img(src) : src
     const normalized = tag.replace(/(\ssrc\s*=\s*)(["'])[^"']*\2/i, `$1$2${resolved}$2`)
-    if (!resolved.startsWith("/cms/uploads/") || /(?:^|\s)srcset\s*=/i.test(normalized)) return normalized
+    if (!IMAGE_OPTIMIZATION_ENABLED || !resolved.startsWith("/cms/uploads/") || /(?:^|\s)srcset\s*=/i.test(normalized)) return normalized
 
     const separator = resolved.includes("?") ? "&" : "?"
     const srcset = [480, 768, 1024, 1440]

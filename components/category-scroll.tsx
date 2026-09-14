@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
 import { ChevronRight } from "lucide-react"
 import { HorizontalScroll } from "@/components/horizontal-scroll"
 
@@ -14,12 +13,10 @@ export function CategoryScroll({ categories, id }: { categories: { img: string; 
           href={`/category/${c.handle}`}
           className="group relative h-72 w-72 shrink-0 snap-start overflow-hidden rounded-xl"
         >
-          <Image
+          <img
             src={c.img}
             alt={c.title}
-            fill
-            sizes="288px"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />

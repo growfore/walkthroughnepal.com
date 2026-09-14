@@ -1,4 +1,3 @@
-import Image from "next/image"
 import { img } from "@/lib/api"
 import type { TeamMember } from "@/lib/types"
 
@@ -7,7 +6,7 @@ export function TeamCard({ member }: { member: TeamMember }) {
     <div className="flex items-start gap-5 py-3">
       <div className="h-24 w-24 shrink-0 overflow-hidden rounded-xl md:h-28 md:w-28">
         {member.image ? (
-          <Image
+          <img
             src={img(member.image)}
             alt={member.name}
             width={112}

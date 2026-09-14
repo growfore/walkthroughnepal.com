@@ -11,7 +11,6 @@ import { siteConfig, type SiteConfig } from "@/lib/siteConfig"
 import { getFooterItems, getSiteConfig } from "@/lib/api"
 import { Logo } from "./logo"
 import { FooterNewsletter } from "./footer-newsletter"
-import Image from "next/image";
 import { getI18n } from "@/lib/server-locale"
 
 type SocialIconProps = { url: string }
@@ -129,7 +128,7 @@ export async function Footer() {
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pt-14 pb-10 md:grid-cols-3 lg:grid-cols-6">
         <div className="md:col-span-2">
           <a href={href("/")}>
-            <Image src={"/walkthrough-nepal-logo-white.svg"} height={200} width={200} alt="walk through nepal logo white"/>
+            <img src={"/walkthrough-nepal-logo-white.svg"} height={200} width={200} alt="walk through nepal logo white"/>
           </a>
           <p className="mt-4 max-w-xs text-sm text-white/70">
             {cfg.description}
@@ -197,7 +196,7 @@ export async function Footer() {
           <div className="flex gap-2 items-center">
             Designed and Developed by
             <Link  href={"https://growfore.com/"} target="_blank" className="flex gap-1 items-center underline">
-              <Image src={"https://growfore.com/wp-content/uploads/2025/08/cropped-growfore-rounded-blue-on-white.png"} height={200} width={200} alt="Grofore Solution Logo" className="size-6" /> Growfore Solution.
+              <img src={"https://growfore.com/wp-content/uploads/2025/08/cropped-growfore-rounded-blue-on-white.png"} height={200} width={200} alt="Grofore Solution Logo" className="size-6" /> Growfore Solution.
             </Link>
           </div>
         </div>

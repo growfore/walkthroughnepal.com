@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
 import { Clock, HandPlatter, Home, LucideArrowDown, LucideArrowUp, Route } from "lucide-react"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { renderRichText } from "@/lib/html-decoder"
@@ -135,7 +134,7 @@ export function ItineraryList({ variants }: { variants: ItineraryVariant[] }) {
                         {d.dayFeaturedImages.map((img, i) => (
                           <div key={i} className="overflow-hidden rounded-xl">
                             <div className="relative aspect-video">
-                              <Image src={img.image} alt={img.alt} fill className="object-cover" sizes="(max-width: 640px) 100vw, 50vw" />
+                              <img src={img.image} alt={img.alt} className="absolute inset-0 h-full w-full object-cover" />
                             </div>
                           </div>
                         ))}

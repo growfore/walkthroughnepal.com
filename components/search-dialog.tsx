@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect, useCallback } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { Search, Mountain, FileText, Command } from "lucide-react"
 
 type Result = {
@@ -129,7 +128,7 @@ export function SearchDialog() {
               onMouseEnter={() => setIdx(globalIdx)}
               onClick={() => setOpen(false)}
             >
-              <Image
+              <img
                 src={item.image}
                 alt=""
                 width={36}

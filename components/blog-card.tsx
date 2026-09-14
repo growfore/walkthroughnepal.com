@@ -1,5 +1,4 @@
 import Link from "next/link"
-import Image from "next/image"
 
 type BlogCardProps = {
   slug: string
@@ -22,12 +21,10 @@ export function BlogCard({ slug, image, tag, title, description, date }: BlogCar
       className="group relative block overflow-hidden rounded-lg shadow-md transition-shadow hover:shadow-lg h-[480px]"
     >
       <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-110">
-        <Image
+        <img
           src={image}
           alt={title}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover"
+          className="absolute inset-0 h-full w-full object-cover"
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent" />

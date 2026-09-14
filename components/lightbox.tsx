@@ -1,7 +1,6 @@
 "use client"
 
 import { X } from "lucide-react"
-import Image from "next/image"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 export function Lightbox({ src, alt, priority }: { src: string; alt: string; priority?: boolean }) {
