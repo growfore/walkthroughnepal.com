@@ -14,6 +14,7 @@ import {
   X,
   Utensils,
   Bus,
+  Tags,
   LucideCircleQuestionMark,
 } from "lucide-react"
 import { FAQSection } from "@/components/faq-section"
@@ -588,7 +589,10 @@ export default async function PackagePage({
                             <tr key={row.pax} className="border-b border-border last:border-0">
                               <td className="px-3 py-2 text-navy">{row.pax}</td>
                               <td className="px-3 py-2 text-navy">
-                                {row.discount}
+                                <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-xs font-bold text-success">
+                                  <Tags className="h-3.5 w-3.5" />
+                                  {row.discount}
+                                </span>
                               </td>
                             </tr>
                           ))}
