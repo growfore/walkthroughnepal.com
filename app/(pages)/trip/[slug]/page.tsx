@@ -45,6 +45,31 @@ type GroupDiscountRule = {
   discountType: "PERCENTAGE" | "FLAT"
 }
 
+function UserRoundGroup({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M17 21a5 5 0 00-10 0" />
+      <path d="M22 10.5a3.5 3.5 0 00-5.507-2.868" />
+      <path d="M7.507 7.632A3.5 3.5 0 002 10.5" />
+      <circle cx="12" cy="13" r="3" />
+      <circle cx="18.5" cy="4.5" r="2.5" />
+      <circle cx="5.5" cy="4.5" r="2.5" />
+    </svg>
+  )
+}
+
 function groupDiscountTable(
   rules?: GroupDiscountRule[],
 ): { pax: string; discount: string; start: number }[] | null {
@@ -592,7 +617,7 @@ export default async function PackagePage({
                               <td className="px-3 py-2 text-navy">
                                 <span className="inline-flex items-center gap-1.5">
                                   {row.start >= 3 ? (
-                                    <Users className="h-4 w-4" />
+                                    <UserRoundGroup className="h-4 w-4" />
                                   ) : (
                                     <UsersRound className="h-4 w-4" />
                                   )}
