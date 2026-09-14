@@ -15,7 +15,6 @@ import {
   Utensils,
   Bus,
   Tags,
-  Users as UserRoundGroup,
   UsersRound,
   LucideCircleQuestionMark,
 } from "lucide-react"
@@ -593,7 +592,7 @@ export default async function PackagePage({
                               <td className="px-3 py-2 text-navy">
                                 <span className="inline-flex items-center gap-1.5">
                                   {row.start >= 3 ? (
-                                    <UserRoundGroup className="h-4 w-4" />
+                                    <Users className="h-4 w-4" />
                                   ) : (
                                     <UsersRound className="h-4 w-4" />
                                   )}
