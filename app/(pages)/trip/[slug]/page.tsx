@@ -15,6 +15,8 @@ import {
   Utensils,
   Bus,
   Tags,
+  Users as UserRoundGroup,
+  UsersRound,
   LucideCircleQuestionMark,
 } from "lucide-react"
 import { FAQSection } from "@/components/faq-section"
@@ -46,7 +48,7 @@ type GroupDiscountRule = {
 
 function groupDiscountTable(
   rules?: GroupDiscountRule[],
-): { pax: string; discount: string }[] | null {
+): { pax: string; discount: string; start: number }[] | null {
   if (!rules || rules.length === 0) return null
   const sorted = rules
     .filter((r) => r.groupSize >= 2 && r.discount > 0)
@@ -65,6 +67,7 @@ function groupDiscountTable(
           ? `${rule.groupSize} Pax`
           : `${start}-${rule.groupSize} Pax`,
       discount,
+      start,
     }
     start = rule.groupSize + 1
     return row
@@ -587,7 +590,16 @@ export default async function PackagePage({
                         <tbody>
                           {groupDiscountTable(pkg.groupDiscount)?.map((row) => (
                             <tr key={row.pax} className="border-b border-border last:border-0">
-                              <td className="px-3 py-2 text-navy">{row.pax}</td>
+                              <td className="px-3 py-2 text-navy">
+                                <span className="inline-flex items-center gap-1.5">
+                                  {row.start >= 3 ? (
+                                    <UserRoundGroup className="h-4 w-4" />
+                                  ) : (
+                                    <UsersRound className="h-4 w-4" />
+                                  )}
+                                  {row.pax}
+                                </span>
+                              </td>
                               <td className="px-3 py-2 text-navy">
                                 <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-xs font-bold text-success">
                                   <Tags className="h-3.5 w-3.5" />
