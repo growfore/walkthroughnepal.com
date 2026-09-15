@@ -329,7 +329,7 @@ export default async function PackagePage({
                   {
                     icon: HomeIcon,
                     label: "Accommodation",
-                    value: pkg.accommodations?.join(", ") || "Tea House",
+                    value: pkg.accommodations?.join(", ") || "N/A",
                   },
                   {
                     icon: Bus,

@@ -167,7 +167,7 @@ export function TripPrintPage({ pkg, itineraryVariants }: TripPrintPageProps) {
             <FactRow label="Difficulty" value={difficulty} />
             <FactRow label="Max Altitude" value={pkg.maximumAltitude} />
             <FactRow label="Meals" value={pkg.meals} />
-            <FactRow label="Accommodation" value={pkg.accommodations?.join(", ") || "Tea House"} />
+            <FactRow label="Accommodation" value={pkg.accommodations?.join(", ") || "N/A"} />
             <FactRow label="Best Season" value={pkg.bestSeason} />
           </tbody>
         </table>
