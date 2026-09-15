@@ -196,7 +196,7 @@ export async function Footer() {
           <div className="flex gap-2 items-center">
             Designed and Developed by
             <Link  href={"https://growfore.com/"} target="_blank" className="flex gap-1 items-center underline">
-              <img src={"https://growfore.com/wp-content/uploads/2025/08/cropped-growfore-rounded-blue-on-white.png"} height={200} width={200} alt="Grofore Solution Logo" className="size-6" /> Growfore Solution.
+              <img src={"https://growfore.com/wp-content/uploads/2025/09/favicon.png"} height={200} width={200} alt="Grofore Solution Logo" className="size-6" /> Growfore Solution.
             </Link>
           </div>
         </div>

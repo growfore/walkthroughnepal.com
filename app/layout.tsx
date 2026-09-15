@@ -8,7 +8,6 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
-import { BackToTop } from "@/components/back-to-top"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { ToastContainer } from "react-toastify"
 import { OrganizationJsonLd } from "@/components/json-ld"
@@ -158,11 +157,13 @@ export default async function RootLayout({
           <main id="main-content" className="pt-24 md:pt-28">
             {children}
           </main>
-          <BackToTop />
           <WhatsAppButton />
           <Footer />
           <ToastContainer position="bottom-right" />
         </ThemeProvider>
+        <Script id="tawk-config" strategy="afterInteractive">
+          {`var Tawk_API = Tawk_API || {}; (function(){ var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0]; s1.async = true; s1.src = 'https://embed.tawk.to/6aa8f3beda6e853443fdbaf0/1k2hvg8nh'; s1.charset = 'UTF-8'; s1.setAttribute('crossorigin', '*'); s0.parentNode.insertBefore(s1, s0); })();`}
+        </Script>
         <Script
           src="https://challenges.cloudflare.com/turnstile/v0/api.js"
           strategy="afterInteractive"
