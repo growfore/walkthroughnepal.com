@@ -109,7 +109,7 @@ export function ItineraryList({ variants }: { variants: ItineraryVariant[] }) {
                         <span className="inline-flex items-center gap-1 w-full"><Clock className="h-3.5 w-3.5 shrink-0" /><span className="font-bold hidden md:block">Duration:</span> {d.duration}</span>
                       )}
                       {d.accommodations?.length > 0 && (
-                        <span className="inline-flex items-center gap-1"><Home className="h-3.5 w-3.5" /><span className="font-bold hidden md:block">Accomodations:</span> {d.accommodations.join(", ")}</span>
+                        <span className="inline-flex items-center gap-1"><Home className="h-3.5 w-3.5" /><span className="font-bold hidden md:block">Accommodations:</span> {d.accommodations.join(", ")}</span>
                       )}
                       {d.meals?.length > 0 && (
                         <span className="inline-flex items-center gap-1">
