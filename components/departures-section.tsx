@@ -33,7 +33,7 @@ const formSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email"),
   phone: z.string().min(1, "Phone is required"),
-  tier: z.string().min(1, "Please select a package"),
+  tier: z.string().optional(),
   startDate: z.string().min(1, "Please select a start date"),
   groupType: z.string().optional(),
   numberOfTravellers: z.string().min(1, "Number of travellers is required"),
@@ -95,15 +95,20 @@ export function DeparturesSection({
   const watchedTier = form.watch("tier")
 
   useEffect(() => {
-    if (selectedTier) {
-      // ponytail: defer one tick — RHF setValue in the same commit as a fresh
-      // Controller mount is dropped; setTimeout(0) lands after subscription
+    if (tiers.length === 0 && tripTitle) {
+      setTimeout(() => form.setValue("tier", tripTitle), 0)
+    } else if (selectedTier) {
       setTimeout(() => form.setValue("tier", selectedTier.name), 0)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTier?.id])
+  }, [selectedTier?.id, tiers.length, tripTitle])
 
-  const packageName = watchedTier ? `${tripTitle} : ${watchedTier}` : ""
+  const packageName =
+    tiers.length === 0
+      ? tripTitle
+      : watchedTier
+        ? `${tripTitle} : ${watchedTier}`
+        : ""
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true)
@@ -424,21 +429,30 @@ export function DeparturesSection({
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
+                        disabled={tiers.length === 0}
                       >
                         <FormControl>
                           <SelectTrigger
                             size="sm"
                             className="w-full text-sm"
                           >
-                            <SelectValue placeholder="Select package" />
+                            <SelectValue placeholder="Select package">
+                              {tiers.length === 0 ? tripTitle : undefined}
+                            </SelectValue>
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {tiers.map((t) => (
-                            <SelectItem key={t.id} value={t.name}>
-                              {t.name} — {t.price}
+                          {tiers.length > 0 ? (
+                            tiers.map((t) => (
+                              <SelectItem key={t.id} value={t.name}>
+                                {t.name} — {t.price}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem value={tripTitle}>
+                              {tripTitle}
                             </SelectItem>
-                          ))}
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />

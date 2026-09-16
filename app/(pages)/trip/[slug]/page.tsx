@@ -584,7 +584,6 @@ export default async function PackagePage({
                     Save ${pkg.maxPrice - pkg.price}
                   </span>
                 )}
-                <div className="text-sm text-muted-foreground">Starts from</div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-bold text-navy">
                     ${pkg.price}
