@@ -24,7 +24,7 @@ export function groupDiscountTable(
         start === rule.groupSize
           ? `${rule.groupSize} Pax`
           : `${start}-${rule.groupSize} Pax`,
-      price: Math.max(0, basePrice - discountAmount),
+      price: Math.round(Math.max(0, basePrice - discountAmount)),
       discount:
         rule.discountType === "PERCENTAGE"
           ? `${rule.discount}% Off`

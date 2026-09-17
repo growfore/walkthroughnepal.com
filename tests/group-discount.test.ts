@@ -15,3 +15,12 @@ test("calculates group prices for percentage and flat discounts", () => {
     ]
   )
 })
+
+test("rounds discounted prices to nearest whole dollar", () => {
+  assert.equal(
+    groupDiscountTable(455, [
+      { groupSize: 4, discount: 15, discountType: "PERCENTAGE" },
+    ])?.[0].price,
+    387,
+  )
+})
