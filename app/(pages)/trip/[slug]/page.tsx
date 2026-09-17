@@ -36,14 +36,9 @@ import { getI18n } from "@/lib/server-locale"
 import { SITE_URL } from "@/lib/hreflang"
 import { isLocaleCode } from "@/lib/locales"
 import { TouristTripJsonLd, FAQPageJsonLd, BreadcrumbJsonLd } from "@/components/json-ld"
+import { groupDiscountTable } from "@/lib/group-discount"
 
 type Props = { params: Promise<{ slug: string }> }
-
-type GroupDiscountRule = {
-  groupSize: number
-  discount: number
-  discountType: "PERCENTAGE" | "FLAT"
-}
 
 function UserRoundGroup({ className }: { className?: string }) {
   return (
@@ -68,35 +63,6 @@ function UserRoundGroup({ className }: { className?: string }) {
       <circle cx="5.5" cy="4.5" r="2.5" />
     </svg>
   )
-}
-
-function groupDiscountTable(
-  rules?: GroupDiscountRule[],
-): { pax: string; discount: string; start: number }[] | null {
-  if (!rules || rules.length === 0) return null
-  const sorted = rules
-    .filter((r) => r.groupSize >= 2 && r.discount > 0)
-    .sort((a, b) => a.groupSize - b.groupSize)
-  if (sorted.length === 0) return null
-
-  let start = 2
-  const rows = sorted.map((rule) => {
-    const discount =
-      rule.discountType === "FLAT"
-        ? `USD ${rule.discount.toLocaleString()} per person`
-        : `${rule.discount}% Off`
-    const row = {
-      pax:
-        start === rule.groupSize
-          ? `${rule.groupSize} Pax`
-          : `${start}-${rule.groupSize} Pax`,
-      discount,
-      start,
-    }
-    start = rule.groupSize + 1
-    return row
-  })
-  return rows
 }
 
 export function generateStaticParams() {
@@ -218,6 +184,7 @@ export default async function PackagePage({
   const itineraryVariants = parseItineraryVariants(pkg.itinerary as unknown)
 
   const maxPax = Math.max(0, ...(pkg.groupDiscount ?? []).map((r) => r.groupSize))
+  const groupDiscounts = groupDiscountTable(pkg.price, pkg.groupDiscount)
 
   const difficulty =
     pkg.difficultyLevel
@@ -596,7 +563,7 @@ export default async function PackagePage({
                 </div>
                 <div className="text-sm text-muted-foreground">per person</div>
 
-                {pkg.showGroupDiscount !== false && groupDiscountTable(pkg.groupDiscount) && (
+                {pkg.showGroupDiscount !== false && groupDiscounts && (
                   <details className="group mt-3" open>
                     <summary className="flex w-full cursor-pointer list-none items-center justify-between rounded-md border border-border bg-muted/40 px-3 py-2 text-sm font-semibold text-navy [&::-webkit-details-marker]:hidden">
                       Group booking discount
@@ -607,11 +574,11 @@ export default async function PackagePage({
                         <thead>
                           <tr className="border-b border-border bg-muted/40 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                             <th className="px-3 py-2">{t("No. of people")}</th>
-                            <th className="px-3 py-2">{t("Discount")}</th>
+                            <th className="px-3 py-2 text-right">{t("Price per person")}</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {groupDiscountTable(pkg.groupDiscount)?.map((row) => (
+                          {groupDiscounts.map((row) => (
                             <tr key={row.pax} className="border-b border-border last:border-0">
                               <td className="px-3 py-2 text-navy">
                                 <span className="inline-flex items-center gap-1.5">
@@ -623,7 +590,10 @@ export default async function PackagePage({
                                   {row.pax}
                                 </span>
                               </td>
-                              <td className="px-3 py-2 text-navy">
+                              <td className="px-3 py-2 text-right text-navy">
+                                <div className="font-bold">
+                                  ${row.price.toLocaleString("en-US", { maximumFractionDigits: 2 })}
+                                </div>
                                 <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-xs font-bold text-success">
                                   <Tags className="h-3.5 w-3.5" />
                                   {row.discount}
