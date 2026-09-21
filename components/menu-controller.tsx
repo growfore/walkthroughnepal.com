@@ -122,7 +122,7 @@ export function MenuController({ items }: MenuControllerProps) {
     <nav
       ref={navRef}
       aria-label="Main navigation"
-      className={`${isTripPage ? "sticky top-0 w-full" : "fixed inset-x-0 top-0"} ${isNavVisible ? "translate-y-0" : "-translate-y-full"} z-50 border-b border-border bg-white/40 backdrop-blur-xl transition-transform duration-300`}
+      className={`${isTripPage ? "sticky top-0 w-full" : "fixed inset-x-0 top-0"} ${isNavVisible ? "translate-y-0" : "-translate-y-full"} z-50  bg-white/40 backdrop-blur-xl transition-transform duration-300`}
     >
       {/* Top bar */}
       <div className="hidden bg-navy text-navy-foreground md:block">
@@ -196,7 +196,7 @@ export function MenuController({ items }: MenuControllerProps) {
                     onMouseEnter={cancelHide}
                     className="absolute top-full left-0 z-[100] pt-1"
                   >
-                    <div className="min-w-[220px] max-w-[320px] rounded-xl border border-border bg-white/40 py-2 shadow-lg backdrop-blur-xl">
+                    <div className="min-w-[220px] max-w-[320px] rounded-xl  bg-white/40 py-2 shadow-lg backdrop-blur-xl">
                       {item.children.map((child) => (
                         <Link
                           key={child.id}
@@ -243,7 +243,7 @@ export function MenuController({ items }: MenuControllerProps) {
             className="pointer-events-none absolute inset-x-0 top-2 z-[100] max-lg:hidden border-t-0"
           >
             <div className="h-16" aria-hidden="true" />
-            <div className="pointer-events-auto rounded-none border border-border bg-white backdrop-blur-xl shadow-[0_16px_24px_-12px_rgb(0_0_0/0.2)]">
+            <div className="pointer-events-auto rounded-none  bg-white backdrop-blur-xl">
               <div className="mx-auto max-w-7xl px-4 md:px-8">
                 <div className="flex">
                   <div className="w-[240px] shrink-0 border-r border-border py-6 pr-6">

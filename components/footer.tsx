@@ -125,7 +125,7 @@ export async function Footer() {
               </div>
             </section>
       <FooterNewsletter />
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pt-14 pb-10 md:grid-cols-3 lg:grid-cols-6">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pt-14 pb-10 md:grid-cols-3 lg:grid-cols-5">
         <div className="md:col-span-2">
           <a href={href("/")}>
             <img src={"/walkthrough-nepal-logo-white.svg"} height={200} width={200} alt="walk through nepal logo white"/>
