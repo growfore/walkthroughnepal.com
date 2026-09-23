@@ -4,7 +4,6 @@ import {
   Mountain,
   Clock,
   ChevronRight,
-  ChevronDown,
   Calendar,
   Users,
   Home as HomeIcon,
@@ -14,13 +13,9 @@ import {
   X,
   Utensils,
   Bus,
-  Tags,
-  UsersRound,
-  LucideCircleQuestionMark,
 } from "lucide-react"
 import { FAQSection } from "@/components/faq-section"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import {
@@ -36,7 +31,7 @@ import { getI18n } from "@/lib/server-locale"
 import { SITE_URL } from "@/lib/hreflang"
 import { isLocaleCode } from "@/lib/locales"
 import { TouristTripJsonLd, FAQPageJsonLd, BreadcrumbJsonLd } from "@/components/json-ld"
-import { groupDiscountTable } from "@/lib/group-discount"
+import { PriceProvider, PriceCard, MobilePriceBar } from "@/components/price-card"
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -184,7 +179,6 @@ export default async function PackagePage({
   const itineraryVariants = parseItineraryVariants(pkg.itinerary as unknown)
 
   const maxPax = Math.max(0, ...(pkg.groupDiscount ?? []).map((r) => r.groupSize))
-  const groupDiscounts = groupDiscountTable(pkg.price, pkg.groupDiscount)
 
   const difficulty =
     pkg.difficultyLevel
@@ -214,14 +208,15 @@ export default async function PackagePage({
     )
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <TouristTripJsonLd
-        title={pkg.title}
-        description={pkg.shortDescription || ""}
-        image={pkg.images?.[0] ? img(pkg.images[0]) : "/opengraph-image"}
-        price={pkg.price}
-        maxPrice={pkg.maxPrice}
-        duration={pkg.duration}
+    <PriceProvider defaultValue={pkg.price}>
+      <div className="min-h-screen bg-background text-foreground">
+        <TouristTripJsonLd
+          title={pkg.title}
+          description={pkg.shortDescription || ""}
+          image={pkg.images?.[0] ? img(pkg.images[0]) : "/opengraph-image"}
+          price={pkg.price}
+          maxPrice={pkg.maxPrice}
+          duration={pkg.duration}
         difficulty={difficulty}
         bestSeason={pkg.bestSeason || ""}
         slug={slug}
@@ -538,106 +533,30 @@ export default async function PackagePage({
           {/* ── Sidebar ── */}
           <StickyWrapper
             className="sticky space-y-4 self-start max-lg:static"
-            offset={188}
+            offset="calc(var(--navigation-offset, 0px) + var(--section-nav-offset, 60px) + 12px)"
           >
             {/* Price */}
-            <div
-              id="price-card"
-              className="rounded-lg border border-border bg-card shadow-sm"
+            <PriceCard
+              slug={slug}
+              basePrice={pkg.price}
+              maxPrice={pkg.maxPrice}
+              tiers={pkg.tier}
+              groupDiscount={pkg.groupDiscount}
+              showGroupDiscount={pkg.showGroupDiscount !== false}
+              maxPax={maxPax}
+              labels={{
+                people: t("No. of people"),
+                pricePerPerson: t("Price per person"),
+                perPerson: "per person",
+                standard: "Standard",
+                inquireMore: t("More than {n} people? Inquire us!", { n: maxPax }),
+                inquireMoreTooltip: t("{n} is the largest group size with listed pricing for this activity. For bigger groups, send an inquiry — we'll quote a custom rate.", { n: maxPax }),
+              }}
             >
-              <div className="p-4 sm:p-5">
-                {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
-                  <span className="mb-2 inline-block rounded-full bg-success-soft px-2 py-0.5 text-xs font-bold text-success">
-                    Save ${pkg.maxPrice - pkg.price}
-                  </span>
-                )}
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-bold text-navy">
-                    ${pkg.price}
-                  </span>
-                  {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
-                    <span className="text-sm text-muted-foreground line-through">
-                      ${pkg.maxPrice}
-                    </span>
-                  )}
-                </div>
-                <div className="text-sm text-muted-foreground">per person</div>
-
-                {pkg.showGroupDiscount !== false && groupDiscounts && (
-                  <details className="group mt-3" open>
-                    <summary className="flex w-full cursor-pointer list-none items-center justify-between rounded-md border border-border bg-muted/40 px-3 py-2 text-sm font-semibold text-navy [&::-webkit-details-marker]:hidden">
-                      Group booking discount
-                      <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
-                    </summary>
-                    <div className="mt-2 overflow-hidden rounded-md border border-border">
-                      <table className="w-full text-sm">
-                        <thead>
-                          <tr className="border-b border-border bg-muted/40 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                            <th className="px-3 py-2">{t("No. of people")}</th>
-                            <th className="px-3 py-2 text-right">{t("Price per person")}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {groupDiscounts.map((row) => (
-                            <tr key={row.pax} className="border-b border-border last:border-0">
-                              <td className="px-3 py-2 text-navy">
-                                <span className="inline-flex items-center gap-1.5">
-                                  {row.start >= 3 ? (
-                                    <UserRoundGroup className="h-4 w-4" />
-                                  ) : (
-                                    <UsersRound className="h-4 w-4" />
-                                  )}
-                                  {row.pax}
-                                </span>
-                              </td>
-                              <td className="px-3 py-2 text-right text-navy">
-                                <div className="flex items-center justify-end gap-2">
-                                  <span className="font-bold">
-                                    ${row.price.toLocaleString("en-US")}
-                                  </span>
-                                  <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-xs font-bold text-success">
-                                    <Tags className="h-3.5 w-3.5" />
-                                    {row.discount}
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    <div className="mt-2 flex items-center gap-1 text-sm text-muted-foreground">
-                      <span>{t("More than {n} people? Inquire us!", { n: maxPax })}</span>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <LucideCircleQuestionMark className="h-4 w-4 shrink-0 cursor-pointer text-muted-foreground" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-42">
-                          {t("{n} is the largest group size with listed pricing for this activity. For bigger groups, send an inquiry — we'll quote a custom rate.", { n: maxPax })}
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                  </details>
-                )}
-
-                <Link
-                  href={`/inquiry?trip=${slug}`}
-                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-orange px-4 py-3 font-semibold text-orange-foreground hover:opacity-90 underline text-lg"
-                >
-                  Inquire Now
-                </Link>
-                <a
-                  href="#departures"
-                  className="mt-2 text-lg flex w-full items-center justify-center gap-2 rounded-lg border border-navy bg-transparent px-4 py-3  font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
-                >
-                  Check Availability
-                </a>
-              </div>
-
               <div className="border-t border-border px-4 py-3 sm:px-5">
                 <DownloadItineraryButton title={pkg.title} slug={slug} />
               </div>
-            </div>
+            </PriceCard>
 
             {/* Contact */}
             <div className="rounded-lg border border-border bg-card">
@@ -694,30 +613,8 @@ export default async function PackagePage({
       )}
 
       {/* Mobile sticky booking bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background px-4 py-3 shadow-lg lg:hidden">
-        <div className="flex items-center justify-between gap-3">
-          <div className="min-w-0">
-            <div className="text-xs text-muted-foreground">From</div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-lg font-bold text-navy">
-                ${pkg.price}
-              </span>
-              {pkg.maxPrice && pkg.maxPrice !== pkg.price && (
-                <span className="text-xs text-muted-foreground line-through">
-                  ${pkg.maxPrice}
-                </span>
-              )}
-              <span className="text-xs text-muted-foreground">/person</span>
-            </div>
-          </div>
-          <Link
-              href={`/inquiry?trip=${slug}`}
-              className="shrink-0 rounded-lg bg-orange px-6 py-3 text-sm font-bold text-orange-foreground hover:opacity-90"
-            >
-              Inquire Now
-            </Link>
-        </div>
+      <MobilePriceBar slug={slug} maxPrice={pkg.maxPrice} />
       </div>
-    </div>
+    </PriceProvider>
   )
 }

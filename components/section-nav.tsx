@@ -82,6 +82,19 @@ export function SectionNav({ sectionIds }: { sectionIds: string[] }) {
     return () => observerRef.current?.disconnect()
   }, [sectionIds, scrollToTab])
 
+  useEffect(() => {
+    const syncHeight = () => {
+      document.documentElement.style.setProperty("--section-nav-offset", `${navRef.current?.offsetHeight ?? 0}px`)
+    }
+    syncHeight()
+    const observer = new ResizeObserver(syncHeight)
+    if (navRef.current) observer.observe(navRef.current)
+    return () => {
+      observer.disconnect()
+      document.documentElement.style.removeProperty("--section-nav-offset")
+    }
+  }, [])
+
   return (
     <div
       className="sticky z-30 border-b border-border bg-primary/10 backdrop-blur-xl transition-[top] duration-300"
