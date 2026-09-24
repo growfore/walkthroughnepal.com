@@ -82,15 +82,21 @@ export function PriceCard({
   const { price, setPrice } = useSelectedPrice()
   const strike = maxPrice > 0 && maxPrice > price
 
-  const options = useMemo(
-    () => [
-      { id: "standard", label: labels.standard, value: basePrice },
-      ...tiers.map((t) => ({ id: t.id, label: t.name, value: priceOf(t.price) })),
-    ],
-    [tiers, basePrice, labels.standard]
-  )
+  const options = useMemo(() => {
+    const tierOptions = tiers.map((t) => ({
+      id: t.id,
+      label: t.name,
+      value: priceOf(t.price),
+      standard: priceOf(t.price) === basePrice,
+    }))
+    return tierOptions.some((o) => o.standard)
+      ? tierOptions
+      : [{ id: "standard", label: labels.standard, value: basePrice, standard: false }, ...tierOptions]
+  }, [tiers, basePrice, labels.standard])
 
-  const [selectedId, setSelectedId] = useState(() => options[0]?.id ?? "standard")
+  const [selectedId, setSelectedId] = useState(
+    () => options.find((o) => o.value === basePrice)?.id ?? options[0]?.id ?? "standard"
+  )
 
   const selectOption = (id: string) => {
     setSelectedId(id)
@@ -104,22 +110,25 @@ export function PriceCard({
     [price, groupDiscount]
   )
 
+  const priceLine = (
+    <div className="flex items-baseline gap-2">
+      <span className="text-3xl font-bold text-navy">
+        ${price.toLocaleString("en-US")}<span className="text-sm font-normal text-muted-foreground">/pp</span>
+      </span>
+      {strike && (
+        <span className="text-sm text-muted-foreground line-through">
+          ${maxPrice.toLocaleString("en-US")}
+        </span>
+      )}
+    </div>
+  )
+
   return (
     <div id="price-card" className="rounded-lg border border-border bg-card shadow-sm">
       <div className="p-4 sm:p-5">
-        <div className="flex items-baseline gap-2">
-          {options.length <= 1 ? (
-            <>
-              <span className="text-3xl font-bold text-navy">
-                ${price.toLocaleString("en-US")}<span className="text-sm font-normal text-muted-foreground">/pp</span>
-              </span>
-              {strike && (
-                <span className="text-sm text-muted-foreground line-through">
-                  ${maxPrice.toLocaleString("en-US")}
-                </span>
-              )}
-            </>
-          ) : (
+        <div className="flex flex-col gap-3">
+          {priceLine}
+          {options.length > 1 && (
             <div className="flex w-full flex-col gap-2" role="radiogroup" aria-label="Select pricing option">
               {options.map((o) => (
                 <label
@@ -140,6 +149,11 @@ export function PriceCard({
                       className="size-4 accent-primary"
                     />
                     <span className={o.id === selectedId ? "font-semibold" : ""}>{o.label}</span>
+                    {o.standard && (
+                      <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary-foreground">
+                        {labels.standard}
+                      </span>
+                    )}
                   </span>
                   <span className="font-semibold text-navy">
                     ${o.value.toLocaleString("en-US")}<span className="text-xs font-normal text-muted-foreground">/pp</span>
