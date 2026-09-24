@@ -3,7 +3,6 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react"
 import Link from "next/link"
 import { ChevronDown, Tags, UsersRound, LucideCircleQuestionMark } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { groupDiscountTable } from "@/lib/group-discount"
 import type { Activity, Tier } from "@/lib/types"
@@ -54,7 +53,6 @@ function useSelectedPrice() {
 export type PriceLabels = {
   people: string
   pricePerPerson: string
-  perPerson: string
   inquireMore: string
   inquireMoreTooltip: string
   standard: string
@@ -93,7 +91,12 @@ export function PriceCard({
   )
 
   const [selectedId, setSelectedId] = useState(() => options[0]?.id ?? "standard")
-  const selected = options.find((o) => o.id === selectedId) ?? options[0]
+
+  const selectOption = (id: string) => {
+    setSelectedId(id)
+    const option = options.find((o) => o.id === id)
+    if (option) setPrice(option.value)
+  }
 
   // ponytail: dropdown options share the same discount rules — only the base price feeds the table
   const groupDiscounts = useMemo(
@@ -108,7 +111,7 @@ export function PriceCard({
           {options.length <= 1 ? (
             <>
               <span className="text-3xl font-bold text-navy">
-                ${price.toLocaleString("en-US")}
+                ${price.toLocaleString("en-US")}<span className="text-sm font-normal text-muted-foreground">/pp</span>
               </span>
               {strike && (
                 <span className="text-sm text-muted-foreground line-through">
@@ -117,44 +120,35 @@ export function PriceCard({
               )}
             </>
           ) : (
-            <Select
-              value={selectedId}
-              onValueChange={(id) => {
-                setSelectedId(id)
-                const option = options.find((o) => o.id === id)
-                if (option) setPrice(option.value)
-              }}
-            >
-              <SelectTrigger className="h-auto w-full justify-between rounded-md border border-border bg-muted/40 px-3 py-2">
-                <span className="flex items-baseline gap-2">
-                  <span className="text-3xl font-bold text-navy">
-                    <SelectValue>
-                      ${(selected?.value ?? price).toLocaleString("en-US")}
-                    </SelectValue>
+            <div className="flex w-full flex-col gap-2" role="radiogroup" aria-label="Select pricing option">
+              {options.map((o) => (
+                <label
+                  key={o.id}
+                  className={`flex cursor-pointer items-center justify-between gap-3 rounded-md border px-3 py-2 text-sm transition-colors ${
+                    o.id === selectedId
+                      ? "border-primary bg-primary/5"
+                      : "border-hairline hover:border-primary/40"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name={slug}
+                      value={o.id}
+                      checked={o.id === selectedId}
+                      onChange={() => selectOption(o.id)}
+                      className="size-4 accent-primary"
+                    />
+                    <span className={o.id === selectedId ? "font-semibold" : ""}>{o.label}</span>
                   </span>
-                  {strike && (
-                    <span className="text-sm text-muted-foreground line-through">
-                      ${maxPrice.toLocaleString("en-US")}
-                    </span>
-                  )}
-                </span>
-              </SelectTrigger>
-              <SelectContent>
-                {options.map((o) => (
-                  <SelectItem key={o.id} value={o.id}>
-                    <span className="flex w-full items-center justify-between gap-6">
-                      <span>{o.label}</span>
-                      <span className="font-semibold text-navy">
-                        ${o.value.toLocaleString("en-US")}
-                      </span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                  <span className="font-semibold text-navy">
+                    ${o.value.toLocaleString("en-US")}<span className="text-xs font-normal text-muted-foreground">/pp</span>
+                  </span>
+                </label>
+              ))}
+            </div>
           )}
         </div>
-        <div className="text-sm text-muted-foreground">{labels.perPerson}</div>
 
         {showGroupDiscount && groupDiscounts && (
           <details className="group mt-3" open>
@@ -250,7 +244,7 @@ export function MobilePriceBar({ slug, maxPrice }: { slug: string; maxPrice: num
                 ${maxPrice.toLocaleString("en-US")}
               </span>
             )}
-            <span className="text-xs text-muted-foreground">/person</span>
+            <span className="text-xs text-muted-foreground">/pp</span>
           </div>
         </div>
         <Link

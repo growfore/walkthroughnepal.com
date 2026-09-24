@@ -547,7 +547,6 @@ export default async function PackagePage({
               labels={{
                 people: t("No. of people"),
                 pricePerPerson: t("Price per person"),
-                perPerson: "per person",
                 standard: "Standard",
                 inquireMore: t("More than {n} people? Inquire us!", { n: maxPax }),
                 inquireMoreTooltip: t("{n} is the largest group size with listed pricing for this activity. For bigger groups, send an inquiry — we'll quote a custom rate.", { n: maxPax }),
