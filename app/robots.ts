@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: "/",
+        allow: ["/", "/favicon.ico", "/icon", "/apple-icon", "/opengraph-image"],
         disallow: ["/api/", "/trip/*/print", "/departure/failed", "/departure/success", "/*?"],
       },
     ],

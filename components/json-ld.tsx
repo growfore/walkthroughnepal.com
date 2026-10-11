@@ -14,7 +14,7 @@ export function OrganizationJsonLd() {
     "@id": `${SITE_URL}/#organization`,
     name: siteConfig.name,
     url: SITE_URL,
-    logo: `${SITE_URL}/walkthrough-nepal-logo.png`,
+    logo: `${SITE_URL}/walkthroughnepal-logo-color.png`,
     description: siteConfig.description,
     foundingDate: siteConfig.established,
     address: {
@@ -204,7 +204,7 @@ export function ArticleJsonLd({
       name: siteConfig.name,
       logo: {
         "@type": "ImageObject",
-        url: `${SITE_URL}/walkthrough-nepal-logo.png`,
+        url: `${SITE_URL}/walkthroughnepal-logo-color.png`,
       },
     },
     ...(category ? { articleSection: category } : {}),
