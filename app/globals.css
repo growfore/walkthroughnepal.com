@@ -352,3 +352,10 @@ html::-webkit-scrollbar-thumb:hover {
     width: fit-content !important;
   }
 }
+
+/* lift WhatsApp above the mobile trip price bar */
+@media (width < 64rem) {
+  body:has([data-mobile-price-bar]) [data-whatsapp-button] {
+    bottom: 6rem;
+  }
+}

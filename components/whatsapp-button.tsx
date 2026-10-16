@@ -9,6 +9,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
+      data-whatsapp-button
       className="group fixed bottom-8 right-6  z-50 flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-sm transition-transform hover:scale-105"
     >
       <svg viewBox="0 0 360 362" className="h-5 w-5 fill-white" aria-hidden="true">
