@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 import { siteConfig } from "@/lib/siteConfig"
@@ -18,7 +19,8 @@ export async function AboutSection() {
         <div className="flex justify-center">
           <div className="relative flex gap-1">
             <div className="h-100 w-80 overflow-hidden border-8 border-white shadow-xl left-2">
-              <img
+              <Image
+                sizes="320px"
                 src="/narphu-trek.webp"
                 alt="Trekking in the Nar Phu Valley, Nepal"
                 width={700}
@@ -41,7 +43,7 @@ export async function AboutSection() {
           <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
             {stats.map((s) => (
               <div key={s.label} className="text-center rounded-sm  p-4">
-                <img src={s.icon} alt="" width={48} height={48} className="mx-auto  object-contain" />
+                <Image src={s.icon} alt="" width={48} height={48} className="mx-auto  object-contain" />
                 <p className="mt-2 text-md font-bold ">{s.value}</p>
               </div>
             ))}

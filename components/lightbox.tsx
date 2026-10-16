@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { X } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
@@ -35,7 +36,17 @@ export function Lightbox({ src, alt, priority }: { src: string; alt: string; pri
 
   return (
     <>
-      <img src={src} alt={alt} sizes="100vw" className="w-full object-cover cursor-pointer" onClick={() => setOpen(true)} />
+      <Image
+        src={src}
+        alt={alt}
+        width={1920}
+        height={1080}
+        sizes="100vw"
+        preload={priority}
+        fetchPriority={priority ? "high" : undefined}
+        className="h-auto w-full cursor-pointer object-cover"
+        onClick={() => setOpen(true)}
+      />
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={close} role="dialog" aria-modal="true" aria-label={alt}>
           <button ref={closeRef} onClick={close} className="absolute right-4 top-4 text-white/80 hover:text-white transition-colors" aria-label="Close"><X className="h-8 w-8" /></button>

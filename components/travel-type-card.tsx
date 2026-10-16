@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -16,11 +17,12 @@ export function TravelTypeCard({ icon: Icon, title, description, href, image }: 
       href={href}
       className="group relative block h-72 overflow-hidden rounded-xl"
     >
-      <img
+      <Image
         src={image}
         alt={title}
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-        loading="lazy"
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+        className="object-cover transition-transform duration-500 group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
       <div className="relative flex h-full flex-col justify-end p-6">

@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useState, useRef, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { Search, Mountain, FileText, Command } from "lucide-react"
@@ -128,7 +129,7 @@ export function SearchDialog() {
               onMouseEnter={() => setIdx(globalIdx)}
               onClick={() => setOpen(false)}
             >
-              <img
+              <Image
                 src={item.image}
                 alt=""
                 width={36}
@@ -155,7 +156,7 @@ export function SearchDialog() {
       <button
         onClick={() => setOpen(true)}
         className={`flex w-3xl items-center justify-between gap-2 rounded-md bg-white px-3 py-4 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-navy lg:border lg:border-border ${open ? "invisible" : ""}`}
-        aria-label="Search"
+        aria-label="Search trips, blogs"
         aria-expanded={open}
       >
         <div className="flex items-center gap-1">

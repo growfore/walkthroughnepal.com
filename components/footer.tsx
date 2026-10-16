@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import {
   Globe,
@@ -101,13 +102,9 @@ export async function Footer() {
   const items = footerItems.filter((i) => i.label && i.url)
 
   return (
-    <footer
-      className="bg-navy bg-cover bg-center text-navy-foreground"
-      style={{
-        backgroundImage:
-          "linear-gradient(rgba(15,43,61,.88), rgba(15,43,61,.88)), url('/footer-bg.png')",
-      }}
-    >
+    <footer className="relative isolate bg-navy text-navy-foreground">
+      <Image src="/footer-bg.webp" alt="" fill sizes="100vw" className="-z-10 object-cover" />
+      <div className="absolute inset-0 -z-10 bg-[rgba(15,43,61,.88)]" />
       {/* ── Selling Points ── */}
             <section className=" bg-navy py-16 text-navy-foreground">
               <div className="mx-auto max-w-7xl px-4">
@@ -196,7 +193,7 @@ export async function Footer() {
           <div className="flex gap-2 items-center">
             Designed and Developed by
             <Link  href={"https://growfore.com/"} target="_blank" className="flex gap-1 items-center underline">
-              <img src={"https://growfore.com/wp-content/uploads/2025/09/favicon.png"} height={200} width={200} alt="Grofore Solution Logo" className="size-6" /> Growfore Solution.
+              <Image src={"https://growfore.com/wp-content/uploads/2025/09/favicon.png"} height={24} width={24} alt="Grofore Solution Logo" className="size-6" /> Growfore Solution.
             </Link>
           </div>
         </div>

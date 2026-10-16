@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 import { HorizontalScroll } from "@/components/horizontal-scroll"
@@ -22,9 +23,12 @@ export function DestinationsSection({ destinations }: { destinations: HomeDestin
               href={`/explore?city=${d.handle}`}
               className="group relative w-64 shrink-0 snap-start overflow-hidden rounded-xl"
             >
-              <img
+              <Image
                 src={d.img}
                 alt={d.title}
+                width={256}
+                height={192}
+                sizes="256px"
                 className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

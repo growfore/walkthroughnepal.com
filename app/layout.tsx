@@ -3,7 +3,6 @@ import type { Metadata, Viewport } from "next"
 import Script from "next/script"
 
 import "./globals.css"
-import "react-toastify/dist/ReactToastify.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 import { Navigation } from "@/components/navigation"
@@ -21,17 +20,21 @@ const livvic = Livvic({
   variable: "--font-sans",
   // ponytail: Livvic has no 800 weight — 900 stands in for extrabold
   weight: ["400", "500", "600", "700", "900"],
+  // no preload: fonts are discovered from CSS and swap in, so they never delay first paint or the hero image
+  preload: false,
 })
 
 const fontMono = Martian_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+  preload: false,
 })
 
 const barlowSemiCondensed = Barlow_Semi_Condensed({
   subsets: ["latin"],
   variable: "--font-heading",
   weight: ["400", "500", "600", "700"],
+  preload: false,
 })
 
 export const metadata: Metadata = {
@@ -117,9 +120,9 @@ export default async function RootLayout({
       <head>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-TLS8DKG5GG"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -164,10 +167,6 @@ export default async function RootLayout({
         {/*<Script id="tawk-config" strategy="afterInteractive">
           {`var Tawk_API = Tawk_API || {}; (function(){ var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0]; s1.async = true; s1.src = 'https://embed.tawk.to/6aa8f3beda6e853443fdbaf0/1k2hvg8nh'; s1.charset = 'UTF-8'; s1.setAttribute('crossorigin', '*'); s0.parentNode.insertBefore(s1, s0); })();`}
         </Script>*/}
-        <Script
-          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   )

@@ -22,6 +22,16 @@ declare global {
 }
 
 const SITEKEY = process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY
+const SCRIPT_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js"
+
+function loadTurnstileScript() {
+  if (window.turnstile || document.querySelector(`script[src="${SCRIPT_SRC}"]`)) return
+  const s = document.createElement("script")
+  s.src = SCRIPT_SRC
+  s.async = true
+  s.defer = true
+  document.head.appendChild(s)
+}
 
 export function Turnstile({ theme }: { theme?: "light" | "dark" }) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -52,9 +62,10 @@ export function Turnstile({ theme }: { theme?: "light" | "dark" }) {
       })
     }
 
-    // api.js loads lazily in the layout; render explicitly once it's ready
-    // (auto-render only scans the DOM once at script load, which misses
-    // widgets mounted later, e.g. the last step of the design-trip form).
+    // api.js is injected only on pages that mount a widget; render explicitly
+    // once it's ready (auto-render only scans the DOM once at script load,
+    // which misses widgets mounted later, e.g. the last step of the design-trip form).
+    loadTurnstileScript()
     if (window.turnstile) {
       render()
     } else {
@@ -64,7 +75,7 @@ export function Turnstile({ theme }: { theme?: "light" | "dark" }) {
           render()
         }
       }, 150)
-      setTimeout(() => poll && clearInterval(poll), 8000)
+      setTimeout(() => poll && clearInterval(poll), 15000)
     }
 
     return () => {

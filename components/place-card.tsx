@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useState, useEffect } from "react"
 import { Info, X } from "lucide-react"
 import { Drawer, DrawerContent } from "@/components/ui/drawer"
@@ -42,10 +43,12 @@ export function PlaceCard({ image, alt, className }: PlaceCardProps) {
       <div className={className}>
         <div className="group relative w-full overflow-hidden rounded-2xl">
           <div className="relative aspect-[4/3] sm:aspect-video">
-            <img
+            <Image
               src={image}
               alt={alt}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              fill
+              sizes="(max-width: 768px) 100vw, 768px"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>
 

@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { Calendar } from "lucide-react"
 import { img } from "@/lib/api"
@@ -15,11 +16,12 @@ export function PostEmbedCard({ post }: { post: CMSPost }) {
       className="group flex items-center gap-4 rounded-lg border border-border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
     >
       <div className="relative h-24 w-40 shrink-0 overflow-hidden rounded-md">
-        <img
+        <Image
           src={img(post.coverImage)}
           alt={post.title}
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
+          fill
+          sizes="160px"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
       <div className="min-w-0">

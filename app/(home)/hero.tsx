@@ -1,8 +1,50 @@
 "use client"
 
+import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { SearchDialog } from "@/components/search-dialog"
+
+const INTERACTION_EVENTS = ["pointermove", "pointerdown", "touchstart", "keydown", "scroll", "wheel"] as const
+
+// Start the 3MB clip on first interaction: the poster image above stays the
+// LCP element (browsers stop recording LCP after input), and the video never
+// competes with first paint.
+function HeroVideo() {
+  const ref = useRef<HTMLVideoElement>(null)
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+    if (conn?.saveData || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+    const start = () => {
+      stop()
+      const v = ref.current
+      if (!v) return
+      v.load()
+      v.play().catch(() => {})
+    }
+    const stop = () => INTERACTION_EVENTS.forEach((e) => window.removeEventListener(e, start))
+    INTERACTION_EVENTS.forEach((e) => window.addEventListener(e, start, { once: true, passive: true }))
+    return stop
+  }, [])
+
+  return (
+    <video
+      ref={ref}
+      className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${ready ? "opacity-100" : "opacity-0"}`}
+      muted
+      loop
+      playsInline
+      preload="none"
+      aria-hidden="true"
+      onPlaying={() => setReady(true)}
+    >
+      <source src="/hero-video-opt.webm" type="video/webm" />
+      <source src="/hero-video-opt.mp4" type="video/mp4" />
+    </video>
+  )
+}
 
 export const HeroSection = () => {
   const router = useRouter()
@@ -30,18 +72,16 @@ export const HeroSection = () => {
 
   return (
     <section className="relative min-h-[90vh] w-full">
-      <video
-        className="absolute inset-0 h-full w-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        poster="/hero-poster.jpg"
-        preload="metadata"
-      >
-        <source src="/hero-video-opt.webm" type="video/webm" />
-        <source src="/hero-video-opt.mp4" type="video/mp4" />
-      </video>
+      <Image
+        src="/hero-poster.jpg"
+        alt=""
+        fill
+        preload
+        fetchPriority="high"
+        sizes="100vw"
+        className="object-cover"
+      />
+      <HeroVideo />
       {/*<div className="absolute inset-0 bg-white/40" />*/}
 
       <div className="relative z-10 container mx-auto flex h-full flex-col items-center justify-center px-4 pt-42 text-center">
@@ -68,7 +108,7 @@ export const HeroSection = () => {
             {stats.map((s) => (
               <div key={s.label} className="text-center">
                 <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-orange/50">
-                  <img src={s.icon} alt="" width={28} height={28} className="h-7 w-7 object-contain brightness-0 invert" />
+                  <Image src={s.icon} alt="" width={28} height={28} className="h-7 w-7 object-contain brightness-0 invert" />
                 </div>
                 <p className="mt-2 text-xl font-bold text-white">{s.value}</p>
                 <p className="text-xs text-white font-medium leading-normal">{s.label}</p>

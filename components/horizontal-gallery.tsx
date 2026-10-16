@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useState } from "react"
 import { GalleryLightbox } from "./gallery-lightbox"
 import { img } from "@/lib/api"
@@ -41,12 +42,13 @@ export function HorizontalGallery({
               onClick={() => setOpenIdx(i)}
               className="snap-start shrink-0 relative h-[55vh] w-[80vw] md:h-[65vh] md:w-[55vw]"
             >
-              <img
+              <Image
                 src={image.src}
                 alt={image.alt}
-                className="absolute inset-0 h-full w-full object-cover"
-                loading={i === 0 ? "eager" : "lazy"}
-                fetchPriority={i === 0 ? "high" : "auto"}
+                fill
+                sizes="(max-width: 768px) 80vw, 55vw"
+                className="object-cover"
+                preload={i === 0}
               />
             </button>
           ))}

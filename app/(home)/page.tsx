@@ -1,4 +1,6 @@
+import { Suspense } from "react"
 import type { Metadata } from "next"
+import { Skeleton } from "@/components/skeleton"
 import { WebSiteJsonLd } from "@/components/json-ld"
 import { getI18n } from "@/lib/server-locale"
 import { SearchSection } from "@/components/search-section"
@@ -91,7 +93,22 @@ export async function generateMetadataHome(): Promise<Metadata> {
 
 export const dynamic = "force-dynamic"
 
-export default async function HomePage() {
+export default function HomePage() {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <WebSiteJsonLd />
+
+      {/* Hero (LCP) renders immediately; API-backed sections stream in after */}
+      <HeroSection />
+
+      <Suspense fallback={<HomeSectionsSkeleton />}>
+        <HomeSections />
+      </Suspense>
+    </div>
+  )
+}
+
+async function HomeSections() {
   const { locale } = await getI18n()
   const [categories, featuredTags, blogList, testimonials, destinations, departures] =
     await Promise.all([
@@ -104,11 +121,7 @@ export default async function HomePage() {
     ])
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <WebSiteJsonLd />
-
-      <HeroSection />
-
+    <>
       <FeaturedTrips tags={featuredTags} />
 
       <CategorySection categories={categories} />
@@ -128,6 +141,25 @@ export default async function HomePage() {
       <ConsultantSection />
 
       <RecommendButton />
+    </>
+  )
+}
+
+function HomeSectionsSkeleton() {
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-20">
+      <div className="mb-10 flex justify-center">
+        <Skeleton className="h-8 w-48" />
+      </div>
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="space-y-3">
+            <Skeleton className="aspect-[4/3] w-full rounded-xl" />
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-1/2" />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { Clock } from "lucide-react"
 import { img } from "@/lib/api"
@@ -22,11 +23,12 @@ export function TripEmbedCard({
       className="group flex items-center gap-4 rounded-lg border border-border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
     >
       <div className="relative h-32 w-48 shrink-0 overflow-hidden rounded-md">
-        <img
+        <Image
           src={img(a.images?.[0]) ?? "/images/trek-everest.jpg"}
           alt={a.title}
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
+          fill
+          sizes="192px"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
       <div className="min-w-0">

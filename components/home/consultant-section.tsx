@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight, MessageCircle } from "lucide-react"
 import { siteConfig } from "@/lib/siteConfig"
@@ -9,7 +10,8 @@ export function ConsultantSection() {
         <div className="flex justify-center">
           <div className="relative">
             <div className="h-100 w-80 overflow-hidden  border-8 border-white shadow-xl">
-              <img
+              <Image
+                sizes="320px"
                 src="/manaslu-view.webp"
                 alt="Travel Consultant"
                 width={700}
