@@ -1,4 +1,4 @@
-import Image from "next/image"
+import { ProgressiveImage } from "@/components/progressive-image"
 import Link from "next/link"
 import { Clock, MapPin, Mountain } from "lucide-react"
 import { img } from "@/lib/api"
@@ -45,10 +45,9 @@ export function TripCard({
       } transition-shadow duration-500`}
     >
       <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-110">
-        <Image
+        <ProgressiveImage
           src={imageUrl}
           alt={a.title}
-          fill
           sizes={compact ? "288px" : "(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"}
           className="object-cover"
         />

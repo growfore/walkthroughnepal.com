@@ -1,6 +1,6 @@
 "use client"
 
-import Image from "next/image"
+import { ProgressiveImage } from "@/components/progressive-image"
 import { useState } from "react"
 import { GalleryLightbox } from "./gallery-lightbox"
 import { img } from "@/lib/api"
@@ -42,10 +42,9 @@ export function HorizontalGallery({
               onClick={() => setOpenIdx(i)}
               className="snap-start shrink-0 relative h-[55vh] w-[80vw] md:h-[65vh] md:w-[55vw]"
             >
-              <Image
+              <ProgressiveImage
                 src={image.src}
                 alt={image.alt}
-                fill
                 sizes="(max-width: 768px) 80vw, 55vw"
                 className="object-cover"
                 preload={i === 0}

@@ -1,6 +1,6 @@
 "use client"
 
-import Image from "next/image"
+import { ProgressiveImage } from "@/components/progressive-image"
 import { useState, useEffect } from "react"
 import { Clock, HandPlatter, Home, LucideArrowDown, LucideArrowUp, Route } from "lucide-react"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
@@ -135,7 +135,7 @@ export function ItineraryList({ variants }: { variants: ItineraryVariant[] }) {
                         {d.dayFeaturedImages.map((img, i) => (
                           <div key={i} className="overflow-hidden rounded-xl">
                             <div className="relative aspect-video">
-                              <Image src={img.image} alt={img.alt} fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover" />
+                              <ProgressiveImage src={img.image} alt={img.alt} sizes="(max-width: 640px) 100vw, 50vw" className="object-cover" />
                             </div>
                           </div>
                         ))}
