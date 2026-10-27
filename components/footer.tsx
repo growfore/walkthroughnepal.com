@@ -72,6 +72,7 @@ function SocialLinks({ socials }: { socials: Record<string, string> }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={name}
+          className="flex size-9 items-center justify-center rounded-full border border-white/20 bg-white/5 transition-colors hover:border-orange hover:bg-orange hover:text-white"
         >
           <SocialIcon url={url} />
         </a>
@@ -123,7 +124,7 @@ export async function Footer() {
               </div>
             </section>
       <FooterNewsletter />
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pt-14 pb-10 md:grid-cols-3 lg:grid-cols-5">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pt-14 pb-10 md:grid-cols-3 lg:grid-cols-6">
         <div className="md:col-span-2">
           <a href={href("/")}>
             <img src={"/walkthrough-nepal-logo-white.svg"} height={200} width={200} alt="walk through nepal logo white"/>
@@ -131,34 +132,7 @@ export async function Footer() {
           <p className="mt-4 max-w-xs text-sm text-white/70">
             {cfg.description}
           </p>
-          <div className="mt-5">
-            <SocialLinks socials={cfg.socials} />
-          </div>
-        </div>
-        {items.map((item) => (
-          <div key={item.label}>
-            <Link href={href(item.url)}>
-              <h4 className="mb-4 font-semibold">{locale === "en" ? t(item.label) : item.label}</h4>
-            </Link>
-            {item.children && item.children.length > 0 && (
-              <ul className="space-y-2 text-sm text-white/75">
-                {item.children.map((sub) => (
-                  <li key={sub.label}>
-                    <Link
-                      href={href(sub.url)}
-                      className="hover:text-orange transition-colors"
-                    >
-                      {locale === "en" ? t(sub.label) : sub.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        ))}
-        <div>
-          <h4 className="mb-4 font-semibold">{t("Contact Us")}</h4>
-          <ul className="space-y-2 text-sm text-white/75">
+          <ul className="mt-5 space-y-2 text-sm text-white/75">
             <li className="flex items-start gap-2">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-orange" />
               {cfg.fullAddress}
@@ -184,7 +158,31 @@ export async function Footer() {
               </div>
             </li>
           </ul>
+          <div className="mt-6">
+            <SocialLinks socials={cfg.socials} />
+          </div>
         </div>
+        {items.map((item) => (
+          <div key={item.label}>
+            <Link href={href(item.url)}>
+              <h4 className="mb-4 font-semibold">{locale === "en" ? t(item.label) : item.label}</h4>
+            </Link>
+            {item.children && item.children.length > 0 && (
+              <ul className="space-y-2 text-sm text-white/75">
+                {item.children.map((sub) => (
+                  <li key={sub.label}>
+                    <Link
+                      href={href(sub.url)}
+                      className="hover:text-orange transition-colors"
+                    >
+                      {locale === "en" ? t(sub.label) : sub.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
       </div>
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-8 lg:flex-row lg:items-center lg:justify-between">
