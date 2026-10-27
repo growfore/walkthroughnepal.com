@@ -9,6 +9,7 @@ import {
   Users, ClipboardList, Heart, PhoneCall
 } from "lucide-react"
 import { siteConfig, type SiteConfig } from "@/lib/siteConfig"
+import { affiliations, companyRegistration } from "@/lib/affiliations"
 import { getFooterItems, getSiteConfig } from "@/lib/api"
 import { Logo } from "./logo"
 import { FooterNewsletter } from "./footer-newsletter"
@@ -183,6 +184,41 @@ export async function Footer() {
               </div>
             </li>
           </ul>
+        </div>
+      </div>
+      <div className="border-t border-white/10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-8 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-white/60">
+              {t("Registered member of")}
+            </span>
+            <ul className="flex flex-wrap items-center gap-3">
+              {affiliations.map((a) => (
+                <li key={a.short}>
+                  <a
+                    href={a.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={a.name}
+                    className="flex h-12 items-center rounded-md bg-white px-3 transition-opacity hover:opacity-90"
+                  >
+                    <img
+                      src={a.logo}
+                      width={a.width}
+                      height={a.height}
+                      alt={`${a.name} (${a.short})`}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-8 w-auto"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p className="text-xs text-white/60">
+            Reg. No. {companyRegistration.registrationNo} · PAN {companyRegistration.panNo}
+          </p>
         </div>
       </div>
       <div className="border-t border-white/10">
