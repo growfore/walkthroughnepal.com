@@ -209,68 +209,6 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Story */}
-      <section className="pb-20 md:pb-28">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-5">
-            <div className="lg:sticky lg:top-28">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
-                <Image
-                  src="/poonhill-morning-view.webp"
-                  alt="Morning light over the Annapurna range from Poon Hill"
-                  fill
-                  sizes="(min-width: 1024px) 40vw, 100vw"
-                  className="object-cover"
-                />
-              </div>
-              <p className="mt-3 text-sm text-muted-foreground">The Annapurna range, the view Sudip and Sabina grew up with.</p>
-            </div>
-          </div>
-          <div className="lg:col-span-7">
-            <Eyebrow>Our story</Eyebrow>
-            <h2 className="mt-4 text-3xl font-bold text-navy md:text-4xl">Grown under the same mountains</h2>
-            <div className="mt-8 space-y-5 text-lg leading-relaxed text-muted-foreground">
-              <p>
-                Sudip and Sabina didn&apos;t meet at a trade show or a hotel conference. They grew up under the
-                same mountains: Sudip in a small village in the Annapurna region before moving to Pokhara as a
-                boy, Sabina right there in Pokhara, a short walk from Phewa Lake, where the Annapurna range shows
-                up perfectly in the water on a clear morning.
-              </p>
-              <p>
-                For Sudip, growing up meant watching strangers arrive constantly, packs heavier than they needed,
-                boots too new, eyes fixed on peaks he&apos;d looked at his whole life without giving them a second
-                thought. It&apos;s a strange thing, watching people travel across the world for a view you grew up
-                calling &ldquo;just outside.&rdquo; Somewhere in that, long before it had a name, the idea for
-                Walk Through Nepal started taking shape.
-              </p>
-              <p>
-                Sabina saw the same city from a different angle. She noticed the hospitality side up close, the
-                guesthouses, the guides, the small decisions that turn a rushed itinerary into a trip someone
-                actually remembers. She understood early that most travel companies get the logistics right and
-                forget the people.
-              </p>
-              <p>
-                When they finally built Walk Through Nepal together, they kept it small on purpose, a handful of
-                experienced guides, chosen for patience as much as skill, because altitude doesn&apos;t care about
-                anyone&apos;s schedule, and neither should a guide. A fixed itinerary looks efficient on paper. It
-                rarely survives week one of an actual trek, once someone&apos;s knees are tired or someone else
-                wants to slow down at a viewpoint everyone else has already photographed and moved past.
-              </p>
-              <p>That&apos;s really the whole philosophy.</p>
-            </div>
-            <blockquote className="my-10 border-l-4 border-orange pl-6 text-2xl font-semibold leading-snug text-navy md:text-3xl">
-              Nepal doesn&apos;t need another agency selling the same eight-day package to everyone who lands in
-              Kathmandu.
-            </blockquote>
-            <p className="text-lg leading-relaxed text-muted-foreground">
-              It needs guides who actually live here, and a company small enough to still notice when a trip
-              isn&apos;t working for the person walking it. Sudip and Sabina built Walk Through Nepal to be exactly
-              that, nothing more, nothing less.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Mission & Vision */}
       <section className="bg-navy py-20 text-navy-foreground md:py-24">
         <div className="mx-auto grid max-w-7xl gap-12 px-4 md:grid-cols-2 md:gap-16">
