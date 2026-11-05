@@ -3,9 +3,13 @@ import type { NextConfig } from "next"
 const API = process.env.API_URL ?? "https://api.walkthroughnepal.com"
 
 const nextConfig: NextConfig = {
+  // Tailwind CSS is small; inlining removes the render-blocking stylesheet request
+  experimental: { inlineCss: true },
   images: {
-    // q100 keeps source fidelity; savings come from AVIF/WebP + right-sized widths
-    qualities: [100],
+    // Final images stay q100 (no compromise). 20/50 are only for the progressive
+    // blur-up previews. 100 must stay FIRST: the default q75 is equidistant from
+    // 50 and 100, and ties resolve to the earlier entry, so plain <Image> stays q100.
+    qualities: [100, 20, 50],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 2678400,
     remotePatterns: [

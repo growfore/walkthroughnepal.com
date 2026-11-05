@@ -67,10 +67,14 @@ export function MenuController({ items }: MenuControllerProps) {
 
   useEffect(() => {
     let lastY = window.scrollY
-    const syncOffset = () => {
-      const height = navVisibleRef.current ? navRef.current?.offsetHeight ?? 0 : 0
+    // Height comes from ResizeObserver entries (no layout read), so scrolling
+    // and mount never force a synchronous reflow.
+    let navHeight = 0
+    const writeOffset = () => {
+      const height = navVisibleRef.current ? navHeight : 0
       document.documentElement.style.setProperty("--navigation-offset", `${height}px`)
     }
+    const syncOffset = writeOffset
     const updateVisibility = (visible: boolean) => {
       if (visible === navVisibleRef.current) return
       navVisibleRef.current = visible
@@ -82,9 +86,12 @@ export function MenuController({ items }: MenuControllerProps) {
       updateVisibility(currentY < lastY || currentY < 80)
       lastY = currentY
     }
-    const observer = new ResizeObserver(syncOffset)
-    if (navRef.current) observer.observe(navRef.current)
-    syncOffset()
+    const observer = new ResizeObserver((entries) => {
+      const box = entries[entries.length - 1]?.borderBoxSize?.[0]
+      if (box) navHeight = box.blockSize
+      writeOffset()
+    })
+    if (navRef.current) observer.observe(navRef.current, { box: "border-box" })
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => {
       observer.disconnect()
